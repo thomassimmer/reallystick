@@ -37,6 +37,8 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
   int _quantityOfSet = 1;
   int _weight = 0;
   String? _selectedWeightUnitId;
+  int _selectedRepeat = 1;
+  bool _isRepeatEnabled = false;
 
   @override
   void didChangeDependencies() {
@@ -66,12 +68,10 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
     challengeDailyTrackingFormBloc.add(
       ChallengeDailyTrackingCreationFormHabitChangedEvent(_selectedHabitId),
     );
-
     challengeDailyTrackingFormBloc.add(
       ChallengeDailyTrackingCreationFormDayOfProgramChangedEvent(
           _selectedDayOfProgram),
     );
-
     challengeDailyTrackingFormBloc.add(
       ChallengeDailyTrackingCreationFormQuantityOfSetChangedEvent(
           _quantityOfSet),
@@ -90,6 +90,9 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
       ChallengeDailyTrackingCreationFormWeightUnitIdChangedEvent(
           _selectedWeightUnitId ?? ""),
     );
+    challengeDailyTrackingFormBloc.add(
+      ChallengeDailyTrackingCreationFormRepeatChangedEvent(_selectedRepeat),
+    );
 
     // Allow time for the validation states to update
     Future.delayed(
@@ -106,6 +109,7 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
             unitId: _selectedUnitId!,
             weight: _weight,
             weightUnitId: _selectedWeightUnitId!,
+            repeat: _selectedRepeat,
           );
           if (mounted) {
             context.read<ChallengeBloc>().add(newChallengeDailyTrackingEvent);
@@ -169,6 +173,15 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
       final displayDayOfProgramErrorMessage = context.select(
         (ChallengeDailyTrackingCreationFormBloc bloc) {
           final error = bloc.state.dayOfProgram.displayError;
+          return error != null
+              ? getTranslatedMessage(context, ErrorMessage(error.messageKey))
+              : null;
+        },
+      );
+
+      final displayRepeatErrorMessage = context.select(
+        (ChallengeDailyTrackingCreationFormBloc bloc) {
+          final error = bloc.state.repeat.displayError;
           return error != null
               ? getTranslatedMessage(context, ErrorMessage(error.messageKey))
               : null;
@@ -470,6 +483,52 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
                   ),
                 ),
               ],
+            ),
+          ],
+
+          const SizedBox(height: 16),
+
+          // Toggle Switch for "Precise Dates"
+          Row(
+            children: [
+              Text(
+                AppLocalizations.of(context)!.repeatOnMultipleDaysAfter,
+              ),
+              Switch(
+                value: _isRepeatEnabled,
+                onChanged: (value) {
+                  setState(() {
+                    _isRepeatEnabled = value;
+                    if (!_isRepeatEnabled) {
+                      _selectedRepeat = 1;
+                    }
+                  });
+                },
+              ),
+            ],
+          ),
+
+          if (_isRepeatEnabled) ...[
+            // Day of program selector
+            CustomTextField(
+              initialValue: _selectedRepeat.toString(),
+              label: AppLocalizations.of(context)!
+                  .numberOfDaysToRepeatThisObjective,
+              keyboardType: TextInputType.number,
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.digitsOnly
+              ],
+              onChanged: (value) {
+                setState(() {
+                  _selectedRepeat = int.tryParse(value) ?? 1;
+                });
+                BlocProvider.of<ChallengeDailyTrackingCreationFormBloc>(context)
+                    .add(
+                  ChallengeDailyTrackingCreationFormRepeatChangedEvent(
+                      _selectedRepeat),
+                );
+              },
+              errorText: displayRepeatErrorMessage,
             ),
           ],
 

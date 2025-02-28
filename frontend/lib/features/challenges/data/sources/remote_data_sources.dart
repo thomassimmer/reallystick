@@ -286,7 +286,7 @@ class ChallengeRemoteDataSource {
     throw UnknownError();
   }
 
-  Future<ChallengeDailyTrackingDataModel> createChallengeDailyTracking(
+  Future<List<ChallengeDailyTrackingDataModel>> createChallengeDailyTracking(
       ChallengeDailyTrackingCreateRequestModel
           challengeDailyTrackingCreateRequestModel) async {
     final url = Uri.parse('$baseUrl/challenge-daily-trackings/');
@@ -303,8 +303,14 @@ class ChallengeRemoteDataSource {
 
     if (response.statusCode == 200) {
       try {
-        return ChallengeDailyTrackingDataModel.fromJson(
-            jsonBody['challenge_daily_tracking']);
+        final jsonBody = customJsonDecode(response.body);
+        final List<dynamic> challengeDailyTrackings =
+            jsonBody['challenge_daily_trackings'];
+        return challengeDailyTrackings
+            .map((challengeDailyTracking) =>
+                ChallengeDailyTrackingDataModel.fromJson(
+                    challengeDailyTracking))
+            .toList();
       } catch (e) {
         throw ParsingError();
       }

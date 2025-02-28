@@ -10,6 +10,9 @@ use actix_web::{
 
 use reallystick::features::challenges::structs::{
     models::challenge_daily_tracking::ChallengeDailyTrackingData,
+    requests::challenge_daily_tracking::{
+        ChallengeDailyTrackingCreateRequest, ChallengeDailyTrackingUpdateRequest,
+    },
     responses::challenge_daily_tracking::{
         ChallengeDailyTrackingResponse, ChallengeDailyTrackingsResponse,
     },
@@ -37,28 +40,29 @@ pub async fn user_creates_a_challenge_daily_tracking(
         .uri("/api/challenge-daily-trackings/")
         .insert_header((header::AUTHORIZATION, format!("Bearer {}", access_token)))
         .insert_header(ContentType::json())
-        .set_json(&serde_json::json!({
-            "challenge_id": challenge_id,
-            "habit_id": habit_id,
-            "day_of_program": 1,
-            "quantity_per_set": 10,
-            "quantity_of_set": 3,
-            "unit_id": unit_id,
-            "weight": 0,
-            "weight_unit_id": unit_id
-        }))
+        .set_json(ChallengeDailyTrackingCreateRequest {
+            challenge_id,
+            habit_id,
+            day_of_program: 1,
+            quantity_per_set: 10,
+            quantity_of_set: 3,
+            unit_id,
+            weight: 0,
+            weight_unit_id: unit_id,
+            repeat: 1,
+        })
         .to_request();
     let response = test::call_service(&app, req).await;
 
     assert_eq!(200, response.status().as_u16());
 
     let body = test::read_body(response).await;
-    let response: ChallengeDailyTrackingResponse = serde_json::from_slice(&body).unwrap();
+    let response: ChallengeDailyTrackingsResponse = serde_json::from_slice(&body).unwrap();
 
-    assert_eq!(response.code, "CHALLENGE_DAILY_TRACKING_CREATED");
-    assert!(response.challenge_daily_tracking.is_some());
+    assert_eq!(response.code, "CHALLENGE_DAILY_TRACKINGS_CREATED");
+    assert!(response.challenge_daily_trackings.len() == 1);
 
-    response.challenge_daily_tracking.unwrap().id
+    response.challenge_daily_trackings.first().unwrap().id
 }
 
 pub async fn user_updates_a_challenge_daily_tracking(
@@ -75,15 +79,15 @@ pub async fn user_updates_a_challenge_daily_tracking(
         ))
         .insert_header((header::AUTHORIZATION, format!("Bearer {}", access_token)))
         .insert_header(ContentType::json())
-        .set_json(&serde_json::json!({
-            "habit_id": habit_id,
-            "day_of_program": 1,
-            "quantity_per_set": 10,
-            "quantity_of_set": 2,
-            "unit_id": unit_id,
-            "weight": 0,
-            "weight_unit_id": unit_id
-        }))
+        .set_json(ChallengeDailyTrackingUpdateRequest {
+            habit_id,
+            day_of_program: 1,
+            quantity_per_set: 10,
+            quantity_of_set: 2,
+            unit_id,
+            weight: 0,
+            weight_unit_id: unit_id,
+        })
         .to_request();
     let response = test::call_service(&app, req).await;
 

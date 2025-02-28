@@ -98,7 +98,7 @@ class ChallengeDailyTrackingRepositoryImpl
   }
 
   @override
-  Future<Either<DomainError, ChallengeDailyTracking>>
+  Future<Either<DomainError, List<ChallengeDailyTracking>>>
       createChallengeDailyTracking({
     required String challengeId,
     required String habitId,
@@ -108,22 +108,30 @@ class ChallengeDailyTrackingRepositoryImpl
     required String unitId,
     required int weight,
     required String weightUnitId,
+    required int repeat,
   }) async {
     try {
-      final challengeDailyTrackingDataModel =
+      final challengeDailyTrackingDataModels =
           await remoteDataSource.createChallengeDailyTracking(
-              ChallengeDailyTrackingCreateRequestModel(
-        challengeId: challengeId,
-        habitId: habitId,
-        dayOfProgram: dayOfProgram,
-        quantityPerSet: quantityPerSet,
-        quantityOfSet: quantityOfSet,
-        unitId: unitId,
-        weight: weight,
-        weightUnitId: weightUnitId,
-      ));
+        ChallengeDailyTrackingCreateRequestModel(
+          challengeId: challengeId,
+          habitId: habitId,
+          dayOfProgram: dayOfProgram,
+          quantityPerSet: quantityPerSet,
+          quantityOfSet: quantityOfSet,
+          unitId: unitId,
+          weight: weight,
+          weightUnitId: weightUnitId,
+          repeat: repeat,
+        ),
+      );
 
-      return Right(challengeDailyTrackingDataModel.toDomain());
+      return Right(
+        challengeDailyTrackingDataModels
+            .map((challengeDailyTrackingDataModel) =>
+                challengeDailyTrackingDataModel.toDomain())
+            .toList(),
+      );
     } on ParsingError {
       logger.e('ParsingError occurred.');
       return Left(InvalidResponseDomainError());

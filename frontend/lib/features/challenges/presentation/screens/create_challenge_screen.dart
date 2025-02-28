@@ -220,7 +220,7 @@ class CreateChallengeScreenState extends State<CreateChallengeScreen> {
                           Row(
                             children: [
                               Text(
-                                AppLocalizations.of(context)!.fixesDates,
+                                AppLocalizations.of(context)!.fixedDates,
                               ),
                               Switch(
                                 value: _isFixedDatesEnabled,

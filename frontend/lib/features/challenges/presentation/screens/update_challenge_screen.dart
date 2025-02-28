@@ -264,7 +264,7 @@ class UpdateChallengeScreenState extends State<UpdateChallengeScreen> {
                           Row(
                             children: [
                               Text(
-                                AppLocalizations.of(context)!.fixesDates,
+                                AppLocalizations.of(context)!.fixedDates,
                               ),
                               Switch(
                                 value: _isFixedDatesEnabled,

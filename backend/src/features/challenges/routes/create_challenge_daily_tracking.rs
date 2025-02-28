@@ -6,7 +6,7 @@ use crate::{
             structs::{
                 models::challenge_daily_tracking::ChallengeDailyTracking,
                 requests::challenge_daily_tracking::ChallengeDailyTrackingCreateRequest,
-                responses::challenge_daily_tracking::ChallengeDailyTrackingResponse,
+                responses::challenge_daily_tracking::ChallengeDailyTrackingsResponse,
             },
         },
         habits::helpers::{habit::get_habit_by_id, unit::get_unit_by_id},
@@ -91,23 +91,27 @@ pub async fn create_challenge_daily_tracking(
         }
     }
 
-    let challenge_daily_tracking = ChallengeDailyTracking {
-        id: Uuid::new_v4(),
-        habit_id: body.habit_id,
-        created_at: Utc::now(),
-        challenge_id: body.challenge_id,
-        day_of_program: body.day_of_program,
-        quantity_per_set: body.quantity_per_set,
-        quantity_of_set: body.quantity_of_set,
-        unit_id: body.unit_id,
-        weight: body.weight,
-        weight_unit_id: body.weight_unit_id,
-    };
+    let mut challenge_daily_trackings = Vec::<ChallengeDailyTracking>::new();
+
+    for i in 1..=body.repeat {
+        challenge_daily_trackings.push(ChallengeDailyTracking {
+            id: Uuid::new_v4(),
+            habit_id: body.habit_id,
+            created_at: Utc::now(),
+            challenge_id: body.challenge_id,
+            day_of_program: body.day_of_program + i - 1,
+            quantity_per_set: body.quantity_per_set,
+            quantity_of_set: body.quantity_of_set,
+            unit_id: body.unit_id,
+            weight: body.weight,
+            weight_unit_id: body.weight_unit_id,
+        });
+    }
 
     let create_challenge_daily_tracking_result =
-        challenge_daily_tracking::create_challenge_daily_tracking(
+        challenge_daily_tracking::create_challenge_daily_trackings(
             &mut transaction,
-            &challenge_daily_tracking,
+            &challenge_daily_trackings,
         )
         .await;
 
@@ -118,11 +122,12 @@ pub async fn create_challenge_daily_tracking(
     }
 
     match create_challenge_daily_tracking_result {
-        Ok(_) => HttpResponse::Ok().json(ChallengeDailyTrackingResponse {
-            code: "CHALLENGE_DAILY_TRACKING_CREATED".to_string(),
-            challenge_daily_tracking: Some(
-                challenge_daily_tracking.to_challenge_daily_tracking_data(),
-            ),
+        Ok(_) => HttpResponse::Ok().json(ChallengeDailyTrackingsResponse {
+            code: "CHALLENGE_DAILY_TRACKINGS_CREATED".to_string(),
+            challenge_daily_trackings: challenge_daily_trackings
+                .iter()
+                .map(|cdt| cdt.to_challenge_daily_tracking_data())
+                .collect(),
         }),
         Err(e) => {
             eprintln!("Error: {}", e);

@@ -8,7 +8,7 @@ class CreateChallengeDailyTrackingUsecase {
 
   CreateChallengeDailyTrackingUsecase(this.challengeDailyTrackingRepository);
 
-  Future<Either<DomainError, ChallengeDailyTracking>> call({
+  Future<Either<DomainError, List<ChallengeDailyTracking>>> call({
     required String challengeId,
     required String habitId,
     required int dayOfProgram,
@@ -17,6 +17,7 @@ class CreateChallengeDailyTrackingUsecase {
     required String unitId,
     required int weight,
     required String weightUnitId,
+    required int repeat,
   }) async {
     return await challengeDailyTrackingRepository.createChallengeDailyTracking(
       challengeId: challengeId,
@@ -27,6 +28,7 @@ class CreateChallengeDailyTrackingUsecase {
       unitId: unitId,
       weight: weight,
       weightUnitId: weightUnitId,
+      repeat: repeat,
     );
   }
 }

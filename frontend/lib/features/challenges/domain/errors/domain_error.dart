@@ -24,3 +24,13 @@ class ChallengeNameWrongSizeError implements DomainError {
   @override
   final String messageKey = 'challengeNameWrongSizeError';
 }
+
+class RepetitionNumberIsNullError implements DomainError {
+  @override
+  final String messageKey = 'repetitionNumberIsNullError';
+}
+
+class RepetitionNumberIsNegativeError implements DomainError {
+  @override
+  final String messageKey = 'repetitionNumberIsNegativeError';
+}

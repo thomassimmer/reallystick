@@ -83,40 +83,43 @@ pub async fn update_challenge_daily_tracking(
     .await
 }
 
-pub async fn create_challenge_daily_tracking(
+pub async fn create_challenge_daily_trackings(
     conn: &mut PgConnection,
-    challenge_daily_tracking: &ChallengeDailyTracking,
-) -> Result<sqlx::postgres::PgQueryResult, sqlx::Error> {
-    sqlx::query_as!(
-        ChallengeDailyTracking,
-        r#"
-        INSERT INTO challenge_daily_trackings (
-            id,
-            habit_id,
-            challenge_id,
-            day_of_program,
-            created_at,
-            quantity_per_set,
-            quantity_of_set,
-            unit_id,
-            weight,
-            weight_unit_id
+    challenge_daily_trackings: &[ChallengeDailyTracking],
+) -> Result<(), sqlx::Error> {
+    for tracking in challenge_daily_trackings {
+        sqlx::query!(
+            r#"
+            INSERT INTO challenge_daily_trackings (
+                id,
+                habit_id,
+                challenge_id,
+                day_of_program,
+                created_at,
+                quantity_per_set,
+                quantity_of_set,
+                unit_id,
+                weight,
+                weight_unit_id
+            )
+            VALUES ( $1, $2, $3, $4, $5, $6, $7, $8, $9, $10 )
+            "#,
+            tracking.id,
+            tracking.habit_id,
+            tracking.challenge_id,
+            tracking.day_of_program,
+            tracking.created_at,
+            tracking.quantity_per_set,
+            tracking.quantity_of_set,
+            tracking.unit_id,
+            tracking.weight,
+            tracking.weight_unit_id
         )
-        VALUES ( $1, $2, $3, $4, $5, $6, $7, $8, $9, $10 )
-        "#,
-        challenge_daily_tracking.id,
-        challenge_daily_tracking.habit_id,
-        challenge_daily_tracking.challenge_id,
-        challenge_daily_tracking.day_of_program,
-        challenge_daily_tracking.created_at,
-        challenge_daily_tracking.quantity_per_set,
-        challenge_daily_tracking.quantity_of_set,
-        challenge_daily_tracking.unit_id,
-        challenge_daily_tracking.weight,
-        challenge_daily_tracking.weight_unit_id
-    )
-    .execute(conn)
-    .await
+        .execute(&mut *conn)
+        .await?;
+    }
+
+    Ok(())
 }
 
 pub async fn delete_challenge_daily_tracking_by_id(

@@ -102,6 +102,10 @@ String getTranslatedMessage(BuildContext context, Message message) {
         return localizations.challengeParticipationNotFoundError;
       case 'challengeNotFoundError':
         return localizations.challengeNotFoundError;
+      case 'repetitionNumberIsNullError':
+        return localizations.repetitionNumberIsNullError;
+      case 'repetitionNumberIsNegativeError':
+        return localizations.repetitionNumberIsNegativeError;
 
       // Profile
       case 'passwordNotExpiredError':
