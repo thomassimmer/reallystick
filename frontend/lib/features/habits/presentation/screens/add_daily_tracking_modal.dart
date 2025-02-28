@@ -101,6 +101,16 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
       final userLocale = profileState.profile.locale;
 
       final habits = habitState.habits;
+
+      final habitsUserParticipateIn = Map.fromEntries(
+        habits.values
+            .where((habit) => habitState.habitParticipations
+                .where((habitParticipation) =>
+                    habitParticipation.habitId == habit.id)
+                .isNotEmpty)
+            .map((habit) => MapEntry(habit.id, habit)),
+      );
+
       final units = habitState.units;
 
       final displayHabitErrorMessage = context.select(
@@ -174,7 +184,7 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
           // Habit Selector
           CustomDropdownButtonFormField(
             value: _selectedHabitId,
-            items: habits.entries.map(
+            items: habitsUserParticipateIn.entries.map(
               (entry) {
                 final habit = entry.value;
                 return DropdownMenuItem(
