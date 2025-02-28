@@ -62,7 +62,7 @@ class UnauthenticatedHomeScreen extends StatelessWidget {
           AppLocalizations.of(context)!.welcome,
           textAlign: TextAlign.center,
           style: context.typographies.headingLarge
-              .copyWith(color: context.colors.textOnPrimary),
+              .copyWith(color: context.colors.background),
         ),
         SizedBox(height: 16),
         Text(
