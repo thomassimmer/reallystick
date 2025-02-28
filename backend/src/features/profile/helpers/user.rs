@@ -1,4 +1,5 @@
 use sqlx::{postgres::PgQueryResult, PgConnection};
+use uuid::Uuid;
 
 use crate::features::profile::structs::models::User;
 
@@ -53,5 +54,23 @@ pub async fn get_user_by_username(
         username_lower,
     )
     .fetch_optional(conn)
+    .await
+}
+
+
+pub async fn delete_user_by_id(
+    conn: &mut PgConnection,
+    user_id: Uuid,
+) -> Result<PgQueryResult, sqlx::Error> {
+    sqlx::query_as!(
+        User,
+        r#"
+        DELETE
+        from users
+        WHERE id = $1
+        "#,
+        user_id,
+    )
+    .execute(conn)
     .await
 }

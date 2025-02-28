@@ -7,6 +7,7 @@ import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_bloc.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_events.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
+import 'package:reallystick/features/profile/presentation/blocs/profile/profile_events.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -78,7 +79,7 @@ class ProfileScreen extends StatelessWidget {
                 },
               ),
               const SizedBox(height: 32),
-              Row(
+              Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   ElevatedButton(
@@ -94,6 +95,59 @@ class ProfileScreen extends StatelessWidget {
                       child: Text(AppLocalizations.of(context)!.logout),
                     ),
                   ),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () async {
+                      final shouldDelete = await showDialog<bool>(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text(
+                                AppLocalizations.of(context)!.confirmDelete),
+                            content: Text(AppLocalizations.of(context)!
+                                .confirmDeleteMessage),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop(false);
+                                },
+                                child: Text(
+                                  AppLocalizations.of(context)!.cancel,
+                                  style: context.typographies.body,
+                                ),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop(true);
+                                },
+                                child: Text(
+                                  AppLocalizations.of(context)!.confirm,
+                                  style: context.typographies.body
+                                      .copyWith(color: context.colors.error),
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+
+                      if (shouldDelete == true) {
+                        BlocProvider.of<ProfileBloc>(context)
+                            .add(DeleteAccountEvent());
+                      }
+                    },
+                    style: context.styles.buttonMedium.copyWith(
+                      backgroundColor:
+                          WidgetStatePropertyAll(context.colors.error),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 32.0,
+                        vertical: 4,
+                      ),
+                      child: Text(AppLocalizations.of(context)!.deleteAccount),
+                    ),
+                  )
                 ],
               )
             ],

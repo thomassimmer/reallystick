@@ -11,6 +11,7 @@ import 'package:reallystick/features/auth/presentation/blocs/auth/auth_bloc.dart
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_events.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_states.dart';
 import 'package:reallystick/features/profile/domain/entities/profile.dart';
+import 'package:reallystick/features/profile/domain/usecases/delete_account.dart';
 import 'package:reallystick/features/profile/domain/usecases/get_profile_usecase.dart';
 import 'package:reallystick/features/profile/domain/usecases/load_countries.dart';
 import 'package:reallystick/features/profile/domain/usecases/post_profile_usecase.dart';
@@ -40,6 +41,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       GetIt.instance<UpdatePasswordUseCase>();
   final LoadCountriesUseCase loadCountriesUseCase =
       GetIt.instance<LoadCountriesUseCase>();
+  final DeleteAccountUsecase deleteAccountUsecase =
+      GetIt.instance<DeleteAccountUsecase>();
 
   ProfileBloc({required this.authBloc}) : super(ProfileLoading()) {
     authBlocSubscription = authBloc.stream.listen((authState) {
@@ -60,6 +63,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     on<ProfileVerifyOneTimePasswordEvent>(_verifyOneTimePassword);
     on<ProfileSetPasswordEvent>(_setPassword);
     on<ProfileUpdatePasswordEvent>(_updatePassword);
+    on<DeleteAccountEvent>(_deleteAccount);
   }
 
   Future<void> _initialize(
@@ -235,5 +239,39 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         (profile) => emit(ProfileAuthenticated(
             profile: profile,
             message: SuccessMessage('passwordUpdateSuccessful'))));
+  }
+
+  Future<void> _deleteAccount(
+      DeleteAccountEvent event, Emitter<ProfileState> emit) async {
+    final currentState = state as ProfileAuthenticated;
+    emit(ProfileLoading(profile: state.profile));
+
+    final result = await deleteAccountUsecase.call();
+
+    result.fold(
+      (error) {
+        if (error is ShouldLogoutError) {
+          authBloc.add(
+            AuthLogoutEvent(
+              message: ErrorMessage(error.messageKey),
+            ),
+          );
+        } else {
+          emit(
+            ProfileAuthenticated(
+              profile: currentState.profile,
+              message: ErrorMessage(error.messageKey),
+            ),
+          );
+        }
+      },
+      (_) {
+        authBloc.add(
+          AuthLogoutEvent(
+            message: SuccessMessage("accountDeletionSuccessful"),
+          ),
+        );
+      },
+    );
   }
 }

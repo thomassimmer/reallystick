@@ -194,4 +194,34 @@ class ProfileRepositoryImpl implements ProfileRepository {
       return Left(UnknownDomainError());
     }
   }
+
+  @override
+  Future<Either<DomainError, void>> deleteAccount() async {
+    try {
+      await remoteDataSource.deleteAccount();
+
+      return Right(null);
+    } on ParsingError {
+      logger.e('ParsingError occurred.');
+      return Left(InvalidResponseDomainError());
+    } on UnauthorizedError {
+      logger.e('UnauthorizedError occurred.');
+      return Left(UnauthorizedDomainError());
+    } on InvalidRefreshTokenError {
+      logger.e('InvalidRefreshTokenError occured.');
+      return Left(InvalidRefreshTokenDomainError());
+    } on RefreshTokenNotFoundError {
+      logger.e('RefreshTokenNotFoundError occured.');
+      return Left(RefreshTokenNotFoundDomainError());
+    } on RefreshTokenExpiredError {
+      logger.e('RefreshTokenExpiredError occured.');
+      return Left(RefreshTokenExpiredDomainError());
+    } on InternalServerError {
+      logger.e('InternalServerError occured.');
+      return Left(InternalServerDomainError());
+    } catch (e) {
+      logger.e('Data error occurred: ${e.toString()}');
+      return Left(UnknownDomainError());
+    }
+  }
 }

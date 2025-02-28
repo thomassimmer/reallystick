@@ -14,4 +14,5 @@ abstract class ProfileRepository {
   Future<Either<DomainError, Profile>> updatePassword(
       String currentPassword, String newPassword);
   Future<Either<DomainError, List<Country>>> loadCountries();
+  Future<Either<DomainError, void>> deleteAccount();
 }

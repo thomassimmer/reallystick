@@ -5,7 +5,9 @@ use actix_web::{
     http::header::ContentType,
     test, Error,
 };
-use reallystick::features::profile::structs::responses::{IsOtpEnabledResponse, UserResponse};
+use reallystick::features::profile::structs::responses::{
+    DeleteAccountResponse, IsOtpEnabledResponse, UserResponse,
+};
 
 use crate::{
     auth::{
@@ -64,6 +66,25 @@ pub async fn user_can_update_profile() {
     assert_eq!(response.user.username, "testusername");
     assert_eq!(response.user.locale, "fr");
     assert_eq!(response.user.theme, "light");
+}
+
+#[tokio::test]
+pub async fn user_can_delete_account() {
+    let app = spawn_app().await;
+    let (access_token, _, _) = user_signs_up(&app, None).await;
+
+    let req = test::TestRequest::delete()
+        .uri("/api/users/me")
+        .insert_header((header::AUTHORIZATION, format!("Bearer {}", access_token)))
+        .to_request();
+    let response = test::call_service(&app, req).await;
+
+    assert_eq!(200, response.status().as_u16());
+
+    let body = test::read_body(response).await;
+    let response: DeleteAccountResponse = serde_json::from_slice(&body).unwrap();
+
+    assert_eq!(response.code, "ACCOUNT_DELETED");
 }
 
 #[tokio::test]

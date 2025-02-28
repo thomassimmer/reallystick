@@ -61,6 +61,7 @@ pub mod features {
             pub mod post_profile_information;
             pub mod set_password;
             pub mod update_password;
+            pub mod delete_account;
         }
 
         pub mod structs {

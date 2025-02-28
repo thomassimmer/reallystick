@@ -168,4 +168,23 @@ class ProfileRemoteDataSource {
 
     throw UnknownError();
   }
+
+  Future<void> deleteAccount() async {
+    final url = Uri.parse('$baseUrl/users/me');
+    final response = await apiClient.delete(url);
+
+    if (response.statusCode == 200) {
+      return;
+    }
+
+    if (response.statusCode == 401) {
+      throw UnauthorizedError();
+    }
+
+    if (response.statusCode == 500) {
+      throw InternalServerError();
+    }
+
+    throw UnknownError();
+  }
 }

@@ -37,6 +37,7 @@ use crate::features::habits::routes::update_habit_category::update_habit_categor
 use crate::features::habits::routes::update_habit_daily_tracking::update_habit_daily_tracking;
 use crate::features::habits::routes::update_habit_participation::update_habit_participation;
 use crate::features::habits::routes::update_unit::update_unit;
+use crate::features::profile::routes::delete_account::delete_account;
 use crate::features::profile::routes::get_profile_information::get_profile_information;
 use crate::features::profile::routes::is_otp_enabled::is_otp_enabled;
 use crate::features::profile::routes::post_profile_information::post_profile_information;
@@ -128,6 +129,7 @@ pub fn create_app(
                                 .service(get_profile_information)
                                 .service(post_profile_information)
                                 .service(set_password)
+                                .service(delete_account)
                                 .service(update_password),
                         ),
                 )

@@ -13,3 +13,8 @@ pub struct IsOtpEnabledResponse {
     pub code: String,
     pub otp_enabled: bool,
 }
+
+#[derive(Serialize, Deserialize)]
+pub struct DeleteAccountResponse {
+    pub code: String,
+}

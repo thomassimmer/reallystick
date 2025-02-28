@@ -49,6 +49,7 @@ import 'package:reallystick/features/profile/data/repositories/profile_repositor
 import 'package:reallystick/features/profile/data/sources/local_data_sources.dart';
 import 'package:reallystick/features/profile/data/sources/remote_data_sources.dart';
 import 'package:reallystick/features/profile/domain/repositories/profile_repository.dart';
+import 'package:reallystick/features/profile/domain/usecases/delete_account.dart';
 import 'package:reallystick/features/profile/domain/usecases/get_profile_usecase.dart';
 import 'package:reallystick/features/profile/domain/usecases/load_countries.dart';
 import 'package:reallystick/features/profile/domain/usecases/post_profile_usecase.dart';
@@ -134,6 +135,8 @@ void setupServiceLocator() {
       UpdatePasswordUseCase(sl<ProfileRepository>()));
   sl.registerSingleton<LoadCountriesUseCase>(
       LoadCountriesUseCase(sl<ProfileRepository>()));
+  sl.registerSingleton<DeleteAccountUsecase>(
+      DeleteAccountUsecase(sl<ProfileRepository>()));
   sl.registerSingleton<GetHabitsUsecase>(
       GetHabitsUsecase(sl<HabitRepository>()));
   sl.registerSingleton<GetHabitCategoriesUseCase>(
