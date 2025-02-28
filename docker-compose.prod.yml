@@ -1,0 +1,39 @@
+services:
+  backend:
+    container_name: reallystick_backend
+    image: reallystick_backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.prod
+    env_file:
+      - ./backend/.env.docker
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    networks:
+      - app-network
+
+  db:
+    image: reallystick_db
+    build:
+      context: ./db
+      dockerfile: Dockerfile
+    env_file:
+      - ./db/.env
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    expose:
+      - "5432"
+    command: -p 5432
+    networks:
+      - app-network
+
+volumes:
+  postgres_data:
+
+networks:
+  app-network:
+    driver: bridge
