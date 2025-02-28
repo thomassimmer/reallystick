@@ -28,4 +28,10 @@ pub mod habits {
     pub mod unit;
 }
 
+pub mod challenges {
+    pub mod challenge;
+    pub mod challenge_daily_tracking;
+    pub mod challenge_participation;
+}
+
 pub mod helpers;

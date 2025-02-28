@@ -1,12 +1,10 @@
 use actix_http::Payload;
 use actix_web::{FromRequest, HttpMessage, HttpRequest};
-use chrono::{DateTime, Utc};
 use futures_util::future::{err, ok, Ready};
 use serde::{Deserialize, Serialize};
 use sqlx::prelude::FromRow;
 use uuid::Uuid;
 
-#[allow(non_snake_case)]
 #[derive(Serialize, Debug, Deserialize)]
 pub struct UserData {
     pub id: Uuid,
@@ -19,9 +17,6 @@ pub struct UserData {
     pub otp_verified: bool,
     pub otp_base32: Option<String>,
     pub otp_auth_url: Option<String>,
-
-    pub createdAt: DateTime<Utc>,
-    pub updatedAt: DateTime<Utc>,
 
     pub password_is_expired: bool,
 
@@ -39,7 +34,6 @@ pub struct UserData {
     pub has_children: Option<bool>,
 }
 
-#[allow(non_snake_case)]
 #[derive(Debug, Deserialize, Serialize, Clone, FromRow)]
 pub struct User {
     pub id: uuid::Uuid,
@@ -85,8 +79,6 @@ impl User {
             otp_auth_url: self.otp_auth_url.to_owned(),
             otp_base32: self.otp_base32.to_owned(),
             otp_verified: self.otp_verified,
-            createdAt: self.created_at,
-            updatedAt: self.updated_at,
             password_is_expired: self.password_is_expired,
             has_seen_questions: self.has_seen_questions,
             age_category: self.age_category.to_owned(),

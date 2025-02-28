@@ -136,4 +136,49 @@ pub mod features {
             pub mod unit;
         }
     }
+
+    pub mod challenges {
+        pub mod routes {
+            pub mod create_challenge;
+            pub mod create_challenge_daily_tracking;
+            pub mod create_challenge_participation;
+            pub mod delete_challenge;
+            pub mod delete_challenge_daily_tracking;
+            pub mod delete_challenge_participation;
+            pub mod get_challenge_daily_trackings;
+            pub mod get_challenge_participations;
+            pub mod get_challenge_statistics;
+            pub mod get_challenges;
+            pub mod update_challenge;
+            pub mod update_challenge_daily_tracking;
+            pub mod update_challenge_participation;
+        }
+
+        pub mod structs {
+            pub mod models {
+                pub mod challenge;
+                pub mod challenge_daily_tracking;
+                pub mod challenge_participation;
+                pub mod challenge_statistics;
+            }
+
+            pub mod requests {
+                pub mod challenge;
+                pub mod challenge_daily_tracking;
+                pub mod challenge_participation;
+            }
+
+            pub mod responses {
+                pub mod challenge;
+                pub mod challenge_daily_tracking;
+                pub mod challenge_participation;
+            }
+        }
+
+        pub mod helpers {
+            pub mod challenge;
+            pub mod challenge_daily_tracking;
+            pub mod challenge_participation;
+        }
+    }
 }

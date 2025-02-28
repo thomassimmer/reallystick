@@ -31,7 +31,7 @@ pub async fn user_creates_a_habit_daily_tracking(
     unit_id: Uuid,
 ) -> Uuid {
     let req = test::TestRequest::post()
-        .uri("/api/habit-daily-tracking/")
+        .uri("/api/habit-daily-trackings/")
         .insert_header((header::AUTHORIZATION, format!("Bearer {}", access_token)))
         .insert_header(ContentType::json())
         .set_json(&serde_json::json!({
@@ -65,7 +65,7 @@ pub async fn user_updates_a_habit_daily_tracking(
 ) {
     let req = test::TestRequest::put()
         .uri(&format!(
-            "/api/habit-daily-tracking/{}",
+            "/api/habit-daily-trackings/{}",
             habit_daily_tracking_id
         ))
         .insert_header((header::AUTHORIZATION, format!("Bearer {}", access_token)))
@@ -98,7 +98,7 @@ pub async fn user_deletes_a_habit_daily_tracking(
 ) {
     let req = test::TestRequest::delete()
         .uri(&format!(
-            "/api/habit-daily-tracking/{}",
+            "/api/habit-daily-trackings/{}",
             habit_daily_tracking_id
         ))
         .insert_header((header::AUTHORIZATION, format!("Bearer {}", access_token)))
@@ -119,7 +119,7 @@ pub async fn user_gets_habit_daily_trackings(
     access_token: &str,
 ) -> Vec<HabitDailyTrackingData> {
     let req = test::TestRequest::get()
-        .uri("/api/habit-daily-tracking/")
+        .uri("/api/habit-daily-trackings/")
         .insert_header((header::AUTHORIZATION, format!("Bearer {}", access_token)))
         .to_request();
     let response = test::call_service(&app, req).await;

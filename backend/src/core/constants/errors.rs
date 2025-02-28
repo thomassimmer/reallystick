@@ -2,10 +2,24 @@ use crate::core::structs::responses::GenericResponse;
 
 pub enum AppError {
     AccessTokenExpired,
+    ChallengeCreation,
+    ChallengeDailyTrackingCreation,
+    ChallengeDailyTrackingDelete,
+    ChallengeDailyTrackingNotFound,
+    ChallengeDailyTrackingUpdate,
+    ChallengeDelete,
+    ChallengeNotFound,
+    ChallengeParticipationCreation,
+    ChallengeParticipationDelete,
+    ChallengeParticipationNotFound,
+    ChallengeParticipationUpdate,
+    ChallengeUpdate,
     DatabaseConnection,
     DatabaseQuery,
     DatabaseTransaction,
     InvalidAccessToken,
+    InvalidChallengeCreator,
+    InvalidChallengeParticipationUser,
     InvalidOneTimePassword,
     InvalidRefreshToken,
     InvalidUsernameOrCodeOrRecoveryCode,
@@ -50,6 +64,54 @@ impl AppError {
                 code: "ACCESS_TOKEN_EXPIRED".to_string(),
                 message: "Token expired".to_string(),
             },
+            AppError::ChallengeCreation => GenericResponse {
+                code: "CHALLENGE_NOT_CREATED".to_string(),
+                message: "Failed to create this challenge".to_string(),
+            },
+            AppError::ChallengeDailyTrackingCreation => GenericResponse {
+                code: "CHALLENGE_DAILY_TRACKING_NOT_CREATED".to_string(),
+                message: "Failed to create this challenge daily tracking".to_string(),
+            },
+            AppError::ChallengeDailyTrackingDelete => GenericResponse {
+                code: "CHALLENGE_DAILY_TRACKING_NOT_DELETED".to_string(),
+                message: "Failed to delete this challenge daily tracking".to_string(),
+            },
+            AppError::ChallengeDailyTrackingNotFound => GenericResponse {
+                code: "CHALLENGE_DAILY_TRACKING_NOT_FOUND".to_string(),
+                message: "The challenge daily tracking requested does not exist".to_string(),
+            },
+            AppError::ChallengeDailyTrackingUpdate => GenericResponse {
+                code: "CHALLENGE_DAILY_TRACKING_NOT_UPDATED".to_string(),
+                message: "Failed to update challenge daily tracking".to_string(),
+            },
+            AppError::ChallengeDelete => GenericResponse {
+                code: "CHALLENGE_NOT_DELETED".to_string(),
+                message: "Failed to delete this challenge".to_string(),
+            },
+            AppError::ChallengeNotFound => GenericResponse {
+                code: "CHALLENGE_NOT_FOUND".to_string(),
+                message: "The challenge requested does not exist".to_string(),
+            },
+            AppError::ChallengeParticipationCreation => GenericResponse {
+                code: "CHALLENGE_PARTICIPATION_NOT_CREATED".to_string(),
+                message: "Failed to create this challenge participation".to_string(),
+            },
+            AppError::ChallengeParticipationDelete => GenericResponse {
+                code: "CHALLENGE_PARTICIPATION_NOT_DELETED".to_string(),
+                message: "Failed to delete this challenge participation".to_string(),
+            },
+            AppError::ChallengeParticipationNotFound => GenericResponse {
+                code: "CHALLENGE_PARTICIPATION_NOT_FOUND".to_string(),
+                message: "The challenge participation requested does not exist".to_string(),
+            },
+            AppError::ChallengeParticipationUpdate => GenericResponse {
+                code: "CHALLENGE_PARTICIPATION_NOT_UPDATED".to_string(),
+                message: "Failed to update challenge participation".to_string(),
+            },
+            AppError::ChallengeUpdate => GenericResponse {
+                code: "CHALLENGE_NOT_UPDATED".to_string(),
+                message: "Failed to update challenge participation".to_string(),
+            },
             AppError::DatabaseConnection => GenericResponse {
                 code: "DATABASE_CONNECTION".to_string(),
                 message: "Failed to get a transaction".to_string(),
@@ -65,6 +127,14 @@ impl AppError {
             AppError::InvalidAccessToken => GenericResponse {
                 code: "INVALID_ACCESS_TOKEN".to_string(),
                 message: "Invalid access token".to_string(),
+            },
+            AppError::InvalidChallengeCreator => GenericResponse {
+                code: "INVALID_CHALLENGE_CREATOR".to_string(),
+                message: "You are not the creator of this challenge".to_string(),
+            },
+            AppError::InvalidChallengeParticipationUser => GenericResponse {
+                code: "INVALID_CHALLENGE_PARTICIPATION_USER".to_string(),
+                message: "You are not the user of this challenge participation".to_string(),
             },
             AppError::InvalidOneTimePassword => GenericResponse {
                 code: "INVALID_ONE_TIME_PASSWORD".to_string(),

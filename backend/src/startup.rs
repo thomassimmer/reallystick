@@ -16,6 +16,20 @@ use crate::features::auth::routes::verify_otp::verify;
 
 use crate::features::auth::routes::signup::register_user;
 use crate::features::auth::routes::token::refresh_token;
+use crate::features::challenges::routes::create_challenge::create_challenge;
+use crate::features::challenges::routes::create_challenge_daily_tracking::create_challenge_daily_tracking;
+use crate::features::challenges::routes::create_challenge_participation::create_challenge_participation;
+use crate::features::challenges::routes::delete_challenge::delete_challenge;
+use crate::features::challenges::routes::delete_challenge_daily_tracking::delete_challenge_daily_tracking;
+use crate::features::challenges::routes::delete_challenge_participation::delete_challenge_participation;
+use crate::features::challenges::routes::get_challenge_daily_trackings::get_challenge_daily_trackings;
+use crate::features::challenges::routes::get_challenge_participations::get_challenge_participations;
+use crate::features::challenges::routes::get_challenge_statistics::get_challenge_statistics;
+use crate::features::challenges::routes::get_challenges::get_challenges;
+use crate::features::challenges::routes::update_challenge::update_challenge;
+use crate::features::challenges::routes::update_challenge_daily_tracking::update_challenge_daily_tracking;
+use crate::features::challenges::routes::update_challenge_participation::update_challenge_participation;
+use crate::features::challenges::structs::models::challenge_statistics::ChallengeStatisticsCache;
 use crate::features::habits::routes::create_habit::create_habit;
 use crate::features::habits::routes::create_habit_category::create_habit_category;
 use crate::features::habits::routes::create_habit_daily_tracking::create_habit_daily_tracking;
@@ -27,7 +41,7 @@ use crate::features::habits::routes::delete_habit_daily_tracking::delete_habit_d
 use crate::features::habits::routes::delete_habit_participation::delete_habit_participation;
 use crate::features::habits::routes::get_habit::get_habit;
 use crate::features::habits::routes::get_habit_categories::get_habit_categories;
-use crate::features::habits::routes::get_habit_daily_trackings::get_habit_daily_tracking;
+use crate::features::habits::routes::get_habit_daily_trackings::get_habit_daily_trackings;
 use crate::features::habits::routes::get_habit_participations::get_habit_participations;
 use crate::features::habits::routes::get_habit_statistics::get_habit_statistics;
 use crate::features::habits::routes::get_habits::get_habits;
@@ -88,7 +102,8 @@ pub fn create_app(
         ])
         .supports_credentials();
 
-    let cache = HabitStatisticsCache::new();
+    let habit_cache = HabitStatisticsCache::new();
+    let challenge_cache = ChallengeStatisticsCache::new();
 
     App::new()
         .service(
@@ -172,13 +187,13 @@ pub fn create_app(
                     ),
                 )
                 .service(
-                    web::scope("/habit-daily-tracking").service(
+                    web::scope("/habit-daily-trackings").service(
                         web::scope("")
                             .wrap(TokenValidator::new(
                                 secret.to_string(),
                                 connection_pool.clone(),
                             ))
-                            .service(get_habit_daily_tracking)
+                            .service(get_habit_daily_trackings)
                             .service(update_habit_daily_tracking)
                             .service(create_habit_daily_tracking)
                             .service(delete_habit_daily_tracking),
@@ -208,13 +223,63 @@ pub fn create_app(
                             .service(update_unit)
                             .service(create_unit),
                     ),
+                )
+                .service(
+                    web::scope("/challenges").service(
+                        web::scope("")
+                            .wrap(TokenValidator::new(
+                                secret.to_string(),
+                                connection_pool.clone(),
+                            ))
+                            .service(get_challenges)
+                            .service(update_challenge)
+                            .service(create_challenge)
+                            .service(delete_challenge),
+                    ),
+                )
+                .service(
+                    web::scope("/challenge-statistics").service(
+                        web::scope("")
+                            .wrap(TokenValidator::new(
+                                secret.to_string(),
+                                connection_pool.clone(),
+                            ))
+                            .service(get_challenge_statistics),
+                    ),
+                )
+                .service(
+                    web::scope("/challenge-daily-trackings").service(
+                        web::scope("")
+                            .wrap(TokenValidator::new(
+                                secret.to_string(),
+                                connection_pool.clone(),
+                            ))
+                            .service(get_challenge_daily_trackings)
+                            .service(update_challenge_daily_tracking)
+                            .service(create_challenge_daily_tracking)
+                            .service(delete_challenge_daily_tracking),
+                    ),
+                )
+                .service(
+                    web::scope("/challenge-participations").service(
+                        web::scope("")
+                            .wrap(TokenValidator::new(
+                                secret.to_string(),
+                                connection_pool.clone(),
+                            ))
+                            .service(get_challenge_participations)
+                            .service(update_challenge_participation)
+                            .service(create_challenge_participation)
+                            .service(delete_challenge_participation),
+                    ),
                 ),
         )
         .wrap(cors)
         .wrap(Logger::default())
         .app_data(web::Data::new(connection_pool.clone()))
         .app_data(web::Data::new(secret.clone()))
-        .app_data(web::Data::new(cache))
+        .app_data(web::Data::new(habit_cache))
+        .app_data(web::Data::new(challenge_cache))
 }
 
 pub struct Application {

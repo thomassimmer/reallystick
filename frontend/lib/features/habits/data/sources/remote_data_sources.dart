@@ -109,7 +109,7 @@ class HabitRemoteDataSource {
   }
 
   Future<List<HabitDailyTrackingDataModel>> getHabitDailyTracking() async {
-    final url = Uri.parse('$baseUrl/habit-daily-tracking/');
+    final url = Uri.parse('$baseUrl/habit-daily-trackings/');
     final response = await apiClient.get(url);
 
     if (response.statusCode == 200) {
@@ -305,7 +305,7 @@ class HabitRemoteDataSource {
   Future<HabitDailyTrackingDataModel> createHabitDailyTracking(
       HabitDailyTrackingCreateRequestModel
           habitDailyTrackingCreateRequestModel) async {
-    final url = Uri.parse('$baseUrl/habit-daily-tracking/');
+    final url = Uri.parse('$baseUrl/habit-daily-trackings/');
     final response = await apiClient.post(
       url,
       headers: {
@@ -508,7 +508,7 @@ class HabitRemoteDataSource {
     HabitDailyTrackingUpdateRequestModel habitDailyTrackingUpdateRequestModel,
   ) async {
     final url =
-        Uri.parse('$baseUrl/habit-daily-tracking/$habitDailyTrackingId');
+        Uri.parse('$baseUrl/habit-daily-trackings/$habitDailyTrackingId');
     final response = await apiClient.put(
       url,
       headers: {
@@ -679,7 +679,7 @@ class HabitRemoteDataSource {
     String habitDailyTrackingId,
   ) async {
     final url =
-        Uri.parse('$baseUrl/habit-daily-tracking/$habitDailyTrackingId');
+        Uri.parse('$baseUrl/habit-daily-trackings/$habitDailyTrackingId');
     final response = await apiClient.delete(url);
     final jsonBody = customJsonDecode(response.body);
     final responseCode = jsonBody['code'] as String;

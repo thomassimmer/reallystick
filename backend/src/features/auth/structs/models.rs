@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 use sqlx::prelude::FromRow;
 use uuid::Uuid;
 
-#[allow(non_snake_case)]
+
 #[derive(Debug, Deserialize, Serialize, Clone, FromRow)]
 pub struct UserToken {
     pub id: Uuid,

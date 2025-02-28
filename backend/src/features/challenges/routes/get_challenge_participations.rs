@@ -1,9 +1,9 @@
 use crate::{
     core::constants::errors::AppError,
     features::{
-        habits::{
-            helpers::habit_daily_tracking,
-            structs::responses::habit_daily_tracking::HabitDailyTrackingsResponse,
+        challenges::{
+            helpers::challenge_participation,
+            structs::responses::challenge_participation::ChallengeParticipationsResponse,
         },
         profile::structs::models::User,
     },
@@ -12,7 +12,7 @@ use actix_web::{get, web::Data, HttpResponse, Responder};
 use sqlx::PgPool;
 
 #[get("/")]
-pub async fn get_habit_daily_trackings(pool: Data<PgPool>, request_user: User) -> impl Responder {
+pub async fn get_challenge_participations(pool: Data<PgPool>, request_user: User) -> impl Responder {
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
         Err(e) => {
@@ -22,8 +22,8 @@ pub async fn get_habit_daily_trackings(pool: Data<PgPool>, request_user: User) -
         }
     };
 
-    let get_habit_daily_tracking_result =
-        habit_daily_tracking::get_habit_daily_trackings_for_user(&mut transaction, request_user.id)
+    let get_challenges_result =
+        challenge_participation::get_challenge_participations_for_user(&mut transaction, request_user.id)
             .await;
 
     if let Err(e) = transaction.commit().await {
@@ -32,12 +32,12 @@ pub async fn get_habit_daily_trackings(pool: Data<PgPool>, request_user: User) -
             .json(AppError::DatabaseTransaction.to_response());
     }
 
-    match get_habit_daily_tracking_result {
-        Ok(habit_daily_tracking) => HttpResponse::Ok().json(HabitDailyTrackingsResponse {
-            code: "HABIT_DAILY_TRACKING_FETCHED".to_string(),
-            habit_daily_trackings: habit_daily_tracking
+    match get_challenges_result {
+        Ok(challenge_participations) => HttpResponse::Ok().json(ChallengeParticipationsResponse {
+            code: "CHALLENGE_PARTICIPATIONS_FETCHED".to_string(),
+            challenge_participations: challenge_participations
                 .iter()
-                .map(|hdt| hdt.to_habit_daily_tracking_data())
+                .map(|hp| hp.to_challenge_participation_data())
                 .collect(),
         }),
         Err(e) => {

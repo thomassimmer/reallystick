@@ -1,0 +1,138 @@
+use sqlx::{postgres::PgQueryResult, PgConnection};
+use uuid::Uuid;
+
+use crate::features::challenges::structs::models::challenge_participation::ChallengeParticipation;
+
+pub async fn get_challenge_participation_by_id(
+    conn: &mut PgConnection,
+    challenge_participation_id: Uuid,
+) -> Result<Option<ChallengeParticipation>, sqlx::Error> {
+    sqlx::query_as!(
+        ChallengeParticipation,
+        r#"
+        SELECT *
+        from challenge_participations
+        WHERE id = $1
+        "#,
+        challenge_participation_id,
+    )
+    .fetch_optional(conn)
+    .await
+}
+
+pub async fn get_challenge_participations_for_user(
+    conn: &mut PgConnection,
+    user_id: Uuid,
+) -> Result<Vec<ChallengeParticipation>, sqlx::Error> {
+    sqlx::query_as!(
+        ChallengeParticipation,
+        r#"
+        SELECT *
+        from challenge_participations
+        WHERE user_id = $1
+        "#,
+        user_id
+    )
+    .fetch_all(conn)
+    .await
+}
+
+pub async fn get_challenge_participation_for_user_and_challenge(
+    conn: &mut PgConnection,
+    user_id: Uuid,
+    challenge_id: Uuid,
+) -> Result<Option<ChallengeParticipation>, sqlx::Error> {
+    sqlx::query_as!(
+        ChallengeParticipation,
+        r#"
+        SELECT *
+        from challenge_participations
+        WHERE user_id = $1 AND challenge_id = $2
+        "#,
+        user_id,
+        challenge_id
+    )
+    .fetch_optional(conn)
+    .await
+}
+
+pub async fn get_challenge_participations_for_challenge(
+    conn: &mut PgConnection,
+    challenge_id: Uuid,
+) -> Result<Vec<ChallengeParticipation>, sqlx::Error> {
+    sqlx::query_as!(
+        ChallengeParticipation,
+        r#"
+        SELECT *
+        from challenge_participations
+        WHERE challenge_id = $1
+        "#,
+        challenge_id
+    )
+    .fetch_all(conn)
+    .await
+}
+
+pub async fn update_challenge_participation(
+    conn: &mut PgConnection,
+    challenge_participation: &ChallengeParticipation,
+) -> Result<sqlx::postgres::PgQueryResult, sqlx::Error> {
+    sqlx::query_as!(
+        ChallengeParticipation,
+        r#"
+        UPDATE challenge_participations
+        SET color = $1, start_date = $2
+        WHERE id = $3
+        "#,
+        challenge_participation.color,
+        challenge_participation.start_date,
+        challenge_participation.id
+    )
+    .execute(conn)
+    .await
+}
+
+pub async fn create_challenge_participation(
+    conn: &mut PgConnection,
+    challenge_participation: &ChallengeParticipation,
+) -> Result<sqlx::postgres::PgQueryResult, sqlx::Error> {
+    sqlx::query_as!(
+        ChallengeParticipation,
+        r#"
+        INSERT INTO challenge_participations (
+            id,
+            user_id,
+            challenge_id,
+            color,
+            start_date,
+            created_at
+        )
+        VALUES ( $1, $2, $3, $4, $5, $6 )
+        "#,
+        challenge_participation.id,
+        challenge_participation.user_id,
+        challenge_participation.challenge_id,
+        challenge_participation.color,
+        challenge_participation.start_date,
+        challenge_participation.created_at,
+    )
+    .execute(conn)
+    .await
+}
+
+pub async fn delete_challenge_participation_by_id(
+    conn: &mut PgConnection,
+    challenge_participation_id: Uuid,
+) -> Result<PgQueryResult, sqlx::Error> {
+    sqlx::query_as!(
+        Challenge,
+        r#"
+        DELETE
+        from challenge_participations
+        WHERE id = $1
+        "#,
+        challenge_participation_id,
+    )
+    .execute(conn)
+    .await
+}

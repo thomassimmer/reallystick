@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 use sqlx::prelude::FromRow;
 use uuid::Uuid;
 
-#[allow(non_snake_case)]
+
 #[derive(Debug, Deserialize, Serialize, Clone, FromRow)]
 pub struct Habit {
     pub id: Uuid,
@@ -17,7 +17,7 @@ pub struct Habit {
     pub unit_ids: String,
 }
 
-#[allow(non_snake_case)]
+
 #[derive(Serialize, Debug, Deserialize, Clone)]
 pub struct HabitData {
     pub id: Uuid,
