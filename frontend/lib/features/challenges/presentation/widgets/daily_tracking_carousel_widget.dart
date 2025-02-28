@@ -177,7 +177,6 @@ class DailyTrackingCarouselWidgetState
             SizedBox(height: 10),
             Text(
               "${AppLocalizations.of(context)!.challengeParticipationStartDate} ${DateFormat.yMMMd().format(challengeParticipation.startDate)}",
-              style: const TextStyle(fontSize: 16),
             ),
             SizedBox(height: 20),
           ],

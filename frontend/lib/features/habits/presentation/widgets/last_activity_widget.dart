@@ -97,7 +97,6 @@ class _LastActivityWidgetState extends State<LastActivityWidget> {
   Widget build(BuildContext context) {
     return Text(
       getLastActivityText(),
-      style: const TextStyle(fontSize: 16),
     );
   }
 }

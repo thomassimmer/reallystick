@@ -51,8 +51,6 @@ class ChallengeDiscussionListWidget extends StatelessWidget {
                 AppLocalizations.of(context)!.discussionsComingSoon,
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
                 ),
               ),
             ],

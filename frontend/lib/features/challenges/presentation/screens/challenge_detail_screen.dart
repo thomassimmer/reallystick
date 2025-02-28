@@ -213,7 +213,7 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
           ).color;
 
           final challengeStatistics =
-              challengeState.challengeStatistics[widget.challengeId]!;
+              challengeState.challengeStatistics[widget.challengeId];
 
           return Scaffold(
             appBar: AppBar(
@@ -337,15 +337,17 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                AppLocalizations.of(context)!.createdBy(
-                                    challengeStatistics.creatorUsername),
-                                style: TextStyle(
-                                    color: context.colors.textOnPrimary),
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 1,
-                              ),
-                              SizedBox(height: 16),
+                              if (challengeStatistics != null) ...[
+                                Text(
+                                  AppLocalizations.of(context)!.createdBy(
+                                      challengeStatistics.creatorUsername),
+                                  style: TextStyle(
+                                      color: context.colors.textOnPrimary),
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                ),
+                                SizedBox(height: 16),
+                              ],
                               Text(
                                 description,
                                 style: TextStyle(

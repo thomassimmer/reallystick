@@ -139,9 +139,9 @@ class AnalyticsCarouselWidget extends StatelessWidget {
       } else {
         analyticsCards.add(
           AnalyticsCardInfo(
-            title: AppLocalizations.of(context)!.comingSoon,
+            title: "",
             icon: Icons.info,
-            text: "",
+            text: AppLocalizations.of(context)!.comingSoon,
           ),
         );
       }

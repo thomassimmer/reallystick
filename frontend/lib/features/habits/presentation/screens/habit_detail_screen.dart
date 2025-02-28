@@ -211,7 +211,6 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
                     const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
                 child: ListView(
                   children: [
-                    SizedBox(height: 40),
                     Container(
                       decoration: BoxDecoration(
                         color: habitColor.withAlpha(155),
