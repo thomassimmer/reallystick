@@ -23,7 +23,7 @@ pub async fn get_habit_daily_tracking(pool: Data<PgPool>, request_user: User) ->
     };
 
     let get_habit_daily_tracking_result =
-        habit_daily_tracking::get_habit_daily_tracking_for_user(&mut transaction, request_user.id)
+        habit_daily_tracking::get_habit_daily_trackings_for_user(&mut transaction, request_user.id)
             .await;
 
     if let Err(e) = transaction.commit().await {
@@ -35,7 +35,7 @@ pub async fn get_habit_daily_tracking(pool: Data<PgPool>, request_user: User) ->
     match get_habit_daily_tracking_result {
         Ok(habit_daily_tracking) => HttpResponse::Ok().json(HabitDailyTrackingsResponse {
             code: "HABIT_DAILY_TRACKING_FETCHED".to_string(),
-            habit_daily_tracking: habit_daily_tracking
+            habit_daily_trackings: habit_daily_tracking
                 .iter()
                 .map(|hdt| hdt.to_habit_daily_tracking_data())
                 .collect(),

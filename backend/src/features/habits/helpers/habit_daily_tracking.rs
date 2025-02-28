@@ -17,7 +17,7 @@ pub async fn get_habit_daily_tracking_by_id(
     let row = sqlx::query!(
         r#"
         SELECT *
-        from habit_daily_tracking
+        from habit_daily_trackings
         WHERE id = $1
         "#,
         habit_daily_tracking_id,
@@ -51,14 +51,14 @@ pub async fn get_habit_daily_tracking_by_id(
     Ok(result)
 }
 
-pub async fn get_habit_daily_tracking_for_user(
+pub async fn get_habit_daily_trackings_for_user(
     conn: &mut PgConnection,
     user_id: Uuid,
 ) -> Result<Vec<HabitDailyTracking>, sqlx::Error> {
     let rows = sqlx::query!(
         r#"
         SELECT *
-        FROM habit_daily_tracking
+        FROM habit_daily_trackings
         WHERE user_id = $1
         "#,
         user_id
@@ -100,7 +100,7 @@ pub async fn update_habit_daily_tracking(
     sqlx::query_as!(
         HabitDailyTracking,
         r#"
-        UPDATE habit_daily_tracking
+        UPDATE habit_daily_trackings
         SET day = $1, duration = $2, quantity_per_set = $3, quantity_of_set = $4, unit = $5, reset = $6
         WHERE id = $7
         "#,
@@ -123,7 +123,7 @@ pub async fn create_habit_daily_tracking(
     sqlx::query_as!(
         HabitDailyTracking,
         r#"
-        INSERT INTO habit_daily_tracking (
+        INSERT INTO habit_daily_trackings (
             id,
             user_id,
             habit_id,
@@ -160,7 +160,7 @@ pub async fn delete_habit_daily_tracking_by_id(
         HabitDailyTracking,
         r#"
         DELETE
-        from habit_daily_tracking
+        from habit_daily_trackings
         WHERE id = $1
         "#,
         habit_daily_tracking_id,

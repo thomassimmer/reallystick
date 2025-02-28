@@ -33,7 +33,7 @@ CREATE TABLE habit_participations (
 );
 
 -- Create table for HabitDailyTracking
-CREATE TABLE habit_daily_tracking (
+CREATE TABLE habit_daily_trackings (
     id UUID PRIMARY KEY,               -- Unique identifier
     user_id UUID NOT NULL,             -- Identifier for the user
     habit_id UUID NOT NULL,            -- Foreign key to habits

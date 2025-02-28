@@ -11,5 +11,5 @@ pub struct HabitDailyTrackingResponse {
 #[derive(Serialize, Deserialize)]
 pub struct HabitDailyTrackingsResponse {
     pub code: String,
-    pub habit_daily_tracking: Vec<HabitDailyTrackingData>,
+    pub habit_daily_trackings: Vec<HabitDailyTrackingData>,
 }

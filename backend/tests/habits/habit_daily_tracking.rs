@@ -129,7 +129,7 @@ pub async fn user_gets_habit_daily_trackings(
     let response: HabitDailyTrackingsResponse = serde_json::from_slice(&body).unwrap();
 
     assert_eq!(response.code, "HABIT_DAILY_TRACKING_FETCHED");
-    response.habit_daily_tracking
+    response.habit_daily_trackings
 }
 
 #[tokio::test]

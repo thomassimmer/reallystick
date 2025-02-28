@@ -114,7 +114,7 @@ impl AppError {
                 message: "The habit daily tracking requested does not exist".to_string(),
             },
             AppError::HabitDailyTrackingUpdate => GenericResponse {
-                code: "HABIT_DAILY_TRACKING_UPDATE".to_string(),
+                code: "HABIT_DAILY_TRACKING_NOT_UPDATED".to_string(),
                 message: "Failed to update habit daily tracking".to_string(),
             },
             AppError::HabitDelete => GenericResponse {

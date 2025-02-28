@@ -26,7 +26,7 @@ use crate::features::habits::routes::delete_habit_daily_tracking::delete_habit_d
 use crate::features::habits::routes::delete_habit_participation::delete_habit_participation;
 use crate::features::habits::routes::get_habit::get_habit;
 use crate::features::habits::routes::get_habit_categories::get_habit_categories;
-use crate::features::habits::routes::get_habit_daily_tracking::get_habit_daily_tracking;
+use crate::features::habits::routes::get_habit_daily_trackings::get_habit_daily_tracking;
 use crate::features::habits::routes::get_habit_participations::get_habit_participations;
 use crate::features::habits::routes::get_habits::get_habits;
 use crate::features::habits::routes::update_habit::update_habit;

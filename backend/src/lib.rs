@@ -82,7 +82,7 @@ pub mod features {
             pub mod delete_habit_participation;
             pub mod get_habit;
             pub mod get_habit_categories;
-            pub mod get_habit_daily_tracking;
+            pub mod get_habit_daily_trackings;
             pub mod get_habit_participations;
             pub mod get_habits;
             pub mod update_habit;
