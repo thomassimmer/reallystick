@@ -16,13 +16,17 @@ class DailyTrackingCarouselWidget extends StatefulWidget {
   final String habitId;
   final List<HabitDailyTracking> habitDailyTrackings;
   final Color habitColor;
+  final bool canOpenDayBoxes;
+  final bool displayTitle;
 
-  DailyTrackingCarouselWidget({
-    Key? key,
-    required this.habitId,
-    required this.habitDailyTrackings,
-    required this.habitColor,
-  }) : super(key: key);
+  DailyTrackingCarouselWidget(
+      {Key? key,
+      required this.habitId,
+      required this.habitDailyTrackings,
+      required this.habitColor,
+      required this.canOpenDayBoxes,
+      required this.displayTitle})
+      : super(key: key);
 
   @override
   DailyTrackingCarouselWidgetState createState() =>
@@ -114,29 +118,30 @@ class DailyTrackingCarouselWidgetState
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              children: [
-                Icon(
-                  Icons.bar_chart,
-                  size: 30,
-                ),
-                SizedBox(width: 10),
-                Text(
-                  AppLocalizations.of(context)!.dailyTracking,
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+          if (widget.displayTitle)
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.bar_chart,
+                    size: 30,
                   ),
-                ),
-              ],
+                  SizedBox(width: 10),
+                  Text(
+                    AppLocalizations.of(context)!.dailyTracking,
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8),
             child: SizedBox(
-              height: 100,
+              height: 60,
               child: ListView.builder(
                 controller: scrollController,
                 scrollDirection: Axis.horizontal,
@@ -166,9 +171,22 @@ class DailyTrackingCarouselWidgetState
                           style: TextStyle(fontSize: 12),
                         ),
                         SizedBox(height: 4),
-                        GestureDetector(
-                          onTap: () => _openDailyTrackings(datetime: datetime),
-                          child: Container(
+                        if (widget.canOpenDayBoxes) ...[
+                          GestureDetector(
+                            onTap: () =>
+                                _openDailyTrackings(datetime: datetime),
+                            child: Container(
+                              width: dayBoxWidth,
+                              height: dayBoxWidth,
+                              decoration: BoxDecoration(
+                                color: widget.habitColor
+                                    .withOpacity(normalizedOpacity),
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                            ),
+                          ),
+                        ] else ...[
+                          Container(
                             width: dayBoxWidth,
                             height: dayBoxWidth,
                             decoration: BoxDecoration(
@@ -177,7 +195,7 @@ class DailyTrackingCarouselWidgetState
                               borderRadius: BorderRadius.circular(4),
                             ),
                           ),
-                        ),
+                        ]
                       ],
                     ),
                   );

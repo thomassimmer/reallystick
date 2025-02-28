@@ -36,7 +36,7 @@ class HabitCategoryWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 4),
+          padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 4),
           child: Row(
             children: [
               Padding(
@@ -59,7 +59,7 @@ class HabitCategoryWidget extends StatelessWidget {
           ),
         ),
         Container(
-          margin: const EdgeInsets.all(16.0),
+          margin: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 16),
           decoration: BoxDecoration(
             border: Border.all(color: Colors.grey, width: 0.5),
             borderRadius: BorderRadius.circular(8),

@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
-import 'package:reallystick/core/constants/dates.dart';
 import 'package:reallystick/core/constants/icons.dart';
 import 'package:reallystick/core/constants/screen_size.dart';
-import 'package:reallystick/core/constants/unit_conversion.dart';
 import 'package:reallystick/core/ui/colors.dart';
 import 'package:reallystick/features/habits/domain/entities/habit.dart';
 import 'package:reallystick/features/habits/domain/entities/habit_daily_tracking.dart';
@@ -13,6 +10,7 @@ import 'package:reallystick/features/habits/domain/entities/habit_participation.
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_states.dart';
 import 'package:reallystick/features/habits/presentation/helpers/translations.dart';
+import 'package:reallystick/features/habits/presentation/widgets/daily_tracking_carousel_widget.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 
 class HabitWidget extends StatelessWidget {
@@ -52,46 +50,6 @@ class HabitWidget extends StatelessWidget {
 
           // Define screen size breakpoint
           final bool isLargeScreen = checkIfLargeScreen(context);
-
-          // Calculate available screen width and determine how many days to display
-          final screenWidth = MediaQuery.of(context).size.width;
-          const dayBoxWidth = 25.0; // Fixed width for each datetime box
-          const dayBoxSpacing = 10.0; // Spacing between boxes
-          final maxBoxes =
-              (screenWidth / (dayBoxWidth + dayBoxSpacing)).floor();
-
-          // Calculate the last days
-          final today = DateTime.now();
-          final lastDays = List.generate(
-            maxBoxes,
-            (index) => today.subtract(Duration(days: maxBoxes - 1 - index)),
-          );
-
-          // Aggregate total quantities per day in normalized unit (seconds)
-          final Map<DateTime, double> aggregatedQuantities = {
-            for (var date in lastDays)
-              date: habitDailyTrackings
-                  .where((tracking) => tracking.datetime.isSameDate(date))
-                  .fold<double>(
-                    0.0,
-                    (sum, tracking) =>
-                        sum +
-                        normalizeUnit(
-                          (tracking.quantityOfSet * tracking.quantityPerSet)
-                              as double,
-                          tracking.unitId,
-                          habitState.units,
-                        ),
-                  )
-          };
-
-          // Determine the maximum and minimum quantities
-          final maxQuantity = aggregatedQuantities.values.isNotEmpty
-              ? aggregatedQuantities.values.reduce((a, b) => a > b ? a : b)
-              : 1.0;
-          final minQuantity = aggregatedQuantities.values.isNotEmpty
-              ? aggregatedQuantities.values.reduce((a, b) => a < b ? a : b)
-              : 0.0;
 
           final habitColor = getAppColorsFromString(habitParticipation.color);
 
@@ -144,47 +102,12 @@ class HabitWidget extends StatelessWidget {
                     ),
                     const SizedBox(height: 16),
 
-                    // Days tracker
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: lastDays.map(
-                        (datetime) {
-                          final dayAbbreviation = DateFormat(
-                                  'E', profileState.profile?.locale ?? 'en')
-                              .format(datetime)
-                              .substring(0, 1);
-
-                          final totalQuantity =
-                              aggregatedQuantities[datetime] ?? 0.0;
-
-                          // Normalize the opacity
-                          final normalizedOpacity = maxQuantity == minQuantity
-                              ? 1.0 // Avoid division by zero when all values are equal
-                              : 0.1 +
-                                  ((totalQuantity - minQuantity) /
-                                      (maxQuantity - minQuantity) *
-                                      0.9);
-
-                          return Column(
-                            children: [
-                              Text(
-                                dayAbbreviation,
-                                style: TextStyle(fontSize: 12),
-                              ),
-                              SizedBox(height: 4),
-                              Container(
-                                width: dayBoxWidth,
-                                height: dayBoxWidth,
-                                decoration: BoxDecoration(
-                                  color:
-                                      habitColor.withOpacity(normalizedOpacity),
-                                  borderRadius: BorderRadius.circular(4),
-                                ),
-                              ),
-                            ],
-                          );
-                        },
-                      ).toList(),
+                    DailyTrackingCarouselWidget(
+                      habitId: habit.id,
+                      habitDailyTrackings: habitDailyTrackings,
+                      habitColor: habitColor,
+                      canOpenDayBoxes: false,
+                      displayTitle: false,
                     ),
                   ],
                 ),

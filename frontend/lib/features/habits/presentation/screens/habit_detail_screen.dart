@@ -142,6 +142,8 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
                         habitDailyTrackings: habitDailyTrackings,
                         habitColor: habitColor,
                         habitId: widget.habitId,
+                        canOpenDayBoxes: true,
+                        displayTitle: true,
                       ),
                     ChallengesCarouselWidget(),
                     HabitDiscussionListWidget(),
