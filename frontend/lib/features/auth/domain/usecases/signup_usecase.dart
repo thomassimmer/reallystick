@@ -10,9 +10,17 @@ class SignupUseCase {
   SignupUseCase(this.authRepository);
 
   Future<Either<DomainError, UserToken>> call(
-      String username, String password, String locale, String theme) async {
+    String username,
+    String password,
+    String locale,
+    String theme,
+  ) async {
     final result = await authRepository.signup(
-        username: username, password: password, locale: locale, theme: theme);
+      username: username,
+      password: password,
+      locale: locale,
+      theme: theme,
+    );
 
     await result.fold((_) async {}, (userToken) async {
       // Store tokens securely after successful login

@@ -18,7 +18,8 @@ class AuthRemoteDataSource {
   AuthRemoteDataSource({required this.apiClient, required this.baseUrl});
 
   Future<UserTokenDataModel> signup(
-      RegisterUserRequestModel registerUserRequestModel) async {
+    RegisterUserRequestModel registerUserRequestModel,
+  ) async {
     final url = Uri.parse('$baseUrl/auth/signup');
     final response = await apiClient.post(
       url,
@@ -256,13 +257,15 @@ class AuthRemoteDataSource {
         checkIfAccountHasTwoFactorAuthenticationEnabledRequestModel,
   ) async {
     final url = Uri.parse('$baseUrl/users/is-otp-enabled');
-    final response = await apiClient.post(url,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: json.encode(
-            checkIfAccountHasTwoFactorAuthenticationEnabledRequestModel
-                .toJson()));
+    final response = await apiClient.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: json.encode(
+        checkIfAccountHasTwoFactorAuthenticationEnabledRequestModel.toJson(),
+      ),
+    );
 
     final jsonBody = customJsonDecode(response.body);
 
@@ -292,7 +295,8 @@ class AuthRemoteDataSource {
         'Content-Type': 'application/json',
       },
       body: json.encode(
-          recoverAccountWithRecoveryCodeAndPasswordRequestModel.toJson()),
+        recoverAccountWithRecoveryCodeAndPasswordRequestModel.toJson(),
+      ),
     );
 
     final jsonBody = customJsonDecode(response.body);
@@ -338,8 +342,8 @@ class AuthRemoteDataSource {
         'Content-Type': 'application/json',
       },
       body: json.encode(
-          recoverAccountWithRecoveryCodeAndOneTimePasswordRequestModel
-              .toJson()),
+        recoverAccountWithRecoveryCodeAndOneTimePasswordRequestModel.toJson(),
+      ),
     );
 
     final jsonBody = customJsonDecode(response.body);
