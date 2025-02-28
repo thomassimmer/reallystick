@@ -22,18 +22,21 @@ class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl(this.remoteDataSource);
 
   @override
-  Future<Either<DomainError, UserToken>> signup(
-      {required String username,
-      required String password,
-      required String locale,
-      required String theme}) async {
+  Future<Either<DomainError, UserToken>> signup({
+    required String username,
+    required String password,
+    required String locale,
+    required String theme,
+  }) async {
     try {
       final userTokenDataModel = await remoteDataSource.signup(
-          RegisterUserRequestModel(
-              username: username,
-              password: password,
-              locale: locale,
-              theme: theme));
+        RegisterUserRequestModel(
+          username: username,
+          password: password,
+          locale: locale,
+          theme: theme,
+        ),
+      );
 
       return Right(userTokenDataModel.toDomain());
     } on ParsingError {
@@ -69,8 +72,12 @@ class AuthRepositoryImpl implements AuthRepository {
     required String password,
   }) async {
     try {
-      final result = await remoteDataSource
-          .login(LoginUserRequestModel(username: username, password: password));
+      final result = await remoteDataSource.login(
+        LoginUserRequestModel(
+          username: username,
+          password: password,
+        ),
+      );
 
       return result.fold(
           (userTokenDataModel) => Right(Left(userTokenDataModel.toDomain())),

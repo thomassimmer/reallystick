@@ -11,18 +11,26 @@ class LoginUseCase {
 
   Future<Either<DomainError, Either<UserToken, String>>> call(
       String username, String password) async {
-    final result =
-        await authRepository.login(username: username, password: password);
+    final result = await authRepository.login(
+      username: username,
+      password: password,
+    );
 
-    await result.fold((_) async {}, (userTokenOrUserId) async {
-      await userTokenOrUserId.fold((userToken) async {
-        // Store tokens securely after successful login
-        await TokenStorage().saveTokens(
-          userToken.accessToken,
-          userToken.refreshToken,
+    await result.fold(
+      (_) async {},
+      (userTokenOrUserId) async {
+        await userTokenOrUserId.fold(
+          (userToken) async {
+            // Store tokens securely after successful login
+            await TokenStorage().saveTokens(
+              userToken.accessToken,
+              userToken.refreshToken,
+            );
+          },
+          (r) async {},
         );
-      }, (r) async {});
-    });
+      },
+    );
 
     return result;
   }

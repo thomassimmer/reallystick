@@ -22,8 +22,13 @@ Future<String> getUserAgent() async {
 
   if (kIsWeb) {
     // Web-specific info
-    final webInfo = await deviceInfo.webBrowserInfo;
-    userAgentData['browser'] = webInfo.browserName.name;
+    try {
+      final webInfo = await deviceInfo.webBrowserInfo;
+      userAgentData['browser'] = webInfo.browserName.name;
+    } catch (e) {
+      print(e);
+      userAgentData['browser'] = '';
+    }
   } else if (Platform.isAndroid) {
     // Android-specific info
     final androidInfo = await deviceInfo.androidInfo;
