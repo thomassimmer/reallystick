@@ -71,6 +71,8 @@ async fn broadcast_ws(
             }
         };
 
+        channels_data.remove_key(request_claims.user_id).await;
+
         // attempt to close connection gracefully
         let _ = session.close(reason).await;
     });
