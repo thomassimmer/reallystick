@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reallystick/core/constants/icons.dart';
 import 'package:reallystick/core/constants/screen_size.dart';
+import 'package:reallystick/core/presentation/widgets/icon_with_warning.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/habits/domain/entities/habit.dart';
 import 'package:reallystick/features/habits/presentation/helpers/translations.dart';
@@ -72,6 +73,11 @@ class HabitReviewWidget extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
+                      ),
+
+                      IconWithWarning(
+                        iconData: Icons.chevron_right,
+                        shouldBeWarning: !habit.reviewed,
                       ),
                     ],
                   ),
