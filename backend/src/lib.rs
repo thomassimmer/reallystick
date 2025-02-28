@@ -68,6 +68,10 @@ pub mod features {
             pub mod requests;
             pub mod responses;
         }
+
+        pub mod helpers {
+            pub mod user;
+        }
     }
 
     pub mod habits {

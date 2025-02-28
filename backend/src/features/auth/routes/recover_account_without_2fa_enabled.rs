@@ -7,7 +7,7 @@ use crate::{
                 requests::RecoverAccountWithout2FAEnabledRequest, responses::UserLoginResponse,
             },
         },
-        profile::structs::models::User,
+        profile::helpers::user::get_user_by_username,
     },
 };
 use actix_web::{post, web, HttpResponse, Responder};
@@ -33,17 +33,7 @@ pub async fn recover_account_without_2fa_enabled(
     let username_lower = body.username.to_lowercase();
 
     // Check if user already exists
-    let existing_user = sqlx::query_as!(
-        User,
-        r#"
-            SELECT *
-            FROM users
-            WHERE username = $1
-            "#,
-        username_lower,
-    )
-    .fetch_optional(&mut *transaction)
-    .await;
+    let existing_user = get_user_by_username(&mut transaction, username_lower.clone()).await;
 
     let mut user = match existing_user {
         Ok(existing_user) => {

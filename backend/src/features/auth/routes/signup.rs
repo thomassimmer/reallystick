@@ -15,7 +15,10 @@ use crate::{
             },
             structs::{requests::UserRegisterRequest, responses::UserSignupResponse},
         },
-        profile::structs::models::User,
+        profile::{
+            helpers::user::{create_user, get_user_by_username},
+            structs::models::User,
+        },
     },
 };
 
@@ -38,17 +41,7 @@ pub async fn register_user(
     let username_lower = body.username.to_lowercase();
 
     // Check if user already exists
-    let existing_user = sqlx::query_as!(
-        User,
-        r#"
-        SELECT *
-        FROM users
-        WHERE username = $1
-        "#,
-        username_lower,
-    )
-    .fetch_optional(&mut *transaction)
-    .await;
+    let existing_user = get_user_by_username(&mut transaction, username_lower.clone()).await;
 
     match existing_user {
         Ok(existing_user) => {
@@ -140,36 +133,7 @@ pub async fn register_user(
         has_children: None,
     };
 
-    // Insert the new user into the database
-    let insert_result = sqlx::query!(
-        r#"
-        INSERT INTO users (
-            id,
-            username,
-            password,
-            otp_verified,
-            otp_base32,
-            otp_auth_url,
-            created_at,
-            updated_at,
-            recovery_codes,
-            password_is_expired
-        )
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-        "#,
-        new_user.id,
-        new_user.username,
-        new_user.password,
-        new_user.otp_verified,
-        new_user.otp_base32,
-        new_user.otp_auth_url,
-        new_user.created_at,
-        new_user.updated_at,
-        new_user.recovery_codes,
-        new_user.password_is_expired
-    )
-    .execute(&mut *transaction)
-    .await;
+    let insert_result = create_user(&mut transaction, new_user.clone()).await;
 
     if let Err(e) = insert_result {
         eprintln!("Error: {}", e);

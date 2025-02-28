@@ -1,0 +1,55 @@
+use sqlx::{postgres::PgQueryResult, PgConnection};
+
+use crate::features::profile::structs::models::User;
+
+pub async fn create_user(
+    conn: &mut PgConnection,
+    user: User,
+) -> Result<PgQueryResult, sqlx::Error> {
+    sqlx::query!(
+        r#"
+        INSERT INTO users (
+            id,
+            username,
+            password,
+            otp_verified,
+            otp_base32,
+            otp_auth_url,
+            created_at,
+            updated_at,
+            recovery_codes,
+            password_is_expired
+        )
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+        "#,
+        user.id,
+        user.username,
+        user.password,
+        user.otp_verified,
+        user.otp_base32,
+        user.otp_auth_url,
+        user.created_at,
+        user.updated_at,
+        user.recovery_codes,
+        user.password_is_expired
+    )
+    .execute(conn)
+    .await
+}
+
+pub async fn get_user_by_username(
+    conn: &mut PgConnection,
+    username_lower: String,
+) -> Result<Option<User>, sqlx::Error> {
+    sqlx::query_as!(
+        User,
+        r#"
+        SELECT *
+        FROM users
+        WHERE username = $1
+        "#,
+        username_lower,
+    )
+    .fetch_optional(conn)
+    .await
+}
