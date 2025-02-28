@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:reallystick/core/messages/message.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/core/widgets/custom_container.dart';
@@ -10,7 +11,6 @@ import 'package:reallystick/core/widgets/global_snack_bar.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_events.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 
 class TwoFactorAuthenticationScreen extends StatelessWidget {
   final TextEditingController _otpController = TextEditingController();
@@ -88,6 +88,14 @@ class TwoFactorAuthenticationScreen extends StatelessWidget {
 
   Widget _buildOneTimePasswordVerificationView(
       BuildContext context, ProfileAuthenticated state) {
+    void triggerOneTimePasswordVerification() {
+      BlocProvider.of<ProfileBloc>(context).add(
+        ProfileVerifyOneTimePasswordEvent(
+          code: _otpController.text,
+        ),
+      );
+    }
+
     return SingleChildScrollView(
         child: Column(
       children: [
@@ -108,11 +116,9 @@ class TwoFactorAuthenticationScreen extends StatelessWidget {
                   SizedBox(height: 16),
                   Wrap(
                       crossAxisAlignment: WrapCrossAlignment.center,
-                      alignment: WrapAlignment
-                          .center, // Align the elements to the center
-                      spacing: 8.0, // Add spacing between elements
-                      direction: Axis
-                          .horizontal, // Horizontal direction for the initial layout
+                      alignment: WrapAlignment.center,
+                      spacing: 8.0,
+                      direction: Axis.horizontal,
                       children: [
                         SelectableText(AppLocalizations.of(context)!
                             .twoFASecretKey(state.profile.otpBase32!)),
@@ -139,16 +145,12 @@ class TwoFactorAuthenticationScreen extends StatelessWidget {
                       controller: _otpController,
                       label: AppLocalizations.of(context)!.validationCode,
                       obscureText: true,
+                      onFieldSubmitted: (_) =>
+                          triggerOneTimePasswordVerification(),
                     ),
                     SizedBox(height: 24),
                     ElevatedButton(
-                      onPressed: () {
-                        BlocProvider.of<ProfileBloc>(context).add(
-                          ProfileVerifyOneTimePasswordEvent(
-                            code: _otpController.text,
-                          ),
-                        );
-                      },
+                      onPressed: triggerOneTimePasswordVerification,
                       style: context.styles.buttonMedium,
                       child: Text(AppLocalizations.of(context)!.verify),
                     ),

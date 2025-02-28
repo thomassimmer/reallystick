@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:reallystick/core/messages/errors/domain_error.dart';
+import 'package:get_it/get_it.dart';
 import 'package:reallystick/core/messages/message.dart';
 import 'package:reallystick/features/auth/data/storage/token_storage.dart';
 import 'package:reallystick/features/auth/domain/errors/domain_error.dart';
@@ -14,7 +14,6 @@ import 'package:reallystick/features/auth/domain/usecases/validate_one_time_pass
 import 'package:reallystick/features/auth/domain/usecases/verify_one_time_password_use_case.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_events.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_states.dart';
-import 'package:get_it/get_it.dart';
 import 'package:universal_io/io.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
@@ -118,25 +117,22 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       AuthVerifyOneTimePasswordEvent event, Emitter<AuthState> emit) async {
     emit(AuthLoadingState());
 
-    try {
-      await verifyOneTimePasswordUseCase.call(event.code);
+    final result = await verifyOneTimePasswordUseCase.call(event.code);
 
+    result.fold((error) {
+      if (error is ShouldLogoutError) {
+        add(AuthLogoutEvent(message: ErrorMessage(error.messageKey)));
+      } else {
+        emit(AuthVerifyOneTimePasswordState(
+            otpAuthUrl: event.otpAuthUrl,
+            otpBase32: event.otpBase32,
+            message: ErrorMessage(error.messageKey)));
+      }
+    }, (_) {
       emit(AuthAuthenticatedAfterRegistrationState(
           hasVerifiedOtp: true,
           message: SuccessMessage("validationCodeCorrect")));
-    } on ShouldLogoutError catch (error) {
-      add(AuthLogoutEvent(message: ErrorMessage(error.messageKey)));
-    } on DomainError catch (error) {
-      emit(AuthVerifyOneTimePasswordState(
-          otpAuthUrl: event.otpAuthUrl,
-          otpBase32: event.otpBase32,
-          message: ErrorMessage(error.messageKey)));
-    } catch (error) {
-      emit(AuthVerifyOneTimePasswordState(
-          otpAuthUrl: event.otpAuthUrl,
-          otpBase32: event.otpBase32,
-          message: ErrorMessage('')));
-    }
+    });
   }
 
   Future<void> _login(AuthLoginEvent event, Emitter<AuthState> emit) async {

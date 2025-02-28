@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:go_router/go_router.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:reallystick/core/messages/message.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/core/widgets/app_logo.dart';
@@ -12,8 +14,6 @@ import 'package:reallystick/features/auth/presentation/blocs/auth/auth_bloc.dart
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_events.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_states.dart';
 import 'package:reallystick/features/auth/presentation/widgets/background.dart';
-import 'package:go_router/go_router.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 
 class RecoveryCodesScreen extends StatelessWidget {
   final TextEditingController _otpController = TextEditingController();
@@ -157,6 +157,16 @@ class RecoveryCodesScreen extends StatelessWidget {
 
   Widget _buildTwoFactorAuthenticationSetupView(BuildContext context,
       AuthGenerateTwoFactorAuthenticationConfigState state) {
+    void triggerNextAction() {
+      BlocProvider.of<AuthBloc>(context).add(
+        AuthVerifyOneTimePasswordEvent(
+          otpBase32: state.otpBase32,
+          otpAuthUrl: state.otpAuthUrl,
+          code: _otpController.text,
+        ),
+      );
+    }
+
     return Column(
       children: [
         Text(
@@ -196,18 +206,11 @@ class RecoveryCodesScreen extends StatelessWidget {
           controller: _otpController,
           label: AppLocalizations.of(context)!.validationCode,
           obscureText: true,
+          onFieldSubmitted: (_) => triggerNextAction(),
         ),
         SizedBox(height: 24),
         ElevatedButton(
-          onPressed: () {
-            BlocProvider.of<AuthBloc>(context).add(
-              AuthVerifyOneTimePasswordEvent(
-                otpBase32: state.otpBase32,
-                otpAuthUrl: state.otpAuthUrl,
-                code: _otpController.text,
-              ),
-            );
-          },
+          onPressed: triggerNextAction,
           child: Text(AppLocalizations.of(context)!.verify),
         ),
       ],

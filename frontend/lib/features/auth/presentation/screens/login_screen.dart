@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:go_router/go_router.dart';
 import 'package:reallystick/core/widgets/app_logo.dart';
 import 'package:reallystick/core/widgets/custom_container.dart';
 import 'package:reallystick/core/widgets/custom_text_field.dart';
@@ -10,7 +11,6 @@ import 'package:reallystick/features/auth/presentation/blocs/auth/auth_events.da
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_states.dart';
 import 'package:reallystick/features/auth/presentation/widgets/background.dart';
 import 'package:reallystick/features/auth/presentation/widgets/successful_login_animation.dart';
-import 'package:go_router/go_router.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -99,6 +99,15 @@ class LoginScreenState extends State<LoginScreen>
 
   Widget _buildOneTimePasswordVerificationScreen(
       BuildContext context, AuthValidateOneTimePasswordState state) {
+    void triggerLogin() {
+      BlocProvider.of<AuthBloc>(context).add(
+        AuthValidateOneTimePasswordEvent(
+          userId: state.userId,
+          code: _codeController.text,
+        ),
+      );
+    }
+
     return Column(children: [
       Text(
         AppLocalizations.of(context)!.logIn,
@@ -118,23 +127,26 @@ class LoginScreenState extends State<LoginScreen>
         controller: _codeController,
         label: AppLocalizations.of(context)!.validationCode,
         obscureText: true,
+        onFieldSubmitted: (_) => triggerLogin(),
       ),
       SizedBox(height: 24),
       ElevatedButton(
+        onPressed: triggerLogin,
         child: Text(AppLocalizations.of(context)!.logIn),
-        onPressed: () {
-          BlocProvider.of<AuthBloc>(context).add(
-            AuthValidateOneTimePasswordEvent(
-              userId: state.userId,
-              code: _codeController.text,
-            ),
-          );
-        },
       ),
     ]);
   }
 
   Widget _buildLoginViewScreen(BuildContext context, AuthState state) {
+    void triggerLogin() {
+      BlocProvider.of<AuthBloc>(context).add(
+        AuthLoginEvent(
+          username: _usernameController.text,
+          password: _passwordController.text,
+        ),
+      );
+    }
+
     return Column(children: [
       Text(
         AppLocalizations.of(context)!.logIn,
@@ -150,6 +162,7 @@ class LoginScreenState extends State<LoginScreen>
         controller: _passwordController,
         label: AppLocalizations.of(context)!.password,
         obscureText: true,
+        onFieldSubmitted: (_) => triggerLogin(),
       ),
       TextButton(
         onPressed: () {
@@ -162,15 +175,8 @@ class LoginScreenState extends State<LoginScreen>
       ),
       SizedBox(height: 24),
       ElevatedButton(
+        onPressed: triggerLogin,
         child: Text(AppLocalizations.of(context)!.logIn),
-        onPressed: () {
-          BlocProvider.of<AuthBloc>(context).add(
-            AuthLoginEvent(
-              username: _usernameController.text,
-              password: _passwordController.text,
-            ),
-          );
-        },
       ),
       TextButton(
         onPressed: () {

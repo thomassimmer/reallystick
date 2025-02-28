@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:go_router/go_router.dart';
 import 'package:reallystick/core/messages/errors/domain_error.dart';
 import 'package:reallystick/core/messages/message.dart';
 import 'package:reallystick/core/messages/message_mapper.dart';
@@ -15,7 +16,6 @@ import 'package:reallystick/features/auth/presentation/blocs/auth_login/auth_log
 import 'package:reallystick/features/auth/presentation/blocs/auth_login/auth_login_events.dart';
 import 'package:reallystick/features/auth/presentation/widgets/background.dart';
 import 'package:reallystick/features/auth/presentation/widgets/successful_login_animation.dart';
-import 'package:go_router/go_router.dart';
 
 class SignupScreen extends StatefulWidget {
   @override
@@ -112,6 +112,15 @@ class SignupScreenState extends State<SignupScreen>
             context, ErrorMessage(displayPasswordError.messageKey))
         : null;
 
+    void triggerSignUp() {
+      BlocProvider.of<AuthBloc>(context).add(
+        AuthSignupEvent(
+            username: _usernameController.text,
+            password: _passwordController.text,
+            theme: themeData),
+      );
+    }
+
     return Column(
       children: [
         Text(
@@ -135,18 +144,12 @@ class SignupScreenState extends State<SignupScreen>
           obscureText: true,
           label: AppLocalizations.of(context)!.password,
           errorText: displayPasswordErrorMessage,
+          onFieldSubmitted: (_) => triggerSignUp(),
         ),
         SizedBox(height: 24),
         ElevatedButton(
+          onPressed: triggerSignUp,
           child: Text(AppLocalizations.of(context)!.signUp),
-          onPressed: () {
-            BlocProvider.of<AuthBloc>(context).add(
-              AuthSignupEvent(
-                  username: _usernameController.text,
-                  password: _passwordController.text,
-                  theme: themeData),
-            );
-          },
         ),
         SizedBox(height: 16),
         TextButton(
