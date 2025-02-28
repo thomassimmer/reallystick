@@ -163,6 +163,7 @@ class ReplyBloc extends Bloc<ReplyEvent, ReplyState>
     userBloc.add(
       GetUserPublicDataEvent(
         userIds: messagesToGetUserPublicDataFor.map((t) => t.creator).toList(),
+        username: null,
       ),
     );
 

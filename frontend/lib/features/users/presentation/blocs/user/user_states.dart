@@ -27,15 +27,18 @@ class UsersFailed extends UserState {
 
 class UsersLoaded extends UserState {
   final Map<String, UserPublicData> users;
+  final UserPublicData? user;
 
   const UsersLoaded({
     super.message,
     required this.users,
+    required this.user,
   });
 
   @override
   List<Object?> get props => [
         message,
         users,
+        user,
       ];
 }

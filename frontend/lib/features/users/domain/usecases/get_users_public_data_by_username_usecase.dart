@@ -3,16 +3,16 @@ import 'package:reallystick/core/messages/errors/domain_error.dart';
 import 'package:reallystick/features/users/domain/entities/user_public_data.dart';
 import 'package:reallystick/features/users/domain/repositories/user_public_data_repository.dart';
 
-class GetUsersPublicDataUsecase {
+class GetUsersPublicDataByUsernameUsecase {
   final UserPublicDataRepository userPublicDataRepository;
 
-  GetUsersPublicDataUsecase(this.userPublicDataRepository);
+  GetUsersPublicDataByUsernameUsecase(this.userPublicDataRepository);
 
-  Future<Either<DomainError, List<UserPublicData>>> call({
-    required List<String> userIds,
+  Future<Either<DomainError, UserPublicData?>> call({
+    required String username,
   }) async {
-    return await userPublicDataRepository.getUserPublicData(
-      userIds: userIds,
+    return await userPublicDataRepository.getUserPublicDataByUsername(
+      username: username,
     );
   }
 }

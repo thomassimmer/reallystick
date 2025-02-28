@@ -78,7 +78,8 @@ use crate::features::profile::routes::delete_account::delete_account;
 use crate::features::profile::routes::delete_device::delete_device;
 use crate::features::profile::routes::get_devices::get_devices;
 use crate::features::profile::routes::get_profile_information::get_profile_information;
-use crate::features::profile::routes::get_users_data::get_users_data;
+use crate::features::profile::routes::get_user_data_by_username::get_user_data_by_username;
+use crate::features::profile::routes::get_users_data_by_id::get_users_data_by_id;
 use crate::features::profile::routes::is_otp_enabled::is_otp_enabled;
 use crate::features::profile::routes::post_profile_information::post_profile_information;
 
@@ -214,7 +215,8 @@ pub fn create_app(
                         web::scope("")
                             .wrap(TokenValidator {})
                             .service(get_profile_information)
-                            .service(get_users_data)
+                            .service(get_users_data_by_id)
+                            .service(get_user_data_by_username)
                             .service(post_profile_information)
                             .service(set_password)
                             .service(delete_account)

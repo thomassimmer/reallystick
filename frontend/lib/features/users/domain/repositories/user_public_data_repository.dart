@@ -7,7 +7,10 @@ import 'package:reallystick/core/messages/errors/domain_error.dart';
 import 'package:reallystick/features/users/domain/entities/user_public_data.dart';
 
 abstract class UserPublicDataRepository {
-  Future<Either<DomainError, List<UserPublicData>>> getUserPublicData({
+  Future<Either<DomainError, List<UserPublicData>>> getUserPublicDataById({
     required List<String> userIds,
+  });
+  Future<Either<DomainError, UserPublicData?>> getUserPublicDataByUsername({
+    required String username,
   });
 }

@@ -210,6 +210,7 @@ class PrivateDiscussionScreenState extends State<PrivateDiscussionScreen> {
         BlocProvider.of<UserBloc>(context).add(
           GetUserPublicDataEvent(
             userIds: [existingDiscussion.recipientId],
+            username: null,
           ),
         );
         return; // Prevent further execution.

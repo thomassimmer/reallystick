@@ -196,6 +196,7 @@ class PrivateDiscussionBloc
         userBloc.add(
           GetUserPublicDataEvent(
             userIds: usersToGetInfoFor.toList(),
+            username: null,
           ),
         );
 
@@ -372,6 +373,7 @@ class PrivateDiscussionBloc
           userBloc.add(
             GetUserPublicDataEvent(
               userIds: usersToGetInfoFor.toList(),
+              username: null,
             ),
           );
 

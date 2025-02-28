@@ -101,6 +101,7 @@ class NewPrivateDiscussionScreenState
         BlocProvider.of<UserBloc>(context).add(
           GetUserPublicDataEvent(
             userIds: [widget.recipientId],
+            username: null,
           ),
         );
         return; // Prevent further execution.

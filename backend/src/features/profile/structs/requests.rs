@@ -18,7 +18,7 @@ pub struct UserUpdateRequest {
     pub relationship_status: Option<String>,
     pub level_of_education: Option<String>,
     pub has_children: Option<bool>,
-    
+
     pub notifications_enabled: bool,
     pub notifications_for_private_messages_enabled: bool,
     pub notifications_for_public_message_liked_enabled: bool,
@@ -53,8 +53,13 @@ pub struct DeleteDeviceParams {
 }
 
 #[derive(Deserialize, Serialize)]
-pub struct GetUserPublicDataRequest {
+pub struct GetUserPublicDataByIdRequest {
     pub user_ids: Vec<Uuid>,
+}
+
+#[derive(Deserialize, Serialize)]
+pub struct GetUserPublicDataByUsernameRequest {
+    pub username: String,
 }
 
 #[derive(Debug, Deserialize, Serialize)]

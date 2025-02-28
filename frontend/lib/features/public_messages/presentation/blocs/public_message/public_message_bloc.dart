@@ -300,6 +300,7 @@ class PublicMessageBloc extends Bloc<PublicMessageEvent, PublicMessageState> {
     userBloc.add(
       GetUserPublicDataEvent(
         userIds: messagesToGetUserPublicDataFor.map((t) => t.creator).toList(),
+        username: null,
       ),
     );
 
@@ -358,6 +359,7 @@ class PublicMessageBloc extends Bloc<PublicMessageEvent, PublicMessageState> {
         userBloc.add(
           GetUserPublicDataEvent(
             userIds: threads.map((t) => t.creator).toList(),
+            username: null,
           ),
         );
 
@@ -421,6 +423,7 @@ class PublicMessageBloc extends Bloc<PublicMessageEvent, PublicMessageState> {
         userBloc.add(
           GetUserPublicDataEvent(
             userIds: [message.creator],
+            username: null,
           ),
         );
 
@@ -502,6 +505,7 @@ class PublicMessageBloc extends Bloc<PublicMessageEvent, PublicMessageState> {
         userBloc.add(
           GetUserPublicDataEvent(
             userIds: [message.creator],
+            username: null,
           ),
         );
 
@@ -1023,6 +1027,7 @@ class PublicMessageBloc extends Bloc<PublicMessageEvent, PublicMessageState> {
         userBloc.add(
           GetUserPublicDataEvent(
             userIds: messages.map((t) => t.creator).toList(),
+            username: null,
           ),
         );
 
@@ -1081,6 +1086,7 @@ class PublicMessageBloc extends Bloc<PublicMessageEvent, PublicMessageState> {
         userBloc.add(
           GetUserPublicDataEvent(
             userIds: messages.map((t) => t.creator).toList(),
+            username: null,
           ),
         );
 
@@ -1137,6 +1143,7 @@ class PublicMessageBloc extends Bloc<PublicMessageEvent, PublicMessageState> {
         userBloc.add(
           GetUserPublicDataEvent(
             userIds: likedMessages.map((t) => t.creator).toList(),
+            username: null,
           ),
         );
 
@@ -1193,6 +1200,7 @@ class PublicMessageBloc extends Bloc<PublicMessageEvent, PublicMessageState> {
         userBloc.add(
           GetUserPublicDataEvent(
             userIds: writtenMessages.map((t) => t.creator).toList(),
+            username: null,
           ),
         );
 

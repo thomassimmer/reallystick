@@ -84,6 +84,7 @@ class ThreadBloc extends Bloc<ThreadEvent, ThreadState>
         userBloc.add(
           GetUserPublicDataEvent(
             userIds: replies.map((t) => t.creator).toList(),
+            username: null,
           ),
         );
 

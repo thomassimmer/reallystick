@@ -104,6 +104,7 @@ import 'package:reallystick/features/notifications/domain/usecases/get_notificat
 import 'package:reallystick/features/notifications/domain/usecases/mark_notification_as_seen_usecase.dart';
 import 'package:reallystick/features/notifications/domain/usecases/save_fcm_token_usecase.dart';
 import 'package:reallystick/features/notifications/presentation/blocs/notifications/notifications_bloc.dart';
+import 'package:reallystick/features/notifications/presentation/helpers/websocket_service.dart';
 import 'package:reallystick/features/private_messages/data/repositories/private_discussion_participation_repository_impl.dart';
 import 'package:reallystick/features/private_messages/data/repositories/private_discussion_repository_impl.dart';
 import 'package:reallystick/features/private_messages/data/repositories/private_message_repository_impl.dart';
@@ -127,7 +128,6 @@ import 'package:reallystick/features/private_messages/presentation/blocs/private
 import 'package:reallystick/features/private_messages/presentation/blocs/private_message/private_message_bloc.dart';
 import 'package:reallystick/features/private_messages/presentation/blocs/private_message_creation/private_message_creation_bloc.dart';
 import 'package:reallystick/features/private_messages/presentation/blocs/private_message_update/private_message_update_bloc.dart';
-import 'package:reallystick/features/notifications/presentation/helpers/websocket_service.dart';
 import 'package:reallystick/features/profile/data/repositories/profile_repository_impl.dart';
 import 'package:reallystick/features/profile/data/sources/local_data_sources.dart';
 import 'package:reallystick/features/profile/data/sources/remote_data_sources.dart';
@@ -174,7 +174,8 @@ import 'package:reallystick/features/public_messages/presentation/blocs/thread/t
 import 'package:reallystick/features/users/data/repositories/user_public_data_repository_impl.dart';
 import 'package:reallystick/features/users/data/sources/remote_data_sources.dart';
 import 'package:reallystick/features/users/domain/repositories/user_public_data_repository.dart';
-import 'package:reallystick/features/users/domain/usecases/get_users_public_data_usecase.dart';
+import 'package:reallystick/features/users/domain/usecases/get_users_public_data_by_id_usecase.dart';
+import 'package:reallystick/features/users/domain/usecases/get_users_public_data_by_username_usecase.dart';
 import 'package:reallystick/features/users/presentation/blocs/user/user_bloc.dart';
 
 final sl = GetIt.instance;
@@ -429,8 +430,10 @@ Future<void> setupServiceLocator() async {
       GetWrittenMessagesUsecase(sl<PublicMessageRepository>()));
   sl.registerSingleton<UpdatePublicMessageUsecase>(
       UpdatePublicMessageUsecase(sl<PublicMessageRepository>()));
-  sl.registerSingleton<GetUsersPublicDataUsecase>(
-      GetUsersPublicDataUsecase(sl<UserPublicDataRepository>()));
+  sl.registerSingleton<GetUsersPublicDataByIdUsecase>(
+      GetUsersPublicDataByIdUsecase(sl<UserPublicDataRepository>()));
+  sl.registerSingleton<GetUsersPublicDataByUsernameUsecase>(
+      GetUsersPublicDataByUsernameUsecase(sl<UserPublicDataRepository>()));
   sl.registerSingleton<GetMessageUsecase>(
       GetMessageUsecase(sl<PublicMessageRepository>()));
   sl.registerSingleton<CreatePrivateDiscussionUsecase>(

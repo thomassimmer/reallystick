@@ -11,6 +11,12 @@ pub struct UserResponse {
 }
 
 #[derive(Serialize, Deserialize)]
+pub struct UserPublicResponse {
+    pub code: String,
+    pub user: UserPublicData,
+}
+
+#[derive(Serialize, Deserialize)]
 pub struct UsersResponse {
     pub code: String,
     pub users: Vec<UserPublicData>,

@@ -22,17 +22,52 @@ class UserPublicDataRepositoryImpl implements UserPublicDataRepository {
   });
 
   @override
-  Future<Either<DomainError, List<UserPublicData>>> getUserPublicData({
+  Future<Either<DomainError, List<UserPublicData>>> getUserPublicDataById({
     required List<String> userIds,
   }) async {
     try {
-      final userPublicDataModels = await remoteDataSource.getUserPublicData(
-        GetUserPublicDataRequestModel(userIds: userIds),
+      final userPublicDataModels = await remoteDataSource.getUserPublicDataById(
+        GetUserPublicDataByIdRequestModel(userIds: userIds),
       );
 
       return Right(userPublicDataModels
-          .map((publicMessageDataModel) => publicMessageDataModel.toDomain())
+          .map((userPublicDataModel) => userPublicDataModel.toDomain())
           .toList());
+    } on ParsingError {
+      logger.e('ParsingError occurred.');
+      return Left(InvalidResponseDomainError());
+    } on UnauthorizedError {
+      logger.e('UnauthorizedError occurred.');
+      return Left(UnauthorizedDomainError());
+    } on InvalidRefreshTokenError {
+      logger.e('InvalidRefreshTokenError occured.');
+      return Left(InvalidRefreshTokenDomainError());
+    } on RefreshTokenNotFoundError {
+      logger.e('RefreshTokenNotFoundError occured.');
+      return Left(RefreshTokenNotFoundDomainError());
+    } on RefreshTokenExpiredError {
+      logger.e('RefreshTokenExpiredError occured.');
+      return Left(RefreshTokenExpiredDomainError());
+    } on InternalServerError {
+      logger.e('InternalServerError occured.');
+      return Left(InternalServerDomainError());
+    } catch (e) {
+      logger.e('Data error occurred: ${e.toString()}');
+      return Left(UnknownDomainError());
+    }
+  }
+
+  @override
+  Future<Either<DomainError, UserPublicData?>> getUserPublicDataByUsername({
+    required String username,
+  }) async {
+    try {
+      final userPublicDataModel =
+          await remoteDataSource.getUserPublicDataByUsername(
+        GetUserPublicDataByUsernameRequestModel(username: username),
+      );
+
+      return Right(userPublicDataModel?.toDomain());
     } on ParsingError {
       logger.e('ParsingError occurred.');
       return Left(InvalidResponseDomainError());

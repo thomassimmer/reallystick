@@ -4,7 +4,7 @@ use crate::{
         helpers::profile::get_users_by_id,
         structs::{
             models::{UserPublicData, UserPublicDataCache},
-            requests::GetUserPublicDataRequest,
+            requests::GetUserPublicDataByIdRequest,
             responses::UsersResponse,
         },
     },
@@ -18,20 +18,11 @@ use sqlx::PgPool;
 use uuid::Uuid;
 
 #[post("/")]
-pub async fn get_users_data(
-    body: Json<GetUserPublicDataRequest>,
+pub async fn get_users_data_by_id(
+    body: Json<GetUserPublicDataByIdRequest>,
     pool: web::Data<PgPool>,
     cache: Data<UserPublicDataCache>,
 ) -> impl Responder {
-    let mut transaction = match pool.begin().await {
-        Ok(t) => t,
-        Err(e) => {
-            eprintln!("Error: {}", e);
-            return HttpResponse::InternalServerError()
-                .json(AppError::DatabaseTransaction.to_response());
-        }
-    };
-
     let mut users_in_cache = Vec::<UserPublicData>::new();
     let mut user_ids_to_query = Vec::<Uuid>::new();
 
@@ -43,13 +34,7 @@ pub async fn get_users_data(
         }
     }
 
-    let users = get_users_by_id(&mut transaction, user_ids_to_query).await;
-
-    if let Err(e) = transaction.commit().await {
-        eprintln!("Error: {}", e);
-        return HttpResponse::InternalServerError()
-            .json(AppError::DatabaseTransaction.to_response());
-    }
+    let users = get_users_by_id(&**pool, user_ids_to_query).await;
 
     match users {
         Ok(users) => {

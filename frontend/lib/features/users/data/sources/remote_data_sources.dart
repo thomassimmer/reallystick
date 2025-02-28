@@ -18,8 +18,8 @@ class UserPublicDataRemoteDataSource {
     required this.baseUrl,
   });
 
-  Future<List<UserPublicDataModel>> getUserPublicData(
-    GetUserPublicDataRequestModel getUserPublicDataRequestModel,
+  Future<List<UserPublicDataModel>> getUserPublicDataById(
+    GetUserPublicDataByIdRequestModel getUserPublicDataRequestModel,
   ) async {
     final url = Uri.parse('$baseUrl/users/');
 
@@ -44,6 +44,44 @@ class UserPublicDataRemoteDataSource {
 
     if (response.statusCode == 401) {
       throw UnauthorizedError();
+    }
+
+    if (response.statusCode == 500) {
+      throw InternalServerError();
+    }
+
+    throw UnknownError();
+  }
+
+  Future<UserPublicDataModel?> getUserPublicDataByUsername(
+    GetUserPublicDataByUsernameRequestModel getUserPublicDataRequestModel,
+  ) async {
+    final url = Uri.parse('$baseUrl/users/by-username/');
+
+    final response = await apiClient.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: json.encode(getUserPublicDataRequestModel.toJson()),
+    );
+
+    final jsonBody = customJsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      try {
+        return UserPublicDataModel.fromJson(jsonBody['user']);
+      } catch (e) {
+        throw ParsingError();
+      }
+    }
+
+    if (response.statusCode == 401) {
+      throw UnauthorizedError();
+    }
+
+    if (response.statusCode == 404) {
+      return null;
     }
 
     if (response.statusCode == 500) {

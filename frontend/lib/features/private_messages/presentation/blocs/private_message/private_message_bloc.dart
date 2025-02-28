@@ -163,6 +163,7 @@ class PrivateMessageBloc extends Bloc<PrivateMessageEvent, PrivateMessageState>
     userBloc.add(
       GetUserPublicDataEvent(
         userIds: messages.map((m) => m.creator).toList(),
+        username: null,
       ),
     );
 
