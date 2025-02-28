@@ -1,11 +1,19 @@
 use std::collections::HashMap;
 
+use argon2::PasswordHasher;
+use argon2::{password_hash::SaltString, Argon2};
 use chrono::Utc;
+use rand::rngs::OsRng;
 use serde_json::json;
 use sqlx::PgPool;
 use uuid::Uuid;
 
-use crate::features::habits::structs::models::{habit::Habit, habit_category::HabitCategory};
+use crate::features::{
+    habits::structs::models::{habit::Habit, habit_category::HabitCategory},
+    profile::structs::models::User,
+};
+
+use super::mock_now::now;
 
 pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
     let mut transaction = match pool.begin().await {
@@ -13,14 +21,70 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
         Err(_) => panic!("Can't get a transaction."),
     };
 
-    // Check and insert Habit Categories if none exist
-    let category_count: (i64,) = sqlx::query_as("SELECT COUNT(*) FROM habit_categories")
-        .fetch_one(pool)
-        .await?;
+    // Create a user with empty username and password.
+    let salt = SaltString::generate(&mut OsRng);
+    let argon2 = Argon2::default();
+    let password_hash = argon2
+        .hash_password("".as_bytes(), &salt)
+        .unwrap()
+        .to_string();
 
-    if category_count.0 == 0 {
-        return Ok(());
-    }
+    let new_user = User {
+        id: Uuid::new_v4(),
+        username: "".to_string(),
+        password: password_hash,
+        locale: "fr".to_string(),
+        theme: "light".to_string(),
+        otp_verified: false,
+        otp_base32: None,
+        otp_auth_url: None,
+        created_at: now(),
+        updated_at: now(),
+        recovery_codes: "".to_string(),
+        password_is_expired: false,
+        has_seen_questions: false,
+        age_category: None,
+        gender: None,
+        continent: None,
+        country: None,
+        region: None,
+        activity: None,
+        financial_situation: None,
+        lives_in_urban_area: None,
+        relationship_status: None,
+        level_of_education: None,
+        has_children: None,
+    };
+
+    let _ = sqlx::query!(
+        r#"
+            INSERT INTO users (
+                id,
+                username,
+                password,
+                otp_verified,
+                otp_base32,
+                otp_auth_url,
+                created_at,
+                updated_at,
+                recovery_codes,
+                password_is_expired
+            )
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+            "#,
+        new_user.id,
+        new_user.username,
+        new_user.password,
+        new_user.otp_verified,
+        new_user.otp_base32,
+        new_user.otp_auth_url,
+        new_user.created_at,
+        new_user.updated_at,
+        new_user.recovery_codes,
+        new_user.password_is_expired
+    )
+    .execute(&mut *transaction)
+    .await;
 
     let categories = [
         HabitCategory {
@@ -117,6 +181,10 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
         )
         .execute(&mut *transaction)
         .await?;
+    }
+
+    if let Err(e) = transaction.commit().await {
+        eprintln!("Error: {}", e);
     }
 
     Ok(())

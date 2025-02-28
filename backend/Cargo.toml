@@ -2,6 +2,7 @@
 name = "reallystick"
 version = "0.1.0"
 edition = "2021"
+default-run = "reallystick"
 
 [[bin]]
 path = "src/bin/main.rs"
