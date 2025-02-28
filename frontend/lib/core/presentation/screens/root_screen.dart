@@ -75,6 +75,7 @@ class RootScreen extends StatelessWidget {
               state is ProfileAuthenticated && state.profile.passwordIsExpired;
 
           return Scaffold(
+              backgroundColor: context.colors.primary,
               appBar: AppBar(
                 titleSpacing: 0,
                 title: Row(
@@ -120,71 +121,88 @@ class RootScreen extends StatelessWidget {
                 children: [
                   if (isLargeScreen) ...[
                     Container(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              context.colors.primary,
-                              context.colors.secondary
-                            ],
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                          ),
-                        ),
-                        child: NavigationRail(
-                          backgroundColor: Colors.transparent,
-                          indicatorColor: context.colors.background,
-                          useIndicator: true,
-                          unselectedLabelTextStyle: TextStyle(
-                            color: context.colors.textOnPrimary,
-                          ),
-                          selectedLabelTextStyle: TextStyle(
-                            color: context.colors.textOnPrimary,
-                          ),
-                          selectedIconTheme:
-                              IconThemeData(color: context.colors.primary),
-                          unselectedIconTheme: IconThemeData(
-                              color: context.colors.textOnPrimary),
-                          selectedIndex: _calculateSelectedIndex(context),
-                          onDestinationSelected: onItemTapped,
-                          labelType: NavigationRailLabelType.all,
-                          destinations: <NavigationRailDestination>[
-                            NavigationRailDestination(
-                              icon: Icon(Icons.check_circle_outline),
-                              selectedIcon: Icon(
-                                Icons.check_circle,
-                              ),
-                              label: Text(AppLocalizations.of(context)!.habits),
-                            ),
-                            NavigationRailDestination(
-                              icon: Icon(Icons.flag_outlined),
-                              selectedIcon: Icon(Icons.flag),
-                              label: Text(
-                                  AppLocalizations.of(context)!.challenges),
-                            ),
-                            NavigationRailDestination(
-                              icon: Icon(Icons.message_outlined),
-                              selectedIcon: Icon(Icons.message),
-                              label:
-                                  Text(AppLocalizations.of(context)!.messages),
-                            ),
-                            NavigationRailDestination(
-                              icon: IconWithWarning(
-                                  iconData: Icons.person_outline,
-                                  shouldBeWarning: shouldBeWarning),
-                              selectedIcon: IconWithWarning(
-                                iconData: Icons.person,
-                                shouldBeWarning: shouldBeWarning,
-                              ),
-                              label:
-                                  Text(AppLocalizations.of(context)!.profile),
-                            ),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            context.colors.primary,
+                            context.colors.secondary
                           ],
-                        )),
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                        ),
+                      ),
+                      child: NavigationRail(
+                        backgroundColor: Colors.transparent,
+                        indicatorColor: context.colors.background,
+                        useIndicator: true,
+                        unselectedLabelTextStyle: TextStyle(
+                          color: context.colors.textOnPrimary,
+                          height: 1.5,
+                        ),
+                        selectedLabelTextStyle: TextStyle(
+                          color: context.colors.textOnPrimary,
+                          height: 1.5,
+                        ),
+                        selectedIconTheme:
+                            IconThemeData(color: context.colors.primary),
+                        unselectedIconTheme:
+                            IconThemeData(color: context.colors.textOnPrimary),
+                        selectedIndex: _calculateSelectedIndex(context),
+                        onDestinationSelected: onItemTapped,
+                        labelType: NavigationRailLabelType.all,
+                        destinations: <NavigationRailDestination>[
+                          NavigationRailDestination(
+                            icon: Icon(Icons.check_circle_outline),
+                            selectedIcon: Icon(
+                              Icons.check_circle,
+                            ),
+                            label: Text(
+                              AppLocalizations.of(context)!.habits,
+                            ),
+                          ),
+                          NavigationRailDestination(
+                            icon: Icon(Icons.flag_outlined),
+                            selectedIcon: Icon(Icons.flag),
+                            label: Text(
+                              AppLocalizations.of(context)!.challenges,
+                            ),
+                          ),
+                          NavigationRailDestination(
+                            icon: Icon(Icons.message_outlined),
+                            selectedIcon: Icon(Icons.message),
+                            label: Text(
+                              AppLocalizations.of(context)!.messages,
+                            ),
+                          ),
+                          NavigationRailDestination(
+                            icon: IconWithWarning(
+                                iconData: Icons.person_outline,
+                                shouldBeWarning: shouldBeWarning),
+                            selectedIcon: IconWithWarning(
+                              iconData: Icons.person,
+                              shouldBeWarning: shouldBeWarning,
+                            ),
+                            label: Text(
+                              AppLocalizations.of(context)!.profile,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                   isLargeScreen
                       ? Expanded(
                           child: Container(
-                            margin: EdgeInsets.all(8.0),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(16.0),
+                                topRight: Radius.zero,
+                                bottomLeft: Radius.zero,
+                                bottomRight: Radius.zero,
+                              ),
+                              color: context.colors.background,
+                            ),
+                            clipBehavior: Clip.antiAlias,
                             child: child,
                           ),
                         )

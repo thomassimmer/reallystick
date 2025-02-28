@@ -151,44 +151,78 @@ class HabitsScreenState extends State<HabitsScreen> {
                           )
                         ],
                       )),
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: categories.length,
-                      itemBuilder: (context, index) {
-                        final habitCategory = categories[index];
+                  if (categories.isNotEmpty) ...[
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: categories.length,
+                        itemBuilder: (context, index) {
+                          final habitCategory = categories[index];
 
-                        final habitParticipations = habitState
-                            .habitParticipations
-                            .where((habitParticipation) =>
-                                habitState.habits[habitParticipation.habitId] !=
-                                    null &&
-                                habitState.habits[habitParticipation.habitId]!
-                                        .categoryId ==
-                                    habitCategory.id)
-                            .toList();
+                          final habitParticipations = habitState
+                              .habitParticipations
+                              .where((habitParticipation) =>
+                                  habitState
+                                          .habits[habitParticipation.habitId] !=
+                                      null &&
+                                  habitState.habits[habitParticipation.habitId]!
+                                          .categoryId ==
+                                      habitCategory.id)
+                              .toList();
 
-                        final habitDailyTrackings = habitState
-                            .habitDailyTrackings
-                            .where((habitDailyTracking) =>
-                                habitState.habits[habitDailyTracking.habitId] !=
-                                    null &&
-                                habitState.habits[habitDailyTracking.habitId]!
-                                        .categoryId ==
-                                    habitCategory.id)
-                            .toList();
+                          final habitDailyTrackings = habitState
+                              .habitDailyTrackings
+                              .where((habitDailyTracking) =>
+                                  habitState
+                                          .habits[habitDailyTracking.habitId] !=
+                                      null &&
+                                  habitState.habits[habitDailyTracking.habitId]!
+                                          .categoryId ==
+                                      habitCategory.id)
+                              .toList();
 
-                        return HabitCategoryWidget(
-                            habits: habitState.habits,
-                            category: habitCategory,
-                            habitParticipations: habitParticipations,
-                            habitDailyTrackings: habitDailyTrackings);
-                      },
-                    ),
-                  ),
+                          return HabitCategoryWidget(
+                              habits: habitState.habits,
+                              category: habitCategory,
+                              habitParticipations: habitParticipations,
+                              habitDailyTrackings: habitDailyTrackings);
+                        },
+                      ),
+                    )
+                  ] else ...[
+                    Expanded(
+                      child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    AppLocalizations.of(context)!.noHabitsYet,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  const SizedBox(height: 24),
+                                  ElevatedButton.icon(
+                                    onPressed: () {
+                                      context.goNamed('habitSearch');
+                                    },
+                                    icon: const Icon(Icons.add),
+                                    label: Text(AppLocalizations.of(context)!
+                                        .addANewHabit,),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          )),
+                    )
+                  ]
                 ],
               ),
-              floatingActionButton:
-                  AddActivityButton(action: _showAddDailyTrackingBottomSheet),
+              floatingActionButton: categories.isNotEmpty
+                  ? AddActivityButton(action: _showAddDailyTrackingBottomSheet)
+                  : null,
               floatingActionButtonLocation:
                   FloatingActionButtonLocation.centerFloat,
             );

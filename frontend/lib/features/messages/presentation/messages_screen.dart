@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MessagesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Text('Messages Screen'),
+      child: Text(
+        AppLocalizations.of(context)!.comingSoon,
+      ),
     );
   }
 }

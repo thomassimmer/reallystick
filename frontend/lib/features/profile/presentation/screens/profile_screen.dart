@@ -12,83 +12,94 @@ import 'package:reallystick/features/profile/presentation/blocs/profile/profile_
 class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ProfileBloc, ProfileState>(builder: (context, state) {
-      final shouldBeWarning =
-          state is ProfileAuthenticated && state.profile.passwordIsExpired;
-      final userIsAdmin =
-          state is ProfileAuthenticated && state.profile.isAdmin;
+    return BlocBuilder<ProfileBloc, ProfileState>(
+      builder: (context, state) {
+        final shouldBeWarning =
+            state is ProfileAuthenticated && state.profile.passwordIsExpired;
+        final userIsAdmin =
+            state is ProfileAuthenticated && state.profile.isAdmin;
 
-      return Scaffold(
-        appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.profileSettings),
-        ),
-        body: ListView(
-          children: [
-            ListTile(
-              title: Text(AppLocalizations.of(context)!.language),
-              trailing: Icon(Icons.chevron_right),
-              onTap: () {
-                context.goNamed('language');
-              },
-            ),
-            ListTile(
-              title: Text(AppLocalizations.of(context)!.theme),
-              trailing: Icon(Icons.chevron_right),
-              onTap: () {
-                context.goNamed('theme');
-              },
-            ),
-            ListTile(
-              title: Text(AppLocalizations.of(context)!.twoFA),
-              trailing: Icon(Icons.chevron_right),
-              onTap: () {
-                context.goNamed('two-factor-authentication');
-              },
-            ),
-            ListTile(
-              title: Text(AppLocalizations.of(context)!.changePassword),
-              trailing: IconWithWarning(
-                  iconData: Icons.chevron_right,
-                  shouldBeWarning: shouldBeWarning),
-              onTap: () {
-                context.goNamed('password');
-              },
-            ),
-            ListTile(
-              title: Text(AppLocalizations.of(context)!.profileInformation),
-              trailing: Icon(Icons.chevron_right),
-              onTap: () {
-                context.goNamed('profile-information');
-              },
-            ),
-            if (userIsAdmin)
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(AppLocalizations.of(context)!.profileSettings),
+          ),
+          body: ListView(
+            children: [
               ListTile(
-                title: Text(AppLocalizations.of(context)!.allHabits),
+                title: Text(AppLocalizations.of(context)!.language),
                 trailing: Icon(Icons.chevron_right),
                 onTap: () {
-                  context.goNamed('allHabits');
+                  context.goNamed('language');
                 },
               ),
-            ListTile(
-              title: Text(AppLocalizations.of(context)!.about),
-              trailing: Icon(Icons.chevron_right),
-              onTap: () {
-                context.goNamed('about');
-              },
-            ),
-            Padding(
-              padding: const EdgeInsets.all(32.0),
-              child: ElevatedButton(
-                onPressed: () {
-                  BlocProvider.of<AuthBloc>(context).add(AuthLogoutEvent());
+              ListTile(
+                title: Text(AppLocalizations.of(context)!.theme),
+                trailing: Icon(Icons.chevron_right),
+                onTap: () {
+                  context.goNamed('theme');
                 },
-                style: context.styles.buttonMedium,
-                child: Text(AppLocalizations.of(context)!.logout),
               ),
-            )
-          ],
-        ),
-      );
-    });
+              ListTile(
+                title: Text(AppLocalizations.of(context)!.twoFA),
+                trailing: Icon(Icons.chevron_right),
+                onTap: () {
+                  context.goNamed('two-factor-authentication');
+                },
+              ),
+              ListTile(
+                title: Text(AppLocalizations.of(context)!.changePassword),
+                trailing: IconWithWarning(
+                    iconData: Icons.chevron_right,
+                    shouldBeWarning: shouldBeWarning),
+                onTap: () {
+                  context.goNamed('password');
+                },
+              ),
+              ListTile(
+                title: Text(AppLocalizations.of(context)!.profileInformation),
+                trailing: Icon(Icons.chevron_right),
+                onTap: () {
+                  context.goNamed('profile-information');
+                },
+              ),
+              if (userIsAdmin)
+                ListTile(
+                  title: Text(AppLocalizations.of(context)!.allHabits),
+                  trailing: Icon(Icons.chevron_right),
+                  onTap: () {
+                    context.goNamed('allHabits');
+                  },
+                ),
+              ListTile(
+                title: Text(AppLocalizations.of(context)!.about),
+                trailing: Icon(Icons.chevron_right),
+                onTap: () {
+                  context.goNamed('about');
+                },
+              ),
+              const SizedBox(height: 32),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      BlocProvider.of<AuthBloc>(context).add(AuthLogoutEvent());
+                    },
+                    style: context.styles.buttonMedium,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 32.0,
+                        vertical: 4,
+                      ),
+                      child: Text(AppLocalizations.of(context)!.logout),
+                    ),
+                  ),
+                ],
+              )
+            ],
+          ),
+        );
+      },
+    );
   }
 }
