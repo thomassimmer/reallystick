@@ -11,8 +11,12 @@ import 'package:reallystick/features/auth/presentation/blocs/auth/auth_bloc.dart
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_states.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_states.dart';
+import 'package:reallystick/features/private_messages/presentation/blocs/private_discussion/private_discussion_bloc.dart';
+import 'package:reallystick/features/private_messages/presentation/blocs/private_discussion/private_discussion_states.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
+import 'package:reallystick/features/public_messages/presentation/blocs/public_message/public_message_bloc.dart';
+import 'package:reallystick/features/public_messages/presentation/blocs/public_message/public_message_states.dart';
 
 class RootScreen extends StatelessWidget {
   final Widget child;
@@ -66,6 +70,14 @@ class RootScreen extends StatelessWidget {
           GlobalSnackBar.show(context, state.message);
         }),
         BlocListener<HabitBloc, HabitState>(listener: (context, state) {
+          GlobalSnackBar.show(context, state.message);
+        }),
+        BlocListener<PublicMessageBloc, PublicMessageState>(
+            listener: (context, state) {
+          GlobalSnackBar.show(context, state.message);
+        }),
+        BlocListener<PrivateDiscussionBloc, PrivateDiscussionState>(
+            listener: (context, state) {
           GlobalSnackBar.show(context, state.message);
         }),
       ],

@@ -205,8 +205,6 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
   Future<void> createHabit(
       CreateHabitEvent event, Emitter<HabitState> emit) async {
     final currentState = state as HabitsLoaded;
-    emit(HabitsLoading());
-
     final resultCreateHabitUsecase = await createHabitUsecase.call(
         categoryId: event.categoryId,
         shortName: Map.from({event.locale: event.shortName}),
@@ -285,8 +283,6 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
   Future<void> updateHabit(
       UpdateHabitEvent event, Emitter<HabitState> emit) async {
     final currentState = state as HabitsLoaded;
-    emit(HabitsLoading());
-
     final resultUpdateHabitUsecase = await updateHabitUsecase.call(
       habitId: event.habitId,
       categoryId: event.categoryId,
@@ -338,8 +334,6 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
   Future<void> mergeHabits(
       MergeHabitsEvent event, Emitter<HabitState> emit) async {
     final currentState = state as HabitsLoaded;
-    emit(HabitsLoading());
-
     final resultMergeHabitsUseCase = await mergeHabitsUsecase.call(
       habitToDeleteId: event.habitToDeleteId,
       habitToMergeOnId: event.habitToMergeOnId,
@@ -410,8 +404,6 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
   Future<void> createHabitDailyTracking(
       CreateHabitDailyTrackingEvent event, Emitter<HabitState> emit) async {
     final currentState = state as HabitsLoaded;
-    emit(HabitsLoading());
-
     final resultCreateHabitDailyTrackingUsecase =
         await createHabitDailyTrackingUsecase.call(
       datetime: event.datetime,
@@ -462,8 +454,6 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
   Future<void> updateHabitDailyTracking(
       UpdateHabitDailyTrackingEvent event, Emitter<HabitState> emit) async {
     final currentState = state as HabitsLoaded;
-    emit(HabitsLoading());
-
     final resultUpdateHabitDailyTrackingUsecase =
         await updateHabitDailyTrackingUsecase.call(
       habitDailyTrackingId: event.habitDailyTrackingId,
@@ -517,8 +507,6 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
   Future<void> deleteHabitDailyTracking(
       DeleteHabitDailyTrackingEvent event, Emitter<HabitState> emit) async {
     final currentState = state as HabitsLoaded;
-    emit(HabitsLoading());
-
     final resultDeleteHabitDailyTrackingUsecase =
         await deleteHabitDailyTrackingUsecase.call(
       habitDailyTrackingId: event.habitDailyTrackingId,
@@ -566,8 +554,6 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
   Future<void> createHabitParticipation(
       CreateHabitParticipationEvent event, Emitter<HabitState> emit) async {
     final currentState = state as HabitsLoaded;
-    emit(HabitsLoading());
-
     final resultCreateHabitParticipationUsecase =
         await createHabitParticipationUsecase.call(
       habitId: event.habitId,
@@ -614,8 +600,6 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
   Future<void> updateHabitParticipation(
       UpdateHabitParticipationEvent event, Emitter<HabitState> emit) async {
     final currentState = state as HabitsLoaded;
-    emit(HabitsLoading());
-
     final resultUpdateHabitParticipationUsecase =
         await updateHabitParticipationUsecase.call(
       habitParticipationId: event.habitParticipationId,
@@ -665,8 +649,6 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
   Future<void> deleteHabitParticipation(
       DeleteHabitParticipationEvent event, Emitter<HabitState> emit) async {
     final currentState = state as HabitsLoaded;
-    emit(HabitsLoading());
-
     final resultDeleteHabitParticipationUsecase =
         await deleteHabitParticipationUsecase.call(
       habitParticipationId: event.habitParticipationId,

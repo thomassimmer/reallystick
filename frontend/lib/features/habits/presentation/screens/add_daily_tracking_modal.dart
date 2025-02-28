@@ -49,9 +49,19 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
 
         setState(() {
           _selectedHabitId = widget.habitId;
+
+          // Show minutes before other, it's the most used
           _selectedUnitId = habit?.unitIds
-              .where((unitId) => habitState.units.containsKey(unitId))
-              .first;
+                  .where((unitId) =>
+                      habitState.units.containsKey(unitId) &&
+                      getRightTranslationFromJson(
+                              habitState.units[unitId]!.shortName, 'en') ==
+                          'min')
+                  .firstOrNull ??
+              habit?.unitIds
+                  .where((unitId) => habitState.units.containsKey(unitId))
+                  .first;
+
           _selectedWeightUnitId = habitState.units.values
               .where((unit) =>
                   getRightTranslationFromJson(unit.shortName, 'en') == 'kg')
@@ -202,6 +212,13 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
               habits[_selectedHabitId], habitState.habitCategories);
 
       final weightUnits = getWeightUnits(habitState.units);
+
+      List<String> habitUnits = habits[_selectedHabitId] != null
+          ? habits[_selectedHabitId]!
+              .unitIds
+              .where((unitId) => units.containsKey(unitId))
+              .toList()
+          : [];
 
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -363,26 +380,21 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
               Expanded(
                 child: CustomDropdownButtonFormField(
                   value: _selectedUnitId,
-                  items: (_selectedHabitId != null
-                      ? habits[_selectedHabitId]!
-                          .unitIds
-                          .where((unitId) => units.containsKey(unitId))
-                          .map((unitId) {
-                          final unit = units[unitId]!;
-                          return DropdownMenuItem(
-                            value: unitId,
-                            child: Text(
-                              getRightTranslationForUnitFromJson(
-                                unit.longName,
-                                _quantityPerSet ?? 0,
-                                userLocale,
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                            ),
-                          );
-                        }).toList()
-                      : []),
+                  items: habitUnits.map((unitId) {
+                    final unit = units[unitId]!;
+                    return DropdownMenuItem(
+                      value: unitId,
+                      child: Text(
+                        getRightTranslationForUnitFromJson(
+                          unit.longName,
+                          _quantityPerSet ?? 0,
+                          userLocale,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                    );
+                  }).toList(),
                   onChanged: (value) {
                     setState(() {
                       _selectedUnitId = value;

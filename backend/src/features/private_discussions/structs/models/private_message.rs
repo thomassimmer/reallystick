@@ -59,9 +59,7 @@ pub struct ChannelsData {
 
 impl ChannelsData {
     pub async fn insert(&self, key: Uuid, value: UnboundedSender<PrivateMessageData>) {
-        println!("inserting {}", key);
         self.data.write().await.insert(key, value);
-        println!("keys {:?}", self.data.read().await.keys());
     }
 
     pub async fn remove_key(&self, key: Uuid) {
@@ -72,8 +70,6 @@ impl ChannelsData {
         &self,
         key: Uuid,
     ) -> Option<UnboundedSender<PrivateMessageData>> {
-        println!("getting {}", key);
-        println!("keys {:?}", self.data.read().await.keys());
         self.data.read().await.get(&key).cloned()
     }
 }

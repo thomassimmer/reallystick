@@ -43,32 +43,36 @@ class PrivateMessageWidget extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  message.content,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 3,
-                ),
-                SizedBox(width: 10),
                 Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    SizedBox(height: 5),
-                    Text(
-                      message.updateAt == null
-                          ? DateFormat.Hm().format(message.createdAt)
-                          : AppLocalizations.of(context)!.editedAt(
-                              DateFormat.yMEd(userLocale)
-                                  .add_Hm()
-                                  .format(message.updateAt!)),
-                      style: TextStyle(
-                        color: context.colors.hint,
-                        fontSize: 12,
-                      ),
-                    )
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          message.content,
+                        ),
+                        const SizedBox(width: 40),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Text(
+                          message.updateAt == null
+                              ? DateFormat.Hm().format(message.createdAt)
+                              : AppLocalizations.of(context)!.editedAt(
+                                  DateFormat.yMEd(userLocale)
+                                      .add_Hm()
+                                      .format(message.updateAt!)),
+                          style: TextStyle(
+                            color: context.colors.hint,
+                            fontSize: 12,
+                          ),
+                        )
+                      ],
+                    ),
                   ],
                 ),
               ],

@@ -51,8 +51,6 @@ async fn broadcast_ws(
 
     // spawn websocket handler (and don't await it) so that the response is returned immediately
     rt::spawn(async move {
-        println!("connected : {}", request_claims.user_id);
-
         let reason = loop {
             select! {
                 broadcast_msg = rx.recv() => {
@@ -62,7 +60,6 @@ async fn broadcast_ws(
                         None => continue,
                     };
 
-                    println!("msg recevied for {} : {}", request_claims.user_id, json!(msg));
 
                     let res = session.text(json!(msg).to_string()).await;
 
@@ -76,8 +73,6 @@ async fn broadcast_ws(
 
         // attempt to close connection gracefully
         let _ = session.close(reason).await;
-
-        println!("disconnected");
     });
 
     res

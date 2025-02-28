@@ -61,13 +61,15 @@ class ProfileScreen extends StatelessWidget {
                   context.goNamed('reported-messages');
                 },
               ),
-              ListTile(
-                title: Text(AppLocalizations.of(context)!.allReportedMessages),
-                trailing: Icon(Icons.chevron_right),
-                onTap: () {
-                  context.goNamed('all-reported-messages');
-                },
-              ),
+              if (userIsAdmin)
+                ListTile(
+                  title:
+                      Text(AppLocalizations.of(context)!.allReportedMessages),
+                  trailing: Icon(Icons.chevron_right),
+                  onTap: () {
+                    context.goNamed('all-reported-messages');
+                  },
+                ),
               ListTile(
                 title: Text(AppLocalizations.of(context)!.twoFA),
                 trailing: Icon(Icons.chevron_right),

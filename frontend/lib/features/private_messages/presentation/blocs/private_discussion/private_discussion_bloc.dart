@@ -203,8 +203,6 @@ class PrivateDiscussionBloc
     Emitter<PrivateDiscussionState> emit,
   ) async {
     final currentState = state as PrivateDiscussionLoaded;
-    emit(PrivateDiscussionLoading());
-
     final result = await createPrivateDiscussionUsecase.call(
       recipientId: event.recipient,
       color: AppColorExtension.getRandomColor().toShortString(),
@@ -253,8 +251,6 @@ class PrivateDiscussionBloc
     Emitter<PrivateDiscussionState> emit,
   ) async {
     final currentState = state as PrivateDiscussionLoaded;
-    emit(PrivateDiscussionLoading());
-
     final result = await updatePrivateDiscussionParticipationUsecase.call(
       discussionId: event.discussionId,
       hasBlocked: event.hasBlocked,
@@ -299,7 +295,6 @@ class PrivateDiscussionBloc
     Emitter<PrivateDiscussionState> emit,
   ) async {
     final currentState = state as PrivateDiscussionLoaded;
-    emit(PrivateDiscussionLoading());
 
     if (currentState.discussions.containsKey(event.message.discussionId)) {
       currentState.discussions[event.message.discussionId]!.lastMessage =

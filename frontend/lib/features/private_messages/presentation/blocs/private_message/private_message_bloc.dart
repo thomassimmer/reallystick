@@ -114,9 +114,10 @@ class PrivateMessageBloc
         return [];
       },
       (newMessages) async {
+        final privateKey = await PrivateMessageKeyStorage().getPrivateKey();
+
         for (final message in newMessages) {
           final isCreator = message.creator == userId;
-          final privateKey = await PrivateMessageKeyStorage().getPrivateKey();
 
           String clearContent =
               "Failed to find private key. Can't decrypt this message";
@@ -174,7 +175,6 @@ class PrivateMessageBloc
     }
 
     final currentState = state as PrivateMessagesLoaded;
-    emit(PrivateMessagesLoading());
 
     final isCreator = event.message.creator == userId;
     final privateKey = await PrivateMessageKeyStorage().getPrivateKey();
@@ -221,7 +221,6 @@ class PrivateMessageBloc
     Emitter<PrivateMessageState> emit,
   ) async {
     final currentState = state as PrivateMessagesLoaded;
-    emit(PrivateMessagesLoading());
 
     final aesEncryptResult = await encryptMessageUsingAesUsecase.call(
       content: event.content,

@@ -4,7 +4,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reallystick/core/presentation/screens/loading_screen.dart';
 import 'package:reallystick/core/ui/colors.dart';
-import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_bloc.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_events.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_states.dart';
@@ -12,6 +11,7 @@ import 'package:reallystick/features/challenges/presentation/screens/challenge_n
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_states.dart';
 import 'package:reallystick/features/habits/presentation/screens/habit_not_found_screen.dart';
+import 'package:reallystick/features/private_messages/presentation/widgets/custom_message_input.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
 import 'package:reallystick/features/public_messages/presentation/blocs/public_message/public_message_bloc.dart';
@@ -47,7 +47,23 @@ class ReplyScreen extends StatefulWidget {
 }
 
 class ReplyScreenState extends State<ReplyScreen> {
-  String _content = "";
+  final TextEditingController _contentController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _contentController.addListener(() {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _contentController.dispose();
+
+    super.dispose();
+  }
 
   Future<void> _pullRefresh() async {
     BlocProvider.of<ReplyBloc>(context).add(
@@ -63,7 +79,7 @@ class ReplyScreenState extends State<ReplyScreen> {
         context.read<PublicMessageCreationFormBloc>();
 
     publicMessageCreationFormBloc.add(
-      PublicMessageCreationFormContentChangedEvent(_content),
+      PublicMessageCreationFormContentChangedEvent(_contentController.text),
     );
 
     Future.delayed(const Duration(milliseconds: 50), () {
@@ -72,13 +88,17 @@ class ReplyScreenState extends State<ReplyScreen> {
           habitId: widget.habitId,
           challengeId: widget.challengeId,
           repliesTo: widget.messageId,
-          content: _content,
+          content: _contentController.text,
           threadId: widget.threadId,
         );
 
         if (mounted) {
           context.read<PublicMessageBloc>().add(newMessageEvent);
         }
+
+        setState(() {
+          _contentController.text = "";
+        });
       }
     });
   }
@@ -272,33 +292,12 @@ class ReplyScreenState extends State<ReplyScreen> {
                       ),
                     ),
                     if (message != null) ...[
-                      TextField(
-                        onSubmitted: (_) => _replyToMessage(),
-                        onChanged: (value) => {
-                          setState(() {
-                            _content = value;
-                          })
-                        },
-                        decoration: InputDecoration(
-                          hintText: AppLocalizations.of(context)!.replyTo(
-                            userState.users[message.creator]?.username ??
-                                AppLocalizations.of(context)!.unknown,
-                          ),
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              Icons.send,
-                              color: _content.trim().isNotEmpty
-                                  ? context.colors.primary
-                                  : context.colors.hint,
-                            ),
-                            onPressed: _content.trim().isNotEmpty
-                                ? () {
-                                    _replyToMessage();
-                                  }
-                                : null,
-                          ),
-                        ),
-                      ),
+                      CustomMessageInput(
+                        contentController: _contentController,
+                        recipientUsername:
+                            userState.users[message.creator]?.username,
+                        onSendMessage: _replyToMessage,
+                      )
                     ],
                   ],
                 ),

@@ -165,9 +165,6 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   Future<void> _updateProfile(
       ProfileUpdateEvent event, Emitter<ProfileState> emit) async {
     final currentState = state as ProfileAuthenticated;
-
-    emit(ProfileLoading(profile: state.profile));
-
     final result = await postProfileUsecase.call(event.newProfile);
 
     result.fold((error) {
@@ -193,9 +190,6 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       ProfileGenerateTwoFactorAuthenticationConfigEvent event,
       Emitter<ProfileState> emit) async {
     final currentState = state as ProfileAuthenticated;
-
-    emit(ProfileLoading(profile: state.profile));
-
     final result = await generateTwoFactorAuthenticationConfigUseCase.call();
 
     result.fold((error) {
@@ -225,9 +219,6 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       ProfileDisableTwoFactorAuthenticationEvent event,
       Emitter<ProfileState> emit) async {
     final currentState = state as ProfileAuthenticated;
-
-    emit(ProfileLoading(profile: state.profile));
-
     final result = await disableTwoFactorAuthenticationUseCase.call();
 
     result.fold((error) {
@@ -256,9 +247,6 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   Future<void> _verifyOneTimePassword(ProfileVerifyOneTimePasswordEvent event,
       Emitter<ProfileState> emit) async {
     final currentState = state as ProfileAuthenticated;
-
-    emit(ProfileLoading(profile: state.profile));
-
     final result = await verifyOneTimePasswordUseCase.call(event.code);
 
     result.fold(
@@ -292,8 +280,6 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   Future<void> _setPassword(
       ProfileSetPasswordEvent event, Emitter<ProfileState> emit) async {
     final currentState = state as ProfileAuthenticated;
-    emit(ProfileLoading(profile: state.profile));
-
     final result =
         await setPasswordUseCase.call(newPassword: event.newPassword);
 
@@ -323,8 +309,6 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   Future<void> _updatePassword(
       ProfileUpdatePasswordEvent event, Emitter<ProfileState> emit) async {
     final currentState = state as ProfileAuthenticated;
-    emit(ProfileLoading(profile: state.profile));
-
     final result = await updatePasswordUseCase.call(
         currentPassword: event.currentPassword, newPassword: event.newPassword);
 
@@ -356,8 +340,6 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   Future<void> _deleteAccount(
       DeleteAccountEvent event, Emitter<ProfileState> emit) async {
     final currentState = state as ProfileAuthenticated;
-    emit(ProfileLoading(profile: state.profile));
-
     final result = await deleteAccountUsecase.call();
 
     result.fold(
@@ -391,8 +373,6 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   Future<void> _deleteDevice(
       DeleteDeviceEvent event, Emitter<ProfileState> emit) async {
     final currentState = state as ProfileAuthenticated;
-    emit(ProfileLoading(profile: state.profile));
-
     final result = await deleteDeviceUseCase.call(
       event.deviceId,
     );
@@ -424,7 +404,6 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   void _generateNewRecoveryCode(
       GenerateNewRecoveryCodeEvent event, Emitter<ProfileState> emit) async {
     final currentState = state as ProfileAuthenticated;
-    emit(ProfileLoading(profile: state.profile));
 
     String recoveryCode = RecoveryCodeGenerator.generate();
     String privateKey = await PrivateMessageKeyStorage().getPrivateKey() ?? "";

@@ -383,7 +383,6 @@ class PublicMessageBloc extends Bloc<PublicMessageEvent, PublicMessageState> {
   Future<void> createPublicMessage(
       CreatePublicMessageEvent event, Emitter<PublicMessageState> emit) async {
     final currentState = state as PublicMessagesLoaded;
-    emit(PublicMessagesLoading());
 
     final resultCreatePublicMessagesUsecase =
         await createPublicMessageUsecase.call(
@@ -468,7 +467,6 @@ class PublicMessageBloc extends Bloc<PublicMessageEvent, PublicMessageState> {
   Future<void> updatePublicMessage(
       UpdatePublicMessageEvent event, Emitter<PublicMessageState> emit) async {
     final currentState = state as PublicMessagesLoaded;
-    emit(PublicMessagesLoading());
 
     final resultUpdatePublicMessagesUsecase =
         await updatePublicMessageUsecase.call(
@@ -570,7 +568,6 @@ class PublicMessageBloc extends Bloc<PublicMessageEvent, PublicMessageState> {
   Future<void> deletePublicMessage(
       DeletePublicMessageEvent event, Emitter<PublicMessageState> emit) async {
     final currentState = state as PublicMessagesLoaded;
-    emit(PublicMessagesLoading());
 
     final resultDeletePublicMessagesUsecase =
         await deletePublicMessageUsecase.call(
@@ -691,7 +688,6 @@ class PublicMessageBloc extends Bloc<PublicMessageEvent, PublicMessageState> {
   Future<void> createPublicMessageLike(CreatePublicMessageLikeEvent event,
       Emitter<PublicMessageState> emit) async {
     final currentState = state as PublicMessagesLoaded;
-    emit(PublicMessagesLoading());
 
     final resultCreatePublicMessageLikeUsecase =
         await createPublicMessageLikeUsecase.call(
@@ -789,7 +785,6 @@ class PublicMessageBloc extends Bloc<PublicMessageEvent, PublicMessageState> {
   Future<void> deletePublicMessageLike(DeletePublicMessageLikeEvent event,
       Emitter<PublicMessageState> emit) async {
     final currentState = state as PublicMessagesLoaded;
-    emit(PublicMessagesLoading());
 
     final resultDeletePublicMessageLikeUsecase =
         await deletePublicMessageLikeUsecase.call(
@@ -880,7 +875,6 @@ class PublicMessageBloc extends Bloc<PublicMessageEvent, PublicMessageState> {
   Future<void> createPublicMessageReport(CreatePublicMessageReportEvent event,
       Emitter<PublicMessageState> emit) async {
     final currentState = state as PublicMessagesLoaded;
-    emit(PublicMessagesLoading());
 
     final result = await createPublicMessageReportUsecase.call(
       messageId: event.message.id,
@@ -939,7 +933,6 @@ class PublicMessageBloc extends Bloc<PublicMessageEvent, PublicMessageState> {
   Future<void> deletePublicMessageReport(DeletePublicMessageReportEvent event,
       Emitter<PublicMessageState> emit) async {
     final currentState = state as PublicMessagesLoaded;
-    emit(PublicMessagesLoading());
 
     final result = await deletePublicMessageReportUsecase.call(
       messageReportId: event.messageReportId,
@@ -997,7 +990,6 @@ class PublicMessageBloc extends Bloc<PublicMessageEvent, PublicMessageState> {
   Future<void> getAllMessageReports(
       GetMessageReportsEvent event, Emitter<PublicMessageState> emit) async {
     final currentState = state as PublicMessagesLoaded;
-    emit(PublicMessagesLoading());
 
     final result = await getMessageReportsUsecase.call();
 
@@ -1056,7 +1048,6 @@ class PublicMessageBloc extends Bloc<PublicMessageEvent, PublicMessageState> {
   Future<void> getUserMessageReports(GetUserMessageReportsEvent event,
       Emitter<PublicMessageState> emit) async {
     final currentState = state as PublicMessagesLoaded;
-    emit(PublicMessagesLoading());
 
     final result = await getUserMessageReportsUsecase.call();
 
@@ -1115,7 +1106,6 @@ class PublicMessageBloc extends Bloc<PublicMessageEvent, PublicMessageState> {
   Future<void> getLikedMessages(
       GetLikedMessagesEvent event, Emitter<PublicMessageState> emit) async {
     final currentState = state as PublicMessagesLoaded;
-    emit(PublicMessagesLoading());
 
     final result = await getLikedMessagesUsecase.call();
 
@@ -1172,7 +1162,6 @@ class PublicMessageBloc extends Bloc<PublicMessageEvent, PublicMessageState> {
   Future<void> getWrittenMessages(
       GetWrittenMessagesEvent event, Emitter<PublicMessageState> emit) async {
     final currentState = state as PublicMessagesLoaded;
-    emit(PublicMessagesLoading());
 
     final result = await getWrittenMessagesUsecase.call();
 

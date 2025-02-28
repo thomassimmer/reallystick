@@ -198,8 +198,6 @@ class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
   Future<void> createChallenge(
       CreateChallengeEvent event, Emitter<ChallengeState> emit) async {
     final currentState = state as ChallengesLoaded;
-    emit(ChallengesLoading());
-
     final resultCreateChallengeUsecase = await createChallengeUsecase.call(
       name: event.name,
       description: event.description,
@@ -271,8 +269,6 @@ class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
   Future<void> updateChallenge(
       UpdateChallengeEvent event, Emitter<ChallengeState> emit) async {
     final currentState = state as ChallengesLoaded;
-    emit(ChallengesLoading());
-
     final resultUpdateChallengeUsecase = await updateChallengeUsecase.call(
       challengeId: event.challengeId,
       name: event.name,
@@ -318,8 +314,6 @@ class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
       CreateChallengeDailyTrackingEvent event,
       Emitter<ChallengeState> emit) async {
     final currentState = state as ChallengesLoaded;
-    emit(ChallengesLoading());
-
     final resultCreateChallengeDailyTrackingUsecase =
         await createChallengeDailyTrackingUsecase.call(
       habitId: event.habitId,
@@ -371,8 +365,6 @@ class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
       UpdateChallengeDailyTrackingEvent event,
       Emitter<ChallengeState> emit) async {
     final currentState = state as ChallengesLoaded;
-    emit(ChallengesLoading());
-
     final resultUpdateChallengeDailyTrackingUsecase =
         await updateChallengeDailyTrackingUsecase.call(
       challengeDailyTrackingId: event.challengeDailyTrackingId,
@@ -430,8 +422,6 @@ class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
       DeleteChallengeDailyTrackingEvent event,
       Emitter<ChallengeState> emit) async {
     final currentState = state as ChallengesLoaded;
-    emit(ChallengesLoading());
-
     final resultDeleteChallengeDailyTrackingUsecase =
         await deleteChallengeDailyTrackingUsecase.call(
       challengeDailyTrackingId: event.challengeDailyTrackingId,
@@ -481,8 +471,6 @@ class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
       CreateChallengeParticipationEvent event,
       Emitter<ChallengeState> emit) async {
     final currentState = state as ChallengesLoaded;
-    emit(ChallengesLoading());
-
     final resultCreateChallengeParticipationUsecase =
         await createChallengeParticipationUsecase.call(
       challengeId: event.challengeId,
@@ -526,8 +514,6 @@ class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
       UpdateChallengeParticipationEvent event,
       Emitter<ChallengeState> emit) async {
     final currentState = state as ChallengesLoaded;
-    emit(ChallengesLoading());
-
     final resultUpdateChallengeParticipationUsecase =
         await updateChallengeParticipationUsecase.call(
       challengeParticipationId: event.challengeParticipationId,
@@ -574,8 +560,6 @@ class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
       DeleteChallengeParticipationEvent event,
       Emitter<ChallengeState> emit) async {
     final currentState = state as ChallengesLoaded;
-    emit(ChallengesLoading());
-
     final resultDeleteChallengeParticipationUsecase =
         await deleteChallengeParticipationUsecase.call(
       challengeParticipationId: event.challengeParticipationId,
@@ -619,8 +603,6 @@ class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
   Future<void> deleteChallenge(
       DeleteChallengeEvent event, Emitter<ChallengeState> emit) async {
     final currentState = state as ChallengesLoaded;
-    emit(ChallengesLoading());
-
     final resultDeleteChallengeUsecase = await deleteChallengeUsecase.call(
       challengeId: event.challengeId,
     );
@@ -706,8 +688,6 @@ class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
   Future<void> _duplicateChallenge(
       DuplicateChallengeEvent event, Emitter<ChallengeState> emit) async {
     final currentState = state as ChallengesLoaded;
-    emit(ChallengesLoading());
-
     final resultDuplicateChallengeUsecase =
         await duplicateChallengeUsecase.call(
       challengeId: event.challengeId,
@@ -822,8 +802,6 @@ class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
   Future<void> _getChallenge(
       GetChallengeEvent event, Emitter<ChallengeState> emit) async {
     final currentState = state as ChallengesLoaded;
-    emit(ChallengesLoading());
-
     final resultGetChallengeUsecase = await getChallengeUsecase.call(
       challengeId: event.challengeId,
     );
@@ -873,8 +851,6 @@ class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
       GetChallengeDailyTrackingsEvent event,
       Emitter<ChallengeState> emit) async {
     final currentState = state as ChallengesLoaded;
-    emit(ChallengesLoading());
-
     final resultGetChallengeDailyTrackingsUsecase =
         await getChallengeDailyTrackingsUsecase.call(
       challengeId: event.challengeId,

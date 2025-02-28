@@ -198,6 +198,14 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
 
       final weightUnits = getWeightUnits(habitState.units);
 
+      List<String> habitUnits =
+          habits[widget.habitDailyTracking.habitId] != null
+              ? habits[widget.habitDailyTracking.habitId]!
+                  .unitIds
+                  .where((unitId) => units.containsKey(unitId))
+                  .toList()
+              : [];
+
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -341,26 +349,21 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
               Expanded(
                 child: CustomDropdownButtonFormField(
                   value: _selectedUnitId,
-                  items: habits[widget.habitDailyTracking.habitId] != null
-                      ? habits[widget.habitDailyTracking.habitId]!
-                          .unitIds
-                          .where((unitId) => units.containsKey(unitId))
-                          .map(
-                          (unitId) {
-                            final unit = units[unitId]!;
-                            return DropdownMenuItem(
-                              value: unitId,
-                              child: Text(
-                                getRightTranslationForUnitFromJson(
-                                  unit.longName,
-                                  _quantityPerSet ?? 0,
-                                  userLocale,
-                                ),
-                              ),
-                            );
-                          },
-                        ).toList()
-                      : [],
+                  items: habitUnits.map(
+                    (unitId) {
+                      final unit = units[unitId]!;
+                      return DropdownMenuItem(
+                        value: unitId,
+                        child: Text(
+                          getRightTranslationForUnitFromJson(
+                            unit.longName,
+                            _quantityPerSet ?? 0,
+                            userLocale,
+                          ),
+                        ),
+                      );
+                    },
+                  ).toList(),
                   onChanged: (value) {
                     setState(() {
                       _selectedUnitId = value;

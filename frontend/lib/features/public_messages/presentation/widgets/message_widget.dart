@@ -159,6 +159,12 @@ class MessageWidget extends StatelessWidget {
               .firstOrNull ??
           publicMessageState.writtenMessages
               .where((m) => m.id == messageId)
+              .firstOrNull ??
+          publicMessageState.userReportedMessages
+              .where((m) => m.id == messageId)
+              .firstOrNull ??
+          publicMessageState.allReportedMessages
+              .where((m) => m.id == messageId)
               .firstOrNull;
 
       if (message == null) {
@@ -174,6 +180,19 @@ class MessageWidget extends StatelessWidget {
           : replyState.replies.where((m) => m.repliesTo == messageId).toList();
 
       replies.sort((a, b) {
+        if ((a.deletedByAdmin || a.deletedByCreator) &&
+            (b.deletedByAdmin || b.deletedByCreator)) {
+          return 0;
+        }
+
+        // Deleted messages always come last
+        if (a.deletedByAdmin || a.deletedByCreator) {
+          return 1;
+        }
+        if (b.deletedByAdmin || b.deletedByCreator) {
+          return -1;
+        }
+
         if (b.likeCount != a.likeCount) {
           return b.likeCount - a.likeCount;
         }

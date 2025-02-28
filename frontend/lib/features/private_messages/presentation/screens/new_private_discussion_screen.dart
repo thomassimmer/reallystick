@@ -4,12 +4,12 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reallystick/core/messages/message.dart';
 import 'package:reallystick/core/presentation/widgets/global_snack_bar.dart';
-import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/private_messages/presentation/blocs/private_discussion/private_discussion_bloc.dart';
 import 'package:reallystick/features/private_messages/presentation/blocs/private_discussion/private_discussion_events.dart';
 import 'package:reallystick/features/private_messages/presentation/blocs/private_discussion/private_discussion_states.dart';
 import 'package:reallystick/features/private_messages/presentation/blocs/private_message_creation/private_message_creation_bloc.dart';
 import 'package:reallystick/features/private_messages/presentation/blocs/private_message_creation/private_message_creation_events.dart';
+import 'package:reallystick/features/private_messages/presentation/widgets/custom_message_input.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
 import 'package:reallystick/features/users/presentation/blocs/user/user_bloc.dart';
@@ -31,33 +31,59 @@ class NewPrivateDiscussionScreen extends StatefulWidget {
 
 class NewPrivateDiscussionScreenState
     extends State<NewPrivateDiscussionScreen> {
-  String _content = "";
+  final TextEditingController _contentController = TextEditingController();
 
-  void _sendMessage({
-    required String creatorPublicKey,
-    required String recipientPublicKey,
-  }) {
-    final privateMessageCreationFormBloc =
-        context.read<PrivateMessageCreationFormBloc>();
+  @override
+  void initState() {
+    super.initState();
 
-    privateMessageCreationFormBloc.add(
-      PrivateMessageCreationFormContentChangedEvent(_content),
-    );
-
-    Future.delayed(const Duration(milliseconds: 50), () {
-      if (privateMessageCreationFormBloc.state.isValid) {
-        final newDiscussionEvent = AddNewDiscussionEvent(
-          recipient: widget.recipientId,
-          content: _content,
-          creatorPublicKey: creatorPublicKey,
-          recipientPublicKey: recipientPublicKey,
-        );
-
-        if (mounted) {
-          context.read<PrivateDiscussionBloc>().add(newDiscussionEvent);
-        }
-      }
+    _contentController.addListener(() {
+      setState(() {});
     });
+  }
+
+  @override
+  void dispose() {
+    _contentController.dispose();
+
+    super.dispose();
+  }
+
+  void _sendMessage() {
+    final userState = context.read<UserBloc>().state;
+    final profileState = context.read<ProfileBloc>().state;
+
+    if (userState is UsersLoaded && profileState is ProfileAuthenticated) {
+      final recipient = userState.users[widget.recipientId]!;
+      final recipientPublicKey = recipient.publicKey!;
+      final creatorPublicKey = profileState.profile.publicKey!;
+
+      final privateMessageCreationFormBloc =
+          context.read<PrivateMessageCreationFormBloc>();
+
+      privateMessageCreationFormBloc.add(
+        PrivateMessageCreationFormContentChangedEvent(_contentController.text),
+      );
+
+      Future.delayed(const Duration(milliseconds: 50), () {
+        if (privateMessageCreationFormBloc.state.isValid) {
+          final newDiscussionEvent = AddNewDiscussionEvent(
+            recipient: widget.recipientId,
+            content: _contentController.text,
+            creatorPublicKey: creatorPublicKey,
+            recipientPublicKey: recipientPublicKey,
+          );
+
+          if (mounted) {
+            context.read<PrivateDiscussionBloc>().add(newDiscussionEvent);
+          }
+
+          setState(() {
+            _contentController.text = '';
+          });
+        }
+      });
+    }
   }
 
   @override
@@ -128,15 +154,9 @@ class NewPrivateDiscussionScreenState
   @override
   Widget build(BuildContext context) {
     final userState = context.watch<UserBloc>().state;
-    final profileState = context.watch<ProfileBloc>().state;
-    final privateDiscussionState = context.watch<PrivateDiscussionBloc>().state;
 
-    if (userState is UsersLoaded &&
-        privateDiscussionState is PrivateDiscussionLoaded &&
-        profileState is ProfileAuthenticated) {
+    if (userState is UsersLoaded) {
       final recipient = userState.users[widget.recipientId]!;
-      final recipientPublicKey = recipient.publicKey;
-      final creatorPublicKey = profileState.profile.publicKey;
 
       return Scaffold(
         appBar: AppBar(
@@ -158,38 +178,11 @@ class NewPrivateDiscussionScreenState
                   ),
                 ),
               ),
-              TextField(
-                onSubmitted: (_) => _sendMessage(
-                  creatorPublicKey: creatorPublicKey!,
-                  recipientPublicKey: recipientPublicKey!,
-                ),
-                onChanged: (value) => {
-                  setState(() {
-                    _content = value;
-                  })
-                },
-                decoration: InputDecoration(
-                  hintText: AppLocalizations.of(context)!.replyTo(
-                    recipient.username,
-                  ),
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      Icons.send,
-                      color: _content.trim().isNotEmpty
-                          ? context.colors.primary
-                          : context.colors.hint,
-                    ),
-                    onPressed: _content.trim().isNotEmpty
-                        ? () {
-                            _sendMessage(
-                              creatorPublicKey: creatorPublicKey!,
-                              recipientPublicKey: recipientPublicKey!,
-                            );
-                          }
-                        : null,
-                  ),
-                ),
-              ),
+              CustomMessageInput(
+                contentController: _contentController,
+                recipientUsername: recipient.username,
+                onSendMessage: _sendMessage,
+              )
             ],
           ),
         ),

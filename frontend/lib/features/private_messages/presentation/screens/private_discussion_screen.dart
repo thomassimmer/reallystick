@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
@@ -21,6 +20,7 @@ import 'package:reallystick/features/private_messages/presentation/blocs/private
 import 'package:reallystick/features/private_messages/presentation/blocs/private_message_creation/private_message_creation_events.dart';
 import 'package:reallystick/features/private_messages/presentation/blocs/private_message_update/private_message_update_bloc.dart';
 import 'package:reallystick/features/private_messages/presentation/blocs/private_message_update/private_message_update_events.dart';
+import 'package:reallystick/features/private_messages/presentation/widgets/custom_message_input.dart';
 import 'package:reallystick/features/private_messages/presentation/widgets/private_message_widget.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
@@ -44,6 +44,23 @@ class PrivateDiscussionScreenState extends State<PrivateDiscussionScreen> {
   final TextEditingController _contentController = TextEditingController();
   PrivateMessage? _messageBeingEdited;
   final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _contentController.addListener(() {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _contentController.dispose();
+    _scrollController.dispose();
+
+    super.dispose();
+  }
 
   void _sendMessage() {
     final userState = BlocProvider.of<UserBloc>(context, listen: false).state;
@@ -176,37 +193,6 @@ class PrivateDiscussionScreenState extends State<PrivateDiscussionScreen> {
     context
         .read<PrivateDiscussionBloc>()
         .add(updateDiscussionParticipationEvent);
-  }
-
-  late final focusNode = FocusNode(
-    onKeyEvent: (FocusNode node, KeyEvent evt) {
-      if (!HardwareKeyboard.instance.isShiftPressed &&
-          evt.logicalKey == LogicalKeyboardKey.enter) {
-        if (evt is KeyDownEvent && _contentController.text.trim().isNotEmpty) {
-          _messageBeingEdited == null ? _sendMessage() : _editMessage();
-          return KeyEventResult.handled;
-        }
-      }
-      return KeyEventResult.ignored;
-    },
-  );
-
-  @override
-  void initState() {
-    super.initState();
-
-    _contentController.addListener(() {
-      setState(() {});
-    });
-  }
-
-  @override
-  void dispose() {
-    _contentController.dispose();
-    focusNode.dispose();
-    _scrollController.dispose();
-
-    super.dispose();
   }
 
   @override
@@ -354,18 +340,19 @@ class PrivateDiscussionScreenState extends State<PrivateDiscussionScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Expanded(
-                    child: SingleChildScrollView(
-                      controller: _scrollController,
-                      child: Column(
-                        children: [
-                          if (discussion.hasBlocked) ...[
-                            Text(AppLocalizations.of(context)!
-                                .youBlockedThisUser)
-                          ] else ...[
-                            for (final (idx, message) in messages.indexed) ...[
-                              if (idx > 0 &&
-                                  messages[idx - 1]
+                  if (discussion.hasBlocked) ...[
+                    Text(AppLocalizations.of(context)!.youBlockedThisUser)
+                  ] else ...[
+                    Expanded(
+                      child: ListView.builder(
+                        controller: _scrollController,
+                        itemCount: messages.length,
+                        itemBuilder: (context, index) {
+                          final message = messages[index];
+                          return Column(
+                            children: [
+                              if (index > 0 &&
+                                  messages[index - 1]
                                           .createdAt
                                           .day
                                           .compareTo(message.createdAt.day) <
@@ -434,50 +421,19 @@ class PrivateDiscussionScreenState extends State<PrivateDiscussionScreen> {
                                 ),
                               ),
                               SizedBox(height: 10),
-                            ]
-                          ],
-                        ],
+                            ],
+                          );
+                        },
                       ),
                     ),
-                  ),
-                  if (!discussion.hasBlocked)
-                    TextField(
-                      controller: _contentController,
-                      focusNode: focusNode,
-                      autofocus: true,
-                      keyboardType: TextInputType.multiline,
-                      maxLines: null,
-                      textInputAction: TextInputAction.newline,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20.0),
-                          borderSide: BorderSide(
-                            color: context.colors.primary,
-                          ),
-                        ),
-                        labelText: _messageBeingEdited != null
-                            ? AppLocalizations.of(context)!.edit
-                            : null,
-                        hintText: AppLocalizations.of(context)!.replyTo(
-                          recipient.username,
-                        ),
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            Icons.send,
-                            color: _contentController.text.trim().isNotEmpty
-                                ? context.colors.primary
-                                : context.colors.hint,
-                          ),
-                          onPressed: _contentController.text.trim().isNotEmpty
-                              ? () {
-                                  _messageBeingEdited == null
-                                      ? _sendMessage()
-                                      : _editMessage();
-                                }
-                              : null,
-                        ),
-                      ),
-                    ),
+                  ],
+                  CustomMessageInput(
+                    contentController: _contentController,
+                    recipientUsername: recipient.username,
+                    onSendMessage: _sendMessage,
+                    isEditing: _messageBeingEdited != null,
+                    onEditMessage: _editMessage,
+                  )
                 ],
               ),
             ),
@@ -491,11 +447,17 @@ class PrivateDiscussionScreenState extends State<PrivateDiscussionScreen> {
           padding: EdgeInsets.all(16),
           child: Center(
             child: Container(
-              constraints: BoxConstraints(
-                maxWidth: 600,
-              ),
-              child: CircularProgressIndicator(),
-            ),
+                constraints: BoxConstraints(
+                  maxWidth: 600,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircularProgressIndicator(),
+                    SizedBox(height: 10),
+                    Text("Your messages are loading...")
+                  ],
+                )),
           ),
         ),
       );

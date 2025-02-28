@@ -21,10 +21,10 @@ class DiscussionListScreenState extends State<DiscussionListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final publicMessageState = context.watch<PrivateDiscussionBloc>().state;
+    final privateDiscussionState = context.watch<PrivateDiscussionBloc>().state;
 
-    if (publicMessageState is PrivateDiscussionLoaded) {
-      final discussions = publicMessageState.discussions.values.toList();
+    if (privateDiscussionState is PrivateDiscussionLoaded) {
+      final discussions = privateDiscussionState.discussions.values.toList();
 
       discussions.sort((a, b) {
         if (a.hasBlocked || b.hasBlocked) {

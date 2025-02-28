@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:reallystick/core/messages/message.dart';
@@ -17,7 +18,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       GetIt.instance<GetUsersPublicDataUsecase>();
 
   UserBloc({required this.authBloc}) : super(UsersLoaded(users: {})) {
-    on<GetUserPublicDataEvent>(_getUserPublicData);
+    on<GetUserPublicDataEvent>(_getUserPublicData, transformer: sequential());
   }
 
   Future<void> _getUserPublicData(
@@ -29,8 +30,6 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         .toList();
 
     if (missingUserIds.isNotEmpty) {
-      emit(UsersLoading());
-
       final resultGetUsersPublicDataUsecase =
           await getUsersPublicDataUsecase.call(
         userIds: missingUserIds,
