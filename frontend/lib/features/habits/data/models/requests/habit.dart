@@ -56,7 +56,7 @@ class HabitCreateRequestModel {
       'description': description,
       'category_id': categoryId,
       'icon': icon,
-      'unit_ids': unitIds,
+      'unit_ids': unitIds.toList(),
     };
   }
 }
