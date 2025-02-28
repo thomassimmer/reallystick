@@ -213,7 +213,7 @@
   "quantityPerSet": "Nombre de répétition",
   "quantityPerSetIsNullError": "La quantité ne peut pas être nulle.",
   "quantityPerSetIsNegativeError": "La quantité ne peut pas être négative.",
-  "questionActivity": "What is your current activity?",
+  "questionActivity": "Quelle est votre activité actuellement ?",
   "questionAge": "Quel âge avez-vous ?",
   "questionFinancialSituation": "Comment décririez-vous votre situation financière ?",
   "questionGender": "Êtes-vous un homme ou une femme ?",

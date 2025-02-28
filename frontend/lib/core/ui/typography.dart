@@ -32,7 +32,7 @@ class AppThemeTypography {
     ),
     this.bodyLarge = const TextStyle(
       fontSize: 18,
-      fontWeight: FontWeight.w500,
+      fontWeight: FontWeight.w400,
     ),
     this.body = const TextStyle(
       fontSize: 16,

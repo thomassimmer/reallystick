@@ -191,124 +191,129 @@ class CreateHabitScreenState extends State<CreateHabitScreen> {
               body: SingleChildScrollView(
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      // Category Selector
-                      CustomDropdownButtonFormField(
-                        value: _selectedCategoryId,
-                        items: habitCategories.entries
-                            .map(
-                              (entry) => DropdownMenuItem(
-                                value: entry.key,
-                                child: Text(
-                                  getRightTranslationFromJson(
-                                    entry.value.name,
-                                    userLocale,
-                                  ),
-                                ),
-                              ),
-                            )
-                            .toList(),
-                        onChanged: (value) {
-                          BlocProvider.of<HabitCreationFormBloc>(context).add(
-                              HabitCreationFormCategoryChangedEvent(
-                                  value ?? ""));
-                          setState(() {
-                            _selectedCategoryId = value;
-                          });
-                        },
-                        label: AppLocalizations.of(context)!.category,
-                        errorText: displayHabitCategoryErrorMessage,
-                      ),
-
-                      const SizedBox(height: 16.0),
-
-                      // Short Name Input
-                      CustomTextField(
-                        controller: _shortNameController,
-                        onChanged: (shortName) =>
-                            BlocProvider.of<HabitCreationFormBloc>(context).add(
-                                HabitCreationFormShortNameChangedEvent(
-                                    shortName)),
-                        label: AppLocalizations.of(context)!.shortName,
-                        errorText: displayShortNameErrorMessage,
-                      ),
-
-                      const SizedBox(height: 16.0),
-
-                      // Long Name Input
-                      CustomTextField(
-                        controller: _longNameController,
-                        onChanged: (longName) =>
-                            BlocProvider.of<HabitCreationFormBloc>(context).add(
-                                HabitCreationFormLongNameChangedEvent(
-                                    longName)),
-                        label: AppLocalizations.of(context)!.longName,
-                        errorText: displayLongNameErrorMessage,
-                      ),
-
-                      const SizedBox(height: 16.0),
-
-                      // Description Input
-                      CustomTextField(
-                        controller: _descriptionController,
-                        maxLines: 3,
-                        onChanged: (description) =>
-                            BlocProvider.of<HabitCreationFormBloc>(context).add(
-                                HabitCreationFormDescriptionChangedEvent(
-                                    description)),
-                        label: AppLocalizations.of(context)!.description,
-                        errorText: displayDescriptionErrorMessage,
-                      ),
-
-                      const SizedBox(height: 16.0),
-
-                      // Unit Selector
-                      MultiUnitSelectDropdown(
-                        initialSelectedValues: _selectedUnitIds.toList(),
-                        options: habitState.units,
-                        userLocale: userLocale,
-                        errors: unitsErrorMap,
-                        onUnitsChanged: (newUnits) {
-                          _selectedUnitIds = newUnits;
-                        },
-                      ),
-
-                      const SizedBox(height: 16.0),
-
-                      // Icon Selector with error display
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Center(
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(maxWidth: 600),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          Row(
+                          // Category Selector
+                          CustomDropdownButtonFormField(
+                            value: _selectedCategoryId,
+                            items: habitCategories.entries
+                                .map(
+                                  (entry) => DropdownMenuItem(
+                                    value: entry.key,
+                                    child: Text(
+                                      getRightTranslationFromJson(
+                                        entry.value.name,
+                                        userLocale,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                                .toList(),
+                            onChanged: (value) {
+                              BlocProvider.of<HabitCreationFormBloc>(context)
+                                  .add(HabitCreationFormCategoryChangedEvent(
+                                      value ?? ""));
+                              setState(() {
+                                _selectedCategoryId = value;
+                              });
+                            },
+                            label: AppLocalizations.of(context)!.category,
+                            errorText: displayHabitCategoryErrorMessage,
+                          ),
+
+                          const SizedBox(height: 16.0),
+
+                          // Short Name Input
+                          CustomTextField(
+                            controller: _shortNameController,
+                            onChanged: (shortName) =>
+                                BlocProvider.of<HabitCreationFormBloc>(context)
+                                    .add(HabitCreationFormShortNameChangedEvent(
+                                        shortName)),
+                            label: AppLocalizations.of(context)!.shortName,
+                            errorText: displayShortNameErrorMessage,
+                          ),
+
+                          const SizedBox(height: 16.0),
+
+                          // Long Name Input
+                          CustomTextField(
+                            controller: _longNameController,
+                            onChanged: (longName) =>
+                                BlocProvider.of<HabitCreationFormBloc>(context)
+                                    .add(HabitCreationFormLongNameChangedEvent(
+                                        longName)),
+                            label: AppLocalizations.of(context)!.longName,
+                            errorText: displayLongNameErrorMessage,
+                          ),
+
+                          const SizedBox(height: 16.0),
+
+                          // Description Input
+                          CustomTextField(
+                            controller: _descriptionController,
+                            maxLines: 3,
+                            onChanged: (description) => BlocProvider.of<
+                                    HabitCreationFormBloc>(context)
+                                .add(HabitCreationFormDescriptionChangedEvent(
+                                    description)),
+                            label: AppLocalizations.of(context)!.description,
+                            errorText: displayDescriptionErrorMessage,
+                          ),
+
+                          const SizedBox(height: 16.0),
+
+                          // Unit Selector
+                          MultiUnitSelectDropdown(
+                            initialSelectedValues: _selectedUnitIds.toList(),
+                            options: habitState.units,
+                            userLocale: userLocale,
+                            errors: unitsErrorMap,
+                            onUnitsChanged: (newUnits) {
+                              _selectedUnitIds = newUnits;
+                            },
+                          ),
+
+                          const SizedBox(height: 16.0),
+
+                          // Icon Selector with error display
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              CustomElevatedButtonFormField(
-                                onPressed: _pickIcon,
-                                iconData: Icons.select_all,
-                                label: AppLocalizations.of(context)!.icon,
-                                errorText: displayIconErrorMessage,
+                              Row(
+                                children: [
+                                  CustomElevatedButtonFormField(
+                                    onPressed: _pickIcon,
+                                    iconData: Icons.select_all,
+                                    label: AppLocalizations.of(context)!.icon,
+                                    errorText: displayIconErrorMessage,
+                                  ),
+                                  const SizedBox(width: 16.0),
+                                  if (_icon != null) Icon(_icon, size: 36),
+                                ],
                               ),
-                              const SizedBox(width: 16.0),
-                              if (_icon != null) Icon(_icon, size: 36),
+                            ],
+                          ),
+
+                          const SizedBox(height: 16.0),
+
+                          // Create Habit Button
+                          Column(
+                            children: [
+                              ElevatedButton(
+                                onPressed: () => _createHabit(userLocale),
+                                child: Text(
+                                    AppLocalizations.of(context)!.createHabit),
+                              ),
                             ],
                           ),
                         ],
                       ),
-
-                      const SizedBox(height: 16.0),
-
-                      // Create Habit Button
-                      Column(
-                        children: [
-                          ElevatedButton(
-                            onPressed: () => _createHabit(userLocale),
-                            child:
-                                Text(AppLocalizations.of(context)!.createHabit),
-                          ),
-                        ],
-                      ),
-                    ],
+                    ),
                   ),
                 ),
               ),

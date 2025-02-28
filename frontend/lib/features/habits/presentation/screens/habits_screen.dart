@@ -66,6 +66,9 @@ class HabitsScreenState extends State<HabitsScreen> {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
       ),
+      constraints: BoxConstraints(
+        maxWidth: 600,
+      ),
       builder: (BuildContext context) {
         return Padding(
           padding: EdgeInsets.only(

@@ -58,6 +58,19 @@ class QuestionnaireModalState extends State<QuestionnaireModal> {
       AppLocalizations.of(context)!.questionHasChildren,
     ];
 
+    final List<IconData?> icons = [
+      null,
+      Icons.cake,
+      Icons.wc,
+      Icons.public,
+      Icons.location_city,
+      Icons.work,
+      Icons.school,
+      Icons.account_balance_wallet,
+      Icons.favorite,
+      Icons.escalator_warning
+    ];
+
     final List<Widget> widgets = [
       _buildIntroductionWidget(context),
       AgeSelectionWidget(profile: profile, updateProfile: updateProfile),
@@ -102,44 +115,53 @@ class QuestionnaireModalState extends State<QuestionnaireModal> {
     return Padding(
       padding:
           EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text(
-              questions[_currentStep],
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: widgets[_currentStep],
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: ElevatedButton(
-              onPressed: nextStep,
-              child: Text(AppLocalizations.of(context)!.next),
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+      child: Center(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: 600),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              if (_currentStep > 0)
-                TextButton(
-                  onPressed: previousStep,
-                  child: Text(AppLocalizations.of(context)!.previous),
-                ),
-              TextButton(
-                onPressed: _skip,
-                child: Text(AppLocalizations.of(context)!.skip),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Icon(icons[_currentStep]),
               ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  questions[_currentStep],
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: widgets[_currentStep],
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: ElevatedButton(
+                  onPressed: nextStep,
+                  child: Text(AppLocalizations.of(context)!.next),
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (_currentStep > 0)
+                    TextButton(
+                      onPressed: previousStep,
+                      child: Text(AppLocalizations.of(context)!.previous),
+                    ),
+                  TextButton(
+                    onPressed: _skip,
+                    child: Text(AppLocalizations.of(context)!.skip),
+                  ),
+                ],
+              ),
+              SizedBox(height: 16),
             ],
           ),
-          SizedBox(height: 16),
-        ],
+        ),
       ),
     );
   }

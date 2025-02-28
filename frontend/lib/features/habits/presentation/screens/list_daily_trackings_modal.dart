@@ -40,6 +40,9 @@ class ListDailyTrackingsModalState extends State<ListDailyTrackingsModal> {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
       ),
+      constraints: BoxConstraints(
+        maxWidth: 600,
+      ),
       builder: (BuildContext context) {
         return Padding(
           padding: EdgeInsets.only(
@@ -105,32 +108,51 @@ class ListDailyTrackingsModalState extends State<ListDailyTrackingsModal> {
                     habitDailyTracking: dailyTracking,
                   ),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      ListTile(
-                        title: Row(
-                          children: [
-                            Text(
-                              DateFormat('HH:mm')
-                                  .format(dailyTracking.datetime),
-                            ),
-                            if (dailyTracking.quantityOfSet > 1) ...[
-                              Text(
-                                  "     ${AppLocalizations.of(context)!.quantityPerSet} : ${dailyTracking.quantityPerSet}"),
-                            ] else ...[
-                              Text(
-                                  "     ${AppLocalizations.of(context)!.quantity} : ${dailyTracking.quantityPerSet}"),
-                            ],
-                            if (unit.shortName['en'] != '')
-                              Text(
-                                  " ${getRightTranslationForUnitFromJson(unit.longName, dailyTracking.quantityPerSet, userLocale)}"),
-                            if (shouldDisplaySportSpecificInputsResult) ...[
-                              Text(
-                                  "     ${AppLocalizations.of(context)!.quantityOfSet} : ${dailyTracking.quantityOfSet}"),
-                              if (weightUnit.shortName['en'] != '')
+                      Padding(
+                        padding: EdgeInsets.all(16),
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Row(
+                              children: [
                                 Text(
-                                    "     ${AppLocalizations.of(context)!.weight} : ${dailyTracking.weight} ${getRightTranslationForUnitFromJson(weightUnit.longName, dailyTracking.weight, userLocale)}"),
-                            ],
-                          ],
+                                  DateFormat('HH:mm')
+                                      .format(dailyTracking.datetime),
+                                  style: context.typographies.bodyLarge,
+                                ),
+                                if (dailyTracking.quantityOfSet > 1) ...[
+                                  Text(
+                                    "     ${AppLocalizations.of(context)!.quantityPerSet} : ${dailyTracking.quantityPerSet}",
+                                    style: context.typographies.bodyLarge,
+                                  ),
+                                ] else ...[
+                                  Text(
+                                    "     ${AppLocalizations.of(context)!.quantity} : ${dailyTracking.quantityPerSet}",
+                                    style: context.typographies.bodyLarge,
+                                  ),
+                                ],
+                                if (unit.shortName['en'] != '')
+                                  Text(
+                                    " ${getRightTranslationForUnitFromJson(unit.longName, dailyTracking.quantityPerSet, userLocale)}",
+                                    style: context.typographies.bodyLarge,
+                                  ),
+                                if (shouldDisplaySportSpecificInputsResult) ...[
+                                  Text(
+                                    "     ${AppLocalizations.of(context)!.quantityOfSet} : ${dailyTracking.quantityOfSet}",
+                                    style: context.typographies.bodyLarge,
+                                  ),
+                                  if (weightUnit.shortName['en'] != '')
+                                    Text(
+                                      "     ${AppLocalizations.of(context)!.weight} : ${dailyTracking.weight} ${getRightTranslationForUnitFromJson(weightUnit.longName, dailyTracking.weight, userLocale)}",
+                                      style: context.typographies.bodyLarge,
+                                    ),
+                                ],
+                              ],
+                            ),
+                          ),
                         ),
                       ),
                       if (index != dailyTrackings.length - 1)

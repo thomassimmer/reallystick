@@ -40,6 +40,9 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
       ),
+      constraints: BoxConstraints(
+        maxWidth: 600,
+      ),
       builder: (BuildContext context) {
         return Padding(
           padding: EdgeInsets.only(
@@ -70,6 +73,9 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
       isScrollControlled: true,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
+      ),
+      constraints: BoxConstraints(
+        maxWidth: 600,
       ),
       builder: (BuildContext context) {
         return ColorPickerModal(

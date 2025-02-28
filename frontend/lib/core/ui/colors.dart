@@ -103,35 +103,45 @@ class AppThemeColors {
 }
 
 enum AppColor {
-  white(Color(0xFFFFFFFF)),
-  beige(Color(0xFFA8A878)),
-  black(Color(0xFF303943)),
-  blue(Color(0xFF429BED)),
-  brown(Color(0xFFB1736C)),
-  darkBrown(Color(0xD0795548)),
-  grey(Color(0x64303943)),
-  indigo(Color(0xFF6C79DB)),
-  lightBlue(Color(0xFF7AC7FF)),
-  lightBrown(Color(0xFFCA8179)),
-  whiteGrey(Color(0xFFFDFDFD)),
-  lightCyan(Color(0xFF98D8D8)),
-  lightGreen(Color(0xFF78C850)),
-  lighterGrey(Color(0xFFF4F5F4)),
-  lightGrey(Color(0xFFF5F5F5)),
-  lightPink(Color(0xFFEE99AC)),
-  lightPurple(Color(0xFF9F5BBA)),
+  // Red Shades
   lightRed(Color(0xFFFB6C6C)),
-  lightTeal(Color(0xFF48D0B0)),
-  lightYellow(Color(0xFFFFCE4B)),
-  lilac(Color(0xFFA890F0)),
-  pink(Color(0xFFF85888)),
-  purple(Color(0xFF7C538C)),
   red(Color(0xFFFA6555)),
-  teal(Color(0xFF4FC1A6)),
+  pink(Color(0xFFF85888)),
+  lightPink(Color(0xFFEE99AC)),
+
+  // Orange Shades
+  orange(Color(0xFFFF9D5C)),
+
+  // Yellow Shades
+  lightYellow(Color(0xFFFFCE4B)),
   yellow(Color(0xFFF6C747)),
-  semiGrey(Color(0xFFbababa)),
+
+  // Green Shades
+  lightGreen(Color(0xFF78C850)),
+  lightTeal(Color(0xFF48D0B0)),
+  teal(Color(0xFF4FC1A6)),
+
+  // Cyan Shades
+  lightCyan(Color(0xFF98D8D8)),
+
+  // Blue Shades
+  lightBlue(Color(0xFF7AC7FF)),
+  blue(Color(0xFF429BED)),
+
+  // Indigo Shades
+  indigo(Color(0xFF6C79DB)),
+
+  // Violet Shades
   violet(Color(0xD07038F8)),
-  orange(Color(0xFFFF9D5C));
+  lilac(Color(0xFFA890F0)),
+  lightPurple(Color(0xFF9F5BBA)),
+  purple(Color(0xFF7C538C)),
+
+  // Brown and Neutral Shades
+  beige(Color(0xFFA8A878)),
+  brown(Color(0xFFB1736C)),
+  lightBrown(Color(0xFFCA8179)),
+  darkBrown(Color(0xD0795548));
 
   final Color color;
 
