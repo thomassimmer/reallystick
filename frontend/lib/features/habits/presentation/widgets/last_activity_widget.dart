@@ -19,7 +19,7 @@ class LastActivityWidget extends StatefulWidget {
 }
 
 class _LastActivityWidgetState extends State<LastActivityWidget> {
-  late Timer _timer;
+  Timer? _timer;
   DateTime? _lastActivityDateTime;
 
   @override
@@ -58,7 +58,9 @@ class _LastActivityWidgetState extends State<LastActivityWidget> {
 
   @override
   void dispose() {
-    _timer.cancel(); // Cancel the timer when the widget is disposed
+    if (_timer != null && _timer!.isActive) {
+      _timer!.cancel(); // Cancel the timer when the widget is disposed
+    }
     super.dispose();
   }
 
