@@ -293,6 +293,7 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
           ] else ...[
             // Day of program selector
             CustomTextField(
+              initialValue: (_selectedDayOfProgram + 1).toString(),
               label: AppLocalizations.of(context)!.dayOfProgram,
               keyboardType: TextInputType.number,
               inputFormatters: <TextInputFormatter>[

@@ -211,7 +211,7 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
                     const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
                 child: ListView(
                   children: [
-                    SizedBox(height: 25),
+                    SizedBox(height: 30),
                     Container(
                       decoration: BoxDecoration(
                         color: habitColor.withAlpha(155),
@@ -226,12 +226,12 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 25),
+                    SizedBox(height: 30),
                     AnalyticsCarouselWidget(
                       habitColor: habitColor,
                       habitId: habit.id,
                     ),
-                    SizedBox(height: 25),
+                    SizedBox(height: 30),
                     if (habitParticipation != null) ...[
                       DailyTrackingCarouselWidget(
                         habitDailyTrackings: habitDailyTrackings,
@@ -243,7 +243,7 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
                       SizedBox(height: 16),
                     ],
                     ChallengesCarouselWidget(habitColor: habitColor),
-                    SizedBox(height: 25),
+                    SizedBox(height: 30),
                     HabitDiscussionListWidget(habitColor: habitColor),
                     SizedBox(height: 72),
                   ],

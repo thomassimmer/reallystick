@@ -14,6 +14,7 @@ import 'package:reallystick/features/challenges/presentation/screens/challenge_n
 import 'package:reallystick/features/challenges/presentation/widgets/analytics_carousel_widget.dart';
 import 'package:reallystick/features/challenges/presentation/widgets/challenge_discussion_list_widget.dart';
 import 'package:reallystick/features/challenges/presentation/widgets/daily_tracking_carousel_widget.dart';
+import 'package:reallystick/features/challenges/presentation/widgets/list_of_concerned_habits.dart';
 import 'package:reallystick/features/habits/presentation/helpers/translations.dart';
 import 'package:reallystick/features/habits/presentation/screens/color_picker_modal.dart';
 import 'package:reallystick/features/habits/presentation/widgets/add_activity_button.dart';
@@ -272,6 +273,7 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
                     Container(
                       decoration: BoxDecoration(
                         color: challengeColor.withAlpha(155),
+                        border: Border.all(width: 1, color: challengeColor),
                         borderRadius: BorderRadius.circular(16.0),
                       ),
                       child: Padding(
@@ -282,12 +284,17 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 25),
+                    SizedBox(height: 30),
+                    ListOfConcernedHabits(
+                      challengeColor: challengeColor,
+                      challengeId: widget.challengeId,
+                    ),
+                    SizedBox(height: 30),
                     AnalyticsCarouselWidget(
                       challengeColor: challengeColor,
                       challengeId: challenge.id,
                     ),
-                    SizedBox(height: 25),
+                    SizedBox(height: 30),
                     if (challenge.creator == profileState.profile.id ||
                         challengeParticipation != null) ...[
                       DailyTrackingCarouselWidget(
@@ -297,7 +304,7 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
                         canOpenDayBoxes: true,
                         displayTitle: true,
                       ),
-                      SizedBox(height: 25),
+                      SizedBox(height: 30),
                     ],
                     ChallengeDiscussionListWidget(color: challengeColor),
                     SizedBox(height: 72),
