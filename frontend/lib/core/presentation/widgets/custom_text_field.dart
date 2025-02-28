@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 
-class CustomTextField extends StatelessWidget {
+class CustomTextField extends StatefulWidget {
   final TextEditingController? controller;
   final String? initialValue;
   final String label;
@@ -14,7 +14,7 @@ class CustomTextField extends StatelessWidget {
   final void Function(String)? onChanged;
   final void Function(String)? onFieldSubmitted;
 
-  CustomTextField({
+  const CustomTextField({
     this.controller,
     this.initialValue,
     required this.label,
@@ -26,23 +26,43 @@ class CustomTextField extends StatelessWidget {
     this.errorText,
     this.onChanged,
     this.onFieldSubmitted,
-  });
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  CustomTextFieldState createState() => CustomTextFieldState();
+}
+
+class CustomTextFieldState extends State<CustomTextField> {
+  late bool _isObscured;
+
+  @override
+  void initState() {
+    super.initState();
+    _isObscured = widget.obscureText;
+  }
+
+  void _toggleObscureText() {
+    setState(() {
+      _isObscured = !_isObscured;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: 300.0,
       child: TextFormField(
-        controller: controller,
-        initialValue: initialValue,
-        keyboardType: keyboardType,
-        obscureText: obscureText,
-        maxLength: maxLength,
-        maxLines: maxLines,
-        onChanged: onChanged,
-        onFieldSubmitted: onFieldSubmitted,
+        controller: widget.controller,
+        initialValue: widget.initialValue,
+        keyboardType: widget.keyboardType,
+        obscureText: _isObscured,
+        maxLength: widget.maxLength,
+        maxLines: widget.maxLines,
+        onChanged: widget.onChanged,
+        onFieldSubmitted: widget.onFieldSubmitted,
         decoration: InputDecoration(
-          labelText: label,
+          labelText: widget.label,
           errorMaxLines: 10,
           filled: true,
           focusedBorder: OutlineInputBorder(
@@ -69,9 +89,18 @@ class CustomTextField extends StatelessWidget {
               color: context.colors.error,
             ),
           ),
-          errorText: errorText,
+          errorText: widget.errorText,
+          suffixIcon: widget.obscureText
+              ? IconButton(
+                  icon: Icon(
+                    _isObscured ? Icons.visibility : Icons.visibility_off,
+                    color: context.colors.secondary,
+                  ),
+                  onPressed: _toggleObscureText,
+                )
+              : null,
         ),
-        validator: validator,
+        validator: widget.validator,
       ),
     );
   }
