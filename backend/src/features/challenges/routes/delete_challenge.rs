@@ -32,7 +32,7 @@ pub async fn delete_challenge(
         }
     };
 
-    match get_challenge_by_id(&mut transaction, params.challenge_id).await {
+    match get_challenge_by_id(&mut *transaction, params.challenge_id).await {
         Ok(r) => match r {
             Some(challenge) => {
                 if !request_claims.is_admin && challenge.creator != request_claims.user_id {
@@ -51,7 +51,7 @@ pub async fn delete_challenge(
     };
 
     let delete_challenge_result =
-        delete_challenge_by_id(&mut transaction, params.challenge_id).await;
+        delete_challenge_by_id(&mut *transaction, params.challenge_id).await;
 
     if let Err(e) = transaction.commit().await {
         eprintln!("Error: {}", e);

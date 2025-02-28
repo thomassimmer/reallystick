@@ -14,22 +14,7 @@ use sqlx::PgPool;
 
 #[get("/{habit_id}")]
 pub async fn get_habit(pool: Data<PgPool>, params: Path<GetHabitParams>) -> impl Responder {
-    let mut transaction = match pool.begin().await {
-        Ok(t) => t,
-        Err(e) => {
-            eprintln!("Error: {}", e);
-            return HttpResponse::InternalServerError()
-                .json(AppError::DatabaseConnection.to_response());
-        }
-    };
-
-    let get_habit_result = get_habit_by_id(&mut transaction, params.habit_id).await;
-
-    if let Err(e) = transaction.commit().await {
-        eprintln!("Error: {}", e);
-        return HttpResponse::InternalServerError()
-            .json(AppError::DatabaseTransaction.to_response());
-    }
+    let get_habit_result = get_habit_by_id(&**pool, params.habit_id).await;
 
     match get_habit_result {
         Ok(r) => match r {

@@ -29,7 +29,7 @@ pub async fn delete_account(
         }
     };
 
-    let delete_result = delete_user_by_id(&mut transaction, request_claims.user_id).await;
+    let delete_result = delete_user_by_id(&mut *transaction, request_claims.user_id).await;
 
     if let Err(e) = delete_result {
         eprintln!("Error: {}", e);

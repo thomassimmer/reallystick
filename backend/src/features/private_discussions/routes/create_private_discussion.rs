@@ -45,13 +45,13 @@ pub async fn create_private_discussion(
     };
 
     // Check if message exists
-    match get_private_discussion_by_users(&mut transaction, body.recipient, request_claims.user_id)
+    match get_private_discussion_by_users(&mut *transaction, body.recipient, request_claims.user_id)
         .await
     {
         Ok(r) => match r {
             Some(discussion) => {
                 match get_private_discussion_participation_by_user_and_discussion(
-                    &mut transaction,
+                    &mut *transaction,
                     request_claims.user_id,
                     discussion.id,
                 )
@@ -97,7 +97,7 @@ pub async fn create_private_discussion(
     };
 
     let create_private_discussion_result =
-        private_discussion::create_private_discussion(&mut transaction, &discussion).await;
+        private_discussion::create_private_discussion(&mut *transaction, &discussion).await;
 
     if let Err(e) = create_private_discussion_result {
         eprintln!("Error: {}", e);
@@ -124,7 +124,7 @@ pub async fn create_private_discussion(
     };
 
     let create_discussion_participation_for_user_result = create_private_discussion_participation(
-        &mut transaction,
+        &mut *transaction,
         &discussion_participation_for_user,
     )
     .await;
@@ -137,7 +137,7 @@ pub async fn create_private_discussion(
 
     let create_discussion_participation_for_recipient_result =
         create_private_discussion_participation(
-            &mut transaction,
+            &mut *transaction,
             &discussion_participation_for_recipient,
         )
         .await;

@@ -26,7 +26,7 @@ pub async fn delete_notification(
         }
     };
 
-    if let Err(e) = helpers::notification::delete_notification(&mut transaction, params.id).await {
+    if let Err(e) = helpers::notification::delete_notification(&mut *transaction, params.id).await {
         eprintln!("Error: {}", e);
         return HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response());
     }

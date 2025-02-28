@@ -241,10 +241,10 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
     ]);
 
     for unit in units.values().clone() {
-        create_unit(&mut transaction, unit).await?;
+        create_unit(&mut *transaction, unit).await?;
     }
 
-    let _ = create_user(&mut transaction, new_user.clone()).await;
+    let _ = create_user(&mut *transaction, new_user.clone()).await;
 
     let habit_categories = HashMap::from([
         (
@@ -300,7 +300,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
     ]);
 
     for habit_category in habit_categories.values().clone() {
-        create_habit_category(&mut transaction, habit_category).await?;
+        create_habit_category(&mut *transaction, habit_category).await?;
     }
 
     let habits = HashMap::from([
@@ -581,7 +581,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
     ]);
 
     for habit in habits.values().clone() {
-        create_habit(&mut transaction, habit).await?;
+        create_habit(&mut *transaction, habit).await?;
     }
 
     let habit_participations = [
@@ -632,7 +632,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
     ];
 
     for habit_participation in habit_participations {
-        create_habit_participation(&mut transaction, &habit_participation).await?;
+        create_habit_participation(&mut *transaction, &habit_participation).await?;
     }
 
     let habit_daily_trackings = [
@@ -759,7 +759,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
     ];
 
     for habit_daily_tracking in habit_daily_trackings {
-        create_habit_daily_tracking(&mut transaction, &habit_daily_tracking).await?;
+        create_habit_daily_tracking(&mut *transaction, &habit_daily_tracking).await?;
     }
 
     if let Err(e) = transaction.commit().await {

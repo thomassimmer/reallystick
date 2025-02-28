@@ -33,7 +33,7 @@ pub async fn get_private_discussion_messages(
     };
 
     // Check if discussion exists
-    match get_private_discussion_by_id(&mut transaction, params.discussion_id).await {
+    match get_private_discussion_by_id(&mut *transaction, params.discussion_id).await {
         Ok(r) => match r {
             Some(r) => r,
             None => {
@@ -47,7 +47,7 @@ pub async fn get_private_discussion_messages(
         }
     };
 
-    let messages = match get_messages_for_discussion(&mut transaction, params.discussion_id).await {
+    let messages = match get_messages_for_discussion(&mut *transaction, params.discussion_id).await {
         Ok(r) => r,
         Err(e) => {
             eprintln!("Error: {}", e);

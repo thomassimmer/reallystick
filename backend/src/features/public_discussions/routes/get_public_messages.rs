@@ -48,7 +48,7 @@ pub async fn get_public_messages(
 
     // Check if habit exists
     if let Some(habit_id) = params.habit_id {
-        match get_habit_by_id(&mut transaction, habit_id).await {
+        match get_habit_by_id(&mut *transaction, habit_id).await {
             Ok(r) => {
                 if r.is_none() {
                     return HttpResponse::NotFound().json(AppError::HabitNotFound.to_response());
@@ -64,7 +64,7 @@ pub async fn get_public_messages(
 
     // Check if challenge exists
     if let Some(challenge_id) = params.challenge_id {
-        match get_challenge_by_id(&mut transaction, challenge_id).await {
+        match get_challenge_by_id(&mut *transaction, challenge_id).await {
             Ok(r) => {
                 if r.is_none() {
                     return HttpResponse::NotFound()
@@ -80,9 +80,9 @@ pub async fn get_public_messages(
     }
 
     let get_messages_result = if let Some(challenge_id) = params.challenge_id {
-        public_message::get_first_public_messages_of_challenge(&mut transaction, challenge_id).await
+        public_message::get_first_public_messages_of_challenge(&mut *transaction, challenge_id).await
     } else if let Some(habit_id) = params.habit_id {
-        public_message::get_first_public_messages_of_habit(&mut transaction, habit_id).await
+        public_message::get_first_public_messages_of_habit(&mut *transaction, habit_id).await
     } else {
         Ok(vec![])
     };

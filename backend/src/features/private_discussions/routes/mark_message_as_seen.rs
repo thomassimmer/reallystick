@@ -40,7 +40,7 @@ pub async fn mark_message_as_seen(
     };
 
     // Check if message exists
-    let mut private_message = match get_private_message_by_id(&mut transaction, params.message_id)
+    let mut private_message = match get_private_message_by_id(&mut *transaction, params.message_id)
         .await
     {
         Ok(r) => match r {
@@ -58,7 +58,7 @@ pub async fn mark_message_as_seen(
 
     // Fetch the participation of the expected message's recipient
     let recipient_participation = match get_private_discussion_participations_by_discussion(
-        &mut transaction,
+        &mut *transaction,
         private_message.discussion_id,
     )
     .await
@@ -84,7 +84,7 @@ pub async fn mark_message_as_seen(
     private_message.seen = true;
 
     let update_private_message_result =
-        private_message::mark_private_message_as_seen(&mut transaction, &private_message).await;
+        private_message::mark_private_message_as_seen(&mut *transaction, &private_message).await;
 
     if let Err(e) = update_private_message_result {
         eprintln!("Error: {}", e);

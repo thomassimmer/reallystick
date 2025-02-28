@@ -259,11 +259,11 @@ pub async fn user_can_duplicate_a_challenge() {
         user_duplicates_a_challenge(&app, &access_token, challenge_id).await;
 
     let challenges = user_gets_challenges(&app, &access_token).await;
-    assert_eq!(challenges.len(), 1);
-    assert_eq!(challenges[0].id, duplicated_challenge_id);
-    assert!(challenges[0].name == initial_challenge.name);
-    assert!(challenges[0].description == initial_challenge.description);
-    assert!(challenges[0].creator != initial_challenge.creator);
+    assert_eq!(challenges.len(), 2);
+    assert_eq!(challenges[1].id, duplicated_challenge_id);
+    assert!(challenges[1].name == initial_challenge.name);
+    assert!(challenges[1].description == initial_challenge.description);
+    assert!(challenges[1].creator != initial_challenge.creator);
 
     let challenge_daily_trackings =
         user_gets_challenge_daily_trackings(&app, &access_token, duplicated_challenge_id).await;

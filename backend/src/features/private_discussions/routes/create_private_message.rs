@@ -52,7 +52,7 @@ pub async fn create_private_message(
     };
 
     // Check if discussion exists
-    match get_private_discussion_by_id(&mut transaction, body.discussion_id).await {
+    match get_private_discussion_by_id(&mut *transaction, body.discussion_id).await {
         Ok(r) => {
             if r.is_none() {
                 return HttpResponse::NotFound()
@@ -87,7 +87,7 @@ pub async fn create_private_message(
     };
 
     let create_private_message_result =
-        private_message::create_private_message(&mut transaction, &private_message).await;
+        private_message::create_private_message(&mut *transaction, &private_message).await;
 
     if let Err(e) = create_private_message_result {
         eprintln!("Error: {}", e);
@@ -96,7 +96,7 @@ pub async fn create_private_message(
     }
 
     let recipients = match private_discussion_participation::get_private_discussions_recipients(
-        &mut transaction,
+        &mut *transaction,
         vec![body.discussion_id],
         request_claims.user_id,
     )
@@ -133,11 +133,11 @@ pub async fn create_private_message(
                     user_public_data_cache
                         .get_value_for_key_or_insert_it(
                             &recipient_participation.user_id,
-                            &mut transaction,
+                            &mut *transaction,
                         )
                         .await,
                     user_public_data_cache
-                        .get_value_for_key_or_insert_it(&request_claims.user_id, &mut transaction)
+                        .get_value_for_key_or_insert_it(&request_claims.user_id, &mut *transaction)
                         .await,
                 ) {
                     let mut args = FluentArgs::new();

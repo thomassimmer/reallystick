@@ -1,12 +1,15 @@
-use sqlx::{postgres::PgQueryResult, PgConnection};
+use sqlx::{postgres::PgQueryResult, Executor, Postgres};
 use uuid::Uuid;
 
 use crate::features::challenges::structs::models::challenge_participation::ChallengeParticipation;
 
-pub async fn get_challenge_participation_by_id(
-    conn: &mut PgConnection,
+pub async fn get_challenge_participation_by_id<'a, E>(
+    executor: E,
     challenge_participation_id: Uuid,
-) -> Result<Option<ChallengeParticipation>, sqlx::Error> {
+) -> Result<Option<ChallengeParticipation>, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         ChallengeParticipation,
         r#"
@@ -16,14 +19,17 @@ pub async fn get_challenge_participation_by_id(
         "#,
         challenge_participation_id,
     )
-    .fetch_optional(conn)
+    .fetch_optional(executor)
     .await
 }
 
-pub async fn get_challenge_participations_for_user(
-    conn: &mut PgConnection,
+pub async fn get_challenge_participations_for_user<'a, E>(
+    executor: E,
     user_id: Uuid,
-) -> Result<Vec<ChallengeParticipation>, sqlx::Error> {
+) -> Result<Vec<ChallengeParticipation>, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         ChallengeParticipation,
         r#"
@@ -33,15 +39,18 @@ pub async fn get_challenge_participations_for_user(
         "#,
         user_id
     )
-    .fetch_all(conn)
+    .fetch_all(executor)
     .await
 }
 
-pub async fn get_challenge_participation_for_user_and_challenge(
-    conn: &mut PgConnection,
+pub async fn get_challenge_participation_for_user_and_challenge<'a, E>(
+    executor: E,
     user_id: Uuid,
     challenge_id: Uuid,
-) -> Result<Option<ChallengeParticipation>, sqlx::Error> {
+) -> Result<Option<ChallengeParticipation>, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         ChallengeParticipation,
         r#"
@@ -52,14 +61,17 @@ pub async fn get_challenge_participation_for_user_and_challenge(
         user_id,
         challenge_id
     )
-    .fetch_optional(conn)
+    .fetch_optional(executor)
     .await
 }
 
-pub async fn get_challenge_participations_for_challenge(
-    conn: &mut PgConnection,
+pub async fn get_challenge_participations_for_challenge<'a, E>(
+    executor: E,
     challenge_id: Uuid,
-) -> Result<Vec<ChallengeParticipation>, sqlx::Error> {
+) -> Result<Vec<ChallengeParticipation>, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         ChallengeParticipation,
         r#"
@@ -69,14 +81,17 @@ pub async fn get_challenge_participations_for_challenge(
         "#,
         challenge_id
     )
-    .fetch_all(conn)
+    .fetch_all(executor)
     .await
 }
 
-pub async fn update_challenge_participation(
-    conn: &mut PgConnection,
+pub async fn update_challenge_participation<'a, E>(
+    executor: E,
     challenge_participation: &ChallengeParticipation,
-) -> Result<sqlx::postgres::PgQueryResult, sqlx::Error> {
+) -> Result<sqlx::postgres::PgQueryResult, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         ChallengeParticipation,
         r#"
@@ -96,14 +111,17 @@ pub async fn update_challenge_participation(
         challenge_participation.timezone,
         challenge_participation.id
     )
-    .execute(conn)
+    .execute(executor)
     .await
 }
 
-pub async fn create_challenge_participation(
-    conn: &mut PgConnection,
+pub async fn create_challenge_participation<'a, E>(
+    executor: E,
     challenge_participation: &ChallengeParticipation,
-) -> Result<sqlx::postgres::PgQueryResult, sqlx::Error> {
+) -> Result<sqlx::postgres::PgQueryResult, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         ChallengeParticipation,
         r#"
@@ -130,14 +148,17 @@ pub async fn create_challenge_participation(
         challenge_participation.reminder_time,
         challenge_participation.timezone,
     )
-    .execute(conn)
+    .execute(executor)
     .await
 }
 
-pub async fn delete_challenge_participation_by_id(
-    conn: &mut PgConnection,
+pub async fn delete_challenge_participation_by_id<'a, E>(
+    executor: E,
     challenge_participation_id: Uuid,
-) -> Result<PgQueryResult, sqlx::Error> {
+) -> Result<PgQueryResult, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         Challenge,
         r#"
@@ -147,6 +168,6 @@ pub async fn delete_challenge_participation_by_id(
         "#,
         challenge_participation_id,
     )
-    .execute(conn)
+    .execute(executor)
     .await
 }

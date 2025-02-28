@@ -37,7 +37,7 @@ pub async fn create_challenge_daily_tracking(
         }
     };
 
-    match get_challenge_by_id(&mut transaction, body.challenge_id).await {
+    match get_challenge_by_id(&mut *transaction, body.challenge_id).await {
         Ok(r) => match r {
             Some(challenge) => {
                 if !request_claims.is_admin && challenge.creator != request_claims.user_id {
@@ -55,7 +55,7 @@ pub async fn create_challenge_daily_tracking(
         }
     };
 
-    match get_habit_by_id(&mut transaction, body.habit_id).await {
+    match get_habit_by_id(&mut *transaction, body.habit_id).await {
         Ok(r) => {
             if r.is_none() {
                 return HttpResponse::NotFound().json(AppError::HabitNotFound.to_response());
@@ -67,7 +67,7 @@ pub async fn create_challenge_daily_tracking(
         }
     };
 
-    match get_unit_by_id(&mut transaction, body.unit_id).await {
+    match get_unit_by_id(&mut *transaction, body.unit_id).await {
         Ok(r) => {
             if r.is_none() {
                 return HttpResponse::NotFound().json(AppError::UnitNotFound.to_response());
@@ -79,7 +79,7 @@ pub async fn create_challenge_daily_tracking(
         }
     }
 
-    match get_unit_by_id(&mut transaction, body.weight_unit_id).await {
+    match get_unit_by_id(&mut *transaction, body.weight_unit_id).await {
         Ok(r) => {
             if r.is_none() {
                 return HttpResponse::NotFound().json(AppError::UnitNotFound.to_response());
@@ -111,7 +111,7 @@ pub async fn create_challenge_daily_tracking(
 
     let create_challenge_daily_tracking_result =
         challenge_daily_tracking::create_challenge_daily_trackings(
-            &mut transaction,
+            &mut *transaction,
             &challenge_daily_trackings,
         )
         .await;

@@ -45,7 +45,7 @@ pub async fn register_user(
     let username_lower = body.username.to_lowercase();
 
     // Check if user already exists
-    let existing_user = get_user_by_username(&mut transaction, username_lower.clone()).await;
+    let existing_user = get_user_by_username(&mut *transaction, &username_lower).await;
 
     match existing_user {
         Ok(existing_user) => {
@@ -122,7 +122,7 @@ pub async fn register_user(
         notifications_user_duplicated_your_challenge_enabled: true,
     };
 
-    let insert_result = create_user(&mut transaction, new_user.clone()).await;
+    let insert_result = create_user(&mut *transaction, new_user.clone()).await;
 
     if let Err(e) = insert_result {
         eprintln!("Error: {}", e);
@@ -140,7 +140,7 @@ pub async fn register_user(
         new_user.is_admin,
         new_user.username,
         parsed_device_info,
-        &mut transaction,
+        &mut *transaction,
     )
     .await
     {

@@ -46,7 +46,7 @@ pub async fn create_challenge_participation(
         }
     };
 
-    let challenge = match get_challenge_by_id(&mut transaction, body.challenge_id).await {
+    let challenge = match get_challenge_by_id(&mut *transaction, body.challenge_id).await {
         Ok(r) => match r {
             Some(c) => c,
             None => {
@@ -73,7 +73,7 @@ pub async fn create_challenge_participation(
 
     let create_challenge_participation_result =
         challenge_participation::create_challenge_participation(
-            &mut transaction,
+            &mut *transaction,
             &challenge_participation,
         )
         .await;
@@ -88,10 +88,10 @@ pub async fn create_challenge_participation(
     if request_claims.user_id != challenge.creator {
         if let (Some(joiner), Some(creator)) = (
             user_public_data_cache
-                .get_value_for_key_or_insert_it(&request_claims.user_id, &mut transaction)
+                .get_value_for_key_or_insert_it(&request_claims.user_id, &mut *transaction)
                 .await,
             user_public_data_cache
-                .get_value_for_key_or_insert_it(&challenge.creator, &mut transaction)
+                .get_value_for_key_or_insert_it(&challenge.creator, &mut *transaction)
                 .await,
         ) {
             let mut args = FluentArgs::new();
@@ -100,7 +100,7 @@ pub async fn create_challenge_participation(
             let url = Some(format!("/challenges/{}", challenge.id));
 
             generate_notification(
-                &mut transaction,
+                &mut *transaction,
                 challenge.creator,
                 &translator.translate(&creator.locale, "user-joined-your-challenge-title", None),
                 &translator.translate(

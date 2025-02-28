@@ -39,7 +39,7 @@ pub async fn update_unit(
         }
     };
 
-    let get_unit_result = get_unit_by_id(&mut transaction, params.unit_id).await;
+    let get_unit_result = get_unit_by_id(&mut *transaction, params.unit_id).await;
 
     let mut unit = match get_unit_result {
         Ok(r) => match r {
@@ -55,7 +55,7 @@ pub async fn update_unit(
     unit.short_name = json!(body.short_name).to_string();
     unit.long_name = json!(body.long_name).to_string();
 
-    let update_unit_result = unit::update_unit(&mut transaction, &unit).await;
+    let update_unit_result = unit::update_unit(&mut *transaction, &unit).await;
 
     if let Err(e) = transaction.commit().await {
         eprintln!("Error: {}", e);

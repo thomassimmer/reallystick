@@ -20,26 +20,11 @@ pub async fn get_challenge_participations(
     pool: Data<PgPool>,
     request_claims: ReqData<Claims>,
 ) -> impl Responder {
-    let mut transaction = match pool.begin().await {
-        Ok(t) => t,
-        Err(e) => {
-            eprintln!("Error: {}", e);
-            return HttpResponse::InternalServerError()
-                .json(AppError::DatabaseConnection.to_response());
-        }
-    };
-
     let get_challenges_result = challenge_participation::get_challenge_participations_for_user(
-        &mut transaction,
+        &**pool,
         request_claims.user_id,
     )
     .await;
-
-    if let Err(e) = transaction.commit().await {
-        eprintln!("Error: {}", e);
-        return HttpResponse::InternalServerError()
-            .json(AppError::DatabaseTransaction.to_response());
-    }
 
     match get_challenges_result {
         Ok(challenge_participations) => HttpResponse::Ok().json(ChallengeParticipationsResponse {

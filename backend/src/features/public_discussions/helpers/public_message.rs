@@ -1,11 +1,12 @@
-use sqlx::{postgres::PgQueryResult, PgConnection};
+use sqlx::{postgres::PgQueryResult, Executor, Postgres};
 use uuid::Uuid;
 
 use crate::features::public_discussions::structs::models::public_message::PublicMessage;
 
-pub async fn get_reported_messages(
-    conn: &mut PgConnection,
-) -> Result<Vec<PublicMessage>, sqlx::Error> {
+pub async fn get_reported_messages<'a, E>(executor: E) -> Result<Vec<PublicMessage>, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         PublicMessage,
         r#"
@@ -14,14 +15,17 @@ pub async fn get_reported_messages(
             JOIN public_message_reports pmr ON pm.id = pmr.message_id;
         "#,
     )
-    .fetch_all(conn)
+    .fetch_all(executor)
     .await
 }
 
-pub async fn get_user_reported_messages(
-    conn: &mut PgConnection,
+pub async fn get_user_reported_messages<'a, E>(
+    executor: E,
     user_id: Uuid,
-) -> Result<Vec<PublicMessage>, sqlx::Error> {
+) -> Result<Vec<PublicMessage>, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         PublicMessage,
         r#"
@@ -32,14 +36,17 @@ pub async fn get_user_reported_messages(
         "#,
         user_id,
     )
-    .fetch_all(conn)
+    .fetch_all(executor)
     .await
 }
 
-pub async fn get_user_liked_messages(
-    conn: &mut PgConnection,
+pub async fn get_user_liked_messages<'a, E>(
+    executor: E,
     user_id: Uuid,
-) -> Result<Vec<PublicMessage>, sqlx::Error> {
+) -> Result<Vec<PublicMessage>, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         PublicMessage,
         r#"
@@ -50,14 +57,17 @@ pub async fn get_user_liked_messages(
         "#,
         user_id,
     )
-    .fetch_all(conn)
+    .fetch_all(executor)
     .await
 }
 
-pub async fn get_user_written_messages(
-    conn: &mut PgConnection,
+pub async fn get_user_written_messages<'a, E>(
+    executor: E,
     user_id: Uuid,
-) -> Result<Vec<PublicMessage>, sqlx::Error> {
+) -> Result<Vec<PublicMessage>, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         PublicMessage,
         r#"
@@ -67,14 +77,17 @@ pub async fn get_user_written_messages(
         "#,
         user_id,
     )
-    .fetch_all(conn)
+    .fetch_all(executor)
     .await
 }
 
-pub async fn get_replies(
-    conn: &mut PgConnection,
+pub async fn get_replies<'a, E>(
+    executor: E,
     message_id: Uuid,
-) -> Result<Vec<PublicMessage>, sqlx::Error> {
+) -> Result<Vec<PublicMessage>, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         PublicMessage,
         r#"
@@ -84,14 +97,17 @@ pub async fn get_replies(
         "#,
         message_id,
     )
-    .fetch_all(conn)
+    .fetch_all(executor)
     .await
 }
 
-pub async fn get_first_public_messages_of_challenge(
-    conn: &mut PgConnection,
+pub async fn get_first_public_messages_of_challenge<'a, E>(
+    executor: E,
     challenge_id: Uuid,
-) -> Result<Vec<PublicMessage>, sqlx::Error> {
+) -> Result<Vec<PublicMessage>, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         PublicMessage,
         r#"
@@ -101,14 +117,17 @@ pub async fn get_first_public_messages_of_challenge(
         "#,
         challenge_id,
     )
-    .fetch_all(conn)
+    .fetch_all(executor)
     .await
 }
 
-pub async fn get_first_public_messages_of_habit(
-    conn: &mut PgConnection,
+pub async fn get_first_public_messages_of_habit<'a, E>(
+    executor: E,
     habit_id: Uuid,
-) -> Result<Vec<PublicMessage>, sqlx::Error> {
+) -> Result<Vec<PublicMessage>, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         PublicMessage,
         r#"
@@ -118,14 +137,17 @@ pub async fn get_first_public_messages_of_habit(
         "#,
         habit_id,
     )
-    .fetch_all(conn)
+    .fetch_all(executor)
     .await
 }
 
-pub async fn get_public_message_by_id(
-    conn: &mut PgConnection,
+pub async fn get_public_message_by_id<'a, E>(
+    executor: E,
     id: Uuid,
-) -> Result<Option<PublicMessage>, sqlx::Error> {
+) -> Result<Option<PublicMessage>, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         PublicMessage,
         r#"
@@ -135,14 +157,17 @@ pub async fn get_public_message_by_id(
         "#,
         id,
     )
-    .fetch_optional(conn)
+    .fetch_optional(executor)
     .await
 }
 
-pub async fn delete_public_message(
-    conn: &mut PgConnection,
+pub async fn delete_public_message<'a, E>(
+    executor: E,
     public_message: &PublicMessage,
-) -> Result<PgQueryResult, sqlx::Error> {
+) -> Result<PgQueryResult, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         PublicMessage,
         r#"
@@ -154,14 +179,17 @@ pub async fn delete_public_message(
         public_message.deleted_by_creator,
         public_message.id,
     )
-    .execute(conn)
+    .execute(executor)
     .await
 }
 
-pub async fn create_public_message(
-    conn: &mut PgConnection,
+pub async fn create_public_message<'a, E>(
+    executor: E,
     public_message: &PublicMessage,
-) -> Result<PgQueryResult, sqlx::Error> {
+) -> Result<PgQueryResult, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         PublicMessage,
         r#"
@@ -196,14 +224,17 @@ pub async fn create_public_message(
         public_message.deleted_by_admin,
         public_message.language_code
     )
-    .execute(conn)
+    .execute(executor)
     .await
 }
 
-pub async fn update_public_message(
-    conn: &mut PgConnection,
+pub async fn update_public_message<'a, E>(
+    executor: E,
     public_message: &PublicMessage,
-) -> Result<PgQueryResult, sqlx::Error> {
+) -> Result<PgQueryResult, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         PublicMessage,
         r#"
@@ -215,14 +246,17 @@ pub async fn update_public_message(
         public_message.content,
         public_message.id,
     )
-    .execute(conn)
+    .execute(executor)
     .await
 }
 
-pub async fn update_public_message_like_count(
-    conn: &mut PgConnection,
+pub async fn update_public_message_like_count<'a, E>(
+    executor: E,
     public_message: &PublicMessage,
-) -> Result<PgQueryResult, sqlx::Error> {
+) -> Result<PgQueryResult, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         PublicMessage,
         r#"
@@ -233,14 +267,17 @@ pub async fn update_public_message_like_count(
         public_message.like_count,
         public_message.id,
     )
-    .execute(conn)
+    .execute(executor)
     .await
 }
 
-pub async fn update_public_message_reply_count(
-    conn: &mut PgConnection,
+pub async fn update_public_message_reply_count<'a, E>(
+    executor: E,
     public_message: &PublicMessage,
-) -> Result<PgQueryResult, sqlx::Error> {
+) -> Result<PgQueryResult, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         PublicMessage,
         r#"
@@ -251,6 +288,6 @@ pub async fn update_public_message_reply_count(
         public_message.reply_count,
         public_message.id,
     )
-    .execute(conn)
+    .execute(executor)
     .await
 }

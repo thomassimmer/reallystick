@@ -1,13 +1,16 @@
-use sqlx::{postgres::PgQueryResult, PgConnection};
+use sqlx::{postgres::PgQueryResult, Executor, Postgres};
 use uuid::Uuid;
 
 use crate::features::private_discussions::structs::models::private_discussion::PrivateDiscussion;
 
-pub async fn get_private_discussion_by_users(
-    conn: &mut PgConnection,
+pub async fn get_private_discussion_by_users<'a, E>(
+    executor: E,
     user1_id: Uuid,
     user2_id: Uuid,
-) -> Result<Option<PrivateDiscussion>, sqlx::Error> {
+) -> Result<Option<PrivateDiscussion>, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         PrivateDiscussion,
         r#"
@@ -25,14 +28,17 @@ pub async fn get_private_discussion_by_users(
         user1_id,
         user2_id
     )
-    .fetch_optional(conn)
+    .fetch_optional(executor)
     .await
 }
 
-pub async fn get_private_discussions_from_ids(
-    conn: &mut PgConnection,
+pub async fn get_private_discussions_from_ids<'a, E>(
+    executor: E,
     ids: Vec<Uuid>,
-) -> Result<Vec<PrivateDiscussion>, sqlx::Error> {
+) -> Result<Vec<PrivateDiscussion>, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         PrivateDiscussion,
         r#"
@@ -42,14 +48,17 @@ pub async fn get_private_discussions_from_ids(
         "#,
         &ids,
     )
-    .fetch_all(conn)
+    .fetch_all(executor)
     .await
 }
 
-pub async fn get_private_discussion_by_id(
-    conn: &mut PgConnection,
+pub async fn get_private_discussion_by_id<'a, E>(
+    executor: E,
     id: Uuid,
-) -> Result<Option<PrivateDiscussion>, sqlx::Error> {
+) -> Result<Option<PrivateDiscussion>, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         PrivateDiscussion,
         r#"
@@ -59,14 +68,17 @@ pub async fn get_private_discussion_by_id(
         "#,
         &id,
     )
-    .fetch_optional(conn)
+    .fetch_optional(executor)
     .await
 }
 
-pub async fn create_private_discussion(
-    conn: &mut PgConnection,
+pub async fn create_private_discussion<'a, E>(
+    executor: E,
     discussion: &PrivateDiscussion,
-) -> Result<PgQueryResult, sqlx::Error> {
+) -> Result<PgQueryResult, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         PrivateDiscussion,
         r#"
@@ -79,6 +91,6 @@ pub async fn create_private_discussion(
         discussion.id,
         discussion.created_at,
     )
-    .execute(conn)
+    .execute(executor)
     .await
 }

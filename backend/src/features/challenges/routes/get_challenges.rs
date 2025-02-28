@@ -14,27 +14,12 @@ use sqlx::PgPool;
 
 #[get("/")]
 pub async fn get_challenges(pool: Data<PgPool>, request_claims: ReqData<Claims>) -> impl Responder {
-    let mut transaction = match pool.begin().await {
-        Ok(t) => t,
-        Err(e) => {
-            eprintln!("Error: {}", e);
-            return HttpResponse::InternalServerError()
-                .json(AppError::DatabaseConnection.to_response());
-        }
-    };
-
     let get_challenges_result = if request_claims.is_admin {
-        challenge::get_challenges(&mut transaction).await
+        challenge::get_challenges(&**pool).await
     } else {
-        challenge::get_challenges(&mut transaction).await
-        // challenge::get_created_and_joined_challenges(&mut transaction, request_claims.user_id).await
+        challenge::get_challenges(&**pool).await
+        // challenge::get_created_and_joined_challenges(&**pool, request_claims.user_id).await
     };
-
-    if let Err(e) = transaction.commit().await {
-        eprintln!("Error: {}", e);
-        return HttpResponse::InternalServerError()
-            .json(AppError::DatabaseTransaction.to_response());
-    }
 
     match get_challenges_result {
         Ok(challenges) => HttpResponse::Ok().json(ChallengesResponse {

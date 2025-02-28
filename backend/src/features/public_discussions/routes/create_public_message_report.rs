@@ -39,7 +39,7 @@ pub async fn create_public_message_report(
     };
 
     // Check if message exists
-    match get_public_message_by_id(&mut transaction, body.message_id).await {
+    match get_public_message_by_id(&mut *transaction, body.message_id).await {
         Ok(r) => {
             if r.is_none() {
                 return HttpResponse::NotFound()
@@ -69,7 +69,7 @@ pub async fn create_public_message_report(
     };
 
     let create_public_message_result = public_message_report::create_public_message_report(
-        &mut transaction,
+        &mut *transaction,
         public_message_report.clone(),
     )
     .await;

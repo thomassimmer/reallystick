@@ -40,7 +40,7 @@ pub async fn update_private_discussion_participation(
     };
 
     let mut participation = match get_private_discussion_participation_by_user_and_discussion(
-        &mut transaction,
+        &mut *transaction,
         request_claims.user_id,
         params.discussion_id,
     )
@@ -64,7 +64,7 @@ pub async fn update_private_discussion_participation(
 
     let update_private_discussion_participation_result =
         private_discussion_participation::update_private_discussion_participation(
-            &mut transaction,
+            &mut *transaction,
             &participation,
         )
         .await;

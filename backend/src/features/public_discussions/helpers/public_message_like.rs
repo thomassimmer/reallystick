@@ -1,12 +1,15 @@
-use sqlx::{postgres::PgQueryResult, PgConnection};
+use sqlx::{postgres::PgQueryResult, Executor, Postgres};
 use uuid::Uuid;
 
 use crate::features::public_discussions::structs::models::public_message_like::PublicMessageLike;
 
-pub async fn create_public_message_like(
-    conn: &mut PgConnection,
+pub async fn create_public_message_like<'a, E>(
+    executor: E,
     public_message_like: PublicMessageLike,
-) -> Result<PgQueryResult, sqlx::Error> {
+) -> Result<PgQueryResult, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         PublicMessageLike,
         r#"
@@ -24,14 +27,17 @@ pub async fn create_public_message_like(
         public_message_like.message_id,
         public_message_like.created_at
     )
-    .execute(conn)
+    .execute(executor)
     .await
 }
 
-pub async fn delete_public_message_like(
-    conn: &mut PgConnection,
+pub async fn delete_public_message_like<'a, E>(
+    executor: E,
     id: Uuid,
-) -> Result<PgQueryResult, sqlx::Error> {
+) -> Result<PgQueryResult, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         PublicMessageLike,
         r#"
@@ -40,15 +46,18 @@ pub async fn delete_public_message_like(
         "#,
         id,
     )
-    .execute(conn)
+    .execute(executor)
     .await
 }
 
-pub async fn get_public_message_like_by_message_id_and_user_id(
-    conn: &mut PgConnection,
+pub async fn get_public_message_like_by_message_id_and_user_id<'a, E>(
+    executor: E,
     message_id: Uuid,
     user_id: Uuid,
-) -> Result<Option<PublicMessageLike>, sqlx::Error> {
+) -> Result<Option<PublicMessageLike>, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         PublicMessageLike,
         r#"
@@ -59,6 +68,6 @@ pub async fn get_public_message_like_by_message_id_and_user_id(
         message_id,
         user_id,
     )
-    .fetch_optional(conn)
+    .fetch_optional(executor)
     .await
 }

@@ -36,7 +36,7 @@ pub async fn create_habit_participation(
         }
     };
 
-    match get_habit_by_id(&mut transaction, body.habit_id).await {
+    match get_habit_by_id(&mut *transaction, body.habit_id).await {
         Ok(r) => match r {
             Some(_) => {}
             None => return HttpResponse::NotFound().json(AppError::HabitNotFound.to_response()),
@@ -60,7 +60,7 @@ pub async fn create_habit_participation(
     };
 
     let create_habit_participation_result =
-        habit_participation::create_habit_participation(&mut transaction, &habit_participation)
+        habit_participation::create_habit_participation(&mut *transaction, &habit_participation)
             .await;
 
     if let Err(e) = transaction.commit().await {

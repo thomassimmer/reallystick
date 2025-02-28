@@ -1,12 +1,15 @@
-use sqlx::{postgres::PgQueryResult, PgConnection};
+use sqlx::{postgres::PgQueryResult, Executor, Postgres};
 use uuid::Uuid;
 
 use crate::features::habits::structs::models::habit_daily_tracking::HabitDailyTracking;
 
-pub async fn get_habit_daily_tracking_by_id(
-    conn: &mut PgConnection,
+pub async fn get_habit_daily_tracking_by_id<'a, E>(
+    executor: E,
     habit_daily_tracking_id: Uuid,
-) -> Result<Option<HabitDailyTracking>, sqlx::Error> {
+) -> Result<Option<HabitDailyTracking>, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         HabitDailyTracking,
         r#"
@@ -16,14 +19,17 @@ pub async fn get_habit_daily_tracking_by_id(
         "#,
         habit_daily_tracking_id,
     )
-    .fetch_optional(conn)
+    .fetch_optional(executor)
     .await
 }
 
-pub async fn get_habit_daily_trackings_for_user(
-    conn: &mut PgConnection,
+pub async fn get_habit_daily_trackings_for_user<'a, E>(
+    executor: E,
     user_id: Uuid,
-) -> Result<Vec<HabitDailyTracking>, sqlx::Error> {
+) -> Result<Vec<HabitDailyTracking>, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         HabitDailyTracking,
         r#"
@@ -33,14 +39,17 @@ pub async fn get_habit_daily_trackings_for_user(
         "#,
         user_id
     )
-    .fetch_all(conn)
+    .fetch_all(executor)
     .await
 }
 
-pub async fn update_habit_daily_tracking(
-    conn: &mut PgConnection,
+pub async fn update_habit_daily_tracking<'a, E>(
+    executor: E,
     habit_daily_tracking: &HabitDailyTracking,
-) -> Result<sqlx::postgres::PgQueryResult, sqlx::Error> {
+) -> Result<sqlx::postgres::PgQueryResult, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         HabitDailyTracking,
         r#"
@@ -62,14 +71,17 @@ pub async fn update_habit_daily_tracking(
         habit_daily_tracking.weight_unit_id,
         habit_daily_tracking.id
     )
-    .execute(conn)
+    .execute(executor)
     .await
 }
 
-pub async fn create_habit_daily_tracking(
-    conn: &mut PgConnection,
+pub async fn create_habit_daily_tracking<'a, E>(
+    executor: E,
     habit_daily_tracking: &HabitDailyTracking,
-) -> Result<sqlx::postgres::PgQueryResult, sqlx::Error> {
+) -> Result<sqlx::postgres::PgQueryResult, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         HabitDailyTracking,
         r#"
@@ -98,14 +110,17 @@ pub async fn create_habit_daily_tracking(
         habit_daily_tracking.weight,
         habit_daily_tracking.weight_unit_id
     )
-    .execute(conn)
+    .execute(executor)
     .await
 }
 
-pub async fn delete_habit_daily_tracking_by_id(
-    conn: &mut PgConnection,
+pub async fn delete_habit_daily_tracking_by_id<'a, E>(
+    executor: E,
     habit_daily_tracking_id: Uuid,
-) -> Result<PgQueryResult, sqlx::Error> {
+) -> Result<PgQueryResult, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         HabitDailyTracking,
         r#"
@@ -115,15 +130,18 @@ pub async fn delete_habit_daily_tracking_by_id(
         "#,
         habit_daily_tracking_id,
     )
-    .execute(conn)
+    .execute(executor)
     .await
 }
 
-pub async fn replace_daily_tracking_habit(
-    conn: &mut PgConnection,
+pub async fn replace_daily_tracking_habit<'a, E>(
+    executor: E,
     old_habit_id: Uuid,
     new_habit_id: Uuid,
-) -> Result<PgQueryResult, sqlx::Error> {
+) -> Result<PgQueryResult, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         HabitDailyTracking,
         r#"
@@ -134,6 +152,6 @@ pub async fn replace_daily_tracking_habit(
         old_habit_id,
         new_habit_id,
     )
-    .execute(conn)
+    .execute(executor)
     .await
 }

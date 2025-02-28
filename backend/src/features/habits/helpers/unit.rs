@@ -1,12 +1,12 @@
-use sqlx::{postgres::PgQueryResult, PgConnection};
+use sqlx::{postgres::PgQueryResult, Executor, Postgres};
 use uuid::Uuid;
 
 use crate::features::habits::structs::models::unit::Unit;
 
-pub async fn get_unit_by_id(
-    conn: &mut PgConnection,
-    unit_id: Uuid,
-) -> Result<Option<Unit>, sqlx::Error> {
+pub async fn get_unit_by_id<'a, E>(executor: E, unit_id: Uuid) -> Result<Option<Unit>, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         Unit,
         r#"
@@ -16,11 +16,14 @@ pub async fn get_unit_by_id(
         "#,
         unit_id
     )
-    .fetch_optional(conn)
+    .fetch_optional(executor)
     .await
 }
 
-pub async fn get_units(conn: &mut PgConnection) -> Result<Vec<Unit>, sqlx::Error> {
+pub async fn get_units<'a, E>(executor: E) -> Result<Vec<Unit>, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         Unit,
         r#"
@@ -28,14 +31,17 @@ pub async fn get_units(conn: &mut PgConnection) -> Result<Vec<Unit>, sqlx::Error
         from units
         "#,
     )
-    .fetch_all(conn)
+    .fetch_all(executor)
     .await
 }
 
-pub async fn update_unit(
-    conn: &mut PgConnection,
+pub async fn update_unit<'a, E>(
+    executor: E,
     unit: &Unit,
-) -> Result<sqlx::postgres::PgQueryResult, sqlx::Error> {
+) -> Result<sqlx::postgres::PgQueryResult, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         Unit,
         r#"
@@ -49,14 +55,17 @@ pub async fn update_unit(
         unit.long_name,
         unit.id,
     )
-    .execute(conn)
+    .execute(executor)
     .await
 }
 
-pub async fn create_unit(
-    conn: &mut PgConnection,
+pub async fn create_unit<'a, E>(
+    executor: E,
     unit: &Unit,
-) -> Result<sqlx::postgres::PgQueryResult, sqlx::Error> {
+) -> Result<sqlx::postgres::PgQueryResult, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         Unit,
         r#"
@@ -73,14 +82,17 @@ pub async fn create_unit(
         unit.long_name,
         unit.created_at
     )
-    .execute(conn)
+    .execute(executor)
     .await
 }
 
-pub async fn delete_unit_by_id(
-    conn: &mut PgConnection,
+pub async fn delete_unit_by_id<'a, E>(
+    executor: E,
     unit_id: Uuid,
-) -> Result<PgQueryResult, sqlx::Error> {
+) -> Result<PgQueryResult, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         Unit,
         r#"
@@ -90,6 +102,6 @@ pub async fn delete_unit_by_id(
         "#,
         unit_id,
     )
-    .execute(conn)
+    .execute(executor)
     .await
 }

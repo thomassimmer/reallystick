@@ -43,7 +43,7 @@ pub async fn update_habit(
         }
     };
 
-    let get_habit_result = get_habit_by_id(&mut transaction, params.habit_id).await;
+    let get_habit_result = get_habit_by_id(&mut *transaction, params.habit_id).await;
 
     let mut habit = match get_habit_result {
         Ok(r) => match r {
@@ -56,7 +56,7 @@ pub async fn update_habit(
         }
     };
 
-    match get_habit_category_by_id(&mut transaction, body.category_id).await {
+    match get_habit_category_by_id(&mut *transaction, body.category_id).await {
         Ok(r) => match r {
             Some(_) => {}
             None => {
@@ -70,7 +70,7 @@ pub async fn update_habit(
     };
 
     for unit in body.unit_ids.clone() {
-        match get_unit_by_id(&mut transaction, unit).await {
+        match get_unit_by_id(&mut *transaction, unit).await {
             Ok(r) => {
                 if r.is_none() {
                     return HttpResponse::NotFound().json(AppError::UnitNotFound.to_response());
@@ -92,7 +92,7 @@ pub async fn update_habit(
     habit.category_id = body.category_id;
     habit.unit_ids = json!(body.unit_ids.clone()).to_string();
 
-    let update_habit_result = habit::update_habit(&mut transaction, &habit).await;
+    let update_habit_result = habit::update_habit(&mut *transaction, &habit).await;
 
     if let Err(e) = transaction.commit().await {
         eprintln!("Error: {}", e);

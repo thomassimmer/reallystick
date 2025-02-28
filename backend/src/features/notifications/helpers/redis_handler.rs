@@ -132,15 +132,7 @@ pub async fn handle_notification(
                 Some(user_data) => user_data,
 
                 None => {
-                    let mut transaction = match connection_pool.begin().await {
-                        Ok(t) => t,
-                        Err(e) => {
-                            eprintln!("Error: {}", e);
-                            return;
-                        }
-                    };
-
-                    let user = match get_user_by_id(&mut transaction, event.recipient).await {
+                    let user = match get_user_by_id(&*connection_pool, event.recipient).await {
                         Ok(Some(u)) => u,
                         Err(e) => {
                             eprintln!("Error: {}", e);
@@ -149,17 +141,13 @@ pub async fn handle_notification(
                         _ => return,
                     };
 
-                    let tokens = match get_user_tokens(event.recipient, &mut transaction).await {
+                    let tokens = match get_user_tokens(event.recipient, &*connection_pool).await {
                         Ok(r) => r,
                         Err(e) => {
                             eprintln!("Error: {}", e);
                             return;
                         }
                     };
-
-                    if let Err(e) = transaction.commit().await {
-                        eprintln!("Error: {}", e);
-                    }
 
                     users_data.insert(user, tokens).await
                 }
@@ -176,7 +164,7 @@ pub async fn handle_notification(
                             user_data.user.username,
                             sessions.len()
                         );
-                        
+
                         for (session_uuid, session) in sessions.iter_mut() {
                             let json = json!(
                                 {

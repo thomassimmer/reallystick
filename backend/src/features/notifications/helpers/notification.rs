@@ -1,7 +1,7 @@
 use actix_web::web::Data;
 use redis::{AsyncCommands, Client};
 use serde_json::json;
-use sqlx::{postgres::PgQueryResult, PgConnection};
+use sqlx::{postgres::PgQueryResult, Executor, Postgres};
 use uuid::Uuid;
 
 use crate::{
@@ -9,10 +9,13 @@ use crate::{
     features::notifications::structs::models::Notification,
 };
 
-pub async fn create_notification(
-    conn: &mut PgConnection,
+pub async fn create_notification<'a, E>(
+    executor: E,
     notification: Notification,
-) -> Result<PgQueryResult, sqlx::Error> {
+) -> Result<PgQueryResult, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query!(
         r#"
         INSERT INTO notifications (
@@ -34,14 +37,17 @@ pub async fn create_notification(
         notification.url,
         notification.seen
     )
-    .execute(conn)
+    .execute(executor)
     .await
 }
 
-pub async fn get_user_notifications(
-    conn: &mut PgConnection,
+pub async fn get_user_notifications<'a, E>(
+    executor: E,
     user_id: Uuid,
-) -> Result<Vec<Notification>, sqlx::Error> {
+) -> Result<Vec<Notification>, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         Notification,
         r#"
@@ -51,14 +57,17 @@ pub async fn get_user_notifications(
         "#,
         user_id,
     )
-    .fetch_all(conn)
+    .fetch_all(executor)
     .await
 }
 
-pub async fn mark_notification_as_seen(
-    conn: &mut PgConnection,
+pub async fn mark_notification_as_seen<'a, E>(
+    executor: E,
     id: Uuid,
-) -> Result<PgQueryResult, sqlx::Error> {
+) -> Result<PgQueryResult, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query!(
         r#"
         UPDATE notifications
@@ -67,14 +76,14 @@ pub async fn mark_notification_as_seen(
         "#,
         id,
     )
-    .execute(conn)
+    .execute(executor)
     .await
 }
 
-pub async fn delete_notification(
-    conn: &mut PgConnection,
-    id: Uuid,
-) -> Result<PgQueryResult, sqlx::Error> {
+pub async fn delete_notification<'a, E>(executor: E, id: Uuid) -> Result<PgQueryResult, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query!(
         r#"
         DELETE
@@ -83,14 +92,17 @@ pub async fn delete_notification(
         "#,
         id,
     )
-    .execute(conn)
+    .execute(executor)
     .await
 }
 
-pub async fn delete_user_notifications(
-    conn: &mut PgConnection,
+pub async fn delete_user_notifications<'a, E>(
+    executor: E,
     user_id: Uuid,
-) -> Result<PgQueryResult, sqlx::Error> {
+) -> Result<PgQueryResult, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query!(
         r#"
         DELETE
@@ -99,19 +111,21 @@ pub async fn delete_user_notifications(
         "#,
         user_id,
     )
-    .execute(conn)
+    .execute(executor)
     .await
 }
 
-pub async fn generate_notification(
-    conn: &mut PgConnection,
+pub async fn generate_notification<'a, E>(
+    executor: E,
     user_id: Uuid,
     title: &str,
     body: &str,
     redis_client: Data<Client>,
     notification_type: &str,
     url: Option<String>,
-) {
+) where
+    E: Executor<'a, Database = Postgres>,
+{
     // Create a notification
     let notification = Notification {
         id: Uuid::new_v4(),
@@ -123,7 +137,7 @@ pub async fn generate_notification(
         seen: false,
     };
 
-    match create_notification(conn, notification.clone()).await {
+    match create_notification(executor, notification.clone()).await {
         Ok(_) => match redis_client.get_multiplexed_async_connection().await {
             Ok(mut con) => {
                 let result: Result<(), redis::RedisError> = con

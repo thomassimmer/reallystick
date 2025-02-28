@@ -14,26 +14,11 @@ use sqlx::PgPool;
 
 #[get("/")]
 pub async fn get_habits(pool: Data<PgPool>, request_claims: ReqData<Claims>) -> impl Responder {
-    let mut transaction = match pool.begin().await {
-        Ok(t) => t,
-        Err(e) => {
-            eprintln!("Error: {}", e);
-            return HttpResponse::InternalServerError()
-                .json(AppError::DatabaseConnection.to_response());
-        }
-    };
-
     let get_habits_result = if request_claims.is_admin {
-        habit::get_habits(&mut transaction).await
+        habit::get_habits(&**pool).await
     } else {
-        habit::get_reviewed_and_personnal_habits(&mut transaction, request_claims.user_id).await
+        habit::get_reviewed_and_personnal_habits(&**pool, request_claims.user_id).await
     };
-
-    if let Err(e) = transaction.commit().await {
-        eprintln!("Error: {}", e);
-        return HttpResponse::InternalServerError()
-            .json(AppError::DatabaseTransaction.to_response());
-    }
 
     match get_habits_result {
         Ok(habits) => HttpResponse::Ok().json(HabitsResponse {

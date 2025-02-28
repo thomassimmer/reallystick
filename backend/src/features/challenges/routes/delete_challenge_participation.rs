@@ -35,7 +35,7 @@ pub async fn delete_challenge_participation(
         }
     };
 
-    match get_challenge_participation_by_id(&mut transaction, params.challenge_participation_id)
+    match get_challenge_participation_by_id(&mut *transaction, params.challenge_participation_id)
         .await
     {
         Ok(r) => match r {
@@ -59,7 +59,7 @@ pub async fn delete_challenge_participation(
     };
 
     let delete_challenge_participation_result =
-        delete_challenge_participation_by_id(&mut transaction, params.challenge_participation_id)
+        delete_challenge_participation_by_id(&mut *transaction, params.challenge_participation_id)
             .await;
 
     if let Err(e) = transaction.commit().await {

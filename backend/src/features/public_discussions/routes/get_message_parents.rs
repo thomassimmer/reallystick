@@ -31,7 +31,7 @@ pub async fn get_message_parents(
     };
 
     // Check if message exists
-    let mut message = match get_public_message_by_id(&mut transaction, params.message_id).await {
+    let mut message = match get_public_message_by_id(&mut *transaction, params.message_id).await {
         Ok(r) => match r {
             Some(r) => r,
             None => {
@@ -48,7 +48,7 @@ pub async fn get_message_parents(
     let mut parents = Vec::<PublicMessage>::new();
 
     while let Some(replies_to) = message.replies_to {
-        let parent = match get_public_message_by_id(&mut transaction, replies_to).await {
+        let parent = match get_public_message_by_id(&mut *transaction, replies_to).await {
             Ok(r) => match r {
                 Some(r) => r,
                 None => {

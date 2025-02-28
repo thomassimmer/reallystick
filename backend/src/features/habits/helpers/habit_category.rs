@@ -1,12 +1,15 @@
-use sqlx::{postgres::PgQueryResult, PgConnection};
+use sqlx::{postgres::PgQueryResult, Executor, Postgres};
 use uuid::Uuid;
 
 use crate::features::habits::structs::models::habit_category::HabitCategory;
 
-pub async fn get_habit_category_by_id(
-    conn: &mut PgConnection,
+pub async fn get_habit_category_by_id<'a, E>(
+    executor: E,
     habit_category_id: Uuid,
-) -> Result<Option<HabitCategory>, sqlx::Error> {
+) -> Result<Option<HabitCategory>, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         HabitCategory,
         r#"
@@ -16,15 +19,18 @@ pub async fn get_habit_category_by_id(
         "#,
         habit_category_id,
     )
-    .fetch_optional(conn)
+    .fetch_optional(executor)
     .await
 }
 
-pub async fn get_habit_category_by_name(
-    conn: &mut PgConnection,
+pub async fn get_habit_category_by_name<'a, E>(
+    executor: E,
     language_code: String,
     habit_category_name: String,
-) -> Result<Option<HabitCategory>, sqlx::Error> {
+) -> Result<Option<HabitCategory>, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         HabitCategory,
         r#"
@@ -35,13 +41,14 @@ pub async fn get_habit_category_by_name(
         language_code,
         habit_category_name,
     )
-    .fetch_optional(conn)
+    .fetch_optional(executor)
     .await
 }
 
-pub async fn get_habit_categories(
-    conn: &mut PgConnection,
-) -> Result<Vec<HabitCategory>, sqlx::Error> {
+pub async fn get_habit_categories<'a, E>(executor: E) -> Result<Vec<HabitCategory>, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         HabitCategory,
         r#"
@@ -49,14 +56,17 @@ pub async fn get_habit_categories(
         from habit_categories
         "#,
     )
-    .fetch_all(conn)
+    .fetch_all(executor)
     .await
 }
 
-pub async fn update_habit_category(
-    conn: &mut PgConnection,
+pub async fn update_habit_category<'a, E>(
+    executor: E,
     category: &HabitCategory,
-) -> Result<sqlx::postgres::PgQueryResult, sqlx::Error> {
+) -> Result<sqlx::postgres::PgQueryResult, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         Habit,
         r#"
@@ -68,14 +78,17 @@ pub async fn update_habit_category(
         category.icon,
         category.id
     )
-    .execute(conn)
+    .execute(executor)
     .await
 }
 
-pub async fn create_habit_category(
-    conn: &mut PgConnection,
+pub async fn create_habit_category<'a, E>(
+    executor: E,
     habit_category: &HabitCategory,
-) -> Result<sqlx::postgres::PgQueryResult, sqlx::Error> {
+) -> Result<sqlx::postgres::PgQueryResult, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         Habit,
         r#"
@@ -92,14 +105,17 @@ pub async fn create_habit_category(
         habit_category.created_at,
         habit_category.icon
     )
-    .execute(conn)
+    .execute(executor)
     .await
 }
 
-pub async fn delete_habit_category_by_id(
-    conn: &mut PgConnection,
+pub async fn delete_habit_category_by_id<'a, E>(
+    executor: E,
     habit_category_id: Uuid,
-) -> Result<PgQueryResult, sqlx::Error> {
+) -> Result<PgQueryResult, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         Habit,
         r#"
@@ -109,6 +125,6 @@ pub async fn delete_habit_category_by_id(
         "#,
         habit_category_id,
     )
-    .execute(conn)
+    .execute(executor)
     .await
 }

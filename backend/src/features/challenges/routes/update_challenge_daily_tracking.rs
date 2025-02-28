@@ -41,7 +41,7 @@ pub async fn update_challenge_daily_tracking(
     };
 
     let get_challenge_daily_tracking_result =
-        get_challenge_daily_tracking_by_id(&mut transaction, params.challenge_daily_tracking_id)
+        get_challenge_daily_tracking_by_id(&mut *transaction, params.challenge_daily_tracking_id)
             .await;
 
     let mut challenge_daily_tracking = match get_challenge_daily_tracking_result {
@@ -58,7 +58,7 @@ pub async fn update_challenge_daily_tracking(
         }
     };
 
-    match get_challenge_by_id(&mut transaction, challenge_daily_tracking.challenge_id).await {
+    match get_challenge_by_id(&mut *transaction, challenge_daily_tracking.challenge_id).await {
         Ok(r) => match r {
             Some(challenge) => {
                 if !request_claims.is_admin && challenge.creator != request_claims.user_id {
@@ -76,7 +76,7 @@ pub async fn update_challenge_daily_tracking(
         }
     };
 
-    match get_habit_by_id(&mut transaction, body.habit_id).await {
+    match get_habit_by_id(&mut *transaction, body.habit_id).await {
         Ok(r) => {
             if r.is_none() {
                 return HttpResponse::NotFound().json(AppError::HabitNotFound.to_response());
@@ -88,7 +88,7 @@ pub async fn update_challenge_daily_tracking(
         }
     };
 
-    match get_unit_by_id(&mut transaction, body.unit_id).await {
+    match get_unit_by_id(&mut *transaction, body.unit_id).await {
         Ok(r) => {
             if r.is_none() {
                 return HttpResponse::NotFound().json(AppError::UnitNotFound.to_response());
@@ -100,7 +100,7 @@ pub async fn update_challenge_daily_tracking(
         }
     }
 
-    match get_unit_by_id(&mut transaction, body.weight_unit_id).await {
+    match get_unit_by_id(&mut *transaction, body.weight_unit_id).await {
         Ok(r) => {
             if r.is_none() {
                 return HttpResponse::NotFound().json(AppError::UnitNotFound.to_response());
@@ -130,7 +130,7 @@ pub async fn update_challenge_daily_tracking(
 
     let update_challenge_daily_tracking_result =
         challenge_daily_tracking::update_challenge_daily_tracking(
-            &mut transaction,
+            &mut *transaction,
             &challenge_daily_tracking,
         )
         .await;

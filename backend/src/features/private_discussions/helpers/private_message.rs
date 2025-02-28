@@ -1,12 +1,15 @@
-use sqlx::{postgres::PgQueryResult, PgConnection};
+use sqlx::{postgres::PgQueryResult, Executor, Postgres};
 use uuid::Uuid;
 
 use crate::features::private_discussions::structs::models::private_message::PrivateMessage;
 
-pub async fn get_private_message_by_id(
-    conn: &mut PgConnection,
+pub async fn get_private_message_by_id<'a, E>(
+    executor: E,
     message_id: Uuid,
-) -> Result<Option<PrivateMessage>, sqlx::Error> {
+) -> Result<Option<PrivateMessage>, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         PrivateMessage,
         r#"
@@ -16,14 +19,17 @@ pub async fn get_private_message_by_id(
         "#,
         message_id,
     )
-    .fetch_optional(conn)
+    .fetch_optional(executor)
     .await
 }
 
-pub async fn get_messages_for_discussion(
-    conn: &mut PgConnection,
+pub async fn get_messages_for_discussion<'a, E>(
+    executor: E,
     discussion_id: Uuid,
-) -> Result<Vec<PrivateMessage>, sqlx::Error> {
+) -> Result<Vec<PrivateMessage>, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         PrivateMessage,
         r#"
@@ -33,14 +39,17 @@ pub async fn get_messages_for_discussion(
         "#,
         discussion_id,
     )
-    .fetch_all(conn)
+    .fetch_all(executor)
     .await
 }
 
-pub async fn get_last_messages_for_discussions(
-    conn: &mut PgConnection,
+pub async fn get_last_messages_for_discussions<'a, E>(
+    executor: E,
     discussion_ids: Vec<Uuid>,
-) -> Result<Vec<PrivateMessage>, sqlx::Error> {
+) -> Result<Vec<PrivateMessage>, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         PrivateMessage,
         r#"
@@ -55,15 +64,18 @@ pub async fn get_last_messages_for_discussions(
         "#,
         &discussion_ids,
     )
-    .fetch_all(conn)
+    .fetch_all(executor)
     .await
 }
 
-pub async fn get_unseen_messages_for_discussions(
-    conn: &mut PgConnection,
+pub async fn get_unseen_messages_for_discussions<'a, E>(
+    executor: E,
     discussion_ids: Vec<Uuid>,
     user_id: Uuid,
-) -> Result<Vec<(Uuid, i64)>, sqlx::Error> {
+) -> Result<Vec<(Uuid, i64)>, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     let results = sqlx::query!(
         r#"
         SELECT pm.discussion_id, COUNT(*) AS unseen_count
@@ -77,7 +89,7 @@ pub async fn get_unseen_messages_for_discussions(
         &discussion_ids,
         user_id,
     )
-    .fetch_all(conn)
+    .fetch_all(executor)
     .await;
 
     let mut discussions: Vec<(Uuid, i64)> = Vec::new();
@@ -94,10 +106,13 @@ pub async fn get_unseen_messages_for_discussions(
     return Ok(discussions);
 }
 
-pub async fn delete_message_by_id(
-    conn: &mut PgConnection,
+pub async fn delete_message_by_id<'a, E>(
+    executor: E,
     message_id: Uuid,
-) -> Result<PgQueryResult, sqlx::Error> {
+) -> Result<PgQueryResult, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         PrivateMessage,
         r#"
@@ -107,14 +122,17 @@ pub async fn delete_message_by_id(
         "#,
         message_id,
     )
-    .execute(conn)
+    .execute(executor)
     .await
 }
 
-pub async fn create_private_message(
-    conn: &mut PgConnection,
+pub async fn create_private_message<'a, E>(
+    executor: E,
     private_message: &PrivateMessage,
-) -> Result<PgQueryResult, sqlx::Error> {
+) -> Result<PgQueryResult, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         PrivateMessage,
         r#"
@@ -143,14 +161,17 @@ pub async fn create_private_message(
         private_message.deleted,
         private_message.seen,
     )
-    .execute(conn)
+    .execute(executor)
     .await
 }
 
-pub async fn update_private_message(
-    conn: &mut PgConnection,
+pub async fn update_private_message<'a, E>(
+    executor: E,
     private_message: &PrivateMessage,
-) -> Result<PgQueryResult, sqlx::Error> {
+) -> Result<PgQueryResult, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         PrivateMessage,
         r#"
@@ -162,13 +183,16 @@ pub async fn update_private_message(
         private_message.content,
         private_message.id,
     )
-    .execute(conn)
+    .execute(executor)
     .await
 }
-pub async fn mark_private_message_as_seen(
-    conn: &mut PgConnection,
+pub async fn mark_private_message_as_seen<'a, E>(
+    executor: E,
     private_message: &PrivateMessage,
-) -> Result<PgQueryResult, sqlx::Error> {
+) -> Result<PgQueryResult, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         PrivateMessage,
         r#"
@@ -179,6 +203,6 @@ pub async fn mark_private_message_as_seen(
         private_message.seen,
         private_message.id,
     )
-    .execute(conn)
+    .execute(executor)
     .await
 }

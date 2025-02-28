@@ -38,7 +38,7 @@ pub async fn delete_public_message(
     };
 
     // Check if message exists
-    let mut public_message = match get_public_message_by_id(&mut transaction, params.message_id)
+    let mut public_message = match get_public_message_by_id(&mut *transaction, params.message_id)
         .await
     {
         Ok(r) => match r {
@@ -70,7 +70,7 @@ pub async fn delete_public_message(
     public_message.deleted_by_creator = !params.deleted_by_admin;
 
     let delete_public_message_result =
-        public_message::delete_public_message(&mut transaction, &public_message).await;
+        public_message::delete_public_message(&mut *transaction, &public_message).await;
 
     if let Err(e) = delete_public_message_result {
         eprintln!("Error: {}", e);
@@ -80,12 +80,12 @@ pub async fn delete_public_message(
 
     if let Some(public_message_replying_to) = public_message.replies_to {
         if let Ok(Some(mut message)) =
-            get_public_message_by_id(&mut transaction, public_message_replying_to).await
+            get_public_message_by_id(&mut *transaction, public_message_replying_to).await
         {
             message.reply_count -= 1;
 
             let update_public_message_result =
-                update_public_message_reply_count(&mut transaction, &message).await;
+                update_public_message_reply_count(&mut *transaction, &message).await;
 
             if let Err(e) = update_public_message_result {
                 eprintln!("Error: {}", e);

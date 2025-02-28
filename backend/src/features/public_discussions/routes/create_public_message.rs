@@ -64,7 +64,7 @@ pub async fn create_public_message(
 
     // Check if habit exists
     if let Some(habit_id) = body.habit_id {
-        match get_habit_by_id(&mut transaction, habit_id).await {
+        match get_habit_by_id(&mut *transaction, habit_id).await {
             Ok(r) => {
                 if r.is_none() {
                     return HttpResponse::NotFound().json(AppError::HabitNotFound.to_response());
@@ -80,7 +80,7 @@ pub async fn create_public_message(
 
     // Check if challenge exists
     if let Some(challenge_id) = body.challenge_id {
-        match get_challenge_by_id(&mut transaction, challenge_id).await {
+        match get_challenge_by_id(&mut *transaction, challenge_id).await {
             Ok(r) => {
                 if r.is_none() {
                     return HttpResponse::NotFound()
@@ -98,7 +98,7 @@ pub async fn create_public_message(
     // Check if replies_to exists
     let public_message_replying_to = if let Some(replies_to) = body.replies_to {
         Some(
-            match get_public_message_by_id(&mut transaction, replies_to).await {
+            match get_public_message_by_id(&mut *transaction, replies_to).await {
                 Ok(r) => match r {
                     Some(r) => r,
                     None => {
@@ -146,7 +146,7 @@ pub async fn create_public_message(
     };
 
     let create_public_message_result =
-        public_message::create_public_message(&mut transaction, &new_public_message).await;
+        public_message::create_public_message(&mut *transaction, &new_public_message).await;
 
     if let Err(e) = create_public_message_result {
         eprintln!("Error: {}", e);
@@ -158,7 +158,7 @@ pub async fn create_public_message(
         message.reply_count += 1;
 
         let update_public_message_result =
-            update_public_message_reply_count(&mut transaction, &message).await;
+            update_public_message_reply_count(&mut *transaction, &message).await;
 
         if let Err(e) = update_public_message_result {
             eprintln!("Error: {}", e);
@@ -170,17 +170,17 @@ pub async fn create_public_message(
         if request_claims.user_id != message.creator {
             if let (Some(person_who_liked), Some(creator)) = (
                 user_public_data_cache
-                    .get_value_for_key_or_insert_it(&request_claims.user_id, &mut transaction)
+                    .get_value_for_key_or_insert_it(&request_claims.user_id, &mut *transaction)
                     .await,
                 user_public_data_cache
-                    .get_value_for_key_or_insert_it(&message.creator, &mut transaction)
+                    .get_value_for_key_or_insert_it(&message.creator, &mut *transaction)
                     .await,
             ) {
                 let mut args = FluentArgs::new();
                 args.set("username", person_who_liked.username);
 
                 generate_notification(
-                    &mut transaction,
+                    &mut *transaction,
                     message.creator,
                     &translator.translate(
                         &creator.locale,

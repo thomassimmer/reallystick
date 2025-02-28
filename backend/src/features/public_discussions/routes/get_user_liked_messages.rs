@@ -20,23 +20,8 @@ pub async fn get_user_liked_messages(
     pool: Data<PgPool>,
     request_claims: ReqData<Claims>,
 ) -> impl Responder {
-    let mut transaction = match pool.begin().await {
-        Ok(t) => t,
-        Err(e) => {
-            eprintln!("Error: {}", e);
-            return HttpResponse::InternalServerError()
-                .json(AppError::DatabaseConnection.to_response());
-        }
-    };
-
     let get_messages_result =
-        public_message::get_user_liked_messages(&mut transaction, request_claims.user_id).await;
-
-    if let Err(e) = transaction.commit().await {
-        eprintln!("Error: {}", e);
-        return HttpResponse::InternalServerError()
-            .json(AppError::DatabaseTransaction.to_response());
-    }
+        public_message::get_user_liked_messages(&**pool, request_claims.user_id).await;
 
     match get_messages_result {
         Ok(messages) => HttpResponse::Ok().json(PublicMessagesResponse {

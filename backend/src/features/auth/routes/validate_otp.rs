@@ -30,7 +30,7 @@ async fn validate(
     let user_id = body.user_id;
 
     // Check if user already exists
-    let existing_user = get_user_by_id(&mut transaction, user_id).await;
+    let existing_user = get_user_by_id(&mut *transaction, user_id).await;
 
     let user = match existing_user {
         Ok(existing_user) => {
@@ -79,7 +79,7 @@ async fn validate(
         user.is_admin,
         user.username,
         parsed_device_info,
-        &mut transaction,
+        &mut *transaction,
     )
     .await
     {

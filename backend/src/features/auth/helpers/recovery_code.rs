@@ -1,13 +1,16 @@
-use sqlx::Error;
-use sqlx::{postgres::PgQueryResult, PgConnection};
+use sqlx::postgres::PgQueryResult;
+use sqlx::{Error, Executor, Postgres};
 use uuid::Uuid;
 
 use crate::features::auth::structs::models::RecoveryCode;
 
-pub async fn create_recovery_code(
+pub async fn create_recovery_code<'a, E>(
     recovery_code: &RecoveryCode,
-    transaction: &mut PgConnection,
-) -> Result<PgQueryResult, Error> {
+    executor: E,
+) -> Result<PgQueryResult, Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query!(
         r#"
         INSERT INTO recovery_codes (id, user_id, recovery_code, private_key_encrypted, salt_used_to_derive_key_from_recovery_code)
@@ -19,14 +22,17 @@ pub async fn create_recovery_code(
         recovery_code.private_key_encrypted,
         recovery_code.salt_used_to_derive_key_from_recovery_code,
     )
-    .execute(transaction)
+    .execute(executor)
     .await
 }
 
-pub async fn get_recovery_code_for_user(
+pub async fn get_recovery_code_for_user<'a, E>(
     user_id: Uuid,
-    transaction: &mut PgConnection,
-) -> Result<Option<RecoveryCode>, Error> {
+    executor: E,
+) -> Result<Option<RecoveryCode>, Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         RecoveryCode,
         r#"
@@ -36,14 +42,17 @@ pub async fn get_recovery_code_for_user(
         "#,
         user_id
     )
-    .fetch_optional(transaction)
+    .fetch_optional(executor)
     .await
 }
 
-pub async fn delete_recovery_code_for_user(
+pub async fn delete_recovery_code_for_user<'a, E>(
     user_id: Uuid,
-    transaction: &mut PgConnection,
-) -> Result<PgQueryResult, Error> {
+    executor: E,
+) -> Result<PgQueryResult, Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         RecoveryCode,
         r#"
@@ -53,6 +62,6 @@ pub async fn delete_recovery_code_for_user(
         "#,
         user_id
     )
-    .execute(transaction)
+    .execute(executor)
     .await
 }

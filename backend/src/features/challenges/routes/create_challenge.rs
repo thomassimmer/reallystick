@@ -47,7 +47,7 @@ pub async fn create_challenge(
         deleted: false,
     };
 
-    let create_challenge_result = challenge::create_challenge(&mut transaction, &challenge).await;
+    let create_challenge_result = challenge::create_challenge(&mut *transaction, &challenge).await;
 
     if let Err(e) = transaction.commit().await {
         eprintln!("Error: {}", e);

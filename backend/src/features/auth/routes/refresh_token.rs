@@ -65,7 +65,7 @@ pub async fn refresh_token(
         Ok(Some(expires_at)) => {
             if now() > expires_at {
                 // Remove user session / token
-                if let Err(e) = delete_token(claims.jti, &mut transaction).await {
+                if let Err(e) = delete_token(claims.jti, &mut *transaction).await {
                     eprintln!("Error: {}", e);
                     return HttpResponse::InternalServerError()
                         .json(AppError::DatabaseTransaction.to_response());
@@ -84,7 +84,7 @@ pub async fn refresh_token(
 
     // Remove token and create a new one so the user never has to
     // connect again, unless after 7 days of inactivity.
-    if let Err(e) = delete_token(claims.jti, &mut transaction).await {
+    if let Err(e) = delete_token(claims.jti, &mut *transaction).await {
         eprintln!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::DatabaseTransaction.to_response());
@@ -92,7 +92,7 @@ pub async fn refresh_token(
 
     cached_tokens.remove_key(claims.jti).await;
 
-    let user = match get_user_by_id(&mut transaction, claims.user_id).await {
+    let user = match get_user_by_id(&mut *transaction, claims.user_id).await {
         Ok(r) => match r {
             Some(u) => u,
             None => {
@@ -129,7 +129,7 @@ pub async fn refresh_token(
         new_jti,
         refresh_token_expires_at,
         parsed_device_info,
-        &mut transaction,
+        &mut *transaction,
     )
     .await
     {

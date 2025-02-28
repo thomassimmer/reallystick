@@ -2,8 +2,8 @@ use actix_web::HttpRequest;
 use chrono::{DateTime, Utc};
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
 use sha2::{Digest, Sha256};
-use sqlx::Error;
-use sqlx::{postgres::PgQueryResult, PgConnection};
+use sqlx::postgres::PgQueryResult;
+use sqlx::{Error, Executor, Postgres};
 use uuid::Uuid;
 
 use crate::features::profile::structs::models::ParsedDeviceInfo;
@@ -20,17 +20,21 @@ pub fn hash_token(token: &str) -> String {
     format!("{:X}", hasher.finalize())
 }
 
-pub async fn generate_tokens(
+pub async fn generate_tokens<'a, E>(
     secret_key: &[u8],
     user_id: Uuid,
     is_admin: bool,
     username: String,
     parsed_device_info: ParsedDeviceInfo,
-    transaction: &mut PgConnection,
-) -> Result<(String, String), Error> {
+    executor: E,
+) -> Result<(String, String), Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     let jti = Uuid::new_v4();
 
-    let (access_token, _) = generate_access_token(secret_key, jti, user_id, is_admin, username.clone());
+    let (access_token, _) =
+        generate_access_token(secret_key, jti, user_id, is_admin, username.clone());
     let (refresh_token, refresh_token_expires_at) =
         generate_refresh_token(secret_key, jti, user_id, is_admin, username);
 
@@ -39,7 +43,7 @@ pub async fn generate_tokens(
         jti,
         refresh_token_expires_at,
         parsed_device_info,
-        transaction,
+        executor,
     )
     .await
     .unwrap();
@@ -105,13 +109,16 @@ pub fn generate_refresh_token(
     (refresh_token, refresh_token_expires_at)
 }
 
-pub async fn save_tokens(
+pub async fn save_tokens<'a, E>(
     user_id: Uuid,
     jti: Uuid,
     refresh_claim_expires_at: DateTime<Utc>,
     parsed_device_info: ParsedDeviceInfo,
-    transaction: &mut PgConnection,
-) -> Result<PgQueryResult, Error> {
+    executor: E,
+) -> Result<PgQueryResult, Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     let new_token = UserToken {
         id: Uuid::new_v4(),
         user_id,
@@ -141,7 +148,7 @@ pub async fn save_tokens(
         new_token.app_version,
         new_token.model
     )
-    .execute(transaction)
+    .execute(executor)
     .await
 }
 
@@ -168,10 +175,10 @@ pub fn retrieve_claims_for_token(req: HttpRequest, secret: String) -> Result<Cla
     }
 }
 
-pub async fn delete_token(
-    token_id: Uuid,
-    transaction: &mut PgConnection,
-) -> Result<PgQueryResult, Error> {
+pub async fn delete_token<'a, E>(token_id: Uuid, executor: E) -> Result<PgQueryResult, Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query!(
         r#"
         DELETE
@@ -180,14 +187,14 @@ pub async fn delete_token(
         "#,
         token_id
     )
-    .execute(transaction)
+    .execute(executor)
     .await
 }
 
-pub async fn delete_user_tokens(
-    user_id: Uuid,
-    transaction: &mut PgConnection,
-) -> Result<PgQueryResult, Error> {
+pub async fn delete_user_tokens<'a, E>(user_id: Uuid, executor: E) -> Result<PgQueryResult, Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query!(
         r#"
         DELETE
@@ -196,15 +203,18 @@ pub async fn delete_user_tokens(
         "#,
         user_id
     )
-    .execute(transaction)
+    .execute(executor)
     .await
 }
 
-pub async fn get_user_token(
+pub async fn get_user_token<'a, E>(
     user_id: Uuid,
     token_id: Uuid,
-    transaction: &mut PgConnection,
-) -> Result<Option<UserToken>, Error> {
+    executor: E,
+) -> Result<Option<UserToken>, Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         UserToken,
         r#"
@@ -215,14 +225,14 @@ pub async fn get_user_token(
         user_id,
         token_id,
     )
-    .fetch_optional(transaction)
+    .fetch_optional(executor)
     .await
 }
 
-pub async fn get_user_tokens(
-    user_id: Uuid,
-    transaction: &mut PgConnection,
-) -> Result<Vec<UserToken>, Error> {
+pub async fn get_user_tokens<'a, E>(user_id: Uuid, executor: E) -> Result<Vec<UserToken>, Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         UserToken,
         r#"
@@ -232,14 +242,14 @@ pub async fn get_user_tokens(
         "#,
         user_id
     )
-    .fetch_all(transaction)
+    .fetch_all(executor)
     .await
 }
 
-pub async fn update_token(
-    token: UserToken,
-    transaction: &mut PgConnection,
-) -> Result<PgQueryResult, Error> {
+pub async fn update_token<'a, E>(token: UserToken, executor: E) -> Result<PgQueryResult, Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query!(
         r#"
         UPDATE user_tokens SET fcm_token = $1 WHERE id = $2
@@ -247,6 +257,6 @@ pub async fn update_token(
         token.fcm_token,
         token.id
     )
-    .execute(transaction)
+    .execute(executor)
     .await
 }

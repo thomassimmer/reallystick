@@ -1,12 +1,15 @@
-use sqlx::{postgres::PgQueryResult, PgConnection};
+use sqlx::{postgres::PgQueryResult, Executor, Postgres};
 use uuid::Uuid;
 
 use crate::features::private_discussions::structs::models::private_discussion_participation::PrivateDiscussionParticipation;
 
-pub async fn create_private_discussion_participation(
-    conn: &mut PgConnection,
+pub async fn create_private_discussion_participation<'a, E>(
+    executor: E,
     participation: &PrivateDiscussionParticipation,
-) -> Result<PgQueryResult, sqlx::Error> {
+) -> Result<PgQueryResult, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         PrivateDiscussionParticipation,
         r#"
@@ -27,14 +30,17 @@ pub async fn create_private_discussion_participation(
         participation.created_at,
         participation.has_blocked
     )
-    .execute(conn)
+    .execute(executor)
     .await
 }
 
-pub async fn update_private_discussion_participation(
-    conn: &mut PgConnection,
+pub async fn update_private_discussion_participation<'a, E>(
+    executor: E,
     participation: &PrivateDiscussionParticipation,
-) -> Result<PgQueryResult, sqlx::Error> {
+) -> Result<PgQueryResult, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         PrivateDiscussionParticipation,
         r#"
@@ -48,15 +54,18 @@ pub async fn update_private_discussion_participation(
         participation.has_blocked,
         participation.id,
     )
-    .execute(conn)
+    .execute(executor)
     .await
 }
 
-pub async fn get_private_discussion_participation_by_user_and_discussion(
-    conn: &mut PgConnection,
+pub async fn get_private_discussion_participation_by_user_and_discussion<'a, E>(
+    executor: E,
     user_id: Uuid,
     discussion_id: Uuid,
-) -> Result<Option<PrivateDiscussionParticipation>, sqlx::Error> {
+) -> Result<Option<PrivateDiscussionParticipation>, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         PrivateDiscussionParticipation,
         r#"
@@ -67,14 +76,17 @@ pub async fn get_private_discussion_participation_by_user_and_discussion(
         user_id,
         discussion_id
     )
-    .fetch_optional(conn)
+    .fetch_optional(executor)
     .await
 }
 
-pub async fn get_user_private_discussion_participations(
-    conn: &mut PgConnection,
+pub async fn get_user_private_discussion_participations<'a, E>(
+    executor: E,
     user_id: Uuid,
-) -> Result<Vec<PrivateDiscussionParticipation>, sqlx::Error> {
+) -> Result<Vec<PrivateDiscussionParticipation>, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         PrivateDiscussionParticipation,
         r#"
@@ -84,15 +96,18 @@ pub async fn get_user_private_discussion_participations(
         "#,
         user_id,
     )
-    .fetch_all(conn)
+    .fetch_all(executor)
     .await
 }
 
-pub async fn get_private_discussions_recipients(
-    conn: &mut PgConnection,
+pub async fn get_private_discussions_recipients<'a, E>(
+    executor: E,
     discussion_ids: Vec<Uuid>,
     user_id: Uuid,
-) -> Result<Vec<PrivateDiscussionParticipation>, sqlx::Error> {
+) -> Result<Vec<PrivateDiscussionParticipation>, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         PrivateDiscussionParticipation,
         r#"
@@ -103,14 +118,17 @@ pub async fn get_private_discussions_recipients(
         user_id,
         &discussion_ids,
     )
-    .fetch_all(conn)
+    .fetch_all(executor)
     .await
 }
 
-pub async fn get_private_discussion_participations_by_discussion(
-    conn: &mut PgConnection,
+pub async fn get_private_discussion_participations_by_discussion<'a, E>(
+    executor: E,
     discussion_id: Uuid,
-) -> Result<Vec<PrivateDiscussionParticipation>, sqlx::Error> {
+) -> Result<Vec<PrivateDiscussionParticipation>, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         PrivateDiscussionParticipation,
         r#"
@@ -120,6 +138,6 @@ pub async fn get_private_discussion_participations_by_discussion(
         "#,
         discussion_id
     )
-    .fetch_all(conn)
+    .fetch_all(executor)
     .await
 }

@@ -52,7 +52,7 @@ pub async fn duplicate_challenge(
         }
     };
 
-    let get_challenge_result = get_challenge_by_id(&mut transaction, params.challenge_id).await;
+    let get_challenge_result = get_challenge_by_id(&mut *transaction, params.challenge_id).await;
 
     let challenge_to_duplicate = match get_challenge_result {
         Ok(r) => match r {
@@ -79,7 +79,7 @@ pub async fn duplicate_challenge(
     };
 
     let create_challenge_result =
-        challenge::create_challenge(&mut transaction, &challenge_to_create).await;
+        challenge::create_challenge(&mut *transaction, &challenge_to_create).await;
 
     if let Err(e) = create_challenge_result {
         eprintln!("Error: {}", e);
@@ -87,7 +87,7 @@ pub async fn duplicate_challenge(
     }
 
     let get_challenge_daily_trackings_result =
-        get_challenge_daily_trackings_for_challenge(&mut transaction, params.challenge_id).await;
+        get_challenge_daily_trackings_for_challenge(&mut *transaction, params.challenge_id).await;
 
     let challenge_daily_tracking_to_duplicate = match get_challenge_daily_trackings_result {
         Ok(challenge_daily_tracking) => challenge_daily_tracking,
@@ -116,7 +116,7 @@ pub async fn duplicate_challenge(
     }
 
     let create_challenge_daily_tracking_result =
-        create_challenge_daily_trackings(&mut transaction, &challenge_daily_trackings_to_create)
+        create_challenge_daily_trackings(&mut *transaction, &challenge_daily_trackings_to_create)
             .await;
 
     if let Err(e) = create_challenge_daily_tracking_result {
@@ -129,10 +129,10 @@ pub async fn duplicate_challenge(
     if request_claims.user_id != challenge_to_duplicate.creator {
         if let (Some(duplicator), Some(creator)) = (
             user_public_data_cache
-                .get_value_for_key_or_insert_it(&request_claims.user_id, &mut transaction)
+                .get_value_for_key_or_insert_it(&request_claims.user_id, &mut *transaction)
                 .await,
             user_public_data_cache
-                .get_value_for_key_or_insert_it(&challenge_to_duplicate.creator, &mut transaction)
+                .get_value_for_key_or_insert_it(&challenge_to_duplicate.creator, &mut *transaction)
                 .await,
         ) {
             let mut args = FluentArgs::new();
@@ -141,7 +141,7 @@ pub async fn duplicate_challenge(
             let url = Some(format!("/challenges/{}", challenge_to_create.id));
 
             generate_notification(
-                &mut transaction,
+                &mut *transaction,
                 challenge_to_duplicate.creator,
                 &translator.translate(
                     &creator.locale,

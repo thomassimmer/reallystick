@@ -35,7 +35,7 @@ pub async fn save_recovery_code(
     };
 
     let delete_current_recovery_code_result =
-        delete_recovery_code_for_user(request_claims.user_id, &mut transaction).await;
+        delete_recovery_code_for_user(request_claims.user_id, &mut *transaction).await;
 
     if let Err(e) = delete_current_recovery_code_result {
         eprintln!("Error: {}", e);
@@ -65,7 +65,7 @@ pub async fn save_recovery_code(
     };
 
     let create_recovery_code_result =
-        recovery_code::create_recovery_code(&new_recovery_code, &mut transaction).await;
+        recovery_code::create_recovery_code(&new_recovery_code, &mut *transaction).await;
 
     if let Err(e) = create_recovery_code_result {
         eprintln!("Error: {}", e);

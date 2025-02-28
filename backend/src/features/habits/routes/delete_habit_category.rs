@@ -37,7 +37,7 @@ pub async fn delete_habit_category(
     };
 
     let delete_habit_category_result =
-        delete_habit_category_by_id(&mut transaction, params.habit_category_id).await;
+        delete_habit_category_by_id(&mut *transaction, params.habit_category_id).await;
 
     if let Err(e) = transaction.commit().await {
         eprintln!("Error: {}", e);

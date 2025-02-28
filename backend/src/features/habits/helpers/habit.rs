@@ -1,14 +1,17 @@
 use std::collections::HashSet;
 
-use sqlx::{postgres::PgQueryResult, PgConnection, PgPool};
+use sqlx::{postgres::PgQueryResult, Executor, PgPool, Postgres};
 use uuid::Uuid;
 
 use crate::features::habits::structs::models::{habit::Habit, habit_statistics::HabitStatistics};
 
-pub async fn get_habit_by_id(
-    conn: &mut PgConnection,
+pub async fn get_habit_by_id<'a, E>(
+    executor: E,
     habit_id: Uuid,
-) -> Result<Option<Habit>, sqlx::Error> {
+) -> Result<Option<Habit>, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         Habit,
         r#"
@@ -18,11 +21,14 @@ pub async fn get_habit_by_id(
         "#,
         habit_id,
     )
-    .fetch_optional(conn)
+    .fetch_optional(executor)
     .await
 }
 
-pub async fn get_habits(conn: &mut PgConnection) -> Result<Vec<Habit>, sqlx::Error> {
+pub async fn get_habits<'a, E>(executor: E) -> Result<Vec<Habit>, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         Habit,
         r#"
@@ -30,14 +36,17 @@ pub async fn get_habits(conn: &mut PgConnection) -> Result<Vec<Habit>, sqlx::Err
         from habits
         "#,
     )
-    .fetch_all(conn)
+    .fetch_all(executor)
     .await
 }
 
-pub async fn get_reviewed_and_personnal_habits(
-    conn: &mut PgConnection,
+pub async fn get_reviewed_and_personnal_habits<'a, E>(
+    executor: E,
     user_id: Uuid,
-) -> Result<Vec<Habit>, sqlx::Error> {
+) -> Result<Vec<Habit>, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         Habit,
         r#"
@@ -57,14 +66,17 @@ pub async fn get_reviewed_and_personnal_habits(
         "#,
         user_id
     )
-    .fetch_all(conn)
+    .fetch_all(executor)
     .await
 }
 
-pub async fn update_habit(
-    conn: &mut PgConnection,
+pub async fn update_habit<'a, E>(
+    executor: E,
     habit: &Habit,
-) -> Result<sqlx::postgres::PgQueryResult, sqlx::Error> {
+) -> Result<sqlx::postgres::PgQueryResult, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         Habit,
         r#"
@@ -88,14 +100,17 @@ pub async fn update_habit(
         habit.unit_ids,
         habit.id,
     )
-    .execute(conn)
+    .execute(executor)
     .await
 }
 
-pub async fn create_habit(
-    conn: &mut PgConnection,
+pub async fn create_habit<'a, E>(
+    executor: E,
     habit: &Habit,
-) -> Result<sqlx::postgres::PgQueryResult, sqlx::Error> {
+) -> Result<sqlx::postgres::PgQueryResult, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         Habit,
         r#"
@@ -122,14 +137,17 @@ pub async fn create_habit(
         habit.category_id,
         habit.unit_ids
     )
-    .execute(conn)
+    .execute(executor)
     .await
 }
 
-pub async fn delete_habit_by_id(
-    conn: &mut PgConnection,
+pub async fn delete_habit_by_id<'a, E>(
+    executor: E,
     habit_id: Uuid,
-) -> Result<PgQueryResult, sqlx::Error> {
+) -> Result<PgQueryResult, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         Habit,
         r#"
@@ -139,14 +157,14 @@ pub async fn delete_habit_by_id(
         "#,
         habit_id,
     )
-    .execute(conn)
+    .execute(executor)
     .await
 }
 
 pub async fn fetch_habit_statistics(pool: &PgPool) -> Result<Vec<HabitStatistics>, sqlx::Error> {
     let mut transaction = pool.begin().await?;
 
-    let habits = get_habits(&mut transaction).await?;
+    let habits = get_habits(&mut *transaction).await?;
     let habit_ids: Vec<_> = habits.iter().map(|h| h.id).collect();
 
     let counts = sqlx::query!(

@@ -34,7 +34,7 @@ pub async fn delete_public_message_report(
     };
 
     // Check if message report exists
-    match get_public_message_report_by_id(&mut transaction, params.message_report_id).await {
+    match get_public_message_report_by_id(&mut *transaction, params.message_report_id).await {
         Ok(r) => match r {
             Some(public_message_report) => {
                 if public_message_report.reporter != request_claims.user_id {
@@ -54,7 +54,7 @@ pub async fn delete_public_message_report(
     };
 
     let delete_public_message_result = public_message_report::delete_public_message_report(
-        &mut transaction,
+        &mut *transaction,
         params.message_report_id,
     )
     .await;

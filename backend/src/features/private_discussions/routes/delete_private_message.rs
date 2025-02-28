@@ -42,7 +42,7 @@ pub async fn delete_private_message(
     };
 
     // Check if message exists
-    let mut private_message = match get_private_message_by_id(&mut transaction, params.message_id)
+    let mut private_message = match get_private_message_by_id(&mut *transaction, params.message_id)
         .await
     {
         Ok(r) => match r {
@@ -65,7 +65,7 @@ pub async fn delete_private_message(
     }
 
     let delete_private_message_result =
-        private_message::delete_message_by_id(&mut transaction, private_message.id).await;
+        private_message::delete_message_by_id(&mut *transaction, private_message.id).await;
 
     private_message.deleted = true;
 
@@ -76,7 +76,7 @@ pub async fn delete_private_message(
     }
 
     let recipients = match private_discussion_participation::get_private_discussions_recipients(
-        &mut transaction,
+        &mut *transaction,
         vec![private_message.discussion_id],
         request_claims.user_id,
     )

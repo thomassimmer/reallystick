@@ -9,22 +9,7 @@ use sqlx::PgPool;
 
 #[get("/")]
 pub async fn get_habit_categories(pool: Data<PgPool>) -> impl Responder {
-    let mut transaction = match pool.begin().await {
-        Ok(t) => t,
-        Err(e) => {
-            eprintln!("Error: {}", e);
-            return HttpResponse::InternalServerError()
-                .json(AppError::DatabaseConnection.to_response());
-        }
-    };
-
-    let get_habit_categories_result = habit_category::get_habit_categories(&mut transaction).await;
-
-    if let Err(e) = transaction.commit().await {
-        eprintln!("Error: {}", e);
-        return HttpResponse::InternalServerError()
-            .json(AppError::DatabaseTransaction.to_response());
-    }
+    let get_habit_categories_result = habit_category::get_habit_categories(&**pool).await;
 
     match get_habit_categories_result {
         Ok(habit_categories) => HttpResponse::Ok().json(HabitCategoriesResponse {

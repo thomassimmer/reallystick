@@ -1,16 +1,19 @@
 use std::collections::HashSet;
 
-use sqlx::{postgres::PgQueryResult, PgConnection, PgPool};
+use sqlx::{postgres::PgQueryResult, Executor, PgPool, Postgres};
 use uuid::Uuid;
 
 use crate::features::challenges::structs::models::{
     challenge::Challenge, challenge_statistics::ChallengeStatistics,
 };
 
-pub async fn get_challenge_by_id(
-    conn: &mut PgConnection,
+pub async fn get_challenge_by_id<'a, E>(
+    executor: E,
     challenge_id: Uuid,
-) -> Result<Option<Challenge>, sqlx::Error> {
+) -> Result<Option<Challenge>, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         Challenge,
         r#"
@@ -20,11 +23,14 @@ pub async fn get_challenge_by_id(
         "#,
         challenge_id,
     )
-    .fetch_optional(conn)
+    .fetch_optional(executor)
     .await
 }
 
-pub async fn get_challenges(conn: &mut PgConnection) -> Result<Vec<Challenge>, sqlx::Error> {
+pub async fn get_challenges<'a, E>(executor: E) -> Result<Vec<Challenge>, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         Challenge,
         r#"
@@ -32,14 +38,17 @@ pub async fn get_challenges(conn: &mut PgConnection) -> Result<Vec<Challenge>, s
         from challenges
         "#,
     )
-    .fetch_all(conn)
+    .fetch_all(executor)
     .await
 }
 
-pub async fn get_created_and_joined_challenges(
-    conn: &mut PgConnection,
+pub async fn get_created_and_joined_challenges<'a, E>(
+    executor: E,
     user_id: Uuid,
-) -> Result<Vec<Challenge>, sqlx::Error> {
+) -> Result<Vec<Challenge>, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         Challenge,
         r#"
@@ -58,14 +67,17 @@ pub async fn get_created_and_joined_challenges(
         "#,
         user_id
     )
-    .fetch_all(conn)
+    .fetch_all(executor)
     .await
 }
 
-pub async fn update_challenge(
-    conn: &mut PgConnection,
+pub async fn update_challenge<'a, E>(
+    executor: E,
     challenge: &Challenge,
-) -> Result<sqlx::postgres::PgQueryResult, sqlx::Error> {
+) -> Result<sqlx::postgres::PgQueryResult, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         Challenge,
         r#"
@@ -87,14 +99,17 @@ pub async fn update_challenge(
         challenge.deleted,
         challenge.id,
     )
-    .execute(conn)
+    .execute(executor)
     .await
 }
 
-pub async fn create_challenge(
-    conn: &mut PgConnection,
+pub async fn create_challenge<'a, E>(
+    executor: E,
     challenge: &Challenge,
-) -> Result<sqlx::postgres::PgQueryResult, sqlx::Error> {
+) -> Result<sqlx::postgres::PgQueryResult, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         Challenge,
         r#"
@@ -119,14 +134,17 @@ pub async fn create_challenge(
         challenge.creator,
         challenge.deleted
     )
-    .execute(conn)
+    .execute(executor)
     .await
 }
 
-pub async fn delete_challenge_by_id(
-    conn: &mut PgConnection,
+pub async fn delete_challenge_by_id<'a, E>(
+    executor: E,
     challenge_id: Uuid,
-) -> Result<PgQueryResult, sqlx::Error> {
+) -> Result<PgQueryResult, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         Challenge,
         r#"
@@ -136,7 +154,7 @@ pub async fn delete_challenge_by_id(
         "#,
         challenge_id,
     )
-    .execute(conn)
+    .execute(executor)
     .await
 }
 
@@ -145,7 +163,7 @@ pub async fn fetch_challenge_statistics(
 ) -> Result<Vec<ChallengeStatistics>, sqlx::Error> {
     let mut transaction = pool.begin().await?;
 
-    let challenges = get_challenges(&mut transaction).await?;
+    let challenges = get_challenges(&mut *transaction).await?;
 
     let counts = sqlx::query!(
         r#"

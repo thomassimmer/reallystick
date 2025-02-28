@@ -31,7 +31,7 @@ pub async fn get_private_discussions(
 
     let discussion_participations =
         match private_discussion_participation::get_user_private_discussion_participations(
-            &mut transaction,
+            &mut *transaction,
             request_claims.user_id,
         )
         .await
@@ -45,7 +45,7 @@ pub async fn get_private_discussions(
         };
 
     let discussions = match private_discussion::get_private_discussions_from_ids(
-        &mut transaction,
+        &mut *transaction,
         discussion_participations
             .iter()
             .map(|p| p.discussion_id)
@@ -61,7 +61,7 @@ pub async fn get_private_discussions(
     };
 
     let recipients = match private_discussion_participation::get_private_discussions_recipients(
-        &mut transaction,
+        &mut *transaction,
         discussions.iter().map(|d| d.id).collect(),
         request_claims.user_id,
     )
@@ -75,7 +75,7 @@ pub async fn get_private_discussions(
     };
 
     let messages = match private_message::get_last_messages_for_discussions(
-        &mut transaction,
+        &mut *transaction,
         discussions.iter().map(|d| d.id).collect(),
     )
     .await
@@ -88,7 +88,7 @@ pub async fn get_private_discussions(
     };
 
     let unseen_messages = match private_message::get_unseen_messages_for_discussions(
-        &mut transaction,
+        &mut *transaction,
         discussions.iter().map(|d| d.id).collect(),
         request_claims.user_id,
     )

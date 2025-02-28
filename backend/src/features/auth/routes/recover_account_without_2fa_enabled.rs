@@ -37,7 +37,7 @@ pub async fn recover_account_without_2fa_enabled(
     let username_lower = body.username.to_lowercase();
 
     // Check if user already exists
-    let existing_user = get_user_by_username(&mut transaction, username_lower.clone()).await;
+    let existing_user = get_user_by_username(&mut *transaction, &username_lower).await;
 
     let mut user = match existing_user {
         Ok(existing_user) => {
@@ -54,7 +54,7 @@ pub async fn recover_account_without_2fa_enabled(
         }
     };
 
-    let recovery_code = match get_recovery_code_for_user(user.id, &mut transaction).await {
+    let recovery_code = match get_recovery_code_for_user(user.id, &mut *transaction).await {
         Ok(r) => match r {
             Some(r) => r,
             None => {
@@ -83,7 +83,7 @@ pub async fn recover_account_without_2fa_enabled(
 
     if is_valid {
         let delete_recovery_code_result =
-            delete_recovery_code_for_user(user.id, &mut transaction).await;
+            delete_recovery_code_for_user(user.id, &mut *transaction).await;
 
         if delete_recovery_code_result.is_err() {
             return HttpResponse::InternalServerError().json(AppError::UserUpdate.to_response());
@@ -93,7 +93,7 @@ pub async fn recover_account_without_2fa_enabled(
             .json(AppError::InvalidUsernameOrRecoveryCode.to_response());
     }
 
-    let delete_result = delete_user_tokens(user.id, &mut transaction).await;
+    let delete_result = delete_user_tokens(user.id, &mut *transaction).await;
 
     if let Err(e) = delete_result {
         eprintln!("Error: {}", e);
@@ -108,7 +108,7 @@ pub async fn recover_account_without_2fa_enabled(
         user.is_admin,
         user.username,
         parsed_device_info,
-        &mut transaction,
+        &mut *transaction,
     )
     .await
     {

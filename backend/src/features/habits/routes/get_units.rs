@@ -7,22 +7,7 @@ use sqlx::PgPool;
 
 #[get("/")]
 pub async fn get_units(pool: Data<PgPool>) -> impl Responder {
-    let mut transaction = match pool.begin().await {
-        Ok(t) => t,
-        Err(e) => {
-            eprintln!("Error: {}", e);
-            return HttpResponse::InternalServerError()
-                .json(AppError::DatabaseConnection.to_response());
-        }
-    };
-
-    let get_units_result = unit::get_units(&mut transaction).await;
-
-    if let Err(e) = transaction.commit().await {
-        eprintln!("Error: {}", e);
-        return HttpResponse::InternalServerError()
-            .json(AppError::DatabaseTransaction.to_response());
-    }
+    let get_units_result = unit::get_units(&**pool).await;
 
     match get_units_result {
         Ok(units) => HttpResponse::Ok().json(UnitsResponse {

@@ -36,8 +36,12 @@ pub async fn set_fcm_token(
         }
     };
 
-    let existing_token =
-        get_user_token(request_claims.user_id, request_claims.jti, &mut transaction).await;
+    let existing_token = get_user_token(
+        request_claims.user_id,
+        request_claims.jti,
+        &mut *transaction,
+    )
+    .await;
 
     let mut token = match existing_token {
         Ok(r) => match r {
@@ -55,7 +59,7 @@ pub async fn set_fcm_token(
 
     token.fcm_token = body.fcm_token.clone();
 
-    let updated_token_result = update_token(token.clone(), &mut transaction).await;
+    let updated_token_result = update_token(token.clone(), &mut *transaction).await;
 
     if let Err(e) = updated_token_result {
         eprintln!("Error: {}", e);

@@ -16,22 +16,7 @@ use sqlx::PgPool;
 
 #[get("/{challenge_id}")]
 pub async fn get_challenge(pool: Data<PgPool>, params: Path<GetChallengeParams>) -> impl Responder {
-    let mut transaction = match pool.begin().await {
-        Ok(t) => t,
-        Err(e) => {
-            eprintln!("Error: {}", e);
-            return HttpResponse::InternalServerError()
-                .json(AppError::DatabaseConnection.to_response());
-        }
-    };
-
-    let get_challenge_result = get_challenge_by_id(&mut transaction, params.challenge_id).await;
-
-    if let Err(e) = transaction.commit().await {
-        eprintln!("Error: {}", e);
-        return HttpResponse::InternalServerError()
-            .json(AppError::DatabaseTransaction.to_response());
-    }
+    let get_challenge_result = get_challenge_by_id(&**pool, params.challenge_id).await;
 
     match get_challenge_result {
         Ok(r) => match r {

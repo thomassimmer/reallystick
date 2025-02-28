@@ -30,7 +30,7 @@ pub async fn get_replies(
     };
 
     // Check if message exists
-    match get_public_message_by_id(&mut transaction, params.message_id).await {
+    match get_public_message_by_id(&mut *transaction, params.message_id).await {
         Ok(r) => {
             if r.is_none() {
                 return HttpResponse::NotFound()
@@ -44,7 +44,7 @@ pub async fn get_replies(
     };
 
     let get_messages_result =
-        public_message::get_replies(&mut transaction, params.message_id).await;
+        public_message::get_replies(&mut *transaction, params.message_id).await;
 
     if let Err(e) = transaction.commit().await {
         eprintln!("Error: {}", e);

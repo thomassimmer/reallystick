@@ -1,12 +1,15 @@
-use sqlx::{postgres::PgQueryResult, PgConnection};
+use sqlx::{postgres::PgQueryResult, Executor, Postgres};
 use uuid::Uuid;
 
 use crate::features::habits::structs::models::habit_participation::HabitParticipation;
 
-pub async fn get_habit_participation_by_id(
-    conn: &mut PgConnection,
+pub async fn get_habit_participation_by_id<'a, E>(
+    executor: E,
     habit_participation_id: Uuid,
-) -> Result<Option<HabitParticipation>, sqlx::Error> {
+) -> Result<Option<HabitParticipation>, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         HabitParticipation,
         r#"
@@ -16,14 +19,17 @@ pub async fn get_habit_participation_by_id(
         "#,
         habit_participation_id,
     )
-    .fetch_optional(conn)
+    .fetch_optional(executor)
     .await
 }
 
-pub async fn get_habit_participations_for_user(
-    conn: &mut PgConnection,
+pub async fn get_habit_participations_for_user<'a, E>(
+    executor: E,
     user_id: Uuid,
-) -> Result<Vec<HabitParticipation>, sqlx::Error> {
+) -> Result<Vec<HabitParticipation>, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         HabitParticipation,
         r#"
@@ -33,15 +39,18 @@ pub async fn get_habit_participations_for_user(
         "#,
         user_id
     )
-    .fetch_all(conn)
+    .fetch_all(executor)
     .await
 }
 
-pub async fn get_habit_participation_for_user_and_habit(
-    conn: &mut PgConnection,
+pub async fn get_habit_participation_for_user_and_habit<'a, E>(
+    executor: E,
     user_id: Uuid,
     habit_id: Uuid,
-) -> Result<Option<HabitParticipation>, sqlx::Error> {
+) -> Result<Option<HabitParticipation>, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         HabitParticipation,
         r#"
@@ -52,14 +61,17 @@ pub async fn get_habit_participation_for_user_and_habit(
         user_id,
         habit_id
     )
-    .fetch_optional(conn)
+    .fetch_optional(executor)
     .await
 }
 
-pub async fn get_habit_participations_for_habit(
-    conn: &mut PgConnection,
+pub async fn get_habit_participations_for_habit<'a, E>(
+    executor: E,
     habit_id: Uuid,
-) -> Result<Vec<HabitParticipation>, sqlx::Error> {
+) -> Result<Vec<HabitParticipation>, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         HabitParticipation,
         r#"
@@ -69,14 +81,17 @@ pub async fn get_habit_participations_for_habit(
         "#,
         habit_id
     )
-    .fetch_all(conn)
+    .fetch_all(executor)
     .await
 }
 
-pub async fn update_habit_participation(
-    conn: &mut PgConnection,
+pub async fn update_habit_participation<'a, E>(
+    executor: E,
     habit_participation: &HabitParticipation,
-) -> Result<sqlx::postgres::PgQueryResult, sqlx::Error> {
+) -> Result<sqlx::postgres::PgQueryResult, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         HabitParticipation,
         r#"
@@ -96,14 +111,17 @@ pub async fn update_habit_participation(
         habit_participation.timezone,
         habit_participation.id
     )
-    .execute(conn)
+    .execute(executor)
     .await
 }
 
-pub async fn create_habit_participation(
-    conn: &mut PgConnection,
+pub async fn create_habit_participation<'a, E>(
+    executor: E,
     habit_participation: &HabitParticipation,
-) -> Result<sqlx::postgres::PgQueryResult, sqlx::Error> {
+) -> Result<sqlx::postgres::PgQueryResult, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         HabitParticipation,
         r#"
@@ -130,14 +148,17 @@ pub async fn create_habit_participation(
         habit_participation.reminder_time,
         habit_participation.timezone,
     )
-    .execute(conn)
+    .execute(executor)
     .await
 }
 
-pub async fn delete_habit_participation_by_id(
-    conn: &mut PgConnection,
+pub async fn delete_habit_participation_by_id<'a, E>(
+    executor: E,
     habit_participation_id: Uuid,
-) -> Result<PgQueryResult, sqlx::Error> {
+) -> Result<PgQueryResult, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         Habit,
         r#"
@@ -147,15 +168,18 @@ pub async fn delete_habit_participation_by_id(
         "#,
         habit_participation_id,
     )
-    .execute(conn)
+    .execute(executor)
     .await
 }
 
-pub async fn replace_participation_habit(
-    conn: &mut PgConnection,
+pub async fn replace_participation_habit<'a, E>(
+    executor: E,
     old_habit_id: Uuid,
     new_habit_id: Uuid,
-) -> Result<PgQueryResult, sqlx::Error> {
+) -> Result<PgQueryResult, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         HabitParticipation,
         r#"
@@ -166,6 +190,6 @@ pub async fn replace_participation_habit(
         old_habit_id,
         new_habit_id,
     )
-    .execute(conn)
+    .execute(executor)
     .await
 }

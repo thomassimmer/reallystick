@@ -196,19 +196,20 @@ impl UserPublicDataCache {
         key: &Uuid,
         conn: &mut PgConnection,
     ) -> Option<UserPublicData> {
-        match self.data.read().await.get(key).cloned() {
-            Some(r) => Some(r),
-            None => match get_user_by_id(conn, *key).await {
-                Ok(Some(u)) => {
-                    let user_public_data = u.to_user_public_data();
+        if let Some(r) = self.data.read().await.get(key).cloned() {
+            return Some(r);
+        }
 
-                    self.update_or_insert_key(*key, user_public_data.clone())
-                        .await;
+        match get_user_by_id(conn, *key).await {
+            Ok(Some(u)) => {
+                let user_public_data = u.to_user_public_data();
 
-                    Some(user_public_data)
-                }
-                _ => None,
-            },
+                self.update_or_insert_key(*key, user_public_data.clone())
+                    .await;
+
+                Some(user_public_data)
+            }
+            _ => None,
         }
     }
 }

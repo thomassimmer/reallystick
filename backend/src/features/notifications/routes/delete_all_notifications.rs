@@ -27,7 +27,7 @@ pub async fn delete_all_notifications(
     };
 
     if let Err(e) =
-        helpers::notification::delete_user_notifications(&mut transaction, request_claims.user_id)
+        helpers::notification::delete_user_notifications(&mut *transaction, request_claims.user_id)
             .await
     {
         eprintln!("Error: {}", e);

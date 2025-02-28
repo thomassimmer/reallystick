@@ -43,7 +43,7 @@ pub async fn merge_habits(
         }
     };
 
-    let habit_to_delete = match get_habit_by_id(&mut transaction, params.habit_to_delete_id).await {
+    let habit_to_delete = match get_habit_by_id(&mut *transaction, params.habit_to_delete_id).await {
         Ok(r) => match r {
             Some(habit) => habit,
             None => return HttpResponse::NotFound().json(AppError::HabitNotFound.to_response()),
@@ -54,7 +54,7 @@ pub async fn merge_habits(
         }
     };
 
-    let mut habit_to_merge_on = match get_habit_by_id(&mut transaction, params.habit_to_merge_on_id)
+    let mut habit_to_merge_on = match get_habit_by_id(&mut *transaction, params.habit_to_merge_on_id)
         .await
     {
         Ok(r) => match r {
@@ -67,7 +67,7 @@ pub async fn merge_habits(
         }
     };
 
-    let category = match get_habit_category_by_id(&mut transaction, body.category_id).await {
+    let category = match get_habit_category_by_id(&mut *transaction, body.category_id).await {
         Ok(r) => match r {
             Some(category) => category,
             None => {
@@ -87,7 +87,7 @@ pub async fn merge_habits(
     habit_to_merge_on.reviewed = body.reviewed;
     habit_to_merge_on.icon = body.icon.clone();
 
-    let update_habit_result = habit::update_habit(&mut transaction, &habit_to_merge_on).await;
+    let update_habit_result = habit::update_habit(&mut *transaction, &habit_to_merge_on).await;
 
     if let Err(e) = update_habit_result {
         eprintln!("Error: {}", e);
@@ -95,7 +95,7 @@ pub async fn merge_habits(
     }
 
     let replace_habit_daily_trackings_result = habit_daily_tracking::replace_daily_tracking_habit(
-        &mut transaction,
+        &mut *transaction,
         habit_to_delete.id,
         habit_to_merge_on.id,
     )
@@ -110,7 +110,7 @@ pub async fn merge_habits(
     // So, we check that user participating in the old don't have a participation in the new one,
     // If they have, we should remove the old one, otherwise replace it.
     match habit_participation::get_habit_participations_for_habit(
-        &mut transaction,
+        &mut *transaction,
         habit_to_delete.id,
     )
     .await
@@ -118,7 +118,7 @@ pub async fn merge_habits(
         Ok(habit_participations) => {
             for habit_participation_on_habit_to_delete in habit_participations {
                 match habit_participation::get_habit_participation_for_user_and_habit(
-                    &mut transaction,
+                    &mut *transaction,
                     habit_participation_on_habit_to_delete.user_id,
                     habit_to_merge_on.id,
                 )
@@ -128,7 +128,7 @@ pub async fn merge_habits(
                         if habit_participation_on_habit_to_merge_on.is_none() {
                             let replace_habit_participations_result =
                                 habit_participation::replace_participation_habit(
-                                    &mut transaction,
+                                    &mut *transaction,
                                     habit_to_delete.id,
                                     habit_to_merge_on.id,
                                 )
@@ -142,7 +142,7 @@ pub async fn merge_habits(
                         } else {
                             let delete_habit_participation_result =
                                 habit_participation::delete_habit_participation_by_id(
-                                    &mut transaction,
+                                    &mut *transaction,
                                     habit_participation_on_habit_to_delete.id,
                                 )
                                 .await;
@@ -168,7 +168,7 @@ pub async fn merge_habits(
         }
     }
 
-    let delete_habit_result = habit::delete_habit_by_id(&mut transaction, habit_to_delete.id).await;
+    let delete_habit_result = habit::delete_habit_by_id(&mut *transaction, habit_to_delete.id).await;
 
     if let Err(e) = delete_habit_result {
         eprintln!("Error: {}", e);

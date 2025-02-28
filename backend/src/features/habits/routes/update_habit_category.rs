@@ -40,7 +40,7 @@ pub async fn update_habit_category(
     };
 
     let get_habit_category_result =
-        get_habit_category_by_id(&mut transaction, params.habit_category_id).await;
+        get_habit_category_by_id(&mut *transaction, params.habit_category_id).await;
 
     let mut habit_category = match get_habit_category_result {
         Ok(r) => match r {
@@ -57,7 +57,7 @@ pub async fn update_habit_category(
     habit_category.icon = body.icon.clone();
 
     let update_habit_category_result =
-        habit_category::update_habit_category(&mut transaction, &habit_category).await;
+        habit_category::update_habit_category(&mut *transaction, &habit_category).await;
 
     if let Err(e) = transaction.commit().await {
         eprintln!("Error: {}", e);

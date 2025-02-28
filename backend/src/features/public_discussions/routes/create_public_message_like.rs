@@ -51,7 +51,7 @@ pub async fn create_public_message_like(
     };
 
     // Check if message exists
-    let mut public_message = match get_public_message_by_id(&mut transaction, body.message_id).await
+    let mut public_message = match get_public_message_by_id(&mut *transaction, body.message_id).await
     {
         Ok(r) => match r {
             Some(r) => r,
@@ -74,7 +74,7 @@ pub async fn create_public_message_like(
     };
 
     let create_public_message_like_result =
-        public_message_like::create_public_message_like(&mut transaction, public_message_like)
+        public_message_like::create_public_message_like(&mut *transaction, public_message_like)
             .await;
 
     if let Err(e) = create_public_message_like_result {
@@ -86,7 +86,7 @@ pub async fn create_public_message_like(
     public_message.like_count += 1;
 
     let update_public_message_result =
-        update_public_message_like_count(&mut transaction, &public_message).await;
+        update_public_message_like_count(&mut *transaction, &public_message).await;
 
     if let Err(e) = update_public_message_result {
         eprintln!("Error: {}", e);
@@ -98,10 +98,10 @@ pub async fn create_public_message_like(
     if request_claims.user_id != public_message.creator {
         if let (Some(person_who_liked), Some(creator)) = (
             user_public_data_cache
-                .get_value_for_key_or_insert_it(&request_claims.user_id, &mut transaction)
+                .get_value_for_key_or_insert_it(&request_claims.user_id, &mut *transaction)
                 .await,
             user_public_data_cache
-                .get_value_for_key_or_insert_it(&public_message.creator, &mut transaction)
+                .get_value_for_key_or_insert_it(&public_message.creator, &mut *transaction)
                 .await,
         ) {
             let mut args = FluentArgs::new();
@@ -120,7 +120,7 @@ pub async fn create_public_message_like(
             }
 
             generate_notification(
-                &mut transaction,
+                &mut *transaction,
                 public_message.creator,
                 &translator.translate(&creator.locale, "user-liked-your-message-title", None),
                 &translator.translate(&creator.locale, "user-liked-your-message-body", Some(&args)),

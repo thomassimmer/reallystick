@@ -20,27 +20,12 @@ pub async fn get_challenge_daily_trackings(
     pool: Data<PgPool>,
     params: Path<GetChallengeDailyTrackingsParams>,
 ) -> impl Responder {
-    let mut transaction = match pool.begin().await {
-        Ok(t) => t,
-        Err(e) => {
-            eprintln!("Error: {}", e);
-            return HttpResponse::InternalServerError()
-                .json(AppError::DatabaseConnection.to_response());
-        }
-    };
-
     let get_challenge_daily_tracking_result =
         challenge_daily_tracking::get_challenge_daily_trackings_for_challenge(
-            &mut transaction,
+            &**pool,
             params.challenge_id,
         )
         .await;
-
-    if let Err(e) = transaction.commit().await {
-        eprintln!("Error: {}", e);
-        return HttpResponse::InternalServerError()
-            .json(AppError::DatabaseTransaction.to_response());
-    }
 
     match get_challenge_daily_tracking_result {
         Ok(challenge_daily_tracking) => HttpResponse::Ok().json(ChallengeDailyTrackingsResponse {

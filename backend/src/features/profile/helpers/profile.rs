@@ -1,12 +1,14 @@
-use sqlx::{postgres::PgQueryResult, PgConnection};
+use sqlx::{postgres::PgQueryResult, Executor, Postgres};
 use uuid::Uuid;
 
 use crate::features::profile::structs::models::User;
 
-pub async fn create_user(
-    conn: &mut PgConnection,
+pub async fn create_user<'a, E>(
+    executor: E,
     user: User,
-) -> Result<PgQueryResult, sqlx::Error> {
+) -> Result<PgQueryResult, sqlx::Error> where
+E: Executor<'a, Database = Postgres>,
+{
     sqlx::query!(
         r#"
         INSERT INTO users (
@@ -52,14 +54,16 @@ pub async fn create_user(
         user.notifications_user_joined_your_challenge_enabled, 
         user.notifications_user_duplicated_your_challenge_enabled, 
     )
-    .execute(conn)
+    .execute(executor)
     .await
 }
 
-pub async fn update_user(
-    conn: &mut PgConnection,
+pub async fn update_user<'a, E>(
+    executor: E,
     user: &User,
-) -> Result<PgQueryResult, sqlx::Error> {
+) -> Result<PgQueryResult, sqlx::Error> where
+E: Executor<'a, Database = Postgres>,
+{
     sqlx::query!(
         r#"
         UPDATE users
@@ -110,14 +114,16 @@ pub async fn update_user(
         user.notifications_user_duplicated_your_challenge_enabled, 
         user.id,
     )
-    .execute(conn)
+    .execute(executor)
     .await
 }
 
-pub async fn update_user_keys(
-    conn: &mut PgConnection,
+pub async fn update_user_keys<'a, E>(
+    executor: E,
     user: &User,
-) -> Result<PgQueryResult, sqlx::Error> {
+) -> Result<PgQueryResult, sqlx::Error> where
+E: Executor<'a, Database = Postgres>,
+{
     sqlx::query!(
         r#"
         UPDATE users
@@ -132,31 +138,34 @@ pub async fn update_user_keys(
         user.salt_used_to_derive_key_from_password,
         user.id,
     )
-    .execute(conn)
+    .execute(executor)
     .await
 }
 
-pub async fn get_user_by_username(
-    conn: &mut PgConnection,
-    username_lower: String,
-) -> Result<Option<User>, sqlx::Error> {
-    sqlx::query_as!(
+pub async fn get_user_by_username<'a, E>(
+    executor: E,
+    username: &str,
+) -> Result<Option<User>, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
+    let user = sqlx::query_as!(
         User,
-        r#"
-        SELECT *
-        FROM users
-        WHERE username = $1
-        "#,
-        username_lower,
+        "SELECT * FROM users WHERE username = $1",
+        username
     )
-    .fetch_optional(conn)
-    .await
+    .fetch_optional(executor)
+    .await?;
+
+    Ok(user)
 }
 
-pub async fn get_user_by_id(
-    conn: &mut PgConnection,
+pub async fn get_user_by_id<'a, E>(
+    executor: E,
     id: Uuid,
-) -> Result<Option<User>, sqlx::Error> {
+) -> Result<Option<User>, sqlx::Error> where
+E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         User,
         r#"
@@ -166,14 +175,16 @@ pub async fn get_user_by_id(
         "#,
         id,
     )
-    .fetch_optional(conn)
+    .fetch_optional(executor)
     .await
 }
 
-pub async fn get_users_by_id(
-    conn: &mut PgConnection,
+pub async fn get_users_by_id<'a, E>(
+    executor: E,
     ids: Vec<Uuid>,
-) -> Result<Vec<User>, sqlx::Error> {
+) -> Result<Vec<User>, sqlx::Error> where
+E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         User,
         r#"
@@ -183,14 +194,16 @@ pub async fn get_users_by_id(
         "#,
         &ids,
     )
-    .fetch_all(conn)
+    .fetch_all(executor)
     .await
 }
 
-pub async fn delete_user_by_id(
-    conn: &mut PgConnection,
+pub async fn delete_user_by_id<'a, E>(
+    executor: E,
     user_id: Uuid,
-) -> Result<PgQueryResult, sqlx::Error> {
+) -> Result<PgQueryResult, sqlx::Error> where
+E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         User,
         r#"
@@ -200,6 +213,6 @@ pub async fn delete_user_by_id(
         "#,
         user_id,
     )
-    .execute(conn)
+    .execute(executor)
     .await
 }

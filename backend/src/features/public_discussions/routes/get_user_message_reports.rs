@@ -30,10 +30,10 @@ pub async fn get_user_message_reports(
     };
 
     let get_message_reports_result =
-        public_message_report::get_user_message_reports(&mut transaction, request_claims.user_id)
+        public_message_report::get_user_message_reports(&mut *transaction, request_claims.user_id)
             .await;
     let get_messages_result =
-        public_message::get_user_reported_messages(&mut transaction, request_claims.user_id).await;
+        public_message::get_user_reported_messages(&mut *transaction, request_claims.user_id).await;
 
     let messages = match get_messages_result {
         Ok(r) => r,

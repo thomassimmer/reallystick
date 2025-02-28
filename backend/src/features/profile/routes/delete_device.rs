@@ -34,7 +34,7 @@ pub async fn delete_device(
         }
     };
 
-    let token = get_user_token(claims.user_id, params.token_id, &mut transaction).await;
+    let token = get_user_token(claims.user_id, params.token_id, &mut *transaction).await;
 
     match token {
         Ok(r) => {
@@ -49,7 +49,7 @@ pub async fn delete_device(
         }
     };
 
-    let result_delete_token = delete_token(params.token_id, &mut transaction).await;
+    let result_delete_token = delete_token(params.token_id, &mut *transaction).await;
 
     if let Err(e) = result_delete_token {
         eprintln!("Error: {}", e);

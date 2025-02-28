@@ -56,18 +56,7 @@ async fn broadcast_ws(
         }
     };
 
-    let mut transaction = match pool.begin().await {
-        Ok(t) => t,
-        Err(e) => {
-            eprintln!("Error: {}", e);
-            return HttpResponse::InternalServerError()
-                .json(AppError::DatabaseConnection.to_response());
-        }
-    };
-
-    let token = match get_user_token(request_claims.user_id, request_claims.jti, &mut transaction)
-        .await
-    {
+    let token = match get_user_token(request_claims.user_id, request_claims.jti, &**pool).await {
         Ok(Some(token)) => token,
         Ok(None) => {
             return HttpResponse::Unauthorized().json(AppError::UserTokenNotFound.to_response());
@@ -78,10 +67,6 @@ async fn broadcast_ws(
                 .json(AppError::DatabaseConnection.to_response());
         }
     };
-
-    if let Err(e) = transaction.commit().await {
-        eprintln!("Error: {}", e);
-    }
 
     let session_uuid = Uuid::new_v4();
 

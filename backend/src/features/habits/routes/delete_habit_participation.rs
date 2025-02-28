@@ -30,7 +30,7 @@ pub async fn delete_habit_participation(
     };
 
     let delete_habit_participation_result =
-        delete_habit_participation_by_id(&mut transaction, params.habit_participation_id).await;
+        delete_habit_participation_by_id(&mut *transaction, params.habit_participation_id).await;
 
     if let Err(e) = transaction.commit().await {
         eprintln!("Error: {}", e);

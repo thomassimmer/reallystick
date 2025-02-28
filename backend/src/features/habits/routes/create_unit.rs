@@ -47,7 +47,7 @@ pub async fn create_unit(
         created_at: Utc::now(),
     };
 
-    let create_unit_result = unit::create_unit(&mut transaction, &unit).await;
+    let create_unit_result = unit::create_unit(&mut *transaction, &unit).await;
 
     if let Err(e) = transaction.commit().await {
         eprintln!("Error: {}", e);

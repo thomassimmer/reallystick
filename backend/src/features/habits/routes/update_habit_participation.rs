@@ -33,7 +33,7 @@ pub async fn update_habit_participation(
     };
 
     let get_habit_participation_result =
-        get_habit_participation_by_id(&mut transaction, params.habit_participation_id).await;
+        get_habit_participation_by_id(&mut *transaction, params.habit_participation_id).await;
 
     let mut habit_participation = match get_habit_participation_result {
         Ok(r) => match r {
@@ -56,7 +56,7 @@ pub async fn update_habit_participation(
     habit_participation.timezone = body.timezone.clone();
 
     let update_habit_participation_result =
-        habit_participation::update_habit_participation(&mut transaction, &habit_participation)
+        habit_participation::update_habit_participation(&mut *transaction, &habit_participation)
             .await;
 
     if let Err(e) = transaction.commit().await {

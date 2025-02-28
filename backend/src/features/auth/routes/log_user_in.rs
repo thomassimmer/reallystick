@@ -31,7 +31,7 @@ pub async fn log_user_in(
     let username_lower = body.username.to_lowercase();
 
     // Check if user already exists
-    let existing_user = get_user_by_username(&mut transaction, username_lower.clone()).await;
+    let existing_user = get_user_by_username(&mut *transaction, &username_lower).await;
 
     let user = match existing_user {
         Ok(existing_user) => {
@@ -78,7 +78,7 @@ pub async fn log_user_in(
         user.is_admin,
         user.username,
         parsed_device_info,
-        &mut transaction,
+        &mut *transaction,
     )
     .await
     {

@@ -35,7 +35,7 @@ pub async fn update_challenge(
         }
     };
 
-    let get_challenge_result = get_challenge_by_id(&mut transaction, params.challenge_id).await;
+    let get_challenge_result = get_challenge_by_id(&mut *transaction, params.challenge_id).await;
 
     let mut challenge = match get_challenge_result {
         Ok(r) => match r {
@@ -61,7 +61,7 @@ pub async fn update_challenge(
     challenge.icon = body.icon.clone();
     challenge.start_date = body.start_date;
 
-    let update_challenge_result = challenge::update_challenge(&mut transaction, &challenge).await;
+    let update_challenge_result = challenge::update_challenge(&mut *transaction, &challenge).await;
 
     if let Err(e) = transaction.commit().await {
         eprintln!("Error: {}", e);

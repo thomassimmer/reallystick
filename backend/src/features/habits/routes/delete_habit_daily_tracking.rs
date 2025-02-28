@@ -30,7 +30,7 @@ pub async fn delete_habit_daily_tracking(
     };
 
     let delete_habit_result =
-        delete_habit_daily_tracking_by_id(&mut transaction, params.habit_daily_tracking_id).await;
+        delete_habit_daily_tracking_by_id(&mut *transaction, params.habit_daily_tracking_id).await;
 
     if let Err(e) = transaction.commit().await {
         eprintln!("Error: {}", e);

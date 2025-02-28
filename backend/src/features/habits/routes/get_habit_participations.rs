@@ -20,26 +20,9 @@ pub async fn get_habit_participations(
     pool: Data<PgPool>,
     request_claims: ReqData<Claims>,
 ) -> impl Responder {
-    let mut transaction = match pool.begin().await {
-        Ok(t) => t,
-        Err(e) => {
-            eprintln!("Error: {}", e);
-            return HttpResponse::InternalServerError()
-                .json(AppError::DatabaseConnection.to_response());
-        }
-    };
-
-    let get_habits_result = habit_participation::get_habit_participations_for_user(
-        &mut transaction,
-        request_claims.user_id,
-    )
-    .await;
-
-    if let Err(e) = transaction.commit().await {
-        eprintln!("Error: {}", e);
-        return HttpResponse::InternalServerError()
-            .json(AppError::DatabaseTransaction.to_response());
-    }
+    let get_habits_result =
+        habit_participation::get_habit_participations_for_user(&**pool, request_claims.user_id)
+            .await;
 
     match get_habits_result {
         Ok(habit_participations) => HttpResponse::Ok().json(HabitParticipationsResponse {

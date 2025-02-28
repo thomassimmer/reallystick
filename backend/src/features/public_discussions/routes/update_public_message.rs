@@ -32,7 +32,7 @@ pub async fn update_public_message(
     };
 
     // Check if message exists
-    let mut public_message = match get_public_message_by_id(&mut transaction, params.message_id)
+    let mut public_message = match get_public_message_by_id(&mut *transaction, params.message_id)
         .await
     {
         Ok(r) => match r {
@@ -59,7 +59,7 @@ pub async fn update_public_message(
     public_message.updated_at = Some(now());
 
     let update_public_message_result =
-        public_message::update_public_message(&mut transaction, &public_message).await;
+        public_message::update_public_message(&mut *transaction, &public_message).await;
 
     if let Err(e) = transaction.commit().await {
         eprintln!("Error: {}", e);

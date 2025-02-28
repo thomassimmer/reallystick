@@ -38,8 +38,8 @@ pub async fn get_message_reports(
     }
 
     let get_message_reports_result =
-        public_message_report::get_message_reports(&mut transaction).await;
-    let get_messages_result = public_message::get_reported_messages(&mut transaction).await;
+        public_message_report::get_message_reports(&mut *transaction).await;
+    let get_messages_result = public_message::get_reported_messages(&mut *transaction).await;
 
     let messages = match get_messages_result {
         Ok(r) => r,

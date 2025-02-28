@@ -32,7 +32,7 @@ pub async fn save_keys(
         }
     };
 
-    let mut request_user = match get_user_by_id(&mut transaction, request_claims.user_id).await {
+    let mut request_user = match get_user_by_id(&mut *transaction, request_claims.user_id).await {
         Ok(user) => match user {
             Some(user) => user,
             None => return HttpResponse::NotFound().json(AppError::UserNotFound.to_response()),
@@ -52,7 +52,7 @@ pub async fn save_keys(
     request_user.salt_used_to_derive_key_from_password =
         Some(body.salt_used_to_derive_key_from_password.clone());
 
-    let save_keys_result = update_user_keys(&mut transaction, &request_user).await;
+    let save_keys_result = update_user_keys(&mut *transaction, &request_user).await;
 
     if let Err(e) = save_keys_result {
         eprintln!("Error: {}", e);

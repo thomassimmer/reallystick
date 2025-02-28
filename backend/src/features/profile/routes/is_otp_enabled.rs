@@ -7,29 +7,15 @@ use crate::{
 };
 use actix_web::{post, web, HttpResponse, Responder};
 use sqlx::PgPool;
+use tracing::error;
 
 #[post("/is-otp-enabled")]
 pub async fn is_otp_enabled(
     body: web::Json<IsOtpEnabledRequest>,
     pool: web::Data<PgPool>,
 ) -> impl Responder {
-    let mut transaction = match pool.begin().await {
-        Ok(t) => t,
-        Err(e) => {
-            eprintln!("Error: {}", e);
-            return HttpResponse::InternalServerError()
-                .json(AppError::DatabaseConnection.to_response());
-        }
-    };
-
     // Check if user already exists
-    let existing_user = get_user_by_username(&mut transaction, body.username.clone()).await;
-
-    if let Err(e) = transaction.commit().await {
-        eprintln!("Error: {}", e);
-        return HttpResponse::InternalServerError()
-            .json(AppError::DatabaseTransaction.to_response());
-    }
+    let existing_user = get_user_by_username(&**pool, &body.username).await;
 
     match existing_user {
         Ok(existing_user) => match existing_user {
@@ -44,7 +30,7 @@ pub async fn is_otp_enabled(
             }),
         },
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response())
         }
     }

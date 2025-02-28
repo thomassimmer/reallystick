@@ -28,7 +28,7 @@ pub async fn mark_notification_as_seen(
     };
 
     if let Err(e) =
-        helpers::notification::mark_notification_as_seen(&mut transaction, params.id).await
+        helpers::notification::mark_notification_as_seen(&mut *transaction, params.id).await
     {
         eprintln!("Error: {}", e);
         return HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response());

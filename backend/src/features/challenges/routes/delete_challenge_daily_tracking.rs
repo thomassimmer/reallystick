@@ -39,7 +39,7 @@ pub async fn delete_challenge_daily_tracking(
     };
 
     let get_challenge_daily_tracking_result =
-        get_challenge_daily_tracking_by_id(&mut transaction, params.challenge_daily_tracking_id)
+        get_challenge_daily_tracking_by_id(&mut *transaction, params.challenge_daily_tracking_id)
             .await;
 
     let challenge_daily_tracking = match get_challenge_daily_tracking_result {
@@ -56,7 +56,7 @@ pub async fn delete_challenge_daily_tracking(
         }
     };
 
-    match get_challenge_by_id(&mut transaction, challenge_daily_tracking.challenge_id).await {
+    match get_challenge_by_id(&mut *transaction, challenge_daily_tracking.challenge_id).await {
         Ok(r) => match r {
             Some(challenge) => {
                 if !request_claims.is_admin && challenge.creator != request_claims.user_id {
@@ -75,7 +75,7 @@ pub async fn delete_challenge_daily_tracking(
     };
 
     let delete_challenge_result =
-        delete_challenge_daily_tracking_by_id(&mut transaction, params.challenge_daily_tracking_id)
+        delete_challenge_daily_tracking_by_id(&mut *transaction, params.challenge_daily_tracking_id)
             .await;
 
     if let Err(e) = transaction.commit().await {

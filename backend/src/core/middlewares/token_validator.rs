@@ -82,30 +82,9 @@ where
                             }
                         }
                         None => {
-                            let mut transaction = match pool.begin().await {
-                                Ok(t) => t,
-                                Err(e) => {
-                                    eprintln!("Error: {}", e);
-                                    return Ok(req.into_response(
-                                        HttpResponse::InternalServerError()
-                                            .json(AppError::DatabaseConnection.to_response())
-                                            .map_into_right_body(),
-                                    ));
-                                }
-                            };
-
                             // Check if token still exists, it could have been revoked
                             let existing_token =
-                                get_user_token(claims.user_id, claims.jti, &mut transaction).await;
-
-                            if let Err(e) = transaction.commit().await {
-                                eprintln!("Error: {}", e);
-                                return Ok(req.into_response(
-                                    HttpResponse::InternalServerError()
-                                        .json(AppError::DatabaseTransaction.to_response())
-                                        .map_into_right_body(),
-                                ));
-                            }
+                                get_user_token(claims.user_id, claims.jti, &**pool).await;
 
                             match existing_token {
                                 Ok(r) => {

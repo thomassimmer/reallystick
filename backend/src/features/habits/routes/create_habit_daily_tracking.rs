@@ -36,7 +36,7 @@ pub async fn create_habit_daily_tracking(
         }
     };
 
-    match get_habit_by_id(&mut transaction, body.habit_id).await {
+    match get_habit_by_id(&mut *transaction, body.habit_id).await {
         Ok(r) => {
             if r.is_none() {
                 return HttpResponse::NotFound().json(AppError::HabitNotFound.to_response());
@@ -48,7 +48,7 @@ pub async fn create_habit_daily_tracking(
         }
     };
 
-    match get_unit_by_id(&mut transaction, body.unit_id).await {
+    match get_unit_by_id(&mut *transaction, body.unit_id).await {
         Ok(r) => {
             if r.is_none() {
                 return HttpResponse::NotFound().json(AppError::UnitNotFound.to_response());
@@ -60,7 +60,7 @@ pub async fn create_habit_daily_tracking(
         }
     }
 
-    match get_unit_by_id(&mut transaction, body.weight_unit_id).await {
+    match get_unit_by_id(&mut *transaction, body.weight_unit_id).await {
         Ok(r) => {
             if r.is_none() {
                 return HttpResponse::NotFound().json(AppError::UnitNotFound.to_response());
@@ -86,7 +86,7 @@ pub async fn create_habit_daily_tracking(
     };
 
     let create_habit_daily_tracking_result =
-        habit_daily_tracking::create_habit_daily_tracking(&mut transaction, &habit_daily_tracking)
+        habit_daily_tracking::create_habit_daily_tracking(&mut *transaction, &habit_daily_tracking)
             .await;
 
     if let Err(e) = transaction.commit().await {

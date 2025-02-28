@@ -37,7 +37,7 @@ pub async fn update_challenge_participation(
     };
 
     let get_challenge_participation_result =
-        get_challenge_participation_by_id(&mut transaction, params.challenge_participation_id)
+        get_challenge_participation_by_id(&mut *transaction, params.challenge_participation_id)
             .await;
 
     let mut challenge_participation = match get_challenge_participation_result {
@@ -70,7 +70,7 @@ pub async fn update_challenge_participation(
 
     let update_challenge_participation_result =
         challenge_participation::update_challenge_participation(
-            &mut transaction,
+            &mut *transaction,
             &challenge_participation,
         )
         .await;

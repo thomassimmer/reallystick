@@ -17,22 +17,7 @@ pub async fn get_profile_information(
     request_claims: ReqData<Claims>,
     pool: web::Data<PgPool>,
 ) -> impl Responder {
-    let mut transaction = match pool.begin().await {
-        Ok(t) => t,
-        Err(e) => {
-            eprintln!("Error: {}", e);
-            return HttpResponse::InternalServerError()
-                .json(AppError::DatabaseTransaction.to_response());
-        }
-    };
-
-    let user = get_user_by_id(&mut transaction, request_claims.user_id).await;
-
-    if let Err(e) = transaction.commit().await {
-        eprintln!("Error: {}", e);
-        return HttpResponse::InternalServerError()
-            .json(AppError::DatabaseTransaction.to_response());
-    }
+    let user = get_user_by_id(&**pool, request_claims.user_id).await;
 
     match user {
         Ok(existing_user) => match existing_user {

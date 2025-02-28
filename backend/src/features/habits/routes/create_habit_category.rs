@@ -49,7 +49,7 @@ pub async fn create_habit_category(
         }
     };
 
-    match get_habit_category_by_name(&mut transaction, language_code, new_category_name).await {
+    match get_habit_category_by_name(&mut *transaction, language_code, new_category_name).await {
         Ok(r) => {
             if let Some(habit_category) = r {
                 return HttpResponse::Ok().json(HabitCategoryResponse {
@@ -72,7 +72,7 @@ pub async fn create_habit_category(
     };
 
     let create_habit_category_result =
-        habit_category::create_habit_category(&mut transaction, &habit_category).await;
+        habit_category::create_habit_category(&mut *transaction, &habit_category).await;
 
     if let Err(e) = transaction.commit().await {
         eprintln!("Error: {}", e);

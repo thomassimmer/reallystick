@@ -34,7 +34,7 @@ pub async fn delete_habit(
         }
     };
 
-    let delete_habit_result = delete_habit_by_id(&mut transaction, params.habit_id).await;
+    let delete_habit_result = delete_habit_by_id(&mut *transaction, params.habit_id).await;
 
     if let Err(e) = transaction.commit().await {
         eprintln!("Error: {}", e);

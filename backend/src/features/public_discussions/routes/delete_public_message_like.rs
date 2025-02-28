@@ -37,7 +37,7 @@ pub async fn delete_public_message_like(
     };
 
     // Check if message exists
-    let mut public_message = match get_public_message_by_id(&mut transaction, params.message_id)
+    let mut public_message = match get_public_message_by_id(&mut *transaction, params.message_id)
         .await
     {
         Ok(r) => match r {
@@ -55,7 +55,7 @@ pub async fn delete_public_message_like(
 
     // Check if message exists
     let public_message_like = match get_public_message_like_by_message_id_and_user_id(
-        &mut transaction,
+        &mut *transaction,
         params.message_id,
         request_claims.user_id,
     )
@@ -75,7 +75,7 @@ pub async fn delete_public_message_like(
     };
 
     let delete_public_message_result =
-        public_message_like::delete_public_message_like(&mut transaction, public_message_like.id)
+        public_message_like::delete_public_message_like(&mut *transaction, public_message_like.id)
             .await;
 
     if let Err(e) = delete_public_message_result {
@@ -87,7 +87,7 @@ pub async fn delete_public_message_like(
     public_message.like_count -= 1;
 
     let update_public_message_result =
-        update_public_message_like_count(&mut transaction, &public_message).await;
+        update_public_message_like_count(&mut *transaction, &public_message).await;
 
     if let Err(e) = update_public_message_result {
         eprintln!("Error: {}", e);

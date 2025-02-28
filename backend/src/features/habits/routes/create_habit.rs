@@ -29,7 +29,7 @@ pub async fn create_habit(pool: Data<PgPool>, body: Json<HabitCreateRequest>) ->
         }
     };
 
-    let category = match get_habit_category_by_id(&mut transaction, body.category_id).await {
+    let category = match get_habit_category_by_id(&mut *transaction, body.category_id).await {
         Ok(r) => match r {
             Some(category) => category,
             None => {
@@ -43,7 +43,7 @@ pub async fn create_habit(pool: Data<PgPool>, body: Json<HabitCreateRequest>) ->
     };
 
     for unit in body.unit_ids.clone() {
-        match get_unit_by_id(&mut transaction, unit).await {
+        match get_unit_by_id(&mut *transaction, unit).await {
             Ok(r) => {
                 if r.is_none() {
                     return HttpResponse::NotFound().json(AppError::UnitNotFound.to_response());
@@ -69,7 +69,7 @@ pub async fn create_habit(pool: Data<PgPool>, body: Json<HabitCreateRequest>) ->
         unit_ids: json!(body.unit_ids).to_string(),
     };
 
-    let create_habit_result = habit::create_habit(&mut transaction, &habit).await;
+    let create_habit_result = habit::create_habit(&mut *transaction, &habit).await;
 
     if let Err(e) = transaction.commit().await {
         eprintln!("Error: {}", e);

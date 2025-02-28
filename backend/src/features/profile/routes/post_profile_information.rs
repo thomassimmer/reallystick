@@ -33,7 +33,7 @@ pub async fn post_profile_information(
         }
     };
 
-    let mut request_user = match get_user_by_id(&mut transaction, request_claims.user_id).await {
+    let mut request_user = match get_user_by_id(&mut *transaction, request_claims.user_id).await {
         Ok(user) => match user {
             Some(user) => user,
             None => return HttpResponse::NotFound().json(AppError::UserNotFound.to_response()),
@@ -70,7 +70,7 @@ pub async fn post_profile_information(
     request_user.notifications_user_joined_your_challenge_enabled =
         body.notifications_user_joined_your_challenge_enabled;
 
-    let updated_user_result = update_user(&mut transaction, &request_user).await;
+    let updated_user_result = update_user(&mut *transaction, &request_user).await;
 
     if let Err(e) = updated_user_result {
         eprintln!("Error: {}", e);

@@ -1,12 +1,15 @@
-use sqlx::{postgres::PgQueryResult, PgConnection};
+use sqlx::{postgres::PgQueryResult, Executor, Postgres};
 use uuid::Uuid;
 
 use crate::features::challenges::structs::models::challenge_daily_tracking::ChallengeDailyTracking;
 
-pub async fn get_challenge_daily_tracking_by_id(
-    conn: &mut PgConnection,
+pub async fn get_challenge_daily_tracking_by_id<'a, E>(
+    executor: E,
     challenge_daily_tracking_id: Uuid,
-) -> Result<Option<ChallengeDailyTracking>, sqlx::Error> {
+) -> Result<Option<ChallengeDailyTracking>, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         ChallengeDailyTracking,
         r#"
@@ -16,14 +19,17 @@ pub async fn get_challenge_daily_tracking_by_id(
         "#,
         challenge_daily_tracking_id,
     )
-    .fetch_optional(conn)
+    .fetch_optional(executor)
     .await
 }
 
-pub async fn get_challenge_daily_trackings_for_challenge(
-    conn: &mut PgConnection,
+pub async fn get_challenge_daily_trackings_for_challenge<'a, E>(
+    executor: E,
     challenge_id: Uuid,
-) -> Result<Vec<ChallengeDailyTracking>, sqlx::Error> {
+) -> Result<Vec<ChallengeDailyTracking>, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         ChallengeDailyTracking,
         r#"
@@ -33,14 +39,17 @@ pub async fn get_challenge_daily_trackings_for_challenge(
         "#,
         challenge_id
     )
-    .fetch_all(conn)
+    .fetch_all(executor)
     .await
 }
 
-pub async fn get_challenge_daily_trackings_for_challenges(
-    conn: &mut PgConnection,
+pub async fn get_challenge_daily_trackings_for_challenges<'a, E>(
+    executor: E,
     challenge_ids: Vec<Uuid>,
-) -> Result<Vec<ChallengeDailyTracking>, sqlx::Error> {
+) -> Result<Vec<ChallengeDailyTracking>, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         ChallengeDailyTracking,
         r#"
@@ -50,14 +59,17 @@ pub async fn get_challenge_daily_trackings_for_challenges(
         "#,
         &challenge_ids
     )
-    .fetch_all(conn)
+    .fetch_all(executor)
     .await
 }
 
-pub async fn update_challenge_daily_tracking(
-    conn: &mut PgConnection,
+pub async fn update_challenge_daily_tracking<'a, E>(
+    executor: E,
     challenge_daily_tracking: &ChallengeDailyTracking,
-) -> Result<sqlx::postgres::PgQueryResult, sqlx::Error> {
+) -> Result<sqlx::postgres::PgQueryResult, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         ChallengeDailyTracking,
         r#"
@@ -81,55 +93,101 @@ pub async fn update_challenge_daily_tracking(
         challenge_daily_tracking.note,
         challenge_daily_tracking.id
     )
-    .execute(conn)
+    .execute(executor)
     .await
 }
 
-pub async fn create_challenge_daily_trackings(
-    conn: &mut PgConnection,
+pub async fn create_challenge_daily_trackings<'a, E>(
+    executor: E,
     challenge_daily_trackings: &[ChallengeDailyTracking],
-) -> Result<(), sqlx::Error> {
-    for tracking in challenge_daily_trackings {
-        sqlx::query!(
-            r#"
-            INSERT INTO challenge_daily_trackings (
-                id,
-                habit_id,
-                challenge_id,
-                day_of_program,
-                created_at,
-                quantity_per_set,
-                quantity_of_set,
-                unit_id,
-                weight,
-                weight_unit_id,
-                note
-            )
-            VALUES ( $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11 )
-            "#,
-            tracking.id,
-            tracking.habit_id,
-            tracking.challenge_id,
-            tracking.day_of_program,
-            tracking.created_at,
-            tracking.quantity_per_set,
-            tracking.quantity_of_set,
-            tracking.unit_id,
-            tracking.weight,
-            tracking.weight_unit_id,
-            tracking.note
-        )
-        .execute(&mut *conn)
-        .await?;
+) -> Result<(), sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
+    if challenge_daily_trackings.is_empty() {
+        return Ok(()); // No data to insert, return early
     }
+
+    let mut ids = Vec::with_capacity(challenge_daily_trackings.len());
+    let mut habit_ids = Vec::with_capacity(challenge_daily_trackings.len());
+    let mut challenge_ids = Vec::with_capacity(challenge_daily_trackings.len());
+    let mut days_of_program = Vec::with_capacity(challenge_daily_trackings.len());
+    let mut created_ats = Vec::with_capacity(challenge_daily_trackings.len());
+    let mut quantity_per_sets = Vec::with_capacity(challenge_daily_trackings.len());
+    let mut quantity_of_sets = Vec::with_capacity(challenge_daily_trackings.len());
+    let mut unit_ids = Vec::with_capacity(challenge_daily_trackings.len());
+    let mut weights = Vec::with_capacity(challenge_daily_trackings.len());
+    let mut weight_unit_ids = Vec::with_capacity(challenge_daily_trackings.len());
+    let mut notes = Vec::with_capacity(challenge_daily_trackings.len());
+
+    for tracking in challenge_daily_trackings {
+        ids.push(tracking.id);
+        habit_ids.push(tracking.habit_id);
+        challenge_ids.push(tracking.challenge_id);
+        days_of_program.push(tracking.day_of_program);
+        created_ats.push(tracking.created_at);
+        quantity_per_sets.push(tracking.quantity_per_set);
+        quantity_of_sets.push(tracking.quantity_of_set);
+        unit_ids.push(tracking.unit_id);
+        weights.push(tracking.weight as f64);
+        weight_unit_ids.push(tracking.weight_unit_id);
+        notes.push(tracking.note.clone());
+    }
+
+    sqlx::query!(
+        r#"
+        INSERT INTO challenge_daily_trackings (
+            id,
+            habit_id,
+            challenge_id,
+            day_of_program,
+            created_at,
+            quantity_per_set,
+            quantity_of_set,
+            unit_id,
+            weight,
+            weight_unit_id,
+            note
+        )
+        SELECT * FROM UNNEST(
+            $1::UUID[],
+            $2::UUID[],
+            $3::UUID[],
+            $4::INT[],
+            $5::TIMESTAMPTZ[],
+            $6::INT[],
+            $7::INT[],
+            $8::UUID[],
+            $9::FLOAT8[],
+            $10::UUID[],
+            $11::TEXT[]
+        )
+        "#,
+        &ids,
+        &habit_ids,
+        &challenge_ids,
+        &days_of_program,
+        &created_ats,
+        &quantity_per_sets,
+        &quantity_of_sets,
+        &unit_ids,
+        &weights,
+        &weight_unit_ids,
+        &notes as &[Option<String>]
+    )
+    .execute(executor)
+    .await?;
 
     Ok(())
 }
 
-pub async fn delete_challenge_daily_tracking_by_id(
-    conn: &mut PgConnection,
+pub async fn delete_challenge_daily_tracking_by_id<'a, E>(
+    executor: E,
     challenge_daily_tracking_id: Uuid,
-) -> Result<PgQueryResult, sqlx::Error> {
+) -> Result<PgQueryResult, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         ChallengeDailyTracking,
         r#"
@@ -139,15 +197,18 @@ pub async fn delete_challenge_daily_tracking_by_id(
         "#,
         challenge_daily_tracking_id,
     )
-    .execute(conn)
+    .execute(executor)
     .await
 }
 
-pub async fn replace_daily_tracking_challenge(
-    conn: &mut PgConnection,
+pub async fn replace_daily_tracking_challenge<'a, E>(
+    executor: E,
     old_habit_id: Uuid,
     new_habit_id: Uuid,
-) -> Result<PgQueryResult, sqlx::Error> {
+) -> Result<PgQueryResult, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
     sqlx::query_as!(
         ChallengeDailyTracking,
         r#"
@@ -158,6 +219,6 @@ pub async fn replace_daily_tracking_challenge(
         old_habit_id,
         new_habit_id,
     )
-    .execute(conn)
+    .execute(executor)
     .await
 }

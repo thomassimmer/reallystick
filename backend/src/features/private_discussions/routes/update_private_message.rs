@@ -47,7 +47,7 @@ pub async fn update_private_message(
     };
 
     // Check if message exists
-    let mut private_message = match get_private_message_by_id(&mut transaction, params.message_id)
+    let mut private_message = match get_private_message_by_id(&mut *transaction, params.message_id)
         .await
     {
         Ok(r) => match r {
@@ -81,7 +81,7 @@ pub async fn update_private_message(
     private_message.updated_at = Some(now());
 
     let update_private_message_result =
-        private_message::update_private_message(&mut transaction, &private_message).await;
+        private_message::update_private_message(&mut *transaction, &private_message).await;
 
     if let Err(e) = update_private_message_result {
         eprintln!("Error: {}", e);
@@ -90,7 +90,7 @@ pub async fn update_private_message(
     }
 
     let recipients = match private_discussion_participation::get_private_discussions_recipients(
-        &mut transaction,
+        &mut *transaction,
         vec![private_message.discussion_id],
         request_claims.user_id,
     )
