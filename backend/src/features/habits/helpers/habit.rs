@@ -281,6 +281,18 @@ pub async fn fetch_habit_statistics(pool: &PgPool) -> Result<Vec<HabitStatistics
     .fetch_all(pool)
     .await?;
 
+    let challenges = sqlx::query!(
+        r#"
+            SELECT habit_id, challenge_id, count(*) as "count!"
+            FROM challenge_daily_trackings cdt
+            LEFT JOIN challenges c ON c.id = cdt.challenge_id
+            WHERE c.deleted IS NOT true
+            GROUP BY habit_id, challenge_id
+        "#,
+    )
+    .fetch_all(pool)
+    .await?;
+
     // Process results
     let mut statistics = Vec::new();
 
@@ -400,6 +412,13 @@ pub async fn fetch_habit_statistics(pool: &PgPool) -> Result<Vec<HabitStatistics
             })
             .collect();
 
+        // Collect challenges that use this habit
+        let challenges_data: Vec<String> = challenges
+            .iter()
+            .filter(|e| e.habit_id == habit.id)
+            .map(|e| e.challenge_id.to_string())
+            .collect();
+
         // Create a HabitStatistics entry
         statistics.push(HabitStatistics {
             habit_id: habit.id,
@@ -414,6 +433,7 @@ pub async fn fetch_habit_statistics(pool: &PgPool) -> Result<Vec<HabitStatistics
             top_lives_in_urban_area: urban_area_data,
             top_regions: region_data,
             top_relationship_statuses: relationship_status_data,
+            challenges: challenges_data,
         });
     }
 

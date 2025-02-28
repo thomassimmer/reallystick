@@ -146,16 +146,13 @@ pub async fn fetch_challenge_statistics(
     let mut transaction = pool.begin().await?;
 
     let challenges = get_challenges(&mut transaction).await?;
-    let challenge_ids: Vec<_> = challenges.iter().map(|c| c.id).collect();
 
     let counts = sqlx::query!(
         r#"
             SELECT challenge_id, count(*) as "count!"
             FROM challenge_participations
-            WHERE challenge_id = ANY($1)
             GROUP BY challenge_id
         "#,
-        &challenge_ids
     )
     .fetch_all(pool)
     .await?;
@@ -280,6 +277,16 @@ pub async fn fetch_challenge_statistics(
     .fetch_all(pool)
     .await?;
 
+    let creators = sqlx::query!(
+        r#"
+            SELECT c.id, u.username
+            FROM challenges c
+            LEFT JOIN users u ON c.creator = u.id
+        "#,
+    )
+    .fetch_all(pool)
+    .await?;
+
     // Process results
     let mut statistics = Vec::new();
 
@@ -399,6 +406,14 @@ pub async fn fetch_challenge_statistics(
             })
             .collect();
 
+        let creator_username_data: String = creators
+            .iter()
+            .filter(|c| c.id == challenge.id)
+            .map(|c| c.username.clone())
+            .next()
+            .unwrap_or_default()
+            .unwrap_or_default();
+
         // Create a ChallengeStatistics entry
         statistics.push(ChallengeStatistics {
             challenge_id: challenge.id,
@@ -413,6 +428,7 @@ pub async fn fetch_challenge_statistics(
             top_lives_in_urban_area: urban_area_data,
             top_regions: region_data,
             top_relationship_statuses: relationship_status_data,
+            creator_username: creator_username_data,
         });
     }
 

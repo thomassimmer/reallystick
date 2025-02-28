@@ -8,7 +8,6 @@ use actix_web::{
     test, Error,
 };
 
-use chrono::Utc;
 use reallystick::features::challenges::structs::{
     models::challenge_daily_tracking::ChallengeDailyTrackingData,
     responses::challenge_daily_tracking::{
@@ -41,7 +40,7 @@ pub async fn user_creates_a_challenge_daily_tracking(
         .set_json(&serde_json::json!({
             "challenge_id": challenge_id,
             "habit_id": habit_id,
-            "datetime": Utc::now(),
+            "day_of_program": 1,
             "quantity_per_set": 10,
             "quantity_of_set": 3,
             "unit_id": unit_id,
@@ -78,7 +77,7 @@ pub async fn user_updates_a_challenge_daily_tracking(
         .insert_header(ContentType::json())
         .set_json(&serde_json::json!({
             "habit_id": habit_id,
-            "datetime": Utc::now(),
+            "day_of_program": 1,
             "quantity_per_set": 10,
             "quantity_of_set": 2,
             "unit_id": unit_id,
@@ -175,7 +174,7 @@ pub async fn creator_can_create_a_challenge_daily_tracking() {
 }
 
 #[tokio::test]
-pub async fn creator_can_update_a_habit_daily_tracking() {
+pub async fn creator_can_update_a_challenge_daily_tracking() {
     let app = spawn_app().await;
     let (access_token, _) = user_logs_in(&app, "thomas", "").await;
     let habit_category_id = user_creates_a_habit_category(&app, &access_token).await;

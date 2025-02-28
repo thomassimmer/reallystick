@@ -11,6 +11,7 @@ class HabitStatistic {
   final Set<MapEntry<String, int>> topFinancialSituations;
   final Set<MapEntry<String, int>> topRelationshipStatuses;
   final Set<MapEntry<String, int>> topLevelsOfEducation;
+  final List<String> challenges;
 
   HabitStatistic({
     required this.habitId,
@@ -25,5 +26,6 @@ class HabitStatistic {
     required this.topFinancialSituations,
     required this.topRelationshipStatuses,
     required this.topLevelsOfEducation,
+    required this.challenges,
   });
 }

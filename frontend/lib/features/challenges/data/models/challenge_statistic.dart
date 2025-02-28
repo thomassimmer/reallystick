@@ -14,6 +14,7 @@ class ChallengeStatisticDataModel extends Equatable {
   final Set<MapEntry<String, int>> topFinancialSituations;
   final Set<MapEntry<String, int>> topRelationshipStatuses;
   final Set<MapEntry<String, int>> topLevelsOfEducation;
+  final String creatorUsername;
 
   const ChallengeStatisticDataModel({
     required this.challengeId,
@@ -28,6 +29,7 @@ class ChallengeStatisticDataModel extends Equatable {
     required this.topFinancialSituations,
     required this.topRelationshipStatuses,
     required this.topLevelsOfEducation,
+    required this.creatorUsername,
   });
 
   factory ChallengeStatisticDataModel.fromJson(
@@ -49,6 +51,7 @@ class ChallengeStatisticDataModel extends Equatable {
           _parseCategoryData(jsonObject['top_relationship_statuses']),
       topLevelsOfEducation:
           _parseCategoryData(jsonObject['top_levels_of_education']),
+      creatorUsername: jsonObject["creator_username"] as String,
     );
   }
 
@@ -76,6 +79,7 @@ class ChallengeStatisticDataModel extends Equatable {
       topFinancialSituations: topFinancialSituations,
       topRelationshipStatuses: topRelationshipStatuses,
       topLevelsOfEducation: topLevelsOfEducation,
+      creatorUsername: creatorUsername,
     );
   }
 
@@ -93,5 +97,6 @@ class ChallengeStatisticDataModel extends Equatable {
         topFinancialSituations,
         topRelationshipStatuses,
         topLevelsOfEducation,
+        creatorUsername,
       ];
 }

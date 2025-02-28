@@ -37,6 +37,7 @@
   "challengeUpdated": "Vos changements ont bien été sauvegardés.",
   "challengeWasDeletedByCreator": "Ce challenge a été supprimé par son créateur",
   "challenges": "Défis",
+  "challengesInfoTooltip": "Ces informations sont rafraîchies toutes les heures.",
   "comeBack": "Revenir en arrière",
   "comingSoon": "Disponible dans peu de temps...",
   "confirm": "Confirmer",
@@ -44,6 +45,14 @@
   "confirmDeleteMessage": "En cliquant sur \"Confirmer\", votre compte et toutes les activités attachées seront supprimées définitivement.",
   "continent": "Continent",
   "country": "Pays",
+  "createdBy": "Créé par {creator}",
+  "@createdBy": {
+    "placeholders": {
+      "creator": {
+        "type": "String"
+      }
+    }
+  },
   "createdChallenges": "Mes défis créés",
   "createChallenge": "Créer le défi",
   "createHabit": "Créer l'habitude",
@@ -131,6 +140,14 @@
   "invalidUsernameOrPasswordOrRecoveryCodeError": "Nom d'utilisateur, mot de passe ou code de récupération invalide. Veuillez réessayer.",
   "invalidUsernameOrRecoveryCodeError": "Nom d'utilisateur ou code de récupération invalide. Veuillez réessayer.",
   "joinThisChallenge": "Participer à ce challenge",
+  "joinedByXPeople": "{count,plural, zero {Rejoint par personne} one {Rejoint par {count} personne} other {Rejoint par {count} personnes}}",
+  "@joinedByXPeople": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "keepRecoveryCodesSafe": "Merci de garder ces codes de récupération bien à l'abri.\nIls seront nécessaires si vous perdez votre mot de passe ou l'acès à votre application d'authentification.",
   "language": "Langue",
   "lastActivity": "Dernière activité :",
@@ -211,6 +228,7 @@
   "noAccountCreateOne": "Pas de compte ? Créez-le ici.",
   "noActivityRecordedYet": "Pas encore d'activité enregistrée.",
   "noAnswer": "Je préfère ne pas répondre",
+  "noChallengesForHabitYet": "Il n'y a pas encore de défi pour cette habitude.\nCréez le premier !",
   "noChallengeDailyTrackingYet": "Pas encore d'objectif journalier enregistré.",
   "noConcernedHabitsYet": "Il n'y a pas encore d'habitudes concernées par ce défi.",
   "noContent": "Aucun contenu à afficher",

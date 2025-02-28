@@ -14,6 +14,7 @@ class HabitStatisticDataModel extends Equatable {
   final Set<MapEntry<String, int>> topFinancialSituations;
   final Set<MapEntry<String, int>> topRelationshipStatuses;
   final Set<MapEntry<String, int>> topLevelsOfEducation;
+  final List<String> challenges;
 
   const HabitStatisticDataModel({
     required this.habitId,
@@ -28,6 +29,7 @@ class HabitStatisticDataModel extends Equatable {
     required this.topFinancialSituations,
     required this.topRelationshipStatuses,
     required this.topLevelsOfEducation,
+    required this.challenges,
   });
 
   factory HabitStatisticDataModel.fromJson(Map<String, dynamic> jsonObject) {
@@ -48,6 +50,9 @@ class HabitStatisticDataModel extends Equatable {
           _parseCategoryData(jsonObject['top_relationship_statuses']),
       topLevelsOfEducation:
           _parseCategoryData(jsonObject['top_levels_of_education']),
+      challenges: (jsonObject['challenges'] as List<dynamic>)
+          .map((item) => item as String)
+          .toList(),
     );
   }
 
@@ -75,6 +80,7 @@ class HabitStatisticDataModel extends Equatable {
       topFinancialSituations: topFinancialSituations,
       topRelationshipStatuses: topRelationshipStatuses,
       topLevelsOfEducation: topLevelsOfEducation,
+      challenges: challenges,
     );
   }
 
@@ -92,5 +98,6 @@ class HabitStatisticDataModel extends Equatable {
         topFinancialSituations,
         topRelationshipStatuses,
         topLevelsOfEducation,
+        challenges,
       ];
 }

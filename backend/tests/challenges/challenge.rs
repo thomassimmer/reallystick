@@ -44,7 +44,6 @@ pub async fn user_creates_a_challenge(
             )]),
             "icon": "english_icon".to_string(),
             "start_date": Utc::now(),
-            "end_date": Utc::now() + Duration::new( 24 * 3600 * 2, 0),
         }))
         .to_request();
     let response = test::call_service(&app, req).await;
@@ -77,7 +76,6 @@ pub async fn user_updates_a_challenge(
             )]),
             "icon": "english_icon".to_string(),
             "start_date": Utc::now(),
-            "end_date": Utc::now() + Duration::new( 24 * 3600 * 30, 0),
         }))
         .to_request();
     let response = test::call_service(&app, req).await;
@@ -199,7 +197,6 @@ pub async fn normal_user_cannot_update_a_challenge() {
             )]),
             "icon": "english_icon".to_string(),
             "start_date": Utc::now(),
-            "end_date": Utc::now() + Duration::new( 24 * 3600 * 30, 0),
         }))
         .to_request();
     let response = test::call_service(&app, req).await;
@@ -277,7 +274,8 @@ pub async fn creator_can_delete_a_challenge() {
     user_deletes_a_challenge(&app, &access_token, challenge_id).await;
 
     let challenges = user_gets_challenges(&app, &access_token).await;
-    assert!(challenges.is_empty());
+    assert!(!challenges.is_empty());
+    assert!(challenges[0].deleted);
 }
 
 #[tokio::test]
@@ -296,7 +294,8 @@ pub async fn admin_user_can_delete_a_challenge() {
     user_deletes_a_challenge(&app, &access_token, challenge_id).await;
 
     let challenges = user_gets_challenges(&app, &access_token).await;
-    assert!(challenges.is_empty());
+    assert!(!challenges.is_empty());
+    assert!(challenges[0].deleted);
 }
 
 #[tokio::test]

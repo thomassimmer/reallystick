@@ -22,6 +22,10 @@ use uuid::Uuid;
 
 use crate::{
     auth::{login::user_logs_in, signup::user_signs_up, token::user_refreshes_token},
+    challenges::{
+        challenge::user_creates_a_challenge,
+        challenge_daily_tracking::user_creates_a_challenge_daily_tracking,
+    },
     habits::{
         habit_category::user_creates_a_habit_category,
         habit_daily_tracking::{
@@ -568,6 +572,7 @@ pub async fn user_can_get_habit_statistics() {
         statistics[0].top_relationship_statuses,
         HashSet::from([("single".to_string(), 1)])
     );
+    assert_eq!(statistics[0].challenges, Vec::<String>::new());
 
     let (access_token, refresh_token, _) = user_signs_up(&app, None).await;
 
@@ -597,6 +602,10 @@ pub async fn user_can_get_habit_statistics() {
     assert_eq!(200, response.status().as_u16());
 
     user_creates_a_habit_participation(&app, &access_token, habit_id).await;
+
+    let challenge_id = user_creates_a_challenge(&app, &access_token).await;
+    user_creates_a_challenge_daily_tracking(&app, &access_token, challenge_id, habit_id, unit_id)
+        .await;
 
     // We need to wait another hour before seing changes in statistics
 
@@ -644,6 +653,7 @@ pub async fn user_can_get_habit_statistics() {
         statistics[0].top_relationship_statuses,
         HashSet::from([("single".to_string(), 1)])
     );
+    assert_eq!(statistics[0].challenges, Vec::<String>::new());
 
     override_now(Some(
         (Utc::now() + Duration::new(121 * 60, 1)).fixed_offset(),
@@ -689,5 +699,9 @@ pub async fn user_can_get_habit_statistics() {
     assert_eq!(
         statistics[0].top_relationship_statuses,
         HashSet::from([("single".to_string(), 1), ("couple".to_string(), 1)])
+    );
+    assert_eq!(
+        statistics[0].challenges,
+        Vec::<String>::from([challenge_id.to_string()])
     );
 }

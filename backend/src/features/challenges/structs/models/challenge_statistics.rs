@@ -20,6 +20,7 @@ pub struct ChallengeStatistics {
     pub top_financial_situations: HashSet<(String, i64)>,
     pub top_relationship_statuses: HashSet<(String, i64)>,
     pub top_levels_of_education: HashSet<(String, i64)>,
+    pub creator_username: String,
 }
 
 pub struct ChallengeStatisticsCache {

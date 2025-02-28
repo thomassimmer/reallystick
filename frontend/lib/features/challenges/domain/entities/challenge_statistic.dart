@@ -11,6 +11,7 @@ class ChallengeStatistic {
   final Set<MapEntry<String, int>> topFinancialSituations;
   final Set<MapEntry<String, int>> topRelationshipStatuses;
   final Set<MapEntry<String, int>> topLevelsOfEducation;
+  final String creatorUsername;
 
   ChallengeStatistic({
     required this.challengeId,
@@ -25,5 +26,6 @@ class ChallengeStatistic {
     required this.topFinancialSituations,
     required this.topRelationshipStatuses,
     required this.topLevelsOfEducation,
+    required this.creatorUsername,
   });
 }

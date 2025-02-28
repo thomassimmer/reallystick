@@ -37,6 +37,7 @@
   "challengeUpdated": "Your changes were saved.",
   "challengeWasDeletedByCreator": "This challenge was removed by its creator",
   "challenges": "Challenges",
+  "challengesInfoTooltip": "This information is refreshed every hour.",
   "comeBack": "Come Back",
   "comingSoon": "Coming soon...",
   "confirm": "Confirm",
@@ -44,6 +45,14 @@
   "confirmDeleteMessage": "By clicking on \"Confirm\", your account and all associated activities will be permanently deleted.",
   "continent": "Continent",
   "country": "Country",
+  "createdBy": "Created by {creator}",
+  "@createdBy": {
+    "placeholders": {
+      "creator": {
+        "type": "String"
+      }
+    }
+  },
   "createdChallenges": "Challenges I created",
   "createChallenge": "Create challenge",
   "createHabit": "Create habit",
@@ -131,6 +140,14 @@
   "invalidUsernameOrPasswordOrRecoveryCodeError": "Invalid username, password, or recovery code. Please try again.",
   "invalidUsernameOrRecoveryCodeError": "Invalid username or recovery code. Please try again.",
   "joinThisChallenge": "Participate in this challenge",
+  "joinedByXPeople": "{count,plural, zero {Joined by nobody yet} one {Joined by {count} person} other {Joined by {count} people}}",
+  "@joinedByXPeople": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "keepRecoveryCodesSafe": "Please keep these recovery codes safe.\nThey are necessary if you lose your password or access to your 2FA application.",
   "language": "Language",
   "lastActivity": "Last activity:",
@@ -211,6 +228,7 @@
   "noAccountCreateOne": "No account? Create one here.",
   "noActivityRecordedYet": "No activity recorded yet.",
   "noAnswer": "I prefer to not answer",
+  "noChallengesForHabitYet": "No challenges yet.\nCreate the first challenge for this habit!",
   "noChallengeDailyTrackingYet": "No daily objectives set yet.",
   "noConcernedHabitsYet": "There are no concerned habits in this challenge yet.",
   "noContent": "No content to display",

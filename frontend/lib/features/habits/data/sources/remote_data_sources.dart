@@ -174,6 +174,7 @@ class HabitRemoteDataSource {
             .map((statistic) => HabitStatisticDataModel.fromJson(statistic))
             .toList();
       } catch (e) {
+        print(e);
         throw ParsingError();
       }
     }

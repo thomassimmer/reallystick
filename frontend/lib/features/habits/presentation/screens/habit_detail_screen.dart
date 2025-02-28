@@ -154,7 +154,7 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
                     padding: const EdgeInsets.only(right: 16.0),
                     child: getIconWidget(
                       iconString: habit.icon,
-                      size: 30,
+                      size: 40,
                       color: habitColor,
                     ),
                   ),
@@ -211,7 +211,7 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
                     const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
                 child: ListView(
                   children: [
-                    SizedBox(height: 30),
+                    SizedBox(height: 40),
                     Container(
                       decoration: BoxDecoration(
                         color: habitColor.withAlpha(155),
@@ -226,12 +226,12 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 30),
+                    SizedBox(height: 40),
                     AnalyticsCarouselWidget(
                       habitColor: habitColor,
                       habitId: habit.id,
                     ),
-                    SizedBox(height: 30),
+                    SizedBox(height: 40),
                     if (habitParticipation != null) ...[
                       DailyTrackingCarouselWidget(
                         habitDailyTrackings: habitDailyTrackings,
@@ -242,8 +242,11 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
                       ),
                       SizedBox(height: 16),
                     ],
-                    ChallengesCarouselWidget(habitColor: habitColor),
-                    SizedBox(height: 30),
+                    ChallengesCarouselWidget(
+                      habitColor: habitColor,
+                      habitId: widget.habitId,
+                    ),
+                    SizedBox(height: 40),
                     HabitDiscussionListWidget(habitColor: habitColor),
                     SizedBox(height: 72),
                   ],
