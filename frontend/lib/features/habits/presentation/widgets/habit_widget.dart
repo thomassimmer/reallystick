@@ -68,7 +68,6 @@ class HabitWidget extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        // Habit icon
                         Padding(
                           padding: const EdgeInsets.only(right: 16.0),
                           child: getIconWidget(
@@ -77,14 +76,12 @@ class HabitWidget extends StatelessWidget {
                             color: habitColor,
                           ),
                         ),
-
-                        // Short or Long name based on screen size
                         Expanded(
                           child: Text(
                             isLargeScreen ? longName : shortName,
                             style: TextStyle(
                               fontSize: 18,
-                              fontWeight: FontWeight.bold,
+                              fontWeight: FontWeight.w500,
                               color: habitColor,
                             ),
                           ),

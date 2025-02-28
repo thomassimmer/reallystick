@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:reallystick/core/ui/extensions.dart';
 
 class DropdownWidget {
   static show(
@@ -14,7 +15,6 @@ class DropdownWidget {
         value: null,
         child: Text(
           AppLocalizations.of(context)!.noAnswer,
-          style: TextStyle(color: Colors.grey),
         ),
       ),
       ...items
@@ -30,11 +30,10 @@ class DropdownWidget {
         ),
         value: value,
         icon: Icon(Icons.arrow_drop_down),
-        style: TextStyle(color: Colors.black, fontSize: 16),
+        style: TextStyle(color: context.colors.text, fontSize: 16),
         items: dropdownItems,
         onChanged: onChanged,
         isExpanded: true,
-        dropdownColor: Colors.white,
       ),
     );
   }

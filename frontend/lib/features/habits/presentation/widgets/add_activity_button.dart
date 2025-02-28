@@ -19,7 +19,7 @@ class AddActivityButton extends StatelessWidget {
       icon: Icon(Icons.add),
       label: Text(AppLocalizations.of(context)!.addActivity),
       backgroundColor: color ?? context.colors.primary,
-      extendedTextStyle: TextStyle(letterSpacing: 1),
+      extendedTextStyle: TextStyle(letterSpacing: 1, fontFamily: 'Montserrat'),
     );
   }
 }
