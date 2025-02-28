@@ -344,6 +344,8 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
                                 _quantityPerSet ?? 0,
                                 userLocale,
                               ),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
                             ),
                           );
                         }).toList()
@@ -353,8 +355,10 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
                       _selectedUnitId = value;
                     });
                     BlocProvider.of<HabitDailyTrackingCreationFormBloc>(context)
-                        .add(HabitDailyTrackingCreationFormUnitChangedEvent(
-                            value ?? ""));
+                        .add(
+                      HabitDailyTrackingCreationFormUnitChangedEvent(
+                          value ?? ""),
+                    );
                   },
                   label: AppLocalizations.of(context)!.unit,
                   errorText: displayUnitErrorMessage,

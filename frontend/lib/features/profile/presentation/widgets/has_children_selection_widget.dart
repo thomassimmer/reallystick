@@ -27,8 +27,7 @@ class HasChildrenSelectionWidget extends StatelessWidget {
           )
         ], onChanged: (value) {
       final newProfile = profile;
-      newProfile.hasChildren =
-          value == null ? null : value == AppLocalizations.of(context)!.yes;
+      newProfile.hasChildren = value == null ? null : value == true.toString();
       updateProfile(context, newProfile);
     });
   }

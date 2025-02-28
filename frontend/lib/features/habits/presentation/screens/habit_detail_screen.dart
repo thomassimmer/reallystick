@@ -129,6 +129,7 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
           );
 
           final bool isLargeScreen = checkIfLargeScreen(context);
+
           final habitColor = AppColorExtension.fromString(
             habitParticipation != null ? habitParticipation.color : "",
           ).color;
@@ -136,7 +137,7 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
           return Scaffold(
             appBar: AppBar(
               title: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(right: 16.0),
@@ -149,12 +150,14 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
                   SelectableText(
                     isLargeScreen ? longName : shortName,
                     style: TextStyle(
-                        color: habitColor, fontWeight: FontWeight.w800),
+                      color: habitColor,
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
                 ],
               ),
               actions: [
-                if (habitParticipation != null) ...[
+                if (habitParticipation != null)
                   PopupMenuButton<String>(
                     color: context.colors.backgroundDark,
                     onSelected: (value) async {
@@ -176,19 +179,6 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
                       ),
                     ],
                   ),
-                ] else ...[
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                    child: FloatingActionButton.extended(
-                      onPressed: _startTrackingThisHabit,
-                      icon: Icon(Icons.join_full),
-                      label: Text(
-                          AppLocalizations.of(context)!.startTrackingThisHabit),
-                      backgroundColor: context.colors.primary,
-                      extendedTextStyle: TextStyle(letterSpacing: 1),
-                    ),
-                  )
-                ]
               ],
             ),
             floatingActionButton: habitParticipation != null
@@ -196,7 +186,15 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
                     action: _showAddDailyTrackingBottomSheet,
                     color: habitColor,
                   )
-                : null,
+                : FloatingActionButton.extended(
+                    onPressed: _startTrackingThisHabit,
+                    icon: Icon(Icons.login),
+                    label: Text(
+                        AppLocalizations.of(context)!.startTrackingThisHabit),
+                    backgroundColor: context.colors.primary,
+                    extendedTextStyle:
+                        TextStyle(letterSpacing: 1, fontFamily: 'Montserrat'),
+                  ),
             body: SingleChildScrollView(
               child: Padding(
                 padding: EdgeInsets.all(10),
@@ -216,7 +214,7 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
                       ),
                     ),
                     SizedBox(height: 16),
-                    AnalyticsCarouselWidget(),
+                    AnalyticsCarouselWidget(habitColor: habitColor),
                     SizedBox(height: 16),
                     if (habitDailyTrackings.isNotEmpty) ...[
                       DailyTrackingCarouselWidget(
@@ -228,9 +226,9 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
                       ),
                       SizedBox(height: 16),
                     ],
-                    ChallengesCarouselWidget(),
+                    ChallengesCarouselWidget(habitColor: habitColor),
                     SizedBox(height: 16),
-                    HabitDiscussionListWidget(),
+                    HabitDiscussionListWidget(habitColor: habitColor),
                     SizedBox(height: 64),
                   ],
                 ),

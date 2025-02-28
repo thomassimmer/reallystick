@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:intl/intl.dart';
 import 'package:reallystick/core/constants/dates.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/habits/domain/entities/habit_daily_tracking.dart';
@@ -101,21 +102,22 @@ class ListDailyTrackingsModalState extends State<ListDailyTrackingsModal> {
                         title: Row(
                           children: [
                             Text(
-                              "${dailyTracking.datetime.hour}:${dailyTracking.datetime.minute}",
+                              DateFormat('HH:mm')
+                                  .format(dailyTracking.datetime),
                             ),
                             if (dailyTracking.quantityOfSet > 1) ...[
                               Text(
-                                  "     Quantity per set : ${dailyTracking.quantityPerSet}"),
+                                  "     ${AppLocalizations.of(context)!.quantityPerSet} : ${dailyTracking.quantityPerSet}"),
                             ] else ...[
                               Text(
-                                  "     Quantity : ${dailyTracking.quantityPerSet}"),
+                                  "     ${AppLocalizations.of(context)!.quantity} : ${dailyTracking.quantityPerSet}"),
                             ],
                             if (unit.shortName['en'] != '')
                               Text(
                                   " ${getRightTranslationForUnitFromJson(unit.longName, dailyTracking.quantityPerSet, userLocale)}"),
                             if (dailyTracking.quantityOfSet > 1)
                               Text(
-                                  "     Number of set : ${dailyTracking.quantityOfSet}"),
+                                  "     ${AppLocalizations.of(context)!.quantityOfSet} : ${dailyTracking.quantityOfSet}"),
                           ],
                         ),
                       ),

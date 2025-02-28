@@ -65,18 +65,23 @@ class MultiUnitSelectDropdownState extends State<MultiUnitSelectDropdown> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  selectedValues.isNotEmpty
-                      ? selectedValues
-                          .map(
-                            (unitId) => getRightTranslationForUnitFromJson(
-                              widget.options[unitId]!.longName,
-                              1,
-                              widget.userLocale,
-                            ),
-                          )
-                          .join(', ')
-                      : AppLocalizations.of(context)!.selectUnits,
+                Expanded(
+                  child: Text(
+                    selectedValues.isNotEmpty
+                        ? selectedValues
+                            .map(
+                              (unitId) => getRightTranslationForUnitFromJson(
+                                widget.options[unitId]!.longName,
+                                1,
+                                widget.userLocale,
+                              ),
+                            )
+                            .join(', ')
+                        : AppLocalizations.of(context)!.selectUnits,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    style: TextStyle(fontSize: 16),
+                  ),
                 ),
                 Icon(
                   isDropdownOpen ? Icons.arrow_drop_up : Icons.arrow_drop_down,

@@ -91,6 +91,14 @@ class QuestionnaireModalState extends State<QuestionnaireModal> {
       });
     }
 
+    void previousStep() {
+      setState(() {
+        if (_currentStep > 0) {
+          _currentStep--;
+        }
+      });
+    }
+
     return Padding(
       padding:
           EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
@@ -116,9 +124,19 @@ class QuestionnaireModalState extends State<QuestionnaireModal> {
               child: Text(AppLocalizations.of(context)!.next),
             ),
           ),
-          TextButton(
-            onPressed: _skip,
-            child: Text(AppLocalizations.of(context)!.skip),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (_currentStep > 0)
+                TextButton(
+                  onPressed: previousStep,
+                  child: Text(AppLocalizations.of(context)!.previous),
+                ),
+              TextButton(
+                onPressed: _skip,
+                child: Text(AppLocalizations.of(context)!.skip),
+              ),
+            ],
           ),
           SizedBox(height: 16),
         ],

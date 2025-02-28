@@ -54,191 +54,208 @@ class RootScreen extends StatelessWidget {
     }
 
     return MultiBlocListener(
-        listeners: [
-          BlocListener<AuthBloc, AuthState>(listener: (context, state) {
-            GlobalSnackBar.show(context, state.message);
+      listeners: [
+        BlocListener<AuthBloc, AuthState>(listener: (context, state) {
+          GlobalSnackBar.show(context, state.message);
 
-            if (state is AuthUnauthenticatedState) {
-              context.goNamed('home');
-            }
-          }),
-          BlocListener<ProfileBloc, ProfileState>(listener: (context, state) {
-            GlobalSnackBar.show(context, state.message);
-          }),
-          BlocListener<HabitBloc, HabitState>(listener: (context, state) {
-            GlobalSnackBar.show(context, state.message);
-          }),
-        ],
-        child:
-            BlocBuilder<ProfileBloc, ProfileState>(builder: (context, state) {
+          if (state is AuthUnauthenticatedState) {
+            context.goNamed('home');
+          }
+        }),
+        BlocListener<ProfileBloc, ProfileState>(listener: (context, state) {
+          GlobalSnackBar.show(context, state.message);
+        }),
+        BlocListener<HabitBloc, HabitState>(listener: (context, state) {
+          GlobalSnackBar.show(context, state.message);
+        }),
+      ],
+      child: BlocBuilder<ProfileBloc, ProfileState>(
+        builder: (context, state) {
           final shouldBeWarning =
               state is ProfileAuthenticated && state.profile.passwordIsExpired;
 
           return Scaffold(
-              backgroundColor: context.colors.primary,
-              appBar: AppBar(
-                titleSpacing: 0,
-                title: Row(
-                  children: [
-                    TextButton(
-                      onPressed: () {
-                        context.goNamed('home');
-                      },
-                      child: Row(
-                        children: [
-                          AppLogo(size: 50),
-                          SizedBox(width: 10),
-                          Text('Really',
-                              style: context.typographies.headingSmall
-                                  .copyWith(color: context.colors.background)),
-                          Text(
-                            'Stick',
+            backgroundColor: context.colors.primary,
+            appBar: AppBar(
+              titleSpacing: 0,
+              title: Row(
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      context.goNamed('home');
+                    },
+                    child: Row(
+                      children: [
+                        AppLogo(size: 50),
+                        SizedBox(width: 10),
+                        Text('Really',
                             style: context.typographies.headingSmall
-                                .copyWith(color: context.colors.hint),
-                          ),
-                        ],
-                      ),
+                                .copyWith(color: context.colors.background)),
+                        Text(
+                          'Stick',
+                          style: context.typographies.headingSmall
+                              .copyWith(color: context.colors.hint),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                backgroundColor: context.colors.primary,
-                actions: [
-                  if (state.profile != null)
-                    TextButton(
-                      onPressed: () {
-                        context.goNamed('profile');
-                      },
-                      child: Text(
-                        AppLocalizations.of(context)!
-                            .hello(state.profile!.username),
-                        style: context.typographies.body
-                            .copyWith(color: context.colors.textOnPrimary),
-                      ),
-                    )
+                  ),
                 ],
               ),
-              body: Row(
-                children: [
-                  if (isLargeScreen) ...[
-                    Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            context.colors.primary,
-                            context.colors.secondary
-                          ],
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                        ),
-                      ),
-                      child: NavigationRail(
-                        backgroundColor: Colors.transparent,
-                        indicatorColor: context.colors.background,
-                        useIndicator: true,
-                        unselectedLabelTextStyle: TextStyle(
-                          color: context.colors.textOnPrimary,
-                          height: 1.5,
-                        ),
-                        selectedLabelTextStyle: TextStyle(
-                          color: context.colors.textOnPrimary,
-                          height: 1.5,
-                        ),
-                        selectedIconTheme:
-                            IconThemeData(color: context.colors.primary),
-                        unselectedIconTheme:
-                            IconThemeData(color: context.colors.textOnPrimary),
-                        selectedIndex: _calculateSelectedIndex(context),
-                        onDestinationSelected: onItemTapped,
-                        labelType: NavigationRailLabelType.all,
-                        destinations: <NavigationRailDestination>[
-                          NavigationRailDestination(
-                            icon: Icon(Icons.check_circle_outline),
-                            selectedIcon: Icon(
-                              Icons.check_circle,
-                            ),
-                            label: Text(
-                              AppLocalizations.of(context)!.habits,
-                            ),
-                          ),
-                          NavigationRailDestination(
-                            icon: Icon(Icons.flag_outlined),
-                            selectedIcon: Icon(Icons.flag),
-                            label: Text(
-                              AppLocalizations.of(context)!.challenges,
-                            ),
-                          ),
-                          NavigationRailDestination(
-                            icon: Icon(Icons.message_outlined),
-                            selectedIcon: Icon(Icons.message),
-                            label: Text(
-                              AppLocalizations.of(context)!.messages,
-                            ),
-                          ),
-                          NavigationRailDestination(
-                            icon: IconWithWarning(
-                                iconData: Icons.person_outline,
-                                shouldBeWarning: shouldBeWarning),
-                            selectedIcon: IconWithWarning(
-                              iconData: Icons.person,
-                              shouldBeWarning: shouldBeWarning,
-                            ),
-                            label: Text(
-                              AppLocalizations.of(context)!.profile,
-                            ),
-                          ),
+              backgroundColor: context.colors.primary,
+              actions: [
+                if (state.profile != null)
+                  TextButton(
+                    onPressed: () {
+                      context.goNamed('profile');
+                    },
+                    child: Text(
+                      AppLocalizations.of(context)!
+                          .hello(state.profile!.username),
+                      style: context.typographies.body
+                          .copyWith(color: context.colors.textOnPrimary),
+                    ),
+                  )
+              ],
+            ),
+            body: Row(
+              children: [
+                if (isLargeScreen) ...[
+                  Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          context.colors.primary,
+                          context.colors.secondary
                         ],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
                       ),
                     ),
-                  ],
-                  isLargeScreen
-                      ? Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(16.0),
-                                topRight: Radius.zero,
-                                bottomLeft: Radius.zero,
-                                bottomRight: Radius.zero,
-                              ),
-                              color: context.colors.background,
-                            ),
-                            clipBehavior: Clip.antiAlias,
-                            child: child,
+                    child: NavigationRail(
+                      backgroundColor: Colors.transparent,
+                      indicatorColor: context.colors.background,
+                      useIndicator: true,
+                      unselectedLabelTextStyle: TextStyle(
+                        color: context.colors.textOnPrimary,
+                        height: 1.5,
+                      ),
+                      selectedLabelTextStyle: TextStyle(
+                        color: context.colors.textOnPrimary,
+                        height: 1.5,
+                      ),
+                      selectedIconTheme:
+                          IconThemeData(color: context.colors.primary),
+                      unselectedIconTheme:
+                          IconThemeData(color: context.colors.textOnPrimary),
+                      selectedIndex: _calculateSelectedIndex(context),
+                      onDestinationSelected: onItemTapped,
+                      labelType: NavigationRailLabelType.all,
+                      destinations: <NavigationRailDestination>[
+                        NavigationRailDestination(
+                          icon: Icon(Icons.check_circle_outline),
+                          selectedIcon: Icon(
+                            Icons.check_circle,
                           ),
-                        )
-                      : Expanded(
+                          label: Text(
+                            AppLocalizations.of(context)!.habits,
+                          ),
+                        ),
+                        NavigationRailDestination(
+                          icon: Icon(Icons.flag_outlined),
+                          selectedIcon: Icon(Icons.flag),
+                          label: Text(
+                            AppLocalizations.of(context)!.challenges,
+                          ),
+                        ),
+                        NavigationRailDestination(
+                          icon: Icon(Icons.message_outlined),
+                          selectedIcon: Icon(Icons.message),
+                          label: Text(
+                            AppLocalizations.of(context)!.messages,
+                          ),
+                        ),
+                        NavigationRailDestination(
+                          icon: IconWithWarning(
+                              iconData: Icons.person_outline,
+                              shouldBeWarning: shouldBeWarning),
+                          selectedIcon: IconWithWarning(
+                            iconData: Icons.person,
+                            shouldBeWarning: shouldBeWarning,
+                          ),
+                          label: Text(
+                            AppLocalizations.of(context)!.profile,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+                isLargeScreen
+                    ? Expanded(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(16.0),
+                              topRight: Radius.zero,
+                              bottomLeft: Radius.zero,
+                              bottomRight: Radius.zero,
+                            ),
+                            color: context.colors.background,
+                          ),
+                          clipBehavior: Clip.antiAlias,
                           child: child,
                         ),
-                ],
-              ),
-              bottomNavigationBar: isLargeScreen
-                  ? null
-                  : NavigationBarTheme(
-                      data: NavigationBarThemeData(
-                        iconTheme:
-                            WidgetStateProperty.resolveWith<IconThemeData>(
-                          (Set<WidgetState> states) =>
-                              states.contains(WidgetState.selected)
-                                  ? IconThemeData(color: context.colors.primary)
-                                  : IconThemeData(
-                                      color: context.colors.textOnPrimary),
-                        ),
-                        labelTextStyle:
-                            WidgetStateProperty.resolveWith<TextStyle>(
-                          (Set<WidgetState> states) =>
-                              TextStyle(color: context.colors.textOnPrimary),
-                        ),
+                      )
+                    : Expanded(
+                        child: child,
                       ),
+              ],
+            ),
+            bottomNavigationBar: isLargeScreen
+                ? null
+                : NavigationBarTheme(
+                    data: NavigationBarThemeData(
+                      iconTheme: WidgetStateProperty.resolveWith<IconThemeData>(
+                        (Set<WidgetState> states) =>
+                            states.contains(WidgetState.selected)
+                                ? IconThemeData(color: context.colors.primary)
+                                : IconThemeData(
+                                    color: context.colors.textOnPrimary),
+                      ),
+                      labelTextStyle:
+                          WidgetStateProperty.resolveWith<TextStyle>(
+                        (Set<WidgetState> states) =>
+                            TextStyle(color: context.colors.textOnPrimary),
+                      ),
+                    ),
+                    child: Container(
+                      color: context.colors.background,
                       child: Container(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                context.colors.primary,
-                                context.colors.secondary
-                              ],
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              context.colors.primary,
+                              context.colors.secondary
+                            ],
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                          ),
+                          borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(16),
+                            topLeft: Radius.circular(16),
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black38,
+                              spreadRadius: 0,
+                              blurRadius: 10,
                             ),
+                          ],
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(30.0),
+                            topRight: Radius.circular(30.0),
                           ),
                           child: NavigationBar(
                             backgroundColor: Colors.transparent,
@@ -272,8 +289,14 @@ class RootScreen extends StatelessWidget {
                                 label: AppLocalizations.of(context)!.profile,
                               ),
                             ],
-                          )),
-                    ));
-        }));
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+          );
+        },
+      ),
+    );
   }
 }

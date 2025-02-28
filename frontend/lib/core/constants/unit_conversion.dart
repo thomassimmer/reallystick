@@ -1,6 +1,6 @@
 import 'package:reallystick/features/habits/domain/entities/unit.dart';
 
-double normalizeUnit(double value, String unitId, Map<String, Unit> units) {
+int normalizeUnit(int value, String unitId, Map<String, Unit> units) {
   final unit = units[unitId];
   if (unit == null) return value; // Default: no conversion
 

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:reallystick/core/ui/extensions.dart';
 
 class AnalyticsCarouselWidget extends StatelessWidget {
+  final Color habitColor;
+
+  const AnalyticsCarouselWidget({required this.habitColor});
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -39,8 +42,8 @@ class AnalyticsCarouselWidget extends StatelessWidget {
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      context.colors.primary.withAlpha(100),
-                      context.colors.secondary.withAlpha(100)
+                      habitColor.withAlpha(100),
+                      habitColor.withBlue(100).withAlpha(100)
                     ],
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,

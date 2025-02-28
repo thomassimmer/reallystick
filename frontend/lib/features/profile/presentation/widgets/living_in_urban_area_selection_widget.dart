@@ -30,7 +30,7 @@ class LivingInUrbanAreaSelectionWidget extends StatelessWidget {
       onChanged: (value) {
         final newProfile = profile;
         newProfile.livesInUrbanArea =
-            value == null ? null : value == AppLocalizations.of(context)!.yes;
+            value == null ? null : value == true.toString();
         updateProfile(context, newProfile);
       },
     );

@@ -36,6 +36,32 @@ class DailyTrackingCarouselWidget extends StatefulWidget {
 
 class DailyTrackingCarouselWidgetState
     extends State<DailyTrackingCarouselWidget> {
+  ScrollController scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Ensure that the scroll happens after layout is complete
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Check if the controller has clients and if the scroll position is at the top
+      if (scrollController.hasClients &&
+          scrollController.position.minScrollExtent ==
+              scrollController.offset) {
+        Future.delayed(Duration(milliseconds: 50), () {
+          scrollController.jumpTo(scrollController.position.maxScrollExtent);
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    // Dispose the scrollController when the widget is disposed
+    scrollController.dispose();
+    super.dispose();
+  }
+
   void _openDailyTrackings({required DateTime datetime}) {
     showModalBottomSheet(
       context: context,
@@ -64,22 +90,18 @@ class DailyTrackingCarouselWidgetState
 
   @override
   Widget build(BuildContext context) {
-    final scrollController = ScrollController();
-
     final profileState = context.watch<ProfileBloc>().state;
     final userLocale = profileState.profile!.locale;
 
     // Calculate available screen width and determine how many days to display
-    final screenWidth = MediaQuery.of(context).size.width;
     const dayBoxWidth = 25.0; // Fixed width for each datetime box
-    const dayBoxSpacing = 10.0; // Spacing between boxes
-    final maxBoxes = (screenWidth / (dayBoxWidth + dayBoxSpacing)).floor();
+    const numberOfBoxes = 100;
 
     // Calculate the last days
     final today = DateTime.now();
     final lastDays = List.generate(
-      maxBoxes,
-      (index) => today.subtract(Duration(days: maxBoxes - 1 - index)),
+      numberOfBoxes,
+      (index) => today.subtract(Duration(days: numberOfBoxes - 1 - index)),
     );
 
     final habitState = context.read<HabitBloc>().state;
@@ -95,8 +117,7 @@ class DailyTrackingCarouselWidgetState
                 (sum, tracking) =>
                     sum +
                     normalizeUnit(
-                      (tracking.quantityOfSet * tracking.quantityPerSet)
-                          as double,
+                      tracking.quantityOfSet * tracking.quantityPerSet,
                       tracking.unitId,
                       habitState.units,
                     ),
@@ -111,40 +132,38 @@ class DailyTrackingCarouselWidgetState
           ? aggregatedQuantities.values.reduce((a, b) => a < b ? a : b)
           : 0.0;
 
-      // Ensure the scroll starts at the end
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        scrollController.jumpTo(scrollController.position.maxScrollExtent);
-      });
-
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (widget.displayTitle)
             Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Row(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(
-                    Icons.bar_chart,
-                    size: 30,
-                  ),
-                  SizedBox(width: 10),
-                  Text(
-                    AppLocalizations.of(context)!.dailyTracking,
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(width: 30),
-                  Column(
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      SizedBox(height: 5),
-                      LastActivityWidget(
-                          habitDailyTrackings: widget.habitDailyTrackings,
-                          userLocale: userLocale),
+                      Icon(
+                        Icons.bar_chart,
+                        size: 30,
+                      ),
+                      SizedBox(width: 10),
+                      Text(
+                        AppLocalizations.of(context)!.dailyTracking,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ],
-                  )
+                  ),
+                  SizedBox(
+                      height: 10), // Add space between title and other content
+                  LastActivityWidget(
+                    habitDailyTrackings: widget.habitDailyTrackings,
+                    userLocale: userLocale,
+                  ),
                 ],
               ),
             ),
