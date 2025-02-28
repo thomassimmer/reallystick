@@ -14,6 +14,8 @@ pub struct HabitDailyTracking {
     pub quantity_per_set: i32,
     pub quantity_of_set: i32,
     pub unit_id: Uuid,
+    pub weight: i32,
+    pub weight_unit_id: Uuid,
 }
 
 #[allow(non_snake_case)]
@@ -27,6 +29,8 @@ pub struct HabitDailyTrackingData {
     pub quantity_per_set: i32,
     pub quantity_of_set: i32,
     pub unit_id: Uuid,
+    pub weight: i32,
+    pub weight_unit_id: Uuid,
 }
 
 impl HabitDailyTracking {
@@ -39,6 +43,8 @@ impl HabitDailyTracking {
             quantity_of_set: self.quantity_of_set,
             quantity_per_set: self.quantity_per_set,
             unit_id: self.unit_id,
+            weight: self.weight,
+            weight_unit_id: self.weight_unit_id,
         }
     }
 }

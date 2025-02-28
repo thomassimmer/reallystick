@@ -13,6 +13,7 @@ import 'package:reallystick/features/habits/presentation/blocs/habit/habit_state
 import 'package:reallystick/features/habits/presentation/blocs/habit_daily_tracking_creation/habit_daily_tracking_creation_bloc.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit_daily_tracking_creation/habit_daily_tracking_creation_events.dart';
 import 'package:reallystick/features/habits/presentation/helpers/translations.dart';
+import 'package:reallystick/features/habits/presentation/helpers/units.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
 
@@ -31,22 +32,33 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
   String? _selectedUnitId;
   int? _quantityPerSet;
   int _quantityOfSet = 1;
+  int _weight = 0;
+  String? _selectedWeightUnitId;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    final habitState = context.watch<HabitBloc>().state;
+    if (_selectedHabitId == null) {
+      // Only initialize if it's not already set
 
-    if (habitState is HabitsLoaded) {
-      final habit = habitState.habits[widget.habitId];
+      final habitState = context.watch<HabitBloc>().state;
 
-      setState(() {
-        _selectedHabitId = widget.habitId;
-        _selectedUnitId = habit?.unitIds
-            .where((unitId) => habitState.units.containsKey(unitId))
-            .first;
-      });
+      if (habitState is HabitsLoaded) {
+        final habit = habitState.habits[widget.habitId];
+
+        setState(() {
+          _selectedHabitId = widget.habitId;
+          _selectedUnitId = habit?.unitIds
+              .where((unitId) => habitState.units.containsKey(unitId))
+              .first;
+          _selectedWeightUnitId = habitState.units.values
+              .where((unit) =>
+                  getRightTranslationFromJson(unit.shortName, 'en') == 'kg')
+              .firstOrNull
+              ?.id;
+        });
+      }
     }
   }
 
@@ -70,6 +82,13 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
     habitDailyTrackingFormBloc.add(
       HabitDailyTrackingCreationFormUnitChangedEvent(_selectedUnitId ?? ""),
     );
+    habitDailyTrackingFormBloc.add(
+      HabitDailyTrackingCreationFormWeightChangedEvent(_weight),
+    );
+    habitDailyTrackingFormBloc.add(
+      HabitDailyTrackingCreationFormWeightUnitIdChangedEvent(
+          _selectedWeightUnitId ?? ""),
+    );
 
     // Allow time for the validation states to update
     Future.delayed(
@@ -82,6 +101,8 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
             quantityOfSet: _quantityOfSet,
             quantityPerSet: _quantityPerSet ?? 0,
             unitId: _selectedUnitId!,
+            weight: _weight,
+            weightUnitId: _selectedWeightUnitId!,
           );
           if (mounted) {
             context.read<HabitBloc>().add(newHabitDailyTrackingEvent);
@@ -158,17 +179,29 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
         },
       );
 
-      final shouldDisplayQuantityOfSet = _selectedHabitId != null &&
-          habits[_selectedHabitId] != null &&
-          habitState.habitCategories[habits[_selectedHabitId]!.categoryId] !=
-              null &&
-          getRightTranslationFromJson(
-                habitState
-                    .habitCategories[habits[_selectedHabitId]!.categoryId]!
-                    .name,
-                'en',
-              ) ==
-              'Sport';
+      final displayWeightErrorMessage = context.select(
+        (HabitDailyTrackingCreationFormBloc bloc) {
+          final error = bloc.state.weight.displayError;
+          return error != null
+              ? getTranslatedMessage(context, ErrorMessage(error.messageKey))
+              : null;
+        },
+      );
+
+      final displayWeightUnitErrorMessage = context.select(
+        (HabitDailyTrackingCreationFormBloc bloc) {
+          final error = bloc.state.weightUnitId.displayError;
+          return error != null
+              ? getTranslatedMessage(context, ErrorMessage(error.messageKey))
+              : null;
+        },
+      );
+
+      final shouldDisplaySportSpecificInputsResult =
+          shouldDisplaySportSpecificInputs(
+              habits[_selectedHabitId], habitState.habitCategories);
+
+      final weightUnits = getWeightUnits(habitState.units);
 
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -308,7 +341,7 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
               Expanded(
                 child: CustomTextField(
                   keyboardType: TextInputType.number,
-                  label: shouldDisplayQuantityOfSet
+                  label: shouldDisplaySportSpecificInputsResult
                       ? AppLocalizations.of(context)!.quantityPerSet
                       : AppLocalizations.of(context)!.quantity,
                   onChanged: (value) {
@@ -369,29 +402,78 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
 
           const SizedBox(height: 16),
 
-          // Quantity of Sets (only for sport habits)
-          if (shouldDisplayQuantityOfSet)
+          // Quantity of Sets (only for sport habits, that are not timed)
+          if (shouldDisplaySportSpecificInputsResult) ...[
+            CustomTextField(
+              keyboardType: TextInputType.number,
+              label: AppLocalizations.of(context)!.quantityOfSet,
+              onChanged: (value) {
+                setState(() {
+                  _quantityOfSet = int.tryParse(value) ?? 1;
+                });
+                BlocProvider.of<HabitDailyTrackingCreationFormBloc>(context)
+                    .add(
+                        HabitDailyTrackingCreationFormQuantityOfSetChangedEvent(
+                            int.tryParse(value)));
+              },
+              errorText: displayQuantityOfSetErrorMessage,
+            ),
+            SizedBox(height: 16),
             Row(
               children: [
                 Expanded(
                   child: CustomTextField(
+                    initialValue: _weight.toString(),
                     keyboardType: TextInputType.number,
-                    label: AppLocalizations.of(context)!.quantityOfSet,
+                    label: AppLocalizations.of(context)!.weight,
                     onChanged: (value) {
                       setState(() {
-                        _quantityOfSet = int.tryParse(value) ?? 1;
+                        _weight = int.tryParse(value) ?? 0;
+                      });
+                      BlocProvider.of<HabitDailyTrackingCreationFormBloc>(
+                              context)
+                          .add(HabitDailyTrackingCreationFormWeightChangedEvent(
+                              int.tryParse(value) ?? 0));
+                    },
+                    errorText: displayWeightErrorMessage,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: CustomDropdownButtonFormField(
+                    value: _selectedWeightUnitId,
+                    items: weightUnits.map((unit) {
+                      return DropdownMenuItem(
+                        value: unit.id,
+                        child: Text(
+                          getRightTranslationForUnitFromJson(
+                            unit.longName,
+                            _weight,
+                            userLocale,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedWeightUnitId = value;
                       });
                       BlocProvider.of<HabitDailyTrackingCreationFormBloc>(
                               context)
                           .add(
-                              HabitDailyTrackingCreationFormQuantityOfSetChangedEvent(
-                                  int.tryParse(value)));
+                        HabitDailyTrackingCreationFormWeightUnitIdChangedEvent(
+                            value ?? ""),
+                      );
                     },
-                    errorText: displayQuantityOfSetErrorMessage,
+                    label: AppLocalizations.of(context)!.weightUnit,
+                    errorText: displayWeightUnitErrorMessage,
                   ),
                 ),
               ],
             ),
+          ],
 
           const SizedBox(height: 16),
 

@@ -64,10 +64,24 @@ pub async fn update_habit_daily_tracking(
         }
     }
 
+    match get_unit_by_id(&mut transaction, body.weight_unit_id).await {
+        Ok(r) => {
+            if r.is_none() {
+                return HttpResponse::NotFound().json(AppError::UnitNotFound.to_response());
+            }
+        }
+        Err(e) => {
+            eprintln!("Error: {}", e);
+            return HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response());
+        }
+    }
+
     habit_daily_tracking.datetime = body.datetime;
     habit_daily_tracking.quantity_per_set = body.quantity_per_set;
     habit_daily_tracking.quantity_of_set = body.quantity_of_set;
     habit_daily_tracking.unit_id = body.unit_id;
+    habit_daily_tracking.weight = body.weight;
+    habit_daily_tracking.weight_unit_id = body.weight_unit_id;
 
     let update_habit_daily_tracking_result =
         habit_daily_tracking::update_habit_daily_tracking(&mut transaction, &habit_daily_tracking)

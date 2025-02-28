@@ -19,7 +19,7 @@ String getRightTranslationFromJson(
 
 String _getPluralizationKey(int number) {
   // Determine the pluralization key based on the duration
-  if (number == 1) {
+  if (number == 1 || number == 0) {
     return "one";
   } else if (number < 5) {
     return "few";

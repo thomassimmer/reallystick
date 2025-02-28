@@ -5,6 +5,7 @@ import 'package:reallystick/core/validators/habit.dart';
 import 'package:reallystick/core/validators/quantity_of_set.dart';
 import 'package:reallystick/core/validators/quantity_per_set.dart';
 import 'package:reallystick/core/validators/unit.dart';
+import 'package:reallystick/core/validators/weight.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit_daily_tracking_creation/habit_daily_tracking_creation_events.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit_daily_tracking_creation/habit_daily_tracking_creation_states.dart';
 
@@ -19,6 +20,9 @@ class HabitDailyTrackingCreationFormBloc extends Bloc<
         _quantityOfSetChanged);
     on<HabitDailyTrackingCreationFormUnitChangedEvent>(_unitChanged);
     on<HabitDailyTrackingCreationFormDateTimeChangedEvent>(_datetimeChanged);
+    on<HabitDailyTrackingCreationFormWeightChangedEvent>(_weightChanged);
+    on<HabitDailyTrackingCreationFormWeightUnitIdChangedEvent>(
+        _weightUnitChanged);
   }
 
   Future<void> _habitChanged(
@@ -35,6 +39,8 @@ class HabitDailyTrackingCreationFormBloc extends Bloc<
           state.quantityPerSet,
           state.unitId,
           state.datetime,
+          state.weight,
+          state.weightUnitId,
         ]),
       ),
     );
@@ -53,7 +59,9 @@ class HabitDailyTrackingCreationFormBloc extends Bloc<
           state.quantityOfSet,
           state.unitId,
           state.datetime,
-          state.habitId
+          state.habitId,
+          state.weight,
+          state.weightUnitId,
         ]),
       ),
     );
@@ -72,7 +80,9 @@ class HabitDailyTrackingCreationFormBloc extends Bloc<
           state.quantityPerSet,
           state.unitId,
           state.datetime,
-          state.habitId
+          state.habitId,
+          state.weight,
+          state.weightUnitId,
         ]),
       ),
     );
@@ -92,6 +102,8 @@ class HabitDailyTrackingCreationFormBloc extends Bloc<
           state.quantityPerSet,
           state.habitId,
           state.datetime,
+          state.weight,
+          state.weightUnitId,
         ]),
       ),
     );
@@ -107,6 +119,50 @@ class HabitDailyTrackingCreationFormBloc extends Bloc<
         datetime: datetime,
         isValid: Formz.validate([
           datetime,
+          state.quantityOfSet,
+          state.quantityPerSet,
+          state.habitId,
+          state.unitId,
+          state.weight,
+          state.weightUnitId,
+        ]),
+      ),
+    );
+  }
+
+  Future<void> _weightChanged(
+      HabitDailyTrackingCreationFormWeightChangedEvent event,
+      Emitter emit) async {
+    final weight = WeightValidator.dirty(event.weight);
+
+    emit(
+      state.copyWith(
+        weight: weight,
+        isValid: Formz.validate([
+          weight,
+          state.datetime,
+          state.quantityOfSet,
+          state.quantityPerSet,
+          state.habitId,
+          state.unitId,
+          state.weightUnitId,
+        ]),
+      ),
+    );
+  }
+
+  Future<void> _weightUnitChanged(
+      HabitDailyTrackingCreationFormWeightUnitIdChangedEvent event,
+      Emitter emit) async {
+    final weightUnitId = UnitValidator.dirty(event.weightUnitId);
+
+    emit(
+      state.copyWith(
+        weightUnitId: weightUnitId,
+        isValid: Formz.validate([
+          weightUnitId,
+          state.weight,
+          state.datetime,
           state.quantityOfSet,
           state.quantityPerSet,
           state.habitId,

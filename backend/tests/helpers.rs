@@ -93,6 +93,11 @@ async fn configure_database(config: &DatabaseSettings) {
         .expect("Failed to connect to Postgres");
     let result = create_user(&mut connection, new_user.clone()).await;
 
+    connection
+        .execute(r#"DELETE from units;"#)
+        .await
+        .expect("Failed to create database.");
+
     if let Err(e) = result {
         eprintln!("{}", e);
     }

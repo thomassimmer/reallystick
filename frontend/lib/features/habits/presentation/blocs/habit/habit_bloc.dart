@@ -378,6 +378,8 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
       quantityOfSet: event.quantityOfSet,
       quantityPerSet: event.quantityPerSet,
       unitId: event.unitId,
+      weight: event.weight,
+      weightUnitId: event.weightUnitId,
     );
 
     resultCreateHabitDailyTrackingUsecase.fold(
@@ -426,6 +428,8 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
       quantityOfSet: event.quantityOfSet,
       quantityPerSet: event.quantityPerSet,
       unitId: event.unitId,
+      weight: event.weight,
+      weightUnitId: event.weightUnitId,
     );
 
     resultUpdateHabitDailyTrackingUsecase.fold(

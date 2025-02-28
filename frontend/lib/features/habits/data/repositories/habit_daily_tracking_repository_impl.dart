@@ -65,6 +65,8 @@ class HabitDailyTrackingRepositoryImpl implements HabitDailyTrackingRepository {
     required int quantityPerSet,
     required int quantityOfSet,
     required String unitId,
+    required int weight,
+    required String weightUnitId,
   }) async {
     try {
       final habitDailyTrackingDataModel = await remoteDataSource
@@ -74,6 +76,8 @@ class HabitDailyTrackingRepositoryImpl implements HabitDailyTrackingRepository {
         quantityPerSet: quantityPerSet,
         quantityOfSet: quantityOfSet,
         unitId: unitId,
+        weight: weight,
+        weightUnitId: weightUnitId,
       ));
 
       return Right(habitDailyTrackingDataModel.toDomain());
@@ -111,6 +115,8 @@ class HabitDailyTrackingRepositoryImpl implements HabitDailyTrackingRepository {
     required int quantityPerSet,
     required int quantityOfSet,
     required String unitId,
+    required int weight,
+    required String weightUnitId,
   }) async {
     try {
       final habitDailyTrackingDataModel =
@@ -121,6 +127,8 @@ class HabitDailyTrackingRepositoryImpl implements HabitDailyTrackingRepository {
           quantityPerSet: quantityPerSet,
           quantityOfSet: quantityOfSet,
           unitId: unitId,
+          weight: weight,
+          weightUnitId: weightUnitId,
         ),
       );
 

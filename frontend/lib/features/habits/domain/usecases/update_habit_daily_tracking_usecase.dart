@@ -14,6 +14,8 @@ class UpdateHabitDailyTrackingUsecase {
     required int quantityPerSet,
     required int quantityOfSet,
     required String unitId,
+    required int weight,
+    required String weightUnitId,
   }) async {
     return await habitDailyTrackingRepository.updateHabitDailyTracking(
       habitDailyTrackingId: habitDailyTrackingId,
@@ -21,6 +23,8 @@ class UpdateHabitDailyTrackingUsecase {
       quantityPerSet: quantityPerSet,
       quantityOfSet: quantityOfSet,
       unitId: unitId,
+      weight: weight,
+      weightUnitId: weightUnitId,
     );
   }
 }

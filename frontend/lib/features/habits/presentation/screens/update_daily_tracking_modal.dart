@@ -14,6 +14,7 @@ import 'package:reallystick/features/habits/presentation/blocs/habit/habit_state
 import 'package:reallystick/features/habits/presentation/blocs/habit_daily_tracking_update/habit_daily_tracking_update_bloc.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit_daily_tracking_update/habit_daily_tracking_update_events.dart';
 import 'package:reallystick/features/habits/presentation/helpers/translations.dart';
+import 'package:reallystick/features/habits/presentation/helpers/units.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
 
@@ -32,17 +33,39 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
   String? _selectedUnitId;
   int? _quantityPerSet;
   int _quantityOfSet = 1;
+  int _weight = 0;
+  String? _selectedWeightUnitId;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    setState(() {
-      _selectedUnitId = widget.habitDailyTracking.unitId;
-      _selectedDateTime = widget.habitDailyTracking.datetime;
-      _quantityOfSet = widget.habitDailyTracking.quantityOfSet;
-      _quantityPerSet = widget.habitDailyTracking.quantityPerSet;
-    });
+    final habitState = context.watch<HabitBloc>().state;
+
+    if (habitState is HabitsLoaded) {
+      final weightUnits = getWeightUnits(habitState.units);
+
+      // Set weightUnitId to something else than "No unit" (was set by default during the migration)
+      final newSelectedWeightUnitId = weightUnits
+              .where(
+                  (unit) => unit.id == widget.habitDailyTracking.weightUnitId)
+              .firstOrNull
+              ?.id ??
+          weightUnits
+              .where((unit) =>
+                  getRightTranslationFromJson(unit.shortName, 'en') == 'kg')
+              .firstOrNull
+              ?.id;
+
+      setState(() {
+        _selectedUnitId = widget.habitDailyTracking.unitId;
+        _selectedDateTime = widget.habitDailyTracking.datetime;
+        _quantityOfSet = widget.habitDailyTracking.quantityOfSet;
+        _quantityPerSet = widget.habitDailyTracking.quantityPerSet;
+        _weight = widget.habitDailyTracking.weight;
+        _selectedWeightUnitId = newSelectedWeightUnitId;
+      });
+    }
   }
 
   void deleteHabitDailyTracking() {
@@ -72,6 +95,13 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
     habitDailyTrackingFormBloc.add(
       HabitDailyTrackingUpdateFormUnitChangedEvent(_selectedUnitId ?? ""),
     );
+    habitDailyTrackingFormBloc.add(
+      HabitDailyTrackingUpdateFormWeightChangedEvent(_weight),
+    );
+    habitDailyTrackingFormBloc.add(
+      HabitDailyTrackingUpdateFormWeightUnitIdChangedEvent(
+          _selectedWeightUnitId ?? ""),
+    );
 
     // Allow time for the validation states to update
     Future.delayed(
@@ -84,6 +114,8 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
             quantityOfSet: _quantityOfSet,
             quantityPerSet: _quantityPerSet ?? 0,
             unitId: _selectedUnitId!,
+            weight: _weight,
+            weightUnitId: _selectedWeightUnitId!,
           );
           if (mounted) {
             context.read<HabitBloc>().add(newHabitDailyTrackingEvent);
@@ -141,20 +173,30 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
         },
       );
 
-      final shouldDisplayQuantityOfSet =
-          habits[widget.habitDailyTracking.habitId] != null &&
-              habitState.habitCategories[
-                      habits[widget.habitDailyTracking.habitId]!.categoryId] !=
-                  null &&
-              getRightTranslationFromJson(
-                    habitState
-                        .habitCategories[
-                            habits[widget.habitDailyTracking.habitId]!
-                                .categoryId]!
-                        .name,
-                    'en',
-                  ) ==
-                  'Sport';
+      final displayWeightErrorMessage = context.select(
+        (HabitDailyTrackingUpdateFormBloc bloc) {
+          final error = bloc.state.weight.displayError;
+          return error != null
+              ? getTranslatedMessage(context, ErrorMessage(error.messageKey))
+              : null;
+        },
+      );
+
+      final displayWeightUnitErrorMessage = context.select(
+        (HabitDailyTrackingUpdateFormBloc bloc) {
+          final error = bloc.state.weightUnitId.displayError;
+          return error != null
+              ? getTranslatedMessage(context, ErrorMessage(error.messageKey))
+              : null;
+        },
+      );
+
+      final habit = habitState.habits[widget.habitDailyTracking.habitId]!;
+
+      final shouldDisplaySportSpecificInputsResult =
+          shouldDisplaySportSpecificInputs(habit, habitState.habitCategories);
+
+      final weightUnits = getWeightUnits(habitState.units);
 
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -278,7 +320,7 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
                 child: CustomTextField(
                   initialValue: _quantityPerSet.toString(),
                   keyboardType: TextInputType.number,
-                  label: shouldDisplayQuantityOfSet
+                  label: shouldDisplaySportSpecificInputsResult
                       ? AppLocalizations.of(context)!.quantityPerSet
                       : AppLocalizations.of(context)!.quantity,
                   onChanged: (value) {
@@ -337,28 +379,75 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
           const SizedBox(height: 16),
 
           // Quantity of Sets (only for sport habits)
-          if (shouldDisplayQuantityOfSet)
+          if (shouldDisplaySportSpecificInputsResult) ...[
+            CustomTextField(
+              initialValue: _quantityOfSet.toString(),
+              keyboardType: TextInputType.number,
+              label: AppLocalizations.of(context)!.quantityOfSet,
+              onChanged: (value) {
+                setState(() {
+                  _quantityOfSet = int.tryParse(value) ?? 1;
+                });
+                BlocProvider.of<HabitDailyTrackingUpdateFormBloc>(context).add(
+                    HabitDailyTrackingUpdateFormQuantityOfSetChangedEvent(
+                        int.tryParse(value)));
+              },
+              errorText: displayQuantityOfSetErrorMessage,
+            ),
+            const SizedBox(height: 16),
             Row(
               children: [
                 Expanded(
                   child: CustomTextField(
-                    initialValue: _quantityOfSet.toString(),
+                    initialValue: _weight.toString(),
                     keyboardType: TextInputType.number,
-                    label: AppLocalizations.of(context)!.quantityOfSet,
+                    label: AppLocalizations.of(context)!.weight,
                     onChanged: (value) {
                       setState(() {
-                        _quantityOfSet = int.tryParse(value) ?? 1;
+                        _weight = int.tryParse(value) ?? 0;
+                      });
+                      BlocProvider.of<HabitDailyTrackingUpdateFormBloc>(context)
+                          .add(HabitDailyTrackingUpdateFormWeightChangedEvent(
+                              int.tryParse(value) ?? 0));
+                    },
+                    errorText: displayWeightErrorMessage,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: CustomDropdownButtonFormField(
+                    value: _selectedWeightUnitId,
+                    items: weightUnits.map((unit) {
+                      return DropdownMenuItem(
+                        value: unit.id,
+                        child: Text(
+                          getRightTranslationForUnitFromJson(
+                            unit.longName,
+                            _weight,
+                            userLocale,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedWeightUnitId = value;
                       });
                       BlocProvider.of<HabitDailyTrackingUpdateFormBloc>(context)
                           .add(
-                              HabitDailyTrackingUpdateFormQuantityOfSetChangedEvent(
-                                  int.tryParse(value)));
+                        HabitDailyTrackingUpdateFormWeightUnitIdChangedEvent(
+                            value ?? ""),
+                      );
                     },
-                    errorText: displayQuantityOfSetErrorMessage,
+                    label: AppLocalizations.of(context)!.weightUnit,
+                    errorText: displayWeightUnitErrorMessage,
                   ),
                 ),
               ],
             ),
+          ],
 
           const SizedBox(height: 16),
 

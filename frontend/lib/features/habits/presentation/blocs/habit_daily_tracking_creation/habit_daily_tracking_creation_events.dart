@@ -58,3 +58,24 @@ class HabitDailyTrackingCreationFormDateTimeChangedEvent
   @override
   List<Object?> get props => [datetime];
 }
+
+class HabitDailyTrackingCreationFormWeightChangedEvent
+    extends HabitDailyTrackingCreationEvent {
+  final int weight;
+
+  const HabitDailyTrackingCreationFormWeightChangedEvent(this.weight);
+
+  @override
+  List<Object?> get props => [weight];
+}
+
+class HabitDailyTrackingCreationFormWeightUnitIdChangedEvent
+    extends HabitDailyTrackingCreationEvent {
+  final String weightUnitId;
+
+  const HabitDailyTrackingCreationFormWeightUnitIdChangedEvent(
+      this.weightUnitId);
+
+  @override
+  List<Object?> get props => [weightUnitId];
+}

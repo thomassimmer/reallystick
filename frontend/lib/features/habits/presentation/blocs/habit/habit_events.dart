@@ -113,6 +113,8 @@ class CreateHabitDailyTrackingEvent extends HabitEvent {
   final int quantityPerSet;
   final int quantityOfSet;
   final String unitId;
+  final int weight;
+  final String weightUnitId;
 
   const CreateHabitDailyTrackingEvent({
     required this.habitId,
@@ -120,6 +122,8 @@ class CreateHabitDailyTrackingEvent extends HabitEvent {
     required this.quantityPerSet,
     required this.quantityOfSet,
     required this.unitId,
+    required this.weight,
+    required this.weightUnitId,
   });
 
   @override
@@ -138,6 +142,8 @@ class UpdateHabitDailyTrackingEvent extends HabitEvent {
   final int quantityPerSet;
   final int quantityOfSet;
   final String unitId;
+  final int weight;
+  final String weightUnitId;
 
   const UpdateHabitDailyTrackingEvent({
     required this.habitDailyTrackingId,
@@ -145,6 +151,8 @@ class UpdateHabitDailyTrackingEvent extends HabitEvent {
     required this.quantityPerSet,
     required this.quantityOfSet,
     required this.unitId,
+    required this.weight,
+    required this.weightUnitId,
   });
 
   @override

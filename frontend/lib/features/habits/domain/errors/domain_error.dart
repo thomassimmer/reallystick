@@ -79,3 +79,13 @@ class MissingDateTimeError implements DomainError {
   @override
   final String messageKey = 'missingDateTimeError';
 }
+
+class WeightIsNullError implements DomainError {
+  @override
+  final String messageKey = 'weightIsNullError';
+}
+
+class WeightIsNegativeError implements DomainError {
+  @override
+  final String messageKey = 'weightIsNegativeError';
+}

@@ -7,7 +7,8 @@ pub async fn get_habit_daily_tracking_by_id(
     conn: &mut PgConnection,
     habit_daily_tracking_id: Uuid,
 ) -> Result<Option<HabitDailyTracking>, sqlx::Error> {
-    let row = sqlx::query!(
+    sqlx::query_as!(
+        HabitDailyTracking,
         r#"
         SELECT *
         from habit_daily_trackings
@@ -16,28 +17,15 @@ pub async fn get_habit_daily_tracking_by_id(
         habit_daily_tracking_id,
     )
     .fetch_optional(conn)
-    .await?;
-
-    // Map raw rows into `HabitDailyTracking`
-    let result = row.map(|row| HabitDailyTracking {
-        id: row.id,
-        user_id: row.user_id,
-        habit_id: row.habit_id,
-        datetime: row.datetime,
-        created_at: row.created_at,
-        quantity_per_set: row.quantity_per_set,
-        quantity_of_set: row.quantity_of_set,
-        unit_id: row.unit_id,
-    });
-
-    Ok(result)
+    .await
 }
 
 pub async fn get_habit_daily_trackings_for_user(
     conn: &mut PgConnection,
     user_id: Uuid,
 ) -> Result<Vec<HabitDailyTracking>, sqlx::Error> {
-    let rows = sqlx::query!(
+    sqlx::query_as!(
+        HabitDailyTracking,
         r#"
         SELECT *
         FROM habit_daily_trackings
@@ -46,24 +34,7 @@ pub async fn get_habit_daily_trackings_for_user(
         user_id
     )
     .fetch_all(conn)
-    .await?;
-
-    // Map raw rows into `HabitDailyTracking`
-    let result = rows
-        .into_iter()
-        .map(|row| HabitDailyTracking {
-            id: row.id,
-            user_id: row.user_id,
-            habit_id: row.habit_id,
-            datetime: row.datetime,
-            created_at: row.created_at,
-            quantity_per_set: row.quantity_per_set,
-            quantity_of_set: row.quantity_of_set,
-            unit_id: row.unit_id,
-        })
-        .collect::<Vec<HabitDailyTracking>>();
-
-    Ok(result)
+    .await
 }
 
 pub async fn update_habit_daily_tracking(
@@ -78,13 +49,17 @@ pub async fn update_habit_daily_tracking(
             datetime = $1,
             quantity_per_set = $2,
             quantity_of_set = $3,
-            unit_id = $4
-        WHERE id = $5
+            unit_id = $4,
+            weight = $5,
+            weight_unit_id = $6
+        WHERE id = $7
         "#,
         habit_daily_tracking.datetime,
         habit_daily_tracking.quantity_per_set,
         habit_daily_tracking.quantity_of_set,
         habit_daily_tracking.unit_id,
+        habit_daily_tracking.weight,
+        habit_daily_tracking.weight_unit_id,
         habit_daily_tracking.id
     )
     .execute(conn)
@@ -106,9 +81,11 @@ pub async fn create_habit_daily_tracking(
             created_at,
             quantity_per_set,
             quantity_of_set,
-            unit_id
+            unit_id,
+            weight,
+            weight_unit_id
         )
-        VALUES ( $1, $2, $3, $4, $5, $6, $7, $8 )
+        VALUES ( $1, $2, $3, $4, $5, $6, $7, $8, $9, $10 )
         "#,
         habit_daily_tracking.id,
         habit_daily_tracking.user_id,
@@ -118,6 +95,8 @@ pub async fn create_habit_daily_tracking(
         habit_daily_tracking.quantity_per_set,
         habit_daily_tracking.quantity_of_set,
         habit_daily_tracking.unit_id,
+        habit_daily_tracking.weight,
+        habit_daily_tracking.weight_unit_id
     )
     .execute(conn)
     .await

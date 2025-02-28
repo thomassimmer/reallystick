@@ -3,12 +3,16 @@ class HabitDailyTrackingUpdateRequestModel {
   final int quantityPerSet;
   final int quantityOfSet;
   final String unitId;
+  final int weight;
+  final String weightUnitId;
 
   const HabitDailyTrackingUpdateRequestModel({
     required this.datetime,
     required this.quantityPerSet,
     required this.quantityOfSet,
     required this.unitId,
+    required this.weight,
+    required this.weightUnitId,
   });
 
   Map<String, dynamic> toJson() {
@@ -17,6 +21,8 @@ class HabitDailyTrackingUpdateRequestModel {
       'quantity_per_set': quantityPerSet,
       'quantity_of_set': quantityOfSet,
       'unit_id': unitId,
+      'weight': weight,
+      'weight_unit_id': weightUnitId,
     };
   }
 }
@@ -27,6 +33,8 @@ class HabitDailyTrackingCreateRequestModel {
   final int quantityPerSet;
   final int quantityOfSet;
   final String unitId;
+  final int weight;
+  final String weightUnitId;
 
   const HabitDailyTrackingCreateRequestModel({
     required this.habitId,
@@ -34,6 +42,8 @@ class HabitDailyTrackingCreateRequestModel {
     required this.quantityPerSet,
     required this.quantityOfSet,
     required this.unitId,
+    required this.weight,
+    required this.weightUnitId,
   });
 
   Map<String, dynamic> toJson() {
@@ -43,6 +53,8 @@ class HabitDailyTrackingCreateRequestModel {
       'quantity_per_set': quantityPerSet,
       'quantity_of_set': quantityOfSet,
       'unit_id': unitId,
+      'weight': weight,
+      'weight_unit_id': weightUnitId,
     };
   }
 }

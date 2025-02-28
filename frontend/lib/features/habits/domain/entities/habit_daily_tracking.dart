@@ -6,6 +6,8 @@ class HabitDailyTracking {
   int quantityPerSet;
   int quantityOfSet;
   String unitId;
+  int weight;
+  String weightUnitId;
 
   HabitDailyTracking({
     required this.id,
@@ -15,5 +17,7 @@ class HabitDailyTracking {
     required this.quantityPerSet,
     required this.quantityOfSet,
     required this.unitId,
+    required this.weight,
+    required this.weightUnitId,
   });
 }

@@ -40,6 +40,8 @@ pub async fn user_creates_a_habit_daily_tracking(
             "quantity_per_set": 10,
             "quantity_of_set": 3,
             "unit_id": unit_id,
+            "weight": 0,
+            "weight_unit_id": unit_id
         }))
         .to_request();
     let response = test::call_service(&app, req).await;
@@ -73,6 +75,8 @@ pub async fn user_updates_a_habit_daily_tracking(
             "quantity_per_set": 10,
             "quantity_of_set": 2,
             "unit_id": unit_id,
+            "weight": 0,
+            "weight_unit_id": unit_id
         }))
         .to_request();
     let response = test::call_service(&app, req).await;

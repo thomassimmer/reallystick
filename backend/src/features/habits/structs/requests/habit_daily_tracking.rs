@@ -19,6 +19,8 @@ pub struct HabitDailyTrackingUpdateRequest {
     pub quantity_per_set: i32,
     pub quantity_of_set: i32,
     pub unit_id: Uuid,
+    pub weight: i32,
+    pub weight_unit_id: Uuid,
 }
 
 #[derive(Deserialize)]
@@ -28,4 +30,6 @@ pub struct HabitDailyTrackingCreateRequest {
     pub quantity_per_set: i32,
     pub quantity_of_set: i32,
     pub unit_id: Uuid,
+    pub weight: i32,
+    pub weight_unit_id: Uuid,
 }

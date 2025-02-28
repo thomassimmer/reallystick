@@ -199,6 +199,19 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
             },
         ),
         (
+            "pound",
+            Unit {
+                id: Uuid::new_v4(),
+                short_name: json!(HashMap::from([("en", "lb"), ("fr", "lb")])).to_string(),
+                long_name: json!(HashMap::from([
+                    ("en", HashMap::from([("one", "pound"), ("other", "pounds")])),
+                    ("fr", HashMap::from([("one", "livre"), ("other", "livres")]))
+                ]))
+                .to_string(),
+                created_at: Utc::now(),
+            },
+        ),
+        (
             "kcal",
             Unit {
                 id: Uuid::new_v4(),
@@ -612,6 +625,8 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
             quantity_of_set: 1,
             quantity_per_set: 1,
             unit_id: units.get("no_unit").unwrap().id,
+            weight: 0,
+            weight_unit_id: units.get("no_unit").unwrap().id,
         },
         HabitDailyTracking {
             id: Uuid::new_v4(),
@@ -622,6 +637,8 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
             quantity_of_set: 1,
             quantity_per_set: 1,
             unit_id: units.get("no_unit").unwrap().id,
+            weight: 0,
+            weight_unit_id: units.get("no_unit").unwrap().id,
         },
         HabitDailyTracking {
             id: Uuid::new_v4(),
@@ -632,6 +649,8 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
             quantity_of_set: 1,
             quantity_per_set: 1,
             unit_id: units.get("hour").unwrap().id,
+            weight: 0,
+            weight_unit_id: units.get("no_unit").unwrap().id,
         },
         HabitDailyTracking {
             id: Uuid::new_v4(),
@@ -642,6 +661,8 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
             quantity_of_set: 30,
             quantity_per_set: 1,
             unit_id: units.get("minute").unwrap().id,
+            weight: 0,
+            weight_unit_id: units.get("no_unit").unwrap().id,
         },
         HabitDailyTracking {
             id: Uuid::new_v4(),
@@ -652,6 +673,8 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
             quantity_of_set: 2,
             quantity_per_set: 1,
             unit_id: units.get("hour").unwrap().id,
+            weight: 0,
+            weight_unit_id: units.get("no_unit").unwrap().id,
         },
         HabitDailyTracking {
             id: Uuid::new_v4(),
@@ -662,6 +685,8 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
             quantity_of_set: 70,
             quantity_per_set: 1,
             unit_id: units.get("kilogram").unwrap().id,
+            weight: 0,
+            weight_unit_id: units.get("no_unit").unwrap().id,
         },
         HabitDailyTracking {
             id: Uuid::new_v4(),
@@ -672,6 +697,8 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
             quantity_of_set: 71,
             quantity_per_set: 1,
             unit_id: units.get("kilogram").unwrap().id,
+            weight: 0,
+            weight_unit_id: units.get("no_unit").unwrap().id,
         },
         HabitDailyTracking {
             id: Uuid::new_v4(),
@@ -682,6 +709,8 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
             quantity_of_set: 10,
             quantity_per_set: 4,
             unit_id: units.get("no_unit").unwrap().id,
+            weight: 0,
+            weight_unit_id: units.get("no_unit").unwrap().id,
         },
         HabitDailyTracking {
             id: Uuid::new_v4(),
@@ -692,6 +721,8 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
             quantity_of_set: 7,
             quantity_per_set: 5,
             unit_id: units.get("no_unit").unwrap().id,
+            weight: 0,
+            weight_unit_id: units.get("no_unit").unwrap().id,
         },
         HabitDailyTracking {
             id: Uuid::new_v4(),
@@ -702,6 +733,8 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
             quantity_of_set: 10,
             quantity_per_set: 5,
             unit_id: units.get("no_unit").unwrap().id,
+            weight: 0,
+            weight_unit_id: units.get("no_unit").unwrap().id,
         },
     ];
 

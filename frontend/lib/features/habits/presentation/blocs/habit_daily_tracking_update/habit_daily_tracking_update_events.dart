@@ -48,3 +48,23 @@ class HabitDailyTrackingUpdateFormDateTimeChangedEvent
   @override
   List<Object?> get props => [datetime];
 }
+
+class HabitDailyTrackingUpdateFormWeightChangedEvent
+    extends HabitDailyTrackingUpdateEvent {
+  final int weight;
+
+  const HabitDailyTrackingUpdateFormWeightChangedEvent(this.weight);
+
+  @override
+  List<Object?> get props => [weight];
+}
+
+class HabitDailyTrackingUpdateFormWeightUnitIdChangedEvent
+    extends HabitDailyTrackingUpdateEvent {
+  final String weightUnitId;
+
+  const HabitDailyTrackingUpdateFormWeightUnitIdChangedEvent(this.weightUnitId);
+
+  @override
+  List<Object?> get props => [weightUnitId];
+}

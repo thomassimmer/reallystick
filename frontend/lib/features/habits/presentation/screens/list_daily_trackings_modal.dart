@@ -10,6 +10,7 @@ import 'package:reallystick/features/habits/domain/entities/habit_daily_tracking
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_states.dart';
 import 'package:reallystick/features/habits/presentation/helpers/translations.dart';
+import 'package:reallystick/features/habits/presentation/helpers/units.dart';
 import 'package:reallystick/features/habits/presentation/screens/update_daily_tracking_modal.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
@@ -73,6 +74,7 @@ class ListDailyTrackingsModalState extends State<ListDailyTrackingsModal> {
               hdt.habitId == widget.habitId &&
               hdt.datetime.isSameDate(widget.datetime))
           .toList();
+      final habit = habitState.habits[widget.habitId];
 
       return Padding(
         padding:
@@ -91,6 +93,12 @@ class ListDailyTrackingsModalState extends State<ListDailyTrackingsModal> {
               itemBuilder: (context, index) {
                 final dailyTracking = dailyTrackings[index];
                 final unit = habitState.units[dailyTracking.unitId]!;
+                final weightUnit =
+                    habitState.units[dailyTracking.weightUnitId]!;
+
+                final shouldDisplaySportSpecificInputsResult =
+                    shouldDisplaySportSpecificInputs(
+                        habit, habitState.habitCategories);
 
                 return GestureDetector(
                   onTap: () => _openDailyTrackingUpdateModal(
@@ -115,9 +123,13 @@ class ListDailyTrackingsModalState extends State<ListDailyTrackingsModal> {
                             if (unit.shortName['en'] != '')
                               Text(
                                   " ${getRightTranslationForUnitFromJson(unit.longName, dailyTracking.quantityPerSet, userLocale)}"),
-                            if (dailyTracking.quantityOfSet > 1)
+                            if (shouldDisplaySportSpecificInputsResult) ...[
                               Text(
                                   "     ${AppLocalizations.of(context)!.quantityOfSet} : ${dailyTracking.quantityOfSet}"),
+                              if (weightUnit.shortName['en'] != '')
+                                Text(
+                                    "     ${AppLocalizations.of(context)!.weight} : ${dailyTracking.weight} ${getRightTranslationForUnitFromJson(weightUnit.longName, dailyTracking.weight, userLocale)}"),
+                            ],
                           ],
                         ),
                       ),

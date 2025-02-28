@@ -60,6 +60,18 @@ pub async fn create_habit_daily_tracking(
         }
     }
 
+    match get_unit_by_id(&mut transaction, body.weight_unit_id).await {
+        Ok(r) => {
+            if r.is_none() {
+                return HttpResponse::NotFound().json(AppError::UnitNotFound.to_response());
+            }
+        }
+        Err(e) => {
+            eprintln!("Error: {}", e);
+            return HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response());
+        }
+    }
+
     let habit_daily_tracking = HabitDailyTracking {
         id: Uuid::new_v4(),
         user_id: request_user.id,
@@ -69,6 +81,8 @@ pub async fn create_habit_daily_tracking(
         quantity_per_set: body.quantity_per_set,
         quantity_of_set: body.quantity_of_set,
         unit_id: body.unit_id,
+        weight: body.weight,
+        weight_unit_id: body.weight_unit_id,
     };
 
     let create_habit_daily_tracking_result =

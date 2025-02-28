@@ -14,6 +14,8 @@ abstract class HabitDailyTrackingRepository {
     required int quantityPerSet,
     required int quantityOfSet,
     required String unitId,
+    required int weight,
+    required String weightUnitId,
   });
   Future<Either<DomainError, HabitDailyTracking>> updateHabitDailyTracking({
     required String habitDailyTrackingId,
@@ -21,6 +23,8 @@ abstract class HabitDailyTrackingRepository {
     required int quantityPerSet,
     required int quantityOfSet,
     required String unitId,
+    required int weight,
+    required String weightUnitId,
   });
   Future<Either<DomainError, void>> deleteHabitDailyTracking({
     required String habitDailyTrackingId,
