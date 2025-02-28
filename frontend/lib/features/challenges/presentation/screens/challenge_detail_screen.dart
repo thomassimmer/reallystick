@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:reallystick/core/constants/icons.dart';
 import 'package:reallystick/core/presentation/screens/loading_screen.dart';
 import 'package:reallystick/core/ui/colors.dart';
@@ -14,7 +15,8 @@ import 'package:reallystick/features/challenges/presentation/screens/add_daily_t
 import 'package:reallystick/features/challenges/presentation/screens/challenge_not_found_screen.dart';
 import 'package:reallystick/features/challenges/presentation/screens/duplicate_challenge_modal.dart';
 import 'package:reallystick/features/challenges/presentation/widgets/analytics_carousel_widget.dart';
-import 'package:reallystick/features/challenges/presentation/widgets/daily_tracking_carousel_widget.dart';
+import 'package:reallystick/features/challenges/presentation/widgets/daily_tracking_carousel_with_start_date_widget.dart';
+import 'package:reallystick/features/challenges/presentation/widgets/daily_tracking_carousel_without_start_date_widget.dart';
 import 'package:reallystick/features/challenges/presentation/widgets/list_of_concerned_habits.dart';
 import 'package:reallystick/features/habits/presentation/helpers/translations.dart';
 import 'package:reallystick/features/habits/presentation/screens/color_picker_modal.dart';
@@ -365,8 +367,17 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
                             children: [
                               if (challengeStatistics != null) ...[
                                 Text(
-                                  AppLocalizations.of(context)!.createdBy(
-                                      challengeStatistics.creatorUsername),
+                                  challenge.startDate == null
+                                      ? AppLocalizations.of(context)!.createdBy(
+                                          challengeStatistics.creatorUsername,
+                                        )
+                                      : AppLocalizations.of(context)!
+                                          .createdByStartsOn(
+                                          challengeStatistics.creatorUsername,
+                                          DateFormat.yMMMd(
+                                                  userLocale.toString())
+                                              .format(challenge.startDate!),
+                                        ),
                                   style: TextStyle(
                                       color: context.colors.textOnPrimary),
                                   overflow: TextOverflow.ellipsis,
@@ -395,13 +406,21 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
                     SizedBox(height: 30),
                     if (challenge.creator == profileState.profile.id ||
                         challengeParticipation != null) ...[
-                      DailyTrackingCarouselWidget(
-                        challengeDailyTrackings: challengeDailyTrackings,
-                        challengeColor: challengeColor,
-                        challengeId: widget.challengeId,
-                        canOpenDayBoxes: true,
-                        displayTitle: true,
-                      ),
+                      challenge.startDate != null
+                          ? DailyTrackingCarouselWithStartDateWidget(
+                              challengeDailyTrackings: challengeDailyTrackings,
+                              challengeColor: challengeColor,
+                              challengeId: widget.challengeId,
+                              canOpenDayBoxes: true,
+                              displayTitle: true,
+                            )
+                          : DailyTrackingCarouselWithoutStartDateWidget(
+                              challengeDailyTrackings: challengeDailyTrackings,
+                              challengeColor: challengeColor,
+                              challengeId: widget.challengeId,
+                              canOpenDayBoxes: true,
+                              displayTitle: true,
+                            ),
                       SizedBox(height: 30),
                     ],
                     DiscussionListWidget(

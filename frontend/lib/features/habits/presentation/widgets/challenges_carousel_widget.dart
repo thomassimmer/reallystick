@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:reallystick/core/constants/icons.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_bloc.dart';
@@ -76,7 +77,7 @@ class ChallengesCarouselWidget extends StatelessWidget {
           SizedBox(height: 10),
           if (challenges.isNotEmpty) ...[
             SizedBox(
-              height: 90,
+              height: 95,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemCount: challenges.length,
@@ -141,7 +142,33 @@ class ChallengesCarouselWidget extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            SizedBox(height: 10),
+                            SizedBox(
+                              height: challenge.startDate != null ? 5 : 20,
+                            ),
+                            if (challenge.startDate != null) ...[
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Spacer(),
+                                  SizedBox(
+                                    width: 150,
+                                    child: Text(
+                                      AppLocalizations.of(context)!.startsOn(
+                                        DateFormat.yMMMd(userLocale.toString())
+                                            .format(challenge.startDate!),
+                                      ),
+                                      style: TextStyle(
+                                        color: context.colors.textOnPrimary,
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      textAlign: TextAlign.end,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
@@ -152,14 +179,14 @@ class ChallengesCarouselWidget extends StatelessWidget {
                                 ),
                                 SizedBox(width: 10),
                                 SizedBox(
-                                  width: 130,
+                                  width: 140,
                                   child: Text(
                                     AppLocalizations.of(context)!
                                         .joinedByXPeople(challengeStatistics
                                             .participantsCount),
                                     style: TextStyle(
                                       color: context.colors.textOnPrimary,
-                                      fontSize: 12,
+                                      fontSize: 11,
                                       fontWeight: FontWeight.bold,
                                     ),
                                     overflow: TextOverflow.ellipsis,
@@ -170,10 +197,11 @@ class ChallengesCarouselWidget extends StatelessWidget {
                                   width: 150,
                                   child: Text(
                                     AppLocalizations.of(context)!.createdBy(
-                                        challengeStatistics.creatorUsername),
+                                      challengeStatistics.creatorUsername,
+                                    ),
                                     style: TextStyle(
                                       color: context.colors.textOnPrimary,
-                                      fontSize: 12,
+                                      fontSize: 11,
                                       fontWeight: FontWeight.bold,
                                     ),
                                     textAlign: TextAlign.end,

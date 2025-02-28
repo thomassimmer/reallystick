@@ -68,43 +68,63 @@ class HabitWidget extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.only(right: 16.0),
-                          child: getIconWidget(
-                            iconString: habit.icon,
-                            size: 30,
-                            color: habitColor,
-                          ),
-                        ),
-                        Expanded(
-                          child: Text(
-                            isLargeScreen ? longName : shortName,
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w500,
-                              color: habitColor,
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 16.0),
+                                  child: getIconWidget(
+                                    iconString: habit.icon,
+                                    size: 30,
+                                    color: habitColor,
+                                  ),
+                                ),
+                                Text(
+                                  isLargeScreen ? longName : shortName,
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w500,
+                                    color: habitColor,
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
+                            const SizedBox(height: 8),
+                            LastActivityWidget(
+                              habitDailyTrackings: habitDailyTrackings,
+                              userLocale: userLocale,
+                            ),
+                          ],
                         ),
+                        if (isLargeScreen) ...[
+                          Spacer(),
+                          DailyTrackingCarouselWidget(
+                            habitId: habit.id,
+                            habitDailyTrackings: habitDailyTrackings,
+                            habitColor: habitColor,
+                            canOpenDayBoxes: false,
+                            displayTitle: false,
+                          ),
+                        ],
                       ],
                     ),
-                    const SizedBox(height: 8),
-                    LastActivityWidget(
-                      habitDailyTrackings: habitDailyTrackings,
-                      userLocale: userLocale,
-                    ),
-                    const SizedBox(height: 16),
-                    DailyTrackingCarouselWidget(
-                      habitId: habit.id,
-                      habitDailyTrackings: habitDailyTrackings,
-                      habitColor: habitColor,
-                      canOpenDayBoxes: false,
-                      displayTitle: false,
-                    ),
+                    if (!isLargeScreen) ...[
+                      const SizedBox(height: 16),
+                      DailyTrackingCarouselWidget(
+                        habitId: habit.id,
+                        habitDailyTrackings: habitDailyTrackings,
+                        habitColor: habitColor,
+                        canOpenDayBoxes: false,
+                        displayTitle: false,
+                      ),
+                    ],
                   ],
                 ),
               ),

@@ -66,6 +66,17 @@
       }
     }
   },
+  "createdByStartsOn": "Créé par {creator}, commence le : {startDate}",
+  "@createdByStartsOn": {
+    "placeholders": {
+      "creator": {
+        "type": "String"
+      },
+      "startDate": {
+        "type": "String"
+      }
+    }
+  },
   "createdChallenges": "Mes défis créés",
   "createChallenge": "Créer le défi",
   "createHabit": "Créer l'habitude",
@@ -418,6 +429,14 @@
   "skip": "Passer",
   "startDate": "Date de début",
   "startHabitShort": "Commencer",
+  "startsOn": "Commence le : {startDate}",
+  "@startsOn": {
+    "placeholders": {
+      "startDate": {
+        "type": "String"
+      }
+    }
+  },
   "startTrackingThisHabit": "Commencer à suivre cette habitude",
   "student": "Étudiant",
   "tapToSeeLess": "Voir moins",

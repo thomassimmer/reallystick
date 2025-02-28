@@ -66,6 +66,17 @@
       }
     }
   },
+  "createdByStartsOn": "Created by {creator}, starts on: {startDate}",
+  "@createdByStartsOn": {
+    "placeholders": {
+      "creator": {
+        "type": "String"
+      },
+      "startDate": {
+        "type": "String"
+      }
+    }
+  },
   "createdChallenges": "Challenges I created",
   "createChallenge": "Create challenge",
   "createHabit": "Create habit",
@@ -418,6 +429,14 @@
   "skip": "Skip",
   "startDate": "Start Date",
   "startHabitShort": "Start",
+  "startsOn": "Starts on: {startDate}",
+  "@startsOn": {
+    "placeholders": {
+      "startDate": {
+        "type": "String"
+      }
+    }
+  },
   "startTrackingThisHabit": "Start tracking this habit",
   "student": "Student",
   "tapToSeeLess": "Tap to see less",

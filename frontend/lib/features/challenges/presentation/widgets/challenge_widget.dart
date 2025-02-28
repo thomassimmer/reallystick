@@ -2,14 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:reallystick/core/constants/icons.dart';
+import 'package:reallystick/core/constants/screen_size.dart';
 import 'package:reallystick/core/ui/colors.dart';
 import 'package:reallystick/features/challenges/domain/entities/challenge.dart';
 import 'package:reallystick/features/challenges/domain/entities/challenge_daily_tracking.dart';
 import 'package:reallystick/features/challenges/domain/entities/challenge_participation.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_bloc.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_states.dart';
-import 'package:reallystick/features/challenges/presentation/widgets/daily_tracking_carousel_widget.dart';
+import 'package:reallystick/features/challenges/presentation/widgets/daily_tracking_carousel_with_start_date_widget.dart';
+import 'package:reallystick/features/challenges/presentation/widgets/daily_tracking_carousel_without_start_date_widget.dart';
 import 'package:reallystick/features/habits/presentation/helpers/translations.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 
@@ -44,6 +47,8 @@ class ChallengeWidget extends StatelessWidget {
               AppColorExtension.fromString(challengeParticipation?.color ?? "")
                   .color;
 
+          final bool isLargeScreen = checkIfLargeScreen(context);
+
           return !challenge.deleted
               ? InkWell(
                   onTap: () {
@@ -62,38 +67,86 @@ class ChallengeWidget extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.only(right: 16.0),
-                                child: getIconWidget(
-                                  iconString: challenge.icon,
-                                  size: 30,
-                                  color: challengeColor,
-                                ),
-                              ),
-                              Expanded(
-                                child: Text(
-                                  name,
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w500,
-                                    color: challengeColor,
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 16.0),
+                                        child: getIconWidget(
+                                          iconString: challenge.icon,
+                                          size: 30,
+                                          color: challengeColor,
+                                        ),
+                                      ),
+                                      Text(
+                                        name,
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w500,
+                                          color: challengeColor,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ),
+                                  if (challengeParticipation != null) ...[
+                                    SizedBox(height: 10),
+                                    Text(
+                                      "${AppLocalizations.of(context)!.challengeParticipationStartDate} ${DateFormat.yMMMd().format(challengeParticipation!.startDate)}",
+                                    ),
+                                    SizedBox(height: 20),
+                                  ],
+                                ],
                               ),
+                              if (isLargeScreen) ...[
+                                Spacer(),
+                                challenge.startDate != null
+                                    ? DailyTrackingCarouselWithStartDateWidget(
+                                        challengeId: challenge.id,
+                                        challengeDailyTrackings:
+                                            challengeDailyTrackings,
+                                        challengeColor: challengeColor,
+                                        canOpenDayBoxes: false,
+                                        displayTitle: false,
+                                      )
+                                    : DailyTrackingCarouselWithoutStartDateWidget(
+                                        challengeId: challenge.id,
+                                        challengeDailyTrackings:
+                                            challengeDailyTrackings,
+                                        challengeColor: challengeColor,
+                                        canOpenDayBoxes: false,
+                                        displayTitle: false,
+                                      ),
+                              ],
                             ],
                           ),
-                          const SizedBox(height: 8),
-                          DailyTrackingCarouselWidget(
-                            challengeId: challenge.id,
-                            challengeDailyTrackings: challengeDailyTrackings,
-                            challengeColor: challengeColor,
-                            canOpenDayBoxes: false,
-                            displayTitle: false,
-                          ),
+                          if (!isLargeScreen) ...[
+                            const SizedBox(height: 8),
+                            challenge.startDate != null
+                                ? DailyTrackingCarouselWithStartDateWidget(
+                                    challengeId: challenge.id,
+                                    challengeDailyTrackings:
+                                        challengeDailyTrackings,
+                                    challengeColor: challengeColor,
+                                    canOpenDayBoxes: false,
+                                    displayTitle: false,
+                                  )
+                                : DailyTrackingCarouselWithoutStartDateWidget(
+                                    challengeId: challenge.id,
+                                    challengeDailyTrackings:
+                                        challengeDailyTrackings,
+                                    challengeColor: challengeColor,
+                                    canOpenDayBoxes: false,
+                                    displayTitle: false,
+                                  ),
+                          ],
                         ],
                       ),
                     ),
