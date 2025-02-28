@@ -25,39 +25,41 @@ class AllHabitsScreenState extends State<AllHabitsScreen> {
             habitState is HabitsLoaded) {
           final categories = habitState.habitCategories.values.toList();
 
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16.0,
-                    vertical: 16.0,
+          return Scaffold(
+            body: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0,
+                      vertical: 16.0,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          AppLocalizations.of(context)!.allHabits,
+                          style: context.typographies.heading,
+                        ),
+                      ],
+                    )),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: categories.length,
+                    itemBuilder: (context, index) {
+                      final habitCategory = categories[index];
+                      return HabitCategoryReviewWidget(
+                        habits: habitState.habits.values
+                            .where(
+                                (habit) => habit.categoryId == habitCategory.id)
+                            .toList(),
+                        category: habitCategory,
+                      );
+                    },
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        AppLocalizations.of(context)!.allHabits,
-                        style: context.typographies.heading,
-                      ),
-                    ],
-                  )),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: categories.length,
-                  itemBuilder: (context, index) {
-                    final habitCategory = categories[index];
-                    return HabitCategoryReviewWidget(
-                      habits: habitState.habits.values
-                          .where(
-                              (habit) => habit.categoryId == habitCategory.id)
-                          .toList(),
-                      category: habitCategory,
-                    );
-                  },
                 ),
-              ),
-            ],
+              ],
+            ),
           );
         } else {
           return SizedBox.shrink();
