@@ -1,33 +1,33 @@
 import 'package:equatable/equatable.dart';
-import 'package:reallystick/core/validators/datetime.dart';
 import 'package:reallystick/core/validators/habit.dart';
+import 'package:reallystick/core/validators/habit_daily_tracking_datetime.dart';
 import 'package:reallystick/core/validators/quantity_of_set.dart';
 import 'package:reallystick/core/validators/quantity_per_set.dart';
 import 'package:reallystick/core/validators/unit.dart';
 import 'package:reallystick/core/validators/weight.dart';
 
 final class HabitDailyTrackingCreationFormState extends Equatable {
+  final HabitValidator habitId;
+  final QuantityOfSetValidator quantityOfSet;
+  final QuantityPerSetValidator quantityPerSet;
+  final UnitValidator unitId;
+  final HabitDailyTrackingDatetime datetime;
+  final WeightValidator weight;
+  final UnitValidator weightUnitId;
+  final bool isValid;
+  final String? errorMessage;
+
   const HabitDailyTrackingCreationFormState({
     this.habitId = const HabitValidator.pure(),
     this.quantityOfSet = const QuantityOfSetValidator.pure(),
     this.quantityPerSet = const QuantityPerSetValidator.pure(),
     this.unitId = const UnitValidator.pure(),
-    this.datetime = const DateTimeValidator.pure(),
+    this.datetime = const HabitDailyTrackingDatetime.pure(),
     this.weight = const WeightValidator.pure(),
     this.weightUnitId = const UnitValidator.pure(),
     this.isValid = true,
     this.errorMessage,
   });
-
-  final HabitValidator habitId;
-  final QuantityOfSetValidator quantityOfSet;
-  final QuantityPerSetValidator quantityPerSet;
-  final UnitValidator unitId;
-  final DateTimeValidator datetime;
-  final WeightValidator weight;
-  final UnitValidator weightUnitId;
-  final bool isValid;
-  final String? errorMessage;
 
   @override
   List<Object?> get props => [
@@ -47,7 +47,7 @@ final class HabitDailyTrackingCreationFormState extends Equatable {
     QuantityOfSetValidator? quantityOfSet,
     QuantityPerSetValidator? quantityPerSet,
     UnitValidator? unitId,
-    DateTimeValidator? datetime,
+    HabitDailyTrackingDatetime? datetime,
     WeightValidator? weight,
     UnitValidator? weightUnitId,
     bool? isValid,

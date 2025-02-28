@@ -5,13 +5,13 @@ import 'package:reallystick/features/habits/domain/entities/analytics_card_info.
 class AnalyticsCardWidget extends StatefulWidget {
   final AnalyticsCardInfo analyticsCardInfo;
   final String userLocale;
-  final Color habitColor;
+  final Color color;
 
   const AnalyticsCardWidget({
     Key? key,
     required this.analyticsCardInfo,
     required this.userLocale,
-    required this.habitColor,
+    required this.color,
   }) : super(key: key);
 
   @override
@@ -58,19 +58,19 @@ class _AnalyticsCardWidgetState extends State<AnalyticsCardWidget> {
     return Container(
       width: 350,
       height: _detailsOpen ? null : 130,
-      margin: const EdgeInsets.symmetric(horizontal: 12.0),
+      margin: const EdgeInsets.only(right: 12.0),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            widget.habitColor.withAlpha(100),
-            widget.habitColor.withBlue(100).withAlpha(100)
+            widget.color.withAlpha(100),
+            widget.color.withBlue(100).withAlpha(100)
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         boxShadow: [
           BoxShadow(
-            color: widget.habitColor.withOpacity(0.3),
+            color: widget.color.withOpacity(0.3),
             blurRadius: 10,
             offset: Offset(0, 4),
           ),

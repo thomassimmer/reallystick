@@ -35,9 +35,14 @@ class HabitDescriptionWrongSizeError implements DomainError {
   final String messageKey = 'habitDescriptionWrongSizeError';
 }
 
-class HabitIconNotFoundError implements DomainError {
+class IconNotFoundError implements DomainError {
   @override
-  final String messageKey = 'habitIconNotFoundError';
+  final String messageKey = 'iconNotFoundError';
+}
+
+class IconEmptyError implements DomainError {
+  @override
+  final String messageKey = 'iconEmptyError';
 }
 
 class HabitsNotMergedDomainError implements DomainError {
@@ -80,12 +85,12 @@ class MissingDateTimeError implements DomainError {
   final String messageKey = 'missingDateTimeError';
 }
 
-class WeightIsNullError implements DomainError {
-  @override
-  final String messageKey = 'weightIsNullError';
-}
-
 class WeightIsNegativeError implements DomainError {
   @override
   final String messageKey = 'weightIsNegativeError';
+}
+
+class AtLeastOneTranslationNeededError implements DomainError {
+  @override
+  final String messageKey = 'atLeastOneTranslationNeededError';
 }

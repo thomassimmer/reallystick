@@ -14,6 +14,11 @@ class HabitShortNameValidator extends FormzInput<String, DomainError> {
       return HabitShortNameWrongSizeError();
     }
 
+    // No translation entered
+    if (value == "No translation entered") {
+      return AtLeastOneTranslationNeededError();
+    }
+
     return null;
   }
 }

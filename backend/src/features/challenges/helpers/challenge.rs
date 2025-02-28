@@ -135,8 +135,8 @@ pub async fn delete_challenge_by_id(
     sqlx::query_as!(
         Challenge,
         r#"
-        DELETE
-        from challenges
+        UPDATE challenges
+        SET deleted = true
         WHERE id = $1
         "#,
         challenge_id,

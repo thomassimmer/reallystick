@@ -11,27 +11,25 @@ class ChallengesCarouselWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Row(
-            children: [
-              Icon(
-                Icons.emoji_events,
-                size: 30,
+        Row(
+          children: [
+            Icon(
+              Icons.emoji_events,
+              size: 30,
+              color: habitColor,
+            ),
+            SizedBox(width: 10),
+            Text(
+              AppLocalizations.of(context)!.relatedChallenges,
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
                 color: habitColor,
               ),
-              SizedBox(width: 10),
-              Text(
-                AppLocalizations.of(context)!.relatedChallenges,
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: habitColor,
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
+        SizedBox(height: 10),
         SizedBox(
           height: 100,
           child: ListView.builder(
@@ -40,7 +38,7 @@ class ChallengesCarouselWidget extends StatelessWidget {
             itemBuilder: (context, index) {
               return Container(
                 width: 350,
-                margin: const EdgeInsets.symmetric(horizontal: 8.0),
+                margin: const EdgeInsets.only(right: 8.0),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [

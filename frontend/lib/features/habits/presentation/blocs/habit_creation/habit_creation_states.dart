@@ -1,31 +1,31 @@
 import 'package:equatable/equatable.dart';
+import 'package:reallystick/core/validators/description.dart';
 import 'package:reallystick/core/validators/habit_category.dart';
-import 'package:reallystick/core/validators/habit_description.dart';
-import 'package:reallystick/core/validators/habit_icon.dart';
 import 'package:reallystick/core/validators/habit_long_name.dart';
 import 'package:reallystick/core/validators/habit_short_name.dart';
+import 'package:reallystick/core/validators/icon.dart';
 import 'package:reallystick/core/validators/unit.dart';
 
 final class HabitCreationFormState extends Equatable {
+  final HabitShortNameValidator shortName;
+  final HabitLongNameValidator longName;
+  final DescriptionValidator description;
+  final HabitCategoryValidator habitCategory;
+  final IconValidator icon;
+  final Map<String, UnitValidator> unitIds;
+  final bool isValid;
+  final String? errorMessage;
+
   const HabitCreationFormState({
     this.shortName = const HabitShortNameValidator.pure(),
     this.longName = const HabitLongNameValidator.pure(),
     this.habitCategory = const HabitCategoryValidator.pure(),
-    this.icon = const HabitIconValidator.pure(),
-    this.description = const HabitDescriptionValidator.pure(),
+    this.icon = const IconValidator.pure(),
+    this.description = const DescriptionValidator.pure(),
     this.unitIds = const {},
     this.isValid = true,
     this.errorMessage,
   });
-
-  final HabitShortNameValidator shortName;
-  final HabitLongNameValidator longName;
-  final HabitDescriptionValidator description;
-  final HabitCategoryValidator habitCategory;
-  final HabitIconValidator icon;
-  final Map<String, UnitValidator> unitIds;
-  final bool isValid;
-  final String? errorMessage;
 
   @override
   List<Object?> get props => [
@@ -42,9 +42,9 @@ final class HabitCreationFormState extends Equatable {
   HabitCreationFormState copyWith({
     HabitShortNameValidator? shortName,
     HabitLongNameValidator? longName,
-    HabitDescriptionValidator? description,
+    DescriptionValidator? description,
     HabitCategoryValidator? habitCategory,
-    HabitIconValidator? icon,
+    IconValidator? icon,
     Map<String, UnitValidator>? unitIds,
     bool? isValid,
     String? errorMessage,

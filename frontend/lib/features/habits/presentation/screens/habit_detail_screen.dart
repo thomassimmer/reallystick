@@ -15,7 +15,7 @@ import 'package:reallystick/features/habits/presentation/widgets/add_activity_bu
 import 'package:reallystick/features/habits/presentation/widgets/analytics_carousel_widget.dart';
 import 'package:reallystick/features/habits/presentation/widgets/challenges_carousel_widget.dart';
 import 'package:reallystick/features/habits/presentation/widgets/daily_tracking_carousel_widget.dart';
-import 'package:reallystick/features/habits/presentation/widgets/discussion_list_widget.dart';
+import 'package:reallystick/features/habits/presentation/widgets/habit_discussion_list_widget.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
 
@@ -205,47 +205,44 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
                   ),
             body: RefreshIndicator(
               onRefresh: _pullRefresh,
-              child: Padding(
-                padding: EdgeInsets.all(10),
-                child: ListView(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.symmetric(horizontal: 16),
-                      decoration: BoxDecoration(
-                        color: habitColor.withAlpha(155),
-                        // border: Border.all(width: 1, color: habitColor),
-                        borderRadius: BorderRadius.circular(16.0),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        child: Text(
-                          description,
-                          style: TextStyle(color: Colors.white),
-                        ),
+              child: ListView(
+                children: [
+                  SizedBox(height: 25),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: habitColor.withAlpha(155),
+                      border: Border.all(width: 1, color: habitColor),
+                      borderRadius: BorderRadius.circular(16.0),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Text(
+                        description,
+                        style: TextStyle(color: Colors.white),
                       ),
                     ),
-                    SizedBox(height: 16),
-                    AnalyticsCarouselWidget(
+                  ),
+                  SizedBox(height: 25),
+                  AnalyticsCarouselWidget(
+                    habitColor: habitColor,
+                    habitId: habit.id,
+                  ),
+                  SizedBox(height: 25),
+                  if (habitParticipation != null) ...[
+                    DailyTrackingCarouselWidget(
+                      habitDailyTrackings: habitDailyTrackings,
                       habitColor: habitColor,
-                      habitId: habit.id,
+                      habitId: widget.habitId,
+                      canOpenDayBoxes: true,
+                      displayTitle: true,
                     ),
                     SizedBox(height: 16),
-                    if (habitParticipation != null) ...[
-                      DailyTrackingCarouselWidget(
-                        habitDailyTrackings: habitDailyTrackings,
-                        habitColor: habitColor,
-                        habitId: widget.habitId,
-                        canOpenDayBoxes: true,
-                        displayTitle: true,
-                      ),
-                      SizedBox(height: 16),
-                    ],
-                    ChallengesCarouselWidget(habitColor: habitColor),
-                    SizedBox(height: 16),
-                    HabitDiscussionListWidget(habitColor: habitColor),
-                    SizedBox(height: 64),
                   ],
-                ),
+                  ChallengesCarouselWidget(habitColor: habitColor),
+                  SizedBox(height: 25),
+                  HabitDiscussionListWidget(habitColor: habitColor),
+                  SizedBox(height: 64),
+                ],
               ),
             ),
           );

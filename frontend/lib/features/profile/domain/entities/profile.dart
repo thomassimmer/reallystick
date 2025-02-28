@@ -1,4 +1,5 @@
 class Profile {
+  String id;
   String username;
   String locale;
   String theme;
@@ -22,6 +23,7 @@ class Profile {
   bool? hasChildren;
 
   Profile({
+    required this.id,
     required this.username,
     required this.locale,
     required this.theme,

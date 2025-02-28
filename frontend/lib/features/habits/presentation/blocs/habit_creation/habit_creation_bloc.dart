@@ -1,10 +1,10 @@
 import 'package:bloc/bloc.dart';
 import 'package:formz/formz.dart';
+import 'package:reallystick/core/validators/description.dart';
 import 'package:reallystick/core/validators/habit_category.dart';
-import 'package:reallystick/core/validators/habit_description.dart';
-import 'package:reallystick/core/validators/habit_icon.dart';
 import 'package:reallystick/core/validators/habit_long_name.dart';
 import 'package:reallystick/core/validators/habit_short_name.dart';
+import 'package:reallystick/core/validators/icon.dart';
 import 'package:reallystick/core/validators/unit.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit_creation/habit_creation_events.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit_creation/habit_creation_states.dart';
@@ -79,7 +79,7 @@ class HabitCreationFormBloc
 
   Future<void> _descriptionChanged(
       HabitCreationFormDescriptionChangedEvent event, Emitter emit) async {
-    final description = HabitDescriptionValidator.dirty(event.description);
+    final description = DescriptionValidator.dirty(event.description);
 
     emit(
       state.copyWith(
@@ -98,7 +98,7 @@ class HabitCreationFormBloc
 
   Future<void> _iconChanged(
       HabitCreationFormIconChangedEvent event, Emitter emit) async {
-    final icon = HabitIconValidator.dirty(event.icon);
+    final icon = IconValidator.dirty(event.icon);
 
     emit(
       state.copyWith(

@@ -2,15 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
+import 'package:reallystick/core/constants/icons.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/habits/domain/entities/habit_category.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_events.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_states.dart';
+import 'package:reallystick/features/habits/presentation/helpers/translations.dart';
 import 'package:reallystick/features/habits/presentation/screens/add_daily_tracking_modal.dart';
 import 'package:reallystick/features/habits/presentation/screens/questionnaire_modal.dart';
 import 'package:reallystick/features/habits/presentation/widgets/add_activity_button.dart';
-import 'package:reallystick/features/habits/presentation/widgets/habit_category_widget.dart';
+import 'package:reallystick/features/habits/presentation/widgets/habit_widget.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_events.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
@@ -134,100 +136,132 @@ class HabitsScreenState extends State<HabitsScreen> {
 
             return Scaffold(
               appBar: AppBar(
-                title: Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Text(
-                        AppLocalizations.of(context)!.myHabits,
-                        style: context.typographies.heading,
-                      ),
-                    ),
-                  ],
+                title: Text(
+                  AppLocalizations.of(context)!.myHabits,
+                  style: context.typographies.heading,
                 ),
+                centerTitle: false,
                 actions: [
-                  Padding(
-                    padding: EdgeInsets.all(16),
-                    child: InkWell(
-                      onTap: () {
-                        context.goNamed('habitSearch');
-                      },
-                      child: Icon(
-                        Icons.add_circle_outline,
-                        size: 30,
-                      ),
+                  InkWell(
+                    onTap: () {
+                      context.goNamed('habitSearch');
+                    },
+                    child: Icon(
+                      Icons.add_circle_outline,
+                      size: 30,
                     ),
-                  )
+                  ),
                 ],
               ),
               body: RefreshIndicator(
                 onRefresh: _pullRefresh,
-                child: ListView(
-                  children: [
+                child: CustomScrollView(
+                  slivers: [
                     if (categories.isNotEmpty) ...[
-                      ListView.builder(
-                        shrinkWrap: true, // Prevent it from taking full height
-                        physics: NeverScrollableScrollPhysics(),
-                        itemCount: categories.length,
-                        itemBuilder: (context, index) {
-                          final habitCategory = categories[index];
+                      ...categories.expand((habitCategory) {
+                        final habitParticipations = habitState
+                            .habitParticipations
+                            .where((habitParticipation) =>
+                                habitState.habits[habitParticipation.habitId] !=
+                                    null &&
+                                habitState.habits[habitParticipation.habitId]!
+                                        .categoryId ==
+                                    habitCategory.id)
+                            .toList();
 
-                          final habitParticipations = habitState
-                              .habitParticipations
-                              .where((habitParticipation) =>
-                                  habitState
-                                          .habits[habitParticipation.habitId] !=
-                                      null &&
-                                  habitState.habits[habitParticipation.habitId]!
-                                          .categoryId ==
-                                      habitCategory.id)
-                              .toList();
+                        final habitDailyTrackings = habitState
+                            .habitDailyTrackings
+                            .where((habitDailyTracking) =>
+                                habitState.habits[habitDailyTracking.habitId] !=
+                                    null &&
+                                habitState.habits[habitDailyTracking.habitId]!
+                                        .categoryId ==
+                                    habitCategory.id)
+                            .toList();
 
-                          final habitDailyTrackings = habitState
-                              .habitDailyTrackings
-                              .where((habitDailyTracking) =>
-                                  habitState
-                                          .habits[habitDailyTracking.habitId] !=
-                                      null &&
-                                  habitState.habits[habitDailyTracking.habitId]!
-                                          .categoryId ==
-                                      habitCategory.id)
-                              .toList();
+                        final categoryName = getRightTranslationFromJson(
+                          habitCategory.name,
+                          profileState.profile.locale,
+                        );
 
-                          return HabitCategoryWidget(
-                              habits: habitState.habits,
-                              category: habitCategory,
-                              habitParticipations: habitParticipations,
-                              habitDailyTrackings: habitDailyTrackings);
-                        },
-                      ),
-                    ] else ...[
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
+                        return [
+                          SliverAppBar(
+                            title: Row(
                               children: [
-                                Text(
-                                  AppLocalizations.of(context)!.noHabitsYet,
-                                  textAlign: TextAlign.center,
-                                ),
-                                const SizedBox(height: 24),
-                                ElevatedButton.icon(
-                                  onPressed: () {
-                                    context.goNamed('habitSearch');
-                                  },
-                                  icon: const Icon(Icons.add),
-                                  label: Text(
-                                    AppLocalizations.of(context)!.addANewHabit,
+                                Padding(
+                                    padding: const EdgeInsets.only(right: 16.0),
+                                    child: getIconWidget(
+                                      iconString: habitCategory.icon,
+                                      size: 25,
+                                      color: context.colors.text,
+                                    )),
+                                Expanded(
+                                  child: Text(
+                                    categoryName,
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w500,
+                                    ),
                                   ),
                                 ),
                               ],
                             ),
-                          ],
+                          ),
+                          SliverList(
+                            delegate: SliverChildBuilderDelegate(
+                              (context, index) {
+                                final habitParticipation =
+                                    habitParticipations[index];
+                                final habit = habitState
+                                    .habits[habitParticipation.habitId]!;
+                                final habitDailyTrackingsForThisHabit =
+                                    habitDailyTrackings
+                                        .where((hdt) => hdt.habitId == habit.id)
+                                        .toList();
+
+                                return HabitWidget(
+                                  habit: habit,
+                                  habitParticipation: habitParticipation,
+                                  habitDailyTrackings:
+                                      habitDailyTrackingsForThisHabit,
+                                );
+                              },
+                              childCount: habitParticipations.length,
+                            ),
+                          )
+                        ];
+                      }),
+                    ] else ...[
+                      SliverFillRemaining(
+                        hasScrollBody: false,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    AppLocalizations.of(context)!.noHabitsYet,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  const SizedBox(height: 24),
+                                  ElevatedButton.icon(
+                                    onPressed: () {
+                                      context.goNamed('habitSearch');
+                                    },
+                                    icon: const Icon(Icons.add),
+                                    label: Text(
+                                      AppLocalizations.of(context)!
+                                          .addANewHabit,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ]

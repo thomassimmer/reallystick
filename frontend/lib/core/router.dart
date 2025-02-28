@@ -9,7 +9,11 @@ import 'package:reallystick/features/auth/presentation/screens/recover_account_s
 import 'package:reallystick/features/auth/presentation/screens/recovery_codes_screen.dart';
 import 'package:reallystick/features/auth/presentation/screens/signup_screen.dart';
 import 'package:reallystick/features/auth/presentation/screens/unauthenticated_home_screen.dart';
-import 'package:reallystick/features/challenges/presentation/challenges_screen.dart';
+import 'package:reallystick/features/challenges/presentation/screens/challenge_detail_screen.dart';
+import 'package:reallystick/features/challenges/presentation/screens/challenges_screen.dart';
+import 'package:reallystick/features/challenges/presentation/screens/create_challenge_screen.dart';
+import 'package:reallystick/features/challenges/presentation/screens/search_challenges_screen.dart';
+import 'package:reallystick/features/challenges/presentation/screens/update_challenge_screen.dart';
 import 'package:reallystick/features/habits/presentation/screens/all_habits_screen.dart';
 import 'package:reallystick/features/habits/presentation/screens/create_habit_screen.dart';
 import 'package:reallystick/features/habits/presentation/screens/habit_detail_screen.dart';
@@ -118,6 +122,38 @@ final router = GoRouter(
           path: '/challenges',
           name: 'challenges',
           builder: (context, state) => ChallengesScreen(),
+          routes: [
+            GoRoute(
+              path: 'search',
+              name: 'challengeSearch',
+              builder: (context, state) => SearchChallengesScreen(),
+            ),
+            GoRoute(
+              path: 'create',
+              name: 'createChallenge',
+              builder: (context, state) => CreateChallengeScreen(),
+            ),
+            GoRoute(
+              path: 'update/:challengeId',
+              name: 'updateChallenge',
+              builder: (context, state) {
+                final challengeId = state.pathParameters['challengeId']!;
+
+                return UpdateChallengeScreen(challengeId: challengeId);
+              },
+            ),
+            GoRoute(
+              path: ':challengeId',
+              name: 'challengeDetails',
+              builder: (context, state) {
+                final challengeId = state.pathParameters['challengeId']!;
+
+                return ChallengeDetailsScreen(
+                  challengeId: challengeId,
+                );
+              },
+            ),
+          ],
         ),
         GoRoute(
           path: '/messages',

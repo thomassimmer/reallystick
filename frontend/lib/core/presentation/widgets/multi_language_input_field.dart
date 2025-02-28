@@ -47,7 +47,8 @@ class MultiLanguageInputFieldState extends State<MultiLanguageInputField> {
 
   void _onTextChanged(String languageCode, String value) {
     final updatedTranslations = {
-      for (var entry in controllers.entries) entry.key: entry.value.text,
+      for (var entry in controllers.entries)
+        if (entry.value.text.isNotEmpty) entry.key: entry.value.text,
     };
 
     // Call the callback with the updated map

@@ -1,0 +1,284 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:go_router/go_router.dart';
+import 'package:reallystick/core/constants/icons.dart';
+import 'package:reallystick/core/presentation/screens/loading_screen.dart';
+import 'package:reallystick/core/ui/colors.dart';
+import 'package:reallystick/core/ui/extensions.dart';
+import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_bloc.dart';
+import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_events.dart';
+import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_states.dart';
+import 'package:reallystick/features/challenges/presentation/screens/add_daily_tracking_modal.dart';
+import 'package:reallystick/features/challenges/presentation/screens/challenge_not_found_screen.dart';
+import 'package:reallystick/features/challenges/presentation/widgets/analytics_carousel_widget.dart';
+import 'package:reallystick/features/challenges/presentation/widgets/challenge_discussion_list_widget.dart';
+import 'package:reallystick/features/challenges/presentation/widgets/daily_tracking_carousel_widget.dart';
+import 'package:reallystick/features/habits/presentation/helpers/translations.dart';
+import 'package:reallystick/features/habits/presentation/screens/color_picker_modal.dart';
+import 'package:reallystick/features/habits/presentation/widgets/add_activity_button.dart';
+import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
+import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
+
+class ChallengeDetailsScreen extends StatefulWidget {
+  final String challengeId;
+
+  const ChallengeDetailsScreen({
+    Key? key,
+    required this.challengeId,
+  }) : super(key: key);
+
+  @override
+  ChallengeDetailsScreenState createState() => ChallengeDetailsScreenState();
+}
+
+class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
+  void _showAddDailyTrackingBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      isDismissible: true,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
+      ),
+      constraints: BoxConstraints(
+        maxWidth: 600,
+      ),
+      builder: (BuildContext context) {
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom:
+                MediaQuery.of(context).viewInsets.bottom, // Adjust for keyboard
+            left: 16.0,
+            right: 16.0,
+            top: 16.0,
+          ),
+          child: Wrap(
+            children: [AddDailyTrackingModal(challengeId: widget.challengeId)],
+          ),
+        );
+      },
+    );
+  }
+
+  void _quitChallenge(String challengeParticipationId) {
+    final deleteChallengeParticipationEvent = DeleteChallengeParticipationEvent(
+      challengeParticipationId: challengeParticipationId,
+    );
+    context.read<ChallengeBloc>().add(deleteChallengeParticipationEvent);
+  }
+
+  void _openColorPicker(String challengeParticipationId) async {
+    await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
+      ),
+      constraints: BoxConstraints(
+        maxWidth: 600,
+      ),
+      builder: (BuildContext context) {
+        return ColorPickerModal(
+          onColorSelected: (selectedColor) {
+            final updateChallengeParticipationEvent =
+                UpdateChallengeParticipationEvent(
+              challengeParticipationId: challengeParticipationId,
+              color: selectedColor.toShortString(),
+              startDate: DateTime.now(), // TODO : Modal to create
+            );
+            context
+                .read<ChallengeBloc>()
+                .add(updateChallengeParticipationEvent);
+
+            Navigator.of(context).pop();
+          },
+        );
+      },
+    );
+  }
+
+  void _joinChallenge() {
+    final createChallengeParticipationEvent = CreateChallengeParticipationEvent(
+      challengeId: widget.challengeId,
+      startDate: DateTime.now(), // TODO : Modal to create
+    );
+    context.read<ChallengeBloc>().add(createChallengeParticipationEvent);
+  }
+
+  Future<void> _pullRefresh() async {
+    BlocProvider.of<ChallengeBloc>(context).add(ChallengeInitializeEvent());
+    await Future.delayed(Duration(seconds: 2));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Builder(
+      builder: (context) {
+        final profileState = context.watch<ProfileBloc>().state;
+        final challengeState = context.watch<ChallengeBloc>().state;
+
+        if (profileState is ProfileAuthenticated &&
+            challengeState is ChallengesLoaded) {
+          final userLocale = profileState.profile.locale;
+
+          final challenge = challengeState.challenges[widget.challengeId];
+
+          if (challenge == null) {
+            if (challengeState.notFoundChallenge == widget.challengeId) {
+              return ChallengeNotFoundScreen();
+            } else {
+              context
+                  .read<ChallengeBloc>()
+                  .add(GetChallengeEvent(challengeId: widget.challengeId));
+              return LoadingScreen();
+            }
+          }
+
+          final challengeParticipation = challengeState.challengeParticipations
+              .where((hp) => hp.challengeId == widget.challengeId)
+              .firstOrNull;
+          final challengeDailyTrackings =
+              challengeState.challengeDailyTrackings[widget.challengeId] ?? [];
+
+          final name = getRightTranslationFromJson(
+            challenge.name,
+            userLocale,
+          );
+
+          final description = getRightTranslationFromJson(
+            challenge.description,
+            userLocale,
+          );
+
+          final challengeColor = AppColorExtension.fromString(
+            challengeParticipation != null ? challengeParticipation.color : "",
+          ).color;
+
+          return Scaffold(
+            appBar: AppBar(
+              title: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 16.0),
+                    child: getIconWidget(
+                      iconString: challenge.icon,
+                      size: 30,
+                      color: challengeColor,
+                    ),
+                  ),
+                  SelectableText(
+                    name,
+                    style: TextStyle(color: challengeColor),
+                  ),
+                ],
+              ),
+              actions: [
+                if (challengeParticipation != null)
+                  PopupMenuButton<String>(
+                    color: context.colors.backgroundDark,
+                    onSelected: (value) async {
+                      if (value == 'quit') {
+                        _quitChallenge(challengeParticipation.id);
+                      } else if (value == 'change_color') {
+                        _openColorPicker(challengeParticipation.id);
+                      } else if (value == 'udpate') {
+                        context.goNamed(
+                          'challengeUpdate',
+                          pathParameters: {'challengeId': challenge.id},
+                        );
+                      } else if (value == 'change_color') {
+                        // TODO
+                      }
+                    },
+                    itemBuilder: (BuildContext context) => [
+                      PopupMenuItem(
+                        value: 'quit',
+                        child: Text(
+                            AppLocalizations.of(context)!.quitThisChallenge),
+                      ),
+                      PopupMenuItem(
+                        value: 'change_color',
+                        child: Text(AppLocalizations.of(context)!.changeColor),
+                      ),
+                      if (challenge.creator == profileState.profile.id) ...[
+                        PopupMenuItem(
+                          value: 'update',
+                          child:
+                              Text(AppLocalizations.of(context)!.editChallenge),
+                        ),
+                        PopupMenuItem(
+                          value: 'delete',
+                          child: Text(
+                              AppLocalizations.of(context)!.deleteChallenge),
+                        ),
+                      ]
+                    ],
+                  ),
+              ],
+            ),
+            floatingActionButton: challenge.creator ==
+                        profileState.profile.id &&
+                    challengeParticipation != null
+                ? AddActivityButton(
+                    action: _showAddDailyTrackingBottomSheet,
+                    color: challengeColor,
+                  )
+                : challengeParticipation == null
+                    ? FloatingActionButton.extended(
+                        onPressed: _joinChallenge,
+                        icon: Icon(Icons.login),
+                        label: Text(
+                            AppLocalizations.of(context)!.joinThisChallenge),
+                        backgroundColor: context.colors.primary,
+                        extendedTextStyle: TextStyle(
+                            letterSpacing: 1, fontFamily: 'Montserrat'),
+                      )
+                    : null,
+            body: RefreshIndicator(
+              onRefresh: _pullRefresh,
+              child: ListView(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: challengeColor.withAlpha(155),
+                      borderRadius: BorderRadius.circular(16.0),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Text(
+                        description,
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 25),
+                  AnalyticsCarouselWidget(
+                    challengeColor: challengeColor,
+                    challengeId: challenge.id,
+                  ),
+                  SizedBox(height: 25),
+                  if (challengeParticipation != null) ...[
+                    DailyTrackingCarouselWidget(
+                      challengeDailyTrackings: challengeDailyTrackings,
+                      challengeColor: challengeColor,
+                      challengeId: widget.challengeId,
+                      canOpenDayBoxes: true,
+                      displayTitle: true,
+                    ),
+                    SizedBox(height: 25),
+                  ],
+                  ChallengeDiscussionListWidget(color: challengeColor),
+                  SizedBox(height: 64),
+                ],
+              ),
+            ),
+          );
+        } else {
+          return SizedBox.shrink();
+        }
+      },
+    );
+  }
+}

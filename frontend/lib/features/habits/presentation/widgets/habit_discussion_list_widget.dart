@@ -11,30 +11,27 @@ class HabitDiscussionListWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Row(
-            children: [
-              Icon(
-                Icons.forum,
-                size: 30,
+        Row(
+          children: [
+            Icon(
+              Icons.forum,
+              size: 30,
+              color: habitColor,
+            ),
+            SizedBox(width: 10),
+            Text(
+              AppLocalizations.of(context)!.discussions,
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
                 color: habitColor,
               ),
-              SizedBox(width: 10),
-              Text(
-                AppLocalizations.of(context)!.discussions,
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: habitColor,
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
+        SizedBox(height: 10),
         Container(
           height: 100,
-          margin: const EdgeInsets.symmetric(horizontal: 8.0),
           padding: const EdgeInsets.all(16.0),
           decoration: BoxDecoration(
             gradient: LinearGradient(

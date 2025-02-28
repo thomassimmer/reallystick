@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:reallystick/features/profile/domain/entities/profile.dart';
 
 class ProfileDataModel extends Equatable {
+  final String id;
   final String username;
   final String locale;
   final String theme;
@@ -25,6 +26,7 @@ class ProfileDataModel extends Equatable {
   final bool? hasChildren;
 
   const ProfileDataModel({
+    required this.id,
     required this.username,
     required this.locale,
     required this.theme,
@@ -49,6 +51,7 @@ class ProfileDataModel extends Equatable {
 
   factory ProfileDataModel.fromJson(Map<String, dynamic> json) {
     return ProfileDataModel(
+        id: json['id'] as String,
         username: json['username'] as String,
         locale: json['locale'] as String,
         theme: json['theme'] as String,
@@ -72,6 +75,7 @@ class ProfileDataModel extends Equatable {
   }
 
   Profile toDomain() => Profile(
+        id: id,
         username: username,
         locale: locale,
         theme: theme,
@@ -96,6 +100,7 @@ class ProfileDataModel extends Equatable {
 
   @override
   List<Object?> get props => [
+        id,
         username,
         locale,
         theme,

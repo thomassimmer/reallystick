@@ -1,10 +1,10 @@
 import 'package:bloc/bloc.dart';
 import 'package:formz/formz.dart';
+import 'package:reallystick/core/validators/description.dart';
 import 'package:reallystick/core/validators/habit_category.dart';
-import 'package:reallystick/core/validators/habit_description.dart';
-import 'package:reallystick/core/validators/habit_icon.dart';
 import 'package:reallystick/core/validators/habit_long_name.dart';
 import 'package:reallystick/core/validators/habit_short_name.dart';
+import 'package:reallystick/core/validators/icon.dart';
 import 'package:reallystick/core/validators/unit.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit_review/habit_review_events.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit_review/habit_review_states.dart';
@@ -43,8 +43,13 @@ class HabitReviewFormBloc
       HabitReviewFormShortNameChangedEvent event, Emitter emit) async {
     final Map<String, HabitShortNameValidator> shortNameMap = {};
 
-    for (final entry in event.shortName.entries) {
-      shortNameMap[entry.key] = HabitShortNameValidator.dirty(entry.value);
+    if (event.shortName.entries.isEmpty) {
+      shortNameMap['en'] =
+          HabitShortNameValidator.dirty('No translation entered');
+    } else {
+      for (final entry in event.shortName.entries) {
+        shortNameMap[entry.key] = HabitShortNameValidator.dirty(entry.value);
+      }
     }
 
     emit(
@@ -66,8 +71,13 @@ class HabitReviewFormBloc
       HabitReviewFormLongNameChangedEvent event, Emitter emit) async {
     final Map<String, HabitLongNameValidator> longNameMap = {};
 
-    for (final entry in event.longName.entries) {
-      longNameMap[entry.key] = HabitLongNameValidator.dirty(entry.value);
+    if (event.longName.entries.isEmpty) {
+      longNameMap['en'] =
+          HabitLongNameValidator.dirty('No translation entered');
+    } else {
+      for (final entry in event.longName.entries) {
+        longNameMap[entry.key] = HabitLongNameValidator.dirty(entry.value);
+      }
     }
 
     emit(
@@ -87,10 +97,15 @@ class HabitReviewFormBloc
 
   Future<void> _descriptionChanged(
       HabitReviewFormDescriptionChangedEvent event, Emitter emit) async {
-    final Map<String, HabitDescriptionValidator> descriptionMap = {};
+    final Map<String, DescriptionValidator> descriptionMap = {};
 
-    for (final entry in event.description.entries) {
-      descriptionMap[entry.key] = HabitDescriptionValidator.dirty(entry.value);
+    if (event.description.entries.isEmpty) {
+      descriptionMap['en'] =
+          DescriptionValidator.dirty('No translation entered');
+    } else {
+      for (final entry in event.description.entries) {
+        descriptionMap[entry.key] = DescriptionValidator.dirty(entry.value);
+      }
     }
 
     emit(
@@ -110,7 +125,7 @@ class HabitReviewFormBloc
 
   Future<void> _iconChanged(
       HabitReviewFormIconChangedEvent event, Emitter emit) async {
-    final icon = HabitIconValidator.dirty(event.icon);
+    final icon = IconValidator.dirty(event.icon);
 
     emit(
       state.copyWith(

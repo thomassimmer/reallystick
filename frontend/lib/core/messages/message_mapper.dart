@@ -66,8 +66,10 @@ String getTranslatedMessage(BuildContext context, Message message) {
         return localizations.habitLongNameWrongSizeError;
       case 'habitDescriptionWrongSizeError':
         return localizations.habitDescriptionWrongSizeError;
-      case 'habitIconNotFoundError':
-        return localizations.habitIconNotFoundError;
+      case 'iconNotFoundError':
+        return localizations.iconNotFoundError;
+      case 'iconEmptyError':
+        return localizations.iconEmptyError;
       case 'habitsNotMergedError':
         return localizations.habitsNotMergedError;
       case 'unitNotFoundError':
@@ -84,6 +86,20 @@ String getTranslatedMessage(BuildContext context, Message message) {
         return localizations.dateTimeIsInTheFutureError;
       case 'missingDateTimeError':
         return localizations.missingDateTimeError;
+      case 'weightIsNegativeError':
+        return localizations.weightIsNegativeError;
+      case 'atLeastOneTranslationNeededError':
+        return localizations.atLeastOneTranslationNeededError;
+      case 'dateTimeIsInThePastError':
+        return localizations.dateTimeIsInThePastError;
+      case 'challengeNameWrongSizeError':
+        return localizations.challengeNameWrongSizeError;
+      case 'challengeDailyTrackingNotFoundError':
+        return localizations.challengeDailyTrackingNotFoundError;
+      case 'challengeParticipationNotFoundError':
+        return localizations.challengeParticipationNotFoundError;
+      case 'challengeNotFoundError':
+        return localizations.challengeNotFoundError;
 
       // Profile
       case 'passwordNotExpiredError':

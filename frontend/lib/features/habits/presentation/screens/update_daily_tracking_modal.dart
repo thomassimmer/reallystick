@@ -164,7 +164,7 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
         },
       );
 
-      final displayQuantityDateTimeErrorMessage = context.select(
+      final displayDateTimeErrorMessage = context.select(
         (HabitDailyTrackingUpdateFormBloc bloc) {
           final error = bloc.state.datetime.displayError;
           return error != null
@@ -297,12 +297,12 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
             ],
           ),
 
-          if (displayQuantityDateTimeErrorMessage != null)
+          if (displayDateTimeErrorMessage != null)
             Padding(
               padding:
                   const EdgeInsets.symmetric(horizontal: 22.0, vertical: 8),
               child: Text(
-                displayQuantityDateTimeErrorMessage,
+                displayDateTimeErrorMessage,
                 style: TextStyle(
                   color: context.colors.error,
                   fontSize: 12.0,

@@ -18,6 +18,28 @@ import 'package:reallystick/features/auth/domain/usecases/recover_account_withou
 import 'package:reallystick/features/auth/domain/usecases/signup_usecase.dart';
 import 'package:reallystick/features/auth/domain/usecases/validate_one_time_password_use_case.dart';
 import 'package:reallystick/features/auth/domain/usecases/verify_one_time_password_use_case.dart';
+import 'package:reallystick/features/challenges/data/repositories/challenge_daily_tracking_repository_impl.dart';
+import 'package:reallystick/features/challenges/data/repositories/challenge_participation_repository_impl.dart';
+import 'package:reallystick/features/challenges/data/repositories/challenge_repository_impl.dart';
+import 'package:reallystick/features/challenges/data/repositories/challenge_statistic_repository_impl.dart';
+import 'package:reallystick/features/challenges/data/sources/remote_data_sources.dart';
+import 'package:reallystick/features/challenges/domain/repositories/challenge_daily_tracking_repository.dart';
+import 'package:reallystick/features/challenges/domain/repositories/challenge_participation_repository.dart';
+import 'package:reallystick/features/challenges/domain/repositories/challenge_repository.dart';
+import 'package:reallystick/features/challenges/domain/repositories/challenge_statistic_repository.dart';
+import 'package:reallystick/features/challenges/domain/usecases/create_challenge_daily_tracking_usecase.dart';
+import 'package:reallystick/features/challenges/domain/usecases/create_challenge_participation_usecase.dart';
+import 'package:reallystick/features/challenges/domain/usecases/create_challenge_usecase.dart';
+import 'package:reallystick/features/challenges/domain/usecases/delete_challenge_daily_tracking_usecase.dart';
+import 'package:reallystick/features/challenges/domain/usecases/delete_challenge_participation_usecase.dart';
+import 'package:reallystick/features/challenges/domain/usecases/get_challenge_daily_trackings_usecase.dart';
+import 'package:reallystick/features/challenges/domain/usecases/get_challenge_participations_usecase.dart';
+import 'package:reallystick/features/challenges/domain/usecases/get_challenge_statistics_usecase.dart';
+import 'package:reallystick/features/challenges/domain/usecases/get_challenges_usecase%20copy.dart';
+import 'package:reallystick/features/challenges/domain/usecases/get_challenges_usecase.dart';
+import 'package:reallystick/features/challenges/domain/usecases/update_challenge_daily_tracking_usecase.dart';
+import 'package:reallystick/features/challenges/domain/usecases/update_challenge_participation_usecase.dart';
+import 'package:reallystick/features/challenges/domain/usecases/update_challenge_usecase.dart';
 import 'package:reallystick/features/habits/data/repositories/habit_category_repository_impl.dart';
 import 'package:reallystick/features/habits/data/repositories/habit_daily_tracking_repository_impl.dart';
 import 'package:reallystick/features/habits/data/repositories/habit_participation_repository_impl.dart';
@@ -82,6 +104,8 @@ void setupServiceLocator() {
   sl.registerSingleton<ProfileLocalDataSource>(ProfileLocalDataSource());
   sl.registerSingleton<HabitRemoteDataSource>(
       HabitRemoteDataSource(apiClient: apiClient, baseUrl: baseUrl));
+  sl.registerSingleton<ChallengeRemoteDataSource>(
+      ChallengeRemoteDataSource(apiClient: apiClient, baseUrl: baseUrl));
 
   // Repositories
   sl.registerSingleton<AuthRepository>(
@@ -103,6 +127,17 @@ void setupServiceLocator() {
       UnitRepositoryImpl(remoteDataSource: sl<HabitRemoteDataSource>()));
   sl.registerSingleton<HabitStatisticRepository>(HabitStatisticRepositoryImpl(
       remoteDataSource: sl<HabitRemoteDataSource>()));
+  sl.registerSingleton<ChallengeRepository>(ChallengeRepositoryImpl(
+      remoteDataSource: sl<ChallengeRemoteDataSource>()));
+  sl.registerSingleton<ChallengeParticipationRepository>(
+      ChallengeParticipationRepositoryImpl(
+          remoteDataSource: sl<ChallengeRemoteDataSource>()));
+  sl.registerSingleton<ChallengeDailyTrackingRepository>(
+      ChallengeDailyTrackingRepositoryImpl(
+          remoteDataSource: sl<ChallengeRemoteDataSource>()));
+  sl.registerSingleton<ChallengeStatisticRepository>(
+      ChallengeStatisticRepositoryImpl(
+          remoteDataSource: sl<ChallengeRemoteDataSource>()));
 
   // Use cases
   sl.registerSingleton<LoginUseCase>(LoginUseCase(sl<AuthRepository>()));
@@ -175,4 +210,38 @@ void setupServiceLocator() {
       UpdateHabitParticipationUsecase(sl<HabitParticipationRepository>()));
   sl.registerSingleton<DeleteHabitParticipationUsecase>(
       DeleteHabitParticipationUsecase(sl<HabitParticipationRepository>()));
+  sl.registerSingleton<GetChallengesUsecase>(
+      GetChallengesUsecase(sl<ChallengeRepository>()));
+  sl.registerSingleton<GetChallengeUsecase>(
+      GetChallengeUsecase(sl<ChallengeRepository>()));
+  sl.registerSingleton<GetChallengeParticipationsUsecase>(
+      GetChallengeParticipationsUsecase(
+          sl<ChallengeParticipationRepository>()));
+  sl.registerSingleton<GetChallengeDailyTrackingsUsecase>(
+      GetChallengeDailyTrackingsUsecase(
+          sl<ChallengeDailyTrackingRepository>()));
+  sl.registerSingleton<GetChallengeStatisticsUsecase>(
+      GetChallengeStatisticsUsecase(sl<ChallengeStatisticRepository>()));
+  sl.registerSingleton<CreateChallengeUsecase>(
+      CreateChallengeUsecase(sl<ChallengeRepository>()));
+  sl.registerSingleton<CreateChallengeParticipationUsecase>(
+      CreateChallengeParticipationUsecase(
+          sl<ChallengeParticipationRepository>()));
+  sl.registerSingleton<CreateChallengeDailyTrackingUsecase>(
+      CreateChallengeDailyTrackingUsecase(
+          sl<ChallengeDailyTrackingRepository>()));
+  sl.registerSingleton<UpdateChallengeUsecase>(
+      UpdateChallengeUsecase(sl<ChallengeRepository>()));
+  sl.registerSingleton<UpdateChallengeDailyTrackingUsecase>(
+      UpdateChallengeDailyTrackingUsecase(
+          sl<ChallengeDailyTrackingRepository>()));
+  sl.registerSingleton<DeleteChallengeDailyTrackingUsecase>(
+      DeleteChallengeDailyTrackingUsecase(
+          sl<ChallengeDailyTrackingRepository>()));
+  sl.registerSingleton<UpdateChallengeParticipationUsecase>(
+      UpdateChallengeParticipationUsecase(
+          sl<ChallengeParticipationRepository>()));
+  sl.registerSingleton<DeleteChallengeParticipationUsecase>(
+      DeleteChallengeParticipationUsecase(
+          sl<ChallengeParticipationRepository>()));
 }

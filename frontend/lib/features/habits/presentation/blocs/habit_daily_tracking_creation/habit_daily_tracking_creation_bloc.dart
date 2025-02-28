@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:formz/formz.dart';
-import 'package:reallystick/core/validators/datetime.dart';
+import 'package:reallystick/core/validators/habit_daily_tracking_datetime.dart';
 import 'package:reallystick/core/validators/habit.dart';
 import 'package:reallystick/core/validators/quantity_of_set.dart';
 import 'package:reallystick/core/validators/quantity_per_set.dart';
@@ -112,7 +112,7 @@ class HabitDailyTrackingCreationFormBloc extends Bloc<
   Future<void> _datetimeChanged(
       HabitDailyTrackingCreationFormDateTimeChangedEvent event,
       Emitter emit) async {
-    final datetime = DateTimeValidator.dirty(event.datetime);
+    final datetime = HabitDailyTrackingDatetime.dirty(event.datetime);
 
     emit(
       state.copyWith(

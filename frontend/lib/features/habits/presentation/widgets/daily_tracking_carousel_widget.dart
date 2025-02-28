@@ -141,88 +141,71 @@ class DailyTrackingCarouselWidgetState
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (widget.displayTitle)
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.bar_chart,
-                        size: 30,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.bar_chart,
+                      size: 30,
+                      color: widget.habitColor,
+                    ),
+                    SizedBox(width: 10),
+                    Text(
+                      AppLocalizations.of(context)!.dailyTracking,
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
                         color: widget.habitColor,
                       ),
-                      SizedBox(width: 10),
-                      Text(
-                        AppLocalizations.of(context)!.dailyTracking,
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: widget.habitColor,
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                      height: 10), // Add space between title and other content
-                  LastActivityWidget(
-                    habitDailyTrackings: widget.habitDailyTrackings,
-                    userLocale: userLocale,
-                  ),
-                ],
-              ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 10),
+                LastActivityWidget(
+                  habitDailyTrackings: widget.habitDailyTrackings,
+                  userLocale: userLocale,
+                ),
+                SizedBox(height: 10),
+              ],
             ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: SizedBox(
-              height: 60,
-              child: ListView.builder(
-                controller: scrollController,
-                scrollDirection: Axis.horizontal,
-                itemCount: lastDays.length,
-                itemBuilder: (context, index) {
-                  final datetime = lastDays[index];
-                  final dayAbbreviation = DateFormat('E', userLocale.toString())
-                      .format(datetime)
-                      .substring(0, 1);
+          SizedBox(
+            height: 60,
+            child: ListView.builder(
+              controller: scrollController,
+              scrollDirection: Axis.horizontal,
+              itemCount: lastDays.length,
+              itemBuilder: (context, index) {
+                final datetime = lastDays[index];
+                final dayAbbreviation = DateFormat('E', userLocale.toString())
+                    .format(datetime)
+                    .substring(0, 1);
 
-                  final totalQuantity = aggregatedQuantities[datetime] ?? 0.0;
+                final totalQuantity = aggregatedQuantities[datetime] ?? 0.0;
 
-                  // Normalize the opacity
-                  final normalizedOpacity = maxQuantity == minQuantity
-                      ? 0.1 // Avoid division by zero when all values are equal
-                      : 0.1 +
-                          ((totalQuantity - minQuantity) /
-                              (maxQuantity - minQuantity) *
-                              0.9);
+                // Normalize the opacity
+                final normalizedOpacity = maxQuantity == minQuantity
+                    ? 0.1 // Avoid division by zero when all values are equal
+                    : 0.1 +
+                        ((totalQuantity - minQuantity) /
+                            (maxQuantity - minQuantity) *
+                            0.9);
 
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Column(
-                      children: [
-                        Text(
-                          dayAbbreviation,
-                          style: TextStyle(fontSize: 12),
-                        ),
-                        SizedBox(height: 4),
-                        if (widget.canOpenDayBoxes) ...[
-                          GestureDetector(
-                            onTap: () =>
-                                _openDailyTrackings(datetime: datetime),
-                            child: Container(
-                              width: dayBoxWidth,
-                              height: dayBoxWidth,
-                              decoration: BoxDecoration(
-                                color: widget.habitColor
-                                    .withOpacity(normalizedOpacity),
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                            ),
-                          ),
-                        ] else ...[
-                          Container(
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Column(
+                    children: [
+                      Text(
+                        dayAbbreviation,
+                        style: TextStyle(fontSize: 12),
+                      ),
+                      SizedBox(height: 4),
+                      if (widget.canOpenDayBoxes) ...[
+                        GestureDetector(
+                          onTap: () => _openDailyTrackings(datetime: datetime),
+                          child: Container(
                             width: dayBoxWidth,
                             height: dayBoxWidth,
                             decoration: BoxDecoration(
@@ -231,12 +214,22 @@ class DailyTrackingCarouselWidgetState
                               borderRadius: BorderRadius.circular(4),
                             ),
                           ),
-                        ]
-                      ],
-                    ),
-                  );
-                },
-              ),
+                        ),
+                      ] else ...[
+                        Container(
+                          width: dayBoxWidth,
+                          height: dayBoxWidth,
+                          decoration: BoxDecoration(
+                            color: widget.habitColor
+                                .withOpacity(normalizedOpacity),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                        ),
+                      ]
+                    ],
+                  ),
+                );
+              },
             ),
           ),
         ],

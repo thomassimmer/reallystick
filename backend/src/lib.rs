@@ -145,6 +145,7 @@ pub mod features {
             pub mod delete_challenge;
             pub mod delete_challenge_daily_tracking;
             pub mod delete_challenge_participation;
+            pub mod get_challenge;
             pub mod get_challenge_daily_trackings;
             pub mod get_challenge_participations;
             pub mod get_challenge_statistics;

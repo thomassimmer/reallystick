@@ -7,6 +7,11 @@ import 'package:reallystick/core/ui/themes/light.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_bloc.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_events.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth_login/auth_login_bloc.dart';
+import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_bloc.dart';
+import 'package:reallystick/features/challenges/presentation/blocs/challenge_creation/challenge_creation_bloc.dart';
+import 'package:reallystick/features/challenges/presentation/blocs/challenge_daily_tracking_creation/challenge_daily_tracking_creation_bloc.dart';
+import 'package:reallystick/features/challenges/presentation/blocs/challenge_daily_tracking_update/challenge_daily_tracking_update_bloc.dart';
+import 'package:reallystick/features/challenges/presentation/blocs/challenge_update/challenge_update_bloc.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit_creation/habit_creation_bloc.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit_daily_tracking_creation/habit_daily_tracking_creation_bloc.dart';
@@ -68,6 +73,13 @@ class ReallyStickApp extends StatelessWidget {
     final habitDailyTrackingCreationFormBloc =
         HabitDailyTrackingCreationFormBloc();
     final habitDailyTrackingUpdateFormBloc = HabitDailyTrackingUpdateFormBloc();
+    final challengeBloc = ChallengeBloc(authBloc: authBloc);
+    final challengeCreationFormBloc = ChallengeCreationFormBloc();
+    final challengeUpdateFormBloc = ChallengeUpdateFormBloc();
+    final challengeDailyTrackingCreationFormBloc =
+        ChallengeDailyTrackingCreationFormBloc();
+    final challengeDailyTrackingUpdateFormBloc =
+        ChallengeDailyTrackingUpdateFormBloc();
 
     authBloc.add(AuthInitializeEvent());
 
@@ -104,6 +116,21 @@ class ReallyStickApp extends StatelessWidget {
       ),
       BlocProvider<HabitDailyTrackingUpdateFormBloc>(
         create: (context) => habitDailyTrackingUpdateFormBloc,
+      ),
+      BlocProvider<ChallengeBloc>(
+        create: (context) => challengeBloc,
+      ),
+      BlocProvider<ChallengeCreationFormBloc>(
+        create: (context) => challengeCreationFormBloc,
+      ),
+      BlocProvider<ChallengeUpdateFormBloc>(
+        create: (context) => challengeUpdateFormBloc,
+      ),
+      BlocProvider<ChallengeDailyTrackingCreationFormBloc>(
+        create: (context) => challengeDailyTrackingCreationFormBloc,
+      ),
+      BlocProvider<ChallengeDailyTrackingUpdateFormBloc>(
+        create: (context) => challengeDailyTrackingUpdateFormBloc,
       ),
     ];
   }

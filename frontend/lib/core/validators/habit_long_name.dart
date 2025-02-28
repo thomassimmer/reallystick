@@ -14,6 +14,11 @@ class HabitLongNameValidator extends FormzInput<String, DomainError> {
       return HabitLongNameWrongSizeError();
     }
 
+    // No translation entered
+    if (value == "No translation entered") {
+      return AtLeastOneTranslationNeededError();
+    }
+
     return null;
   }
 }

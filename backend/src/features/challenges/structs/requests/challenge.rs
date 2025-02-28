@@ -27,7 +27,9 @@ pub struct ChallengeUpdateRequest {
 pub struct ChallengeCreateRequest {
     pub name: HashMap<String, String>,
     pub description: HashMap<String, String>,
+    #[serde(default)]
     pub start_date: Option<DateTime<Utc>>,
+    #[serde(default)]
     pub end_date: Option<DateTime<Utc>>,
     pub icon: String,
 }

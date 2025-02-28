@@ -147,36 +147,34 @@ class AnalyticsCarouselWidget extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              children: [
-                Icon(
-                  Icons.query_stats,
-                  size: 30,
+          Row(
+            children: [
+              Icon(
+                Icons.query_stats,
+                size: 30,
+                color: habitColor,
+              ),
+              SizedBox(width: 10),
+              Text(
+                AppLocalizations.of(context)!.analytics,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
                   color: habitColor,
                 ),
-                SizedBox(width: 10),
-                Text(
-                  AppLocalizations.of(context)!.analytics,
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: habitColor,
-                  ),
+              ),
+              Spacer(),
+              Tooltip(
+                message: AppLocalizations.of(context)!.analyticsInfoTooltip,
+                child: Icon(
+                  Icons.info_outline,
+                  size: 25,
+                  color: habitColor.withOpacity(0.8),
                 ),
-                Spacer(),
-                Tooltip(
-                  message: AppLocalizations.of(context)!.analyticsInfoTooltip,
-                  child: Icon(
-                    Icons.info_outline,
-                    size: 25,
-                    color: habitColor.withOpacity(0.8),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
+          SizedBox(height: 10),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
@@ -187,7 +185,7 @@ class AnalyticsCarouselWidget extends StatelessWidget {
                   key: ValueKey(card.title),
                   analyticsCardInfo: card,
                   userLocale: userLocale,
-                  habitColor: habitColor,
+                  color: habitColor,
                 );
               }).toList(),
             ),
