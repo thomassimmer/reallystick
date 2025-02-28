@@ -1,20 +1,6 @@
 services:
-  backend:
-    container_name: reallystick_backend
-    image: reallystick_backend
-    build:
-      context: ./backend
-      dockerfile: Dockerfile.prod
-    env_file:
-      - ./backend/.env.docker
-    ports:
-      - "8000:8000"
-    volumes:
-      - ./backend:/app
-    networks:
-      - app-network
-
   db:
+    container_name: reallystick_db
     image: reallystick_db
     build:
       context: ./db
@@ -30,6 +16,23 @@ services:
     command: -p 5432
     networks:
       - app-network
+
+  backend:
+    container_name: reallystick_backend
+    image: reallystick_backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.prod
+    env_file:
+      - ./backend/.env.docker
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    networks:
+      - app-network
+    depends_on:
+      - db
 
 volumes:
   postgres_data:
