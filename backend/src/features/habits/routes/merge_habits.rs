@@ -181,8 +181,8 @@ pub async fn merge_habits(
             .json(AppError::DatabaseTransaction.to_response());
     }
 
-    return HttpResponse::Ok().json(HabitResponse {
+    HttpResponse::Ok().json(HabitResponse {
         code: "HABIT_UPDATED".to_string(),
         habit: Some(habit_to_merge_on.to_habit_data()),
-    });
+    })
 }

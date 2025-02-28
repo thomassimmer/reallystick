@@ -19,19 +19,17 @@ pub async fn get_habit_daily_tracking_by_id(
     .await?;
 
     // Map raw rows into `HabitDailyTracking`
-    let result = match row {
-        Some(row) => Some(HabitDailyTracking {
-            id: row.id,
-            user_id: row.user_id,
-            habit_id: row.habit_id,
-            datetime: row.datetime,
-            created_at: row.created_at,
-            quantity_per_set: row.quantity_per_set,
-            quantity_of_set: row.quantity_of_set,
-            unit_id: row.unit_id,
-        }),
-        None => None,
-    };
+    let result = row.map(|row| HabitDailyTracking {
+        id: row.id,
+        user_id: row.user_id,
+        habit_id: row.habit_id,
+        datetime: row.datetime,
+        created_at: row.created_at,
+        quantity_per_set: row.quantity_per_set,
+        quantity_of_set: row.quantity_of_set,
+        unit_id: row.unit_id,
+    });
+
     Ok(result)
 }
 
