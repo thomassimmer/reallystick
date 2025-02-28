@@ -1,12 +1,15 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct UserRegisterRequest {
     pub username: String,
     pub password: String,
     pub locale: String,
     pub theme: String,
+    pub public_key: String,
+    pub private_key_encrypted: String,
+    pub salt_used_to_derive_key_from_password: String,
 }
 
 #[derive(Debug, Deserialize)]
@@ -49,4 +52,18 @@ pub struct RecoverAccountUsing2FARequest {
 pub struct RecoverAccountWithout2FAEnabledRequest {
     pub username: String,
     pub recovery_code: String,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct SaveRecoveryCodeRequest {
+    pub recovery_code: String,
+    pub private_key_encrypted: String,
+    pub salt_used_to_derive_key_from_recovery_code: String,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct SaveKeysRequest {
+    pub public_key: String,
+    pub private_key_encrypted: String,
+    pub salt_used_to_derive_key_from_password: String,
 }

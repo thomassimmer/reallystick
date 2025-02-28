@@ -75,7 +75,7 @@ pub async fn delete_public_message(
     if let Err(e) = delete_public_message_result {
         eprintln!("Error: {}", e);
         return HttpResponse::InternalServerError()
-            .json(AppError::ChallengeDailyTrackingCreation.to_response());
+            .json(AppError::PublicMessageDeletion.to_response());
     }
 
     if let Some(public_message_replying_to) = public_message.replies_to {

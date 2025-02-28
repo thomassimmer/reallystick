@@ -6,7 +6,10 @@ import 'package:reallystick/core/constants/json_decode.dart';
 import 'package:reallystick/core/messages/errors/data_error.dart';
 import 'package:reallystick/features/auth/data/errors/data_error.dart';
 import 'package:reallystick/features/auth/data/models/otp_request_model.dart';
+import 'package:reallystick/features/auth/data/models/save_keys_request_model.dart';
+import 'package:reallystick/features/auth/data/models/save_recovery_code_request_model.dart';
 import 'package:reallystick/features/auth/data/models/two_factor_authentication_config.dart';
+import 'package:reallystick/features/auth/data/models/user_data_before_otp_verified_model.dart';
 import 'package:reallystick/features/auth/data/models/user_token_model.dart';
 import 'package:reallystick/features/auth/data/models/user_token_request_model.dart';
 import 'package:reallystick/features/auth/domain/errors/domain_error.dart';
@@ -66,7 +69,7 @@ class AuthRemoteDataSource {
     throw UnknownError();
   }
 
-  Future<Either<UserTokenDataModel, String>> login(
+  Future<Either<UserTokenDataModel, UserDataBeforeOtpVerifiedModel>> login(
       LoginUserRequestModel loginUserRequestModel) async {
     final url = Uri.parse('$baseUrl/auth/login');
     final response = await apiClient.post(
@@ -81,11 +84,15 @@ class AuthRemoteDataSource {
     if (response.statusCode == 200) {
       try {
         if (responseCode == 'USER_LOGGED_IN_WITHOUT_OTP') {
-          return Left(UserTokenDataModel.fromJson(jsonBody));
+          return Left(
+            UserTokenDataModel.fromJson(jsonBody),
+          );
         }
 
         if (responseCode == 'USER_LOGS_IN_WITH_OTP_ENABLED') {
-          return Right(jsonBody['user_id']);
+          return Right(
+            UserDataBeforeOtpVerifiedModel.fromJson(jsonBody),
+          );
         }
 
         throw ParsingError();
@@ -429,6 +436,74 @@ class AuthRemoteDataSource {
 
     if (response.statusCode == 401) {
       throw UnauthorizedError();
+    }
+
+    if (response.statusCode == 500) {
+      throw InternalServerError();
+    }
+
+    throw UnknownError();
+  }
+
+  Future<void> saveKeys(SaveKeysRequestModel saveKeysRequestModel) async {
+    final url = Uri.parse('$baseUrl/auth/save-keys');
+    final response = await apiClient.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: json.encode(saveKeysRequestModel.toJson()),
+    );
+
+    final jsonBody = customJsonDecode(response.body);
+    final responseCode = jsonBody['code'] as String;
+
+    if (response.statusCode == 201) {
+      try {
+        return;
+      } catch (e) {
+        throw ParsingError();
+      }
+    }
+
+    if (response.statusCode == 401) {
+      if (responseCode == 'USER_HAS_ALREADY_KEYS') {
+        throw UserHasAlreadyKeysError();
+      }
+    }
+
+    if (response.statusCode == 404) {
+      if (responseCode == 'USER_NOT_FOUND') {
+        throw UserNotFoundError();
+      }
+
+      throw UnauthorizedError();
+    }
+
+    if (response.statusCode == 500) {
+      throw InternalServerError();
+    }
+
+    throw UnknownError();
+  }
+
+  Future<void> saveRecoveryCode(
+      SaveRecoveryCodeRequestModel saveRecoveryCodeRequestModel) async {
+    final url = Uri.parse('$baseUrl/auth/save-recovery-code');
+    final response = await apiClient.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: json.encode(saveRecoveryCodeRequestModel.toJson()),
+    );
+
+    if (response.statusCode == 201) {
+      try {
+        return;
+      } catch (e) {
+        throw ParsingError();
+      }
     }
 
     if (response.statusCode == 500) {

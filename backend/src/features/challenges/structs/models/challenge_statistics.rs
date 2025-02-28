@@ -23,25 +23,13 @@ pub struct ChallengeStatistics {
     pub creator_username: String,
 }
 
+#[derive(Default, Clone)]
 pub struct ChallengeStatisticsCache {
     data: Arc<RwLock<Vec<ChallengeStatistics>>>,
     last_updated: Arc<RwLock<Option<DateTime<Utc>>>>,
 }
 
-impl Default for ChallengeStatisticsCache {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
 impl ChallengeStatisticsCache {
-    pub fn new() -> Self {
-        Self {
-            data: Arc::new(RwLock::new(Vec::new())),
-            last_updated: Arc::new(RwLock::new(None)),
-        }
-    }
-
     pub async fn needs_update(&self) -> bool {
         let last_updated = self.last_updated.read().await;
         match *last_updated {

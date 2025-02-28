@@ -2,7 +2,11 @@ use crate::{
     core::constants::errors::AppError,
     features::{
         auth::{
-            helpers::{password::password_is_valid, token::generate_tokens},
+            helpers::{
+                password::password_is_valid,
+                recovery_code::{delete_recovery_code_for_user, get_recovery_code_for_user},
+                token::{delete_user_tokens, generate_tokens},
+            },
             structs::{requests::RecoverAccountUsingPasswordRequest, responses::UserLoginResponse},
         },
         profile::helpers::{device_info::get_user_agent, profile::get_user_by_username},
@@ -62,67 +66,46 @@ pub async fn recover_account_using_password(
     }
 
     // Check recovery code
-    let mut is_valid = false;
-
-    for recovery_code in user.recovery_codes.split(";") {
-        let parsed_hash = if let Ok(parsed_hash) = PasswordHash::new(recovery_code) {
-            parsed_hash
-        } else {
-            return HttpResponse::InternalServerError().json(AppError::PasswordHash.to_response());
-        };
-
-        let argon2 = Argon2::default();
-
-        is_valid = argon2
-            .verify_password(body.recovery_code.as_bytes(), &parsed_hash)
-            .is_ok();
-
-        if is_valid {
-            // Remove recovery code in db
-            let mut new_recovery_codes = Vec::<String>::new();
-
-            for rcode in user.recovery_codes.split(";") {
-                if rcode != recovery_code {
-                    new_recovery_codes.push(rcode.to_string());
-                }
+    let recovery_code = match get_recovery_code_for_user(user.id, &mut transaction).await {
+        Ok(r) => match r {
+            Some(r) => r,
+            None => {
+                return HttpResponse::Unauthorized()
+                    .json(AppError::InvalidUsernameOrPasswordOrRecoveryCode.to_response())
             }
-
-            let updated_user_result = sqlx::query!(
-                r#"
-                UPDATE users
-                SET recovery_codes = $1
-                WHERE id = $2
-                "#,
-                new_recovery_codes.join(";"),
-                user.id
-            )
-            .fetch_optional(&mut *transaction)
-            .await;
-
-            if let Err(e) = updated_user_result {
-                eprintln!("Error: {}", e);
-                return HttpResponse::InternalServerError()
-                    .json(AppError::UserUpdate.to_response());
-            }
-
-            break;
+        },
+        Err(e) => {
+            eprintln!("Error: {}", e);
+            return HttpResponse::InternalServerError()
+                .json(AppError::DatabaseTransaction.to_response());
         }
-    }
+    };
 
-    if !is_valid {
+    let parsed_hash = if let Ok(parsed_hash) = PasswordHash::new(&recovery_code.recovery_code) {
+        parsed_hash
+    } else {
+        return HttpResponse::InternalServerError().json(AppError::PasswordHash.to_response());
+    };
+
+    let argon2 = Argon2::default();
+
+    let is_valid = argon2
+        .verify_password(body.recovery_code.as_bytes(), &parsed_hash)
+        .is_ok();
+
+    if is_valid {
+        let delete_recovery_code_result =
+            delete_recovery_code_for_user(user.id, &mut transaction).await;
+
+        if delete_recovery_code_result.is_err() {
+            return HttpResponse::InternalServerError().json(AppError::UserUpdate.to_response());
+        }
+    } else {
         return HttpResponse::Unauthorized()
             .json(AppError::InvalidUsernameOrPasswordOrRecoveryCode.to_response());
     }
 
-    // Delete any other existing tokens for that user
-    let delete_result = sqlx::query!(
-        r#"
-            DELETE FROM user_tokens WHERE user_id = $1
-            "#,
-        user.id,
-    )
-    .execute(&mut *transaction)
-    .await;
+    let delete_result = delete_user_tokens(user.id, &mut transaction).await;
 
     if let Err(e) = delete_result {
         eprintln!("Error: {}", e);
@@ -181,5 +164,8 @@ pub async fn recover_account_using_password(
         code: "USER_LOGGED_IN_AFTER_ACCOUNT_RECOVERY".to_string(),
         access_token,
         refresh_token,
+        public_key: user.public_key,
+        private_key_encrypted: user.private_key_encrypted,
+        salt_used_to_derive_key: user.salt_used_to_derive_key_from_password,
     })
 }

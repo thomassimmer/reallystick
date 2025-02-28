@@ -41,7 +41,7 @@ pub async fn user_has_access_to_protected_route(
 #[tokio::test]
 pub async fn user_can_update_profile() {
     let app = spawn_app().await;
-    let (access_token, _, _) = user_signs_up(&app, None).await;
+    let (access_token, _) = user_signs_up(&app, None).await;
 
     user_has_access_to_protected_route(&app, &access_token).await;
 
@@ -50,7 +50,6 @@ pub async fn user_can_update_profile() {
         .insert_header((header::AUTHORIZATION, format!("Bearer {}", access_token)))
         .insert_header(ContentType::json())
         .set_json(&serde_json::json!({
-            "username": "testusername",
             "locale": "fr",
             "theme": "light",
             "has_seen_questions": false
@@ -64,7 +63,6 @@ pub async fn user_can_update_profile() {
     let response: UserResponse = serde_json::from_slice(&body).unwrap();
 
     assert_eq!(response.code, "PROFILE_UPDATED");
-    assert_eq!(response.user.username, "testusername");
     assert_eq!(response.user.locale, "fr");
     assert_eq!(response.user.theme, "light");
 }
@@ -72,7 +70,7 @@ pub async fn user_can_update_profile() {
 #[tokio::test]
 pub async fn user_can_delete_account() {
     let app = spawn_app().await;
-    let (access_token, _, _) = user_signs_up(&app, None).await;
+    let (access_token, _) = user_signs_up(&app, None).await;
 
     let req = test::TestRequest::delete()
         .uri("/api/users/me")
@@ -91,7 +89,7 @@ pub async fn user_can_delete_account() {
 #[tokio::test]
 pub async fn is_otp_enabled_for_user_that_activated_it() {
     let app = spawn_app().await;
-    let (access_token, _, _) = user_signs_up(&app, None).await;
+    let (access_token, _) = user_signs_up(&app, None).await;
 
     let req = test::TestRequest::post()
         .uri("/api/users/is-otp-enabled")

@@ -1,20 +1,33 @@
+import 'dart:convert';
+
+import 'package:basic_utils/basic_utils.dart';
 import 'package:bloc/bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:reallystick/core/messages/message.dart';
+import 'package:reallystick/core/utils/recovery_code_generator.dart';
+import 'package:reallystick/features/auth/data/storage/private_message_key_storage.dart';
 import 'package:reallystick/features/auth/data/storage/token_storage.dart';
 import 'package:reallystick/features/auth/domain/errors/domain_error.dart';
 import 'package:reallystick/features/auth/domain/usecases/check_if_account_has_two_factor_authentication_enabled_use_case.dart';
+import 'package:reallystick/features/auth/domain/usecases/decrypt_key_using_derivated_key_usecase.dart';
+import 'package:reallystick/features/auth/domain/usecases/derive_key_from_password_usecase.dart';
+import 'package:reallystick/features/auth/domain/usecases/encrypt_key_using_derivated_key_usecase.dart';
+import 'package:reallystick/features/auth/domain/usecases/generate_rsa_keys_usecase.dart';
 import 'package:reallystick/features/auth/domain/usecases/generate_two_factor_authentication_config_use_case.dart';
 import 'package:reallystick/features/auth/domain/usecases/login_usecase.dart';
 import 'package:reallystick/features/auth/domain/usecases/logout_usecase.dart';
 import 'package:reallystick/features/auth/domain/usecases/recover_account_with_two_factor_authentication_and_one_time_password_use_case.dart';
 import 'package:reallystick/features/auth/domain/usecases/recover_account_with_two_factor_authentication_and_password_use_case.dart';
 import 'package:reallystick/features/auth/domain/usecases/recover_account_without_two_factor_authentication_enabled_use_case.dart';
+import 'package:reallystick/features/auth/domain/usecases/save_keys_usecase.dart';
+import 'package:reallystick/features/auth/domain/usecases/save_recovery_code_usecase.dart';
 import 'package:reallystick/features/auth/domain/usecases/signup_usecase.dart';
 import 'package:reallystick/features/auth/domain/usecases/validate_one_time_password_use_case.dart';
 import 'package:reallystick/features/auth/domain/usecases/verify_one_time_password_use_case.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_events.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_states.dart';
+import 'package:reallystick/features/private_messages/domain/usecases/decrypt_message_using_aes_usecase.dart';
+import 'package:reallystick/features/private_messages/domain/usecases/encrypt_message_using_aes_usecase.dart';
 import 'package:universal_io/io.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
@@ -43,6 +56,21 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       recoverAccountWithoutTwoFactorAuthenticationEnabledUseCase =
       GetIt.instance<
           RecoverAccountWithoutTwoFactorAuthenticationEnabledUseCase>();
+  final SaveRecoveryCodeUsecase saveRecoveryCodeUsecase =
+      GetIt.instance<SaveRecoveryCodeUsecase>();
+  final SaveKeysUsecase saveKeysUsecase = GetIt.instance<SaveKeysUsecase>();
+  final DecryptKeyUsingDerivatedKeyUsecase decryptKeyUsingDerivatedKeyUsecase =
+      GetIt.instance<DecryptKeyUsingDerivatedKeyUsecase>();
+  final DecryptMessageUsingAesUsecase decryptMessageUsingAesUsecase =
+      GetIt.instance<DecryptMessageUsingAesUsecase>();
+  final DeriveKeyFromPasswordUsecase deriveKeyFromPasswordUsecase =
+      GetIt.instance<DeriveKeyFromPasswordUsecase>();
+  final EncryptKeyUsingDerivatedKeyUsecase encryptKeyUsingDerivatedKeyUsecase =
+      GetIt.instance<EncryptKeyUsingDerivatedKeyUsecase>();
+  final EncryptMessageUsingAesUsecase encryptMessageUsingAesUsecase =
+      GetIt.instance<EncryptMessageUsingAesUsecase>();
+  final GenerateRSAKeysUsecase generateRSAKeysUsecase =
+      GetIt.instance<GenerateRSAKeysUsecase>();
 
   AuthBloc() : super(AuthLoadingState()) {
     on<AuthInitializeEvent>(_initialize);
@@ -78,27 +106,118 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
+  Future<void> saveOrGenerateKeys({
+    required String? privateKeyEncrypted,
+    required String passwordOrRecoveryCode,
+    required String? salt,
+    required String? publicKey,
+  }) async {
+    if (privateKeyEncrypted == null) {
+      final keyPair = generateRSAKeysUsecase.call();
+
+      final publicKey = CryptoUtils.encodeRSAPublicKeyToPem(
+          keyPair.publicKey as RSAPublicKey);
+      final privateKey = CryptoUtils.encodeRSAPrivateKeyToPem(
+          keyPair.privateKey as RSAPrivateKey);
+
+      final derivatedKeyResult = await deriveKeyFromPasswordUsecase.call(
+        password: passwordOrRecoveryCode,
+        salt: null,
+      );
+
+      final privateKeyEncrypted = encryptKeyUsingDerivatedKeyUsecase.call(
+        privateKey: privateKey,
+        derivedKey: derivatedKeyResult.derivedKey,
+      );
+
+      await saveKeysUsecase.call(
+        publicKey: publicKey,
+        privateKey: privateKey,
+        privateKeyEncrypted: privateKeyEncrypted,
+        saltUsedToDeriveKeyFromPassword: derivatedKeyResult.salt,
+      );
+    } else {
+      final derivatedKeyResult = await deriveKeyFromPasswordUsecase.call(
+        password: passwordOrRecoveryCode,
+        salt: base64Decode(salt!).toList(),
+      );
+
+      final privateKey = decryptKeyUsingDerivatedKeyUsecase.call(
+        encryptedData: privateKeyEncrypted,
+        derivedKey: derivatedKeyResult.derivedKey,
+      );
+
+      await PrivateMessageKeyStorage().saveKeys(
+        publicKey!,
+        CryptoUtils.encodeRSAPrivateKeyToPem(privateKey),
+      );
+    }
+  }
+
   void _signup(AuthSignupEvent event, Emitter<AuthState> emit) async {
     emit(AuthLoadingState());
 
-    // We use the device locale by default on signup
-    final result = await signupUseCase.call(
-      event.username,
-      event.password,
-      Platform.localeName,
-      event.theme,
+    final keyPair = generateRSAKeysUsecase.call();
+
+    final publicKey =
+        CryptoUtils.encodeRSAPublicKeyToPem(keyPair.publicKey as RSAPublicKey);
+    final privateKey = CryptoUtils.encodeRSAPrivateKeyToPem(
+        keyPair.privateKey as RSAPrivateKey);
+
+    final derivatedKeyResult = await deriveKeyFromPasswordUsecase.call(
+      password: event.password,
+      salt: null,
     );
 
-    result.fold(
-      (error) => emit(
-        AuthUnauthenticatedState(
-          message: ErrorMessage(error.messageKey),
-        ),
-      ),
+    final privateKeyEncrypted = encryptKeyUsingDerivatedKeyUsecase.call(
+      privateKey: privateKey,
+      derivedKey: derivatedKeyResult.derivedKey,
+    );
+
+    final result = await signupUseCase.call(
+      username: event.username,
+      password: event.password,
+      locale:
+          Platform.localeName, // We use the device locale by default on signup
+      theme: event.theme,
+      publicKey: publicKey,
+      privateKey: privateKey,
+      privateKeyEncrypted: privateKeyEncrypted,
+      saltUsedToDeriveKeyFromPassword: derivatedKeyResult.salt,
+    );
+
+    await result.fold(
+      (error) {
+        emit(
+          AuthUnauthenticatedState(
+            message: ErrorMessage(error.messageKey),
+          ),
+        );
+      },
       (userToken) async {
+        String recoveryCode = RecoveryCodeGenerator.generate();
+        String privateKey =
+            await PrivateMessageKeyStorage().getPrivateKey() ?? "";
+
+        final derivatedKey = await deriveKeyFromPasswordUsecase.call(
+          password: recoveryCode,
+          salt: null,
+        );
+
+        String privateKeyEncrypted = encryptKeyUsingDerivatedKeyUsecase.call(
+          privateKey: privateKey,
+          derivedKey: derivatedKey.derivedKey,
+        );
+
+        await saveRecoveryCodeUsecase.call(
+          recoveryCode: recoveryCode,
+          privateKeyEncrypted: privateKeyEncrypted,
+          saltUsedToDeriveKeyFromRecoveryCode: derivatedKey.salt,
+        );
+
         emit(
           AuthAuthenticatedAfterRegistrationState(
-            recoveryCodes: userToken.recoveryCodes,
+            recoveryCode: recoveryCode,
             hasVerifiedOtp: false,
           ),
         );
@@ -183,15 +302,24 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       event.password,
     );
 
-    result.fold(
-      (error) => emit(
-        AuthUnauthenticatedState(
-          message: ErrorMessage(error.messageKey),
-        ),
-      ),
-      (userTokenOrUserId) {
-        userTokenOrUserId.fold(
-          (userToken) {
+    await result.fold(
+      (error) {
+        emit(
+          AuthUnauthenticatedState(
+            message: ErrorMessage(error.messageKey),
+          ),
+        );
+      },
+      (userTokenOrUserId) async {
+        await userTokenOrUserId.fold(
+          (userToken) async {
+            await saveOrGenerateKeys(
+              privateKeyEncrypted: userToken.privateKeyEncrypted,
+              passwordOrRecoveryCode: event.password,
+              salt: userToken.saltUsedToDeriveKey,
+              publicKey: userToken.publicKey,
+            );
+
             emit(
               AuthAuthenticatedAfterLoginState(
                 hasValidatedOtp: false,
@@ -199,9 +327,21 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
               ),
             );
           },
-          (userId) => emit(
-            AuthValidateOneTimePasswordState(userId: userId),
-          ),
+          (userDataBeforeOtpVerified) async {
+            await saveOrGenerateKeys(
+              privateKeyEncrypted:
+                  userDataBeforeOtpVerified.privateKeyEncrypted,
+              passwordOrRecoveryCode: event.password,
+              salt: userDataBeforeOtpVerified.saltUsedToDeriveKey,
+              publicKey: userDataBeforeOtpVerified.publicKey,
+            );
+
+            emit(
+              AuthValidateOneTimePasswordState(
+                userId: userDataBeforeOtpVerified.userId,
+              ),
+            );
+          },
         );
       },
     );
@@ -238,7 +378,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     final result = await logoutUseCase.call();
 
     await result.fold(
-      (error) async {
+      (error) {
         emit(
           AuthUnauthenticatedState(
             message: ErrorMessage(error.messageKey),
@@ -340,6 +480,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         ),
       ),
       (userToken) async {
+        await saveOrGenerateKeys(
+          privateKeyEncrypted: userToken.privateKeyEncrypted,
+          passwordOrRecoveryCode: event.password,
+          salt: userToken.saltUsedToDeriveKey,
+          publicKey: userToken.publicKey,
+        );
+
         emit(
           AuthAuthenticatedAfterLoginState(
             hasValidatedOtp: true,
@@ -371,6 +518,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         ),
       ),
       (userToken) async {
+        await saveOrGenerateKeys(
+          privateKeyEncrypted: userToken.privateKeyEncrypted,
+          passwordOrRecoveryCode: event.recoveryCode,
+          salt: userToken.saltUsedToDeriveKey,
+          publicKey: userToken.publicKey,
+        );
+
         emit(
           AuthAuthenticatedAfterLoginState(
             hasValidatedOtp: true,
@@ -399,6 +553,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         ),
       ),
       (userToken) async {
+        await saveOrGenerateKeys(
+          privateKeyEncrypted: userToken.privateKeyEncrypted,
+          passwordOrRecoveryCode: event.recoveryCode,
+          salt: userToken.saltUsedToDeriveKey,
+          publicKey: userToken.publicKey,
+        );
+
         emit(
           AuthAuthenticatedAfterLoginState(
             hasValidatedOtp: true,

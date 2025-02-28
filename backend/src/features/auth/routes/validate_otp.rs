@@ -110,5 +110,8 @@ async fn validate(
         code: "USER_LOGGED_IN_AFTER_OTP_VALIDATION".to_string(),
         access_token,
         refresh_token,
+        public_key: user.public_key,
+        private_key_encrypted: user.private_key_encrypted,
+        salt_used_to_derive_key: user.salt_used_to_derive_key_from_password,
     })
 }

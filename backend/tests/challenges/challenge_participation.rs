@@ -134,7 +134,7 @@ pub async fn user_can_create_a_challenge_participation() {
     let (access_token, _) = user_logs_in(&app, "thomas", "").await;
     let challenge_id = user_creates_a_challenge(&app, &access_token).await;
 
-    let (access_token, _, _) = user_signs_up(&app, None).await;
+    let (access_token, _) = user_signs_up(&app, None).await;
 
     let challenge_participations = user_gets_challenge_participations(&app, &access_token).await;
     assert!(challenge_participations.is_empty());
@@ -151,7 +151,7 @@ pub async fn user_can_update_a_challenge_participation() {
     let (access_token, _) = user_logs_in(&app, "thomas", "").await;
     let challenge_id = user_creates_a_challenge(&app, &access_token).await;
 
-    let (access_token, _, _) = user_signs_up(&app, None).await;
+    let (access_token, _) = user_signs_up(&app, None).await;
 
     let challenge_participation_id =
         user_creates_a_challenge_participation(&app, &access_token, challenge_id).await;
@@ -165,7 +165,7 @@ pub async fn user_can_delete_a_challenge_participation() {
     let (access_token, _) = user_logs_in(&app, "thomas", "").await;
     let challenge_id = user_creates_a_challenge(&app, &access_token).await;
 
-    let (access_token, _, _) = user_signs_up(&app, None).await;
+    let (access_token, _) = user_signs_up(&app, None).await;
 
     let challenge_participation_id =
         user_creates_a_challenge_participation(&app, &access_token, challenge_id).await;

@@ -1,6 +1,9 @@
 use crate::{
     core::structs::responses::GenericResponse,
-    features::public_discussions::structs::models::public_message::PUBLIC_MESSAGE_CONTENT_MAX_LENGTH,
+    features::{
+        private_discussions::structs::models::private_message::PRIVATE_MESSAGE_CONTENT_MAX_LENGTH,
+        public_discussions::structs::models::public_message::PUBLIC_MESSAGE_CONTENT_MAX_LENGTH,
+    },
 };
 
 pub enum AppError {
@@ -22,6 +25,7 @@ pub enum AppError {
     DatabaseConnection,
     DatabaseQuery,
     DatabaseTransaction,
+    FailedToCreateSocketSession,
     InvalidAccessToken,
     InvalidChallengeCreator,
     InvalidChallengeParticipationUser,
@@ -52,11 +56,25 @@ pub enum AppError {
     PasswordHash,
     PasswordTooShort,
     PasswordTooWeak,
-    PublicMessageCreation,
-    PublicMessageDeletionNotDoneByAdmin,
-    PublicMessageDeletionNotDoneByCreator,
+    PrivateDiscussionCreation,
+    PrivateDiscussionParticipationCreation,
+    PrivateDiscussionParticipationNotFound,
+    PrivateDiscussionParticipationUpdate,
+    PrivateDiscussionNotFound,
+    PrivateMessageContentEmpty,
+    PrivateMessageContentTooLong,
+    PrivateMessageCreation,
+    PrivateMessageDeletion,
+    PrivateMessageDeletionNotDoneByCreator,
+    PrivateMessageNotFound,
+    PrivateMessageUpdate,
+    PrivateMessageUpdateNotDoneByCreator,
     PublicMessageContentEmpty,
     PublicMessageContentTooLong,
+    PublicMessageCreation,
+    PublicMessageDeletion,
+    PublicMessageDeletionNotDoneByAdmin,
+    PublicMessageDeletionNotDoneByCreator,
     PublicMessageLikeCreation,
     PublicMessageLikeDeletion,
     PublicMessageReportCreation,
@@ -67,6 +85,9 @@ pub enum AppError {
     PublicMessageNeedsHabitOrChallenge,
     PublicMessageNotFound,
     PublicMessageUpdate,
+    RecoveryCodeCreation,
+    RecoveryCodeDeletion,
+    RecoveryCodeHashCreation,
     TokenGeneration,
     TwoFactorAuthenticationNotEnabled,
     UnitCreation,
@@ -75,6 +96,7 @@ pub enum AppError {
     UnitUpdate,
     UsernameNotRespectingRules,
     UsernameWrongSize,
+    UserAlreadyHasKeys,
     UserNotFound,
     UserTokenDeletion,
     UserUpdate,
@@ -155,6 +177,10 @@ impl AppError {
             AppError::DatabaseTransaction => GenericResponse {
                 code: "DATABASE_TRANSACTION".to_string(),
                 message: "Failed to commit transaction".to_string(),
+            },
+            AppError::FailedToCreateSocketSession => GenericResponse {
+                code: "FAILED_TO_CREATE_SOCKET_SESSION".to_string(),
+                message: "Failed to create a web socket session".to_string(),
             },
             AppError::InvalidAccessToken => GenericResponse {
                 code: "INVALID_ACCESS_TOKEN".to_string(),
@@ -276,9 +302,68 @@ impl AppError {
                 code: "PASSWORD_TOO_WEAK".to_string(),
                 message: "This password is too weak".to_string(),
             },
+            AppError::PrivateDiscussionCreation => GenericResponse {
+                code: "PRIVATE_DISCUSSION_CREATION".to_string(),
+                message: "Failed to create this private discussion.".to_string(),
+            },
+            AppError::PrivateDiscussionParticipationCreation => GenericResponse {
+                code: "PRIVATE_DISCUSSION_PARTICIPATION_CREATION".to_string(),
+                message: "Failed to create this private discussion participation.".to_string(),
+            },
+            AppError::PrivateDiscussionParticipationNotFound => GenericResponse {
+                code: "PRIVATE_DISCUSSION_PARTICIPATION_NOT_FOUND".to_string(),
+                message: "The private discussion participation was not found.".to_string(),
+            },
+            AppError::PrivateDiscussionParticipationUpdate => GenericResponse {
+                code: "PRIVATE_DISCUSSION_PARTICIPATION_UPDATE".to_string(),
+                message: "Failed to update the private discussion participation.".to_string(),
+            },
+            AppError::PrivateDiscussionNotFound => GenericResponse {
+                code: "PRIVATE_DISCUSSION_NOT_FOUND".to_string(),
+                message: "The private discussion was not found.".to_string(),
+            },
+            AppError::PrivateMessageContentEmpty => GenericResponse {
+                code: "PRIVATE_MESSAGE_CONTENT_EMPTY".to_string(),
+                message: "A private message's content must not be empty.".to_string(),
+            },
+            AppError::PrivateMessageContentTooLong => GenericResponse {
+                code: "PRIVATE_MESSAGE_CONTENT_TOO_LONG".to_string(),
+                message: format!(
+                    "A private message's content must be less than {} characters.",
+                    PRIVATE_MESSAGE_CONTENT_MAX_LENGTH
+                ),
+            },
+            AppError::PrivateMessageCreation => GenericResponse {
+                code: "PRIVATE_MESSAGE_CREATION".to_string(),
+                message: "Failed to create this private message.".to_string(),
+            },
+            AppError::PrivateMessageDeletion => GenericResponse {
+                code: "PRIVATE_MESSAGE_DELETION".to_string(),
+                message: "Failed to delete this private message.".to_string(),
+            },
+            AppError::PrivateMessageDeletionNotDoneByCreator => GenericResponse {
+                code: "PRIVATE_MESSAGE_DELETION_NOT_DONE_BY_CREATOR".to_string(),
+                message: "You can only delete a private message that you created.".to_string(),
+            },
+            AppError::PrivateMessageNotFound => GenericResponse {
+                code: "PRIVATE_MESSAGE_NOT_FOUND".to_string(),
+                message: "The private message was not found.".to_string(),
+            },
+            AppError::PrivateMessageUpdate => GenericResponse {
+                code: "PRIVATE_MESSAGE_UPDATE".to_string(),
+                message: "Failed to update this private message.".to_string(),
+            },
+            AppError::PrivateMessageUpdateNotDoneByCreator => GenericResponse {
+                code: "PRIVATE_MESSAGE_UPDATE_NOT_DONE_BY_CREATOR".to_string(),
+                message: "You can only update a private message that you created.".to_string(),
+            },
             AppError::PublicMessageCreation => GenericResponse {
                 code: "PUBLIC_MESSAGE_CREATION".to_string(),
                 message: "Failed to create this message".to_string(),
+            },
+            AppError::PublicMessageDeletion => GenericResponse {
+                code: "PUBLIC_MESSAGE_DELETION".to_string(),
+                message: "Failed to delete this message".to_string(),
             },
             AppError::PublicMessageDeletionNotDoneByAdmin => GenericResponse {
                 code: "PUBLIC_MESSAGE_DELETION_NOT_DONE_BY_ADMIN".to_string(),
@@ -343,6 +428,18 @@ impl AppError {
                 code: "PUBLIC_MESSAGE_UPDATE".to_string(),
                 message: "Failed to update this message".to_string(),
             },
+            AppError::RecoveryCodeDeletion => GenericResponse {
+                code: "RECOVERY_CODE_DELETION".to_string(),
+                message: "Failed to delete the recovery code.".to_string(),
+            },
+            AppError::RecoveryCodeCreation => GenericResponse {
+                code: "RECOVERY_CODE_CREATION".to_string(),
+                message: "Failed to create the recovery code.".to_string(),
+            },
+            AppError::RecoveryCodeHashCreation => GenericResponse {
+                code: "RECOVERY_CODE_HASH_CREATION".to_string(),
+                message: "Failed to create a hash for the recovery code.".to_string(),
+            },
             AppError::TokenGeneration => GenericResponse {
                 code: "TOKEN_GENERATION".to_string(),
                 message: "Failed to generate and save token".to_string(),
@@ -374,6 +471,10 @@ impl AppError {
             AppError::UsernameWrongSize => GenericResponse {
                 code: "USERNAME_WRONG_SIZE".to_string(),
                 message: "This username is too short or too long".to_string(),
+            },
+            AppError::UserAlreadyHasKeys => GenericResponse {
+                code: "USER_HAS_ALREADY_KEYS".to_string(),
+                message: "You already have keys".to_string(),
             },
             AppError::UserNotFound => GenericResponse {
                 code: "USER_NOT_FOUND".to_string(),

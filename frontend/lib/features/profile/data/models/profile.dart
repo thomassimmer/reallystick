@@ -11,6 +11,9 @@ class ProfileDataModel extends Equatable {
   final bool otpVerified;
   final bool passwordIsExpired;
   final bool isAdmin;
+  final String? publicKey;
+  final String? privateKeyEncrypted;
+  final String? saltUsedToDerivateKeyFromPassword;
 
   final bool hasSeenQuestions;
   final String? ageCategory;
@@ -36,6 +39,9 @@ class ProfileDataModel extends Equatable {
     required this.passwordIsExpired,
     required this.isAdmin,
     required this.hasSeenQuestions,
+    required this.publicKey,
+    required this.privateKeyEncrypted,
+    required this.saltUsedToDerivateKeyFromPassword,
     this.ageCategory,
     this.gender,
     this.continent,
@@ -60,6 +66,10 @@ class ProfileDataModel extends Equatable {
         otpVerified: json['otp_verified'] as bool,
         passwordIsExpired: json['password_is_expired'] as bool,
         isAdmin: json['is_admin'] as bool,
+        publicKey: json['public_key'] as String?,
+        privateKeyEncrypted: json['private_key_encrypted'] as String?,
+        saltUsedToDerivateKeyFromPassword:
+            json['salt_used_to_derive_key_from_password'] as String?,
         hasSeenQuestions: json['has_seen_questions'] as bool,
         ageCategory: json['age_category'] as String?,
         gender: json['gender'] as String?,
@@ -84,6 +94,9 @@ class ProfileDataModel extends Equatable {
         otpVerified: otpVerified,
         passwordIsExpired: passwordIsExpired,
         isAdmin: isAdmin,
+        publicKey: publicKey,
+        privateKeyEncrypted: privateKeyEncrypted,
+        saltUsedToDerivateKeyFromPassword: saltUsedToDerivateKeyFromPassword,
         ageCategory: ageCategory,
         gender: gender,
         continent: continent,
@@ -108,6 +121,9 @@ class ProfileDataModel extends Equatable {
         otpAuthUrl,
         otpVerified,
         passwordIsExpired,
+        publicKey,
+        privateKeyEncrypted,
+        saltUsedToDerivateKeyFromPassword,
         hasSeenQuestions,
         ageCategory,
         gender,

@@ -66,7 +66,7 @@ pub async fn user_can_like_a_public_message() {
     let (access_token, _) = user_logs_in(&app, "thomas", "").await;
     let challenge_id = user_creates_a_challenge(&app, &access_token).await;
 
-    let (access_token, _, _) = user_signs_up(&app, None).await;
+    let (access_token, _) = user_signs_up(&app, None).await;
 
     let public_message_likes = user_gets_liked_messages(&app, &access_token).await;
     assert_eq!(public_message_likes.len(), 0);
@@ -94,7 +94,7 @@ pub async fn user_can_delete_a_like_on_a_public_message() {
     let (access_token, _) = user_logs_in(&app, "thomas", "").await;
     let challenge_id = user_creates_a_challenge(&app, &access_token).await;
 
-    let (access_token, _, _) = user_signs_up(&app, None).await;
+    let (access_token, _) = user_signs_up(&app, None).await;
 
     let public_message_likes = user_gets_liked_messages(&app, &access_token).await;
     assert_eq!(public_message_likes.len(), 0);

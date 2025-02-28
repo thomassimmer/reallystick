@@ -17,12 +17,19 @@ class RegisterUserRequestModel {
   final String password;
   final String locale;
   final String theme;
+  final String publicKey;
+  final String privateKeyEncrypted;
+  final String saltUsedToDeriveKeyFromPassword;
 
-  const RegisterUserRequestModel(
-      {required this.username,
-      required this.password,
-      required this.locale,
-      required this.theme});
+  const RegisterUserRequestModel({
+    required this.username,
+    required this.password,
+    required this.locale,
+    required this.theme,
+    required this.publicKey,
+    required this.privateKeyEncrypted,
+    required this.saltUsedToDeriveKeyFromPassword,
+  });
 
   Map<String, dynamic> toJson() {
     return {
@@ -30,6 +37,9 @@ class RegisterUserRequestModel {
       'password': password,
       'locale': locale,
       'theme': theme,
+      'public_key': publicKey,
+      'private_key_encrypted': privateKeyEncrypted,
+      'salt_used_to_derive_key_from_password': saltUsedToDeriveKeyFromPassword,
     };
   }
 }

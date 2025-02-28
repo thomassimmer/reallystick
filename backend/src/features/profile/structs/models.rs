@@ -24,8 +24,10 @@ pub struct User {
     pub created_at: chrono::DateTime<chrono::Utc>,
     pub updated_at: chrono::DateTime<chrono::Utc>,
 
-    pub recovery_codes: String, // case sensitive
     pub password_is_expired: bool,
+    pub public_key: Option<String>,
+    pub private_key_encrypted: Option<String>,
+    pub salt_used_to_derive_key_from_password: Option<String>,
 
     pub has_seen_questions: bool,
     pub age_category: Option<String>,
@@ -49,6 +51,11 @@ impl User {
             locale: self.locale.to_owned(),
             theme: self.theme.to_owned(),
             is_admin: self.is_admin,
+            public_key: self.public_key.to_owned(),
+            private_key_encrypted: self.private_key_encrypted.to_owned(),
+            salt_used_to_derive_key_from_password: self
+                .salt_used_to_derive_key_from_password
+                .to_owned(),
             otp_auth_url: self.otp_auth_url.to_owned(),
             otp_base32: self.otp_base32.to_owned(),
             otp_verified: self.otp_verified,
@@ -72,6 +79,7 @@ impl User {
         UserPublicData {
             id: self.id,
             username: self.username.to_owned(),
+            public_key: self.public_key.to_owned(),
         }
     }
 }
@@ -102,6 +110,9 @@ pub struct UserData {
     pub otp_auth_url: Option<String>,
 
     pub password_is_expired: bool,
+    pub public_key: Option<String>,
+    pub private_key_encrypted: Option<String>,
+    pub salt_used_to_derive_key_from_password: Option<String>,
 
     pub has_seen_questions: bool,
     pub age_category: Option<String>,
@@ -121,9 +132,10 @@ pub struct UserData {
 pub struct UserPublicData {
     pub id: Uuid,
     pub username: String,
+    pub public_key: Option<String>,
 }
 
-#[derive(Default)]
+#[derive(Default, Clone)]
 pub struct UserPublicDataCache {
     data: Arc<RwLock<HashMap<Uuid, UserPublicData>>>,
 }

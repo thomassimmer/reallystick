@@ -17,6 +17,7 @@ actix-cors = "0.7.0"
 actix-http = "3.9.0"
 actix-rt = "2.10.0"
 actix-web = "4.9.0"
+actix-ws = "0.3.0"
 argon2 = "0.5.3"
 base32 = "0.5.1"
 chrono = { version = "0.4.38", features = ["serde"] }

@@ -8,6 +8,9 @@ use reallystick::features::auth::structs::responses::UserLoginResponse;
 use totp_rs::{Algorithm, Secret, TOTP};
 
 use crate::auth::otp::{user_generates_otp, user_verifies_otp};
+use crate::auth::recovery_code::{
+    generate_key_pair, generate_recovery_code, user_saves_recovery_code,
+};
 use crate::auth::signup::user_signs_up;
 use crate::helpers::spawn_app;
 use crate::profile::profile::user_has_access_to_protected_route;
@@ -41,7 +44,12 @@ pub async fn user_recovers_account_using_2fa(
 #[tokio::test]
 async fn user_can_recover_account_using_2fa() {
     let app = spawn_app().await;
-    let (access_token, _, recovery_codes) = user_signs_up(&app, None).await;
+    let (access_token, _) = user_signs_up(&app, None).await;
+    let (private_key, _) = generate_key_pair();
+    let recovery_code = generate_recovery_code();
+
+    user_saves_recovery_code(&app, &access_token, &recovery_code, &private_key).await;
+
     let otp_base32 = user_generates_otp(&app, &access_token).await;
 
     user_verifies_otp(&app, &access_token, &otp_base32).await;
@@ -56,11 +64,9 @@ async fn user_can_recover_account_using_2fa() {
     .unwrap();
     let code = totp.generate_current().unwrap();
 
-    for recovery_code in recovery_codes {
-        let (access_token, _) = user_recovers_account_using_2fa(&app, &recovery_code, &code).await;
+    let (access_token, _) = user_recovers_account_using_2fa(&app, &recovery_code, &code).await;
 
-        user_has_access_to_protected_route(&app, &access_token).await;
-    }
+    user_has_access_to_protected_route(&app, &access_token).await;
 }
 
 #[tokio::test]
@@ -94,7 +100,7 @@ async fn user_cannot_recover_account_using_2fa_without_2fa_enabled() {
 #[tokio::test]
 async fn user_cannot_recover_account_using_2fa_with_wrong_code() {
     let app = spawn_app().await;
-    let (access_token, _, _) = user_signs_up(&app, None).await;
+    let (access_token, _) = user_signs_up(&app, None).await;
     let otp_base32 = user_generates_otp(&app, &access_token).await;
 
     user_verifies_otp(&app, &access_token, &otp_base32).await;
@@ -121,7 +127,12 @@ async fn user_cannot_recover_account_using_2fa_with_wrong_code() {
 #[tokio::test]
 async fn user_cannot_recover_account_using_2fa_with_wrong_username() {
     let app = spawn_app().await;
-    let (access_token, _, recovery_codes) = user_signs_up(&app, None).await;
+    let (access_token, _) = user_signs_up(&app, None).await;
+    let (private_key, _) = generate_key_pair();
+    let recovery_code = generate_recovery_code();
+
+    user_saves_recovery_code(&app, &access_token, &recovery_code, &private_key).await;
+
     let otp_base32 = user_generates_otp(&app, &access_token).await;
 
     user_verifies_otp(&app, &access_token, &otp_base32).await;
@@ -141,7 +152,7 @@ async fn user_cannot_recover_account_using_2fa_with_wrong_username() {
         .set_json(&serde_json::json!({
             "username": "wrong_username",
             "code": code,
-            "recovery_code": recovery_codes[0],
+            "recovery_code": recovery_code,
         }))
         .to_request();
     let response = test::call_service(&app, req).await;
@@ -157,7 +168,12 @@ async fn user_cannot_recover_account_using_2fa_with_wrong_username() {
 #[tokio::test]
 async fn user_cannot_recover_account_using_2fa_using_code_twice() {
     let app = spawn_app().await;
-    let (access_token, _, recovery_codes) = user_signs_up(&app, None).await;
+    let (access_token, _) = user_signs_up(&app, None).await;
+    let (private_key, _) = generate_key_pair();
+    let recovery_code = generate_recovery_code();
+
+    user_saves_recovery_code(&app, &access_token, &recovery_code, &private_key).await;
+
     let otp_base32 = user_generates_otp(&app, &access_token).await;
 
     user_verifies_otp(&app, &access_token, &otp_base32).await;
@@ -171,7 +187,7 @@ async fn user_cannot_recover_account_using_2fa_using_code_twice() {
     )
     .unwrap();
     let code = totp.generate_current().unwrap();
-    let (access_token, _) = user_recovers_account_using_2fa(&app, &recovery_codes[0], &code).await;
+    let (access_token, _) = user_recovers_account_using_2fa(&app, &recovery_code, &code).await;
 
     user_has_access_to_protected_route(&app, &access_token).await;
 
@@ -180,7 +196,7 @@ async fn user_cannot_recover_account_using_2fa_using_code_twice() {
         .insert_header(ContentType::json())
         .set_json(&serde_json::json!({
             "username": "testusername",
-            "recovery_code": recovery_codes[0],
+            "recovery_code": recovery_code,
             "code": code
         }))
         .to_request();

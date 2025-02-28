@@ -23,25 +23,13 @@ pub struct HabitStatistics {
     pub challenges: Vec<String>,
 }
 
+#[derive(Default, Clone)]
 pub struct HabitStatisticsCache {
     data: Arc<RwLock<Vec<HabitStatistics>>>,
     last_updated: Arc<RwLock<Option<DateTime<Utc>>>>,
 }
 
-impl Default for HabitStatisticsCache {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
 impl HabitStatisticsCache {
-    pub fn new() -> Self {
-        Self {
-            data: Arc::new(RwLock::new(Vec::new())),
-            last_updated: Arc::new(RwLock::new(None)),
-        }
-    }
-
     pub async fn needs_update(&self) -> bool {
         let last_updated = self.last_updated.read().await;
         match *last_updated {

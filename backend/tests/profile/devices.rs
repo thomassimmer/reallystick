@@ -53,7 +53,7 @@ pub async fn user_removes_a_device(
 #[tokio::test]
 async fn user_can_remove_session_on_another_device() {
     let app = spawn_app().await;
-    let (initial_access_token, _, _) = user_signs_up(&app, None).await;
+    let (initial_access_token, _) = user_signs_up(&app, None).await;
 
     let devices = user_gets_list_of_devices(&app, &initial_access_token).await;
     assert_eq!(devices.len(), 1);

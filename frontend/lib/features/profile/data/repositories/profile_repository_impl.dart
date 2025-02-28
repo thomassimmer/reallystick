@@ -61,22 +61,23 @@ class ProfileRepositoryImpl implements ProfileRepository {
       Profile profile) async {
     try {
       final profileDataModel = await remoteDataSource.postProfileInformation(
-          UpdateProfileRequestModel(
-              username: profile.username,
-              locale: profile.locale,
-              theme: profile.theme,
-              hasSeenQuestions: profile.hasSeenQuestions,
-              ageCategory: profile.ageCategory,
-              gender: profile.gender,
-              continent: profile.continent,
-              country: profile.country,
-              region: profile.region,
-              activity: profile.activity,
-              financialSituation: profile.financialSituation,
-              livesInUrbanArea: profile.livesInUrbanArea,
-              relationshipStatus: profile.relationshipStatus,
-              levelOfEducation: profile.levelOfEducation,
-              hasChildren: profile.hasChildren));
+        UpdateProfileRequestModel(
+          locale: profile.locale,
+          theme: profile.theme,
+          hasSeenQuestions: profile.hasSeenQuestions,
+          ageCategory: profile.ageCategory,
+          gender: profile.gender,
+          continent: profile.continent,
+          country: profile.country,
+          region: profile.region,
+          activity: profile.activity,
+          financialSituation: profile.financialSituation,
+          livesInUrbanArea: profile.livesInUrbanArea,
+          relationshipStatus: profile.relationshipStatus,
+          levelOfEducation: profile.levelOfEducation,
+          hasChildren: profile.hasChildren,
+        ),
+      );
 
       return Right(profileDataModel.toDomain());
     } on ParsingError {

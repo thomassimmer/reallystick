@@ -130,7 +130,6 @@ class TwoFactorAuthenticationScreen extends StatelessWidget {
                             Clipboard.setData(
                                 ClipboardData(text: state.profile.otpBase32!));
 
-                            // Create an InfoMessage for successfully copying the codes
                             final message =
                                 InfoMessage('qrCodeSecretKeyCopied');
                             GlobalSnackBar.show(context, message);

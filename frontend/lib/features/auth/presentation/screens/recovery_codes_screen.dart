@@ -15,7 +15,7 @@ import 'package:reallystick/features/auth/presentation/blocs/auth/auth_events.da
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_states.dart';
 import 'package:reallystick/features/auth/presentation/widgets/background.dart';
 
-class RecoveryCodesScreen extends StatelessWidget {
+class RecoveryCodeScreen extends StatelessWidget {
   final TextEditingController _otpController = TextEditingController();
 
   @override
@@ -46,7 +46,7 @@ class RecoveryCodesScreen extends StatelessWidget {
                                 if (state.hasVerifiedOtp) {
                                   context.goNamed('home');
                                 } else {
-                                  context.goNamed('recovery-codes');
+                                  context.goNamed('recovery-code');
                                 }
                               } else if (state
                                   is AuthVerifyOneTimePasswordState) {
@@ -56,7 +56,7 @@ class RecoveryCodesScreen extends StatelessWidget {
                             builder: (context, state) {
                               if (state
                                   is AuthAuthenticatedAfterRegistrationState) {
-                                return _buildRecoveryCodesView(context, state);
+                                return _buildRecoveryCodeView(context, state);
                               } else if (state
                                   is AuthGenerateTwoFactorAuthenticationConfigState) {
                                 return _buildTwoFactorAuthenticationSetupView(
@@ -83,7 +83,7 @@ class RecoveryCodesScreen extends StatelessWidget {
   Widget _buildErrorScreen(BuildContext context, AuthState state) {
     return Column(children: [
       Text(
-        AppLocalizations.of(context)!.unableToLoadRecoveryCodes,
+        AppLocalizations.of(context)!.unableToLoadRecoveryCode,
       )
     ]);
   }
@@ -92,9 +92,9 @@ class RecoveryCodesScreen extends StatelessWidget {
     return Column(children: [CircularProgressIndicator()]);
   }
 
-  Widget _buildRecoveryCodesView(
+  Widget _buildRecoveryCodeView(
       BuildContext context, AuthAuthenticatedAfterRegistrationState state) {
-    if (state.recoveryCodes == null) {
+    if (state.recoveryCode == null) {
       return Column(children: [
         Text(
           AppLocalizations.of(context)!.noRecoveryCodeAvailable,
@@ -104,7 +104,7 @@ class RecoveryCodesScreen extends StatelessWidget {
       return Column(
         children: [
           Text(
-            AppLocalizations.of(context)!.keepRecoveryCodesSafe,
+            AppLocalizations.of(context)!.keepRecoveryCodeSafe,
             textAlign: TextAlign.center,
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
@@ -112,11 +112,10 @@ class RecoveryCodesScreen extends StatelessWidget {
           SelectionArea(
             child: Column(
               children: [
-                for (var recoveryCode in state.recoveryCodes!)
-                  SelectableText(
-                    recoveryCode,
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  )
+                SelectableText(
+                  state.recoveryCode!,
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                )
               ],
             ),
           ),
@@ -126,12 +125,9 @@ class RecoveryCodesScreen extends StatelessWidget {
               size: 12,
             ),
             onPressed: () {
-              // Concatenate all recovery codes and copy them to the clipboard
-              final codes = state.recoveryCodes!.join('\n');
-              Clipboard.setData(ClipboardData(text: codes));
+              Clipboard.setData(ClipboardData(text: state.recoveryCode!));
 
-              // Create an InfoMessage for successfully copying the codes
-              final message = InfoMessage('recoveryCodesCopied');
+              final message = InfoMessage('recoveryCodeCopied');
               GlobalSnackBar.show(context, message);
             },
           ),

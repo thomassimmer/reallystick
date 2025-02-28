@@ -20,7 +20,9 @@ import 'package:reallystick/features/habits/presentation/screens/habit_detail_sc
 import 'package:reallystick/features/habits/presentation/screens/habits_screen.dart';
 import 'package:reallystick/features/habits/presentation/screens/review_habit_screen.dart';
 import 'package:reallystick/features/habits/presentation/screens/search_habits_screen.dart';
-import 'package:reallystick/features/messages/presentation/messages_screen.dart';
+import 'package:reallystick/features/private_messages/presentation/screens/discussion_list_screen.dart';
+import 'package:reallystick/features/private_messages/presentation/screens/new_private_discussion_screen.dart';
+import 'package:reallystick/features/private_messages/presentation/screens/private_discussion_screen.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
 import 'package:reallystick/features/profile/presentation/screens/about_screen.dart';
@@ -234,7 +236,31 @@ final router = GoRouter(
         GoRoute(
           path: '/messages',
           name: 'messages',
-          builder: (context, state) => MessagesScreen(),
+          builder: (context, state) => DiscussionListScreen(),
+          routes: [
+            GoRoute(
+              path: ':discussionId',
+              name: 'discussion',
+              builder: (context, state) {
+                final discussionId = state.pathParameters['discussionId']!;
+
+                return PrivateDiscussionScreen(
+                  discussionId: discussionId,
+                );
+              },
+            ),
+            GoRoute(
+              path: 'new/:recipientId',
+              name: 'newDiscussion',
+              builder: (context, state) {
+                final recipientId = state.pathParameters['recipientId']!;
+
+                return NewPrivateDiscussionScreen(
+                  recipientId: recipientId,
+                );
+              },
+            ),
+          ],
         ),
         GoRoute(
           path: '/profile',
@@ -352,9 +378,9 @@ final router = GoRouter(
       },
     ),
     GoRoute(
-      path: '/recovery-codes',
-      name: 'recovery-codes',
-      builder: (context, state) => RecoveryCodesScreen(),
+      path: '/recovery-code',
+      name: 'recovery-code',
+      builder: (context, state) => RecoveryCodeScreen(),
     ),
     GoRoute(
       path: '/recover-account',

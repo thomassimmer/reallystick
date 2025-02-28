@@ -38,7 +38,7 @@ pub async fn user_gets_other_user_data(
 #[tokio::test]
 pub async fn user_can_get_other_users_public_data() {
     let app = spawn_app().await;
-    let (access_token, _, _) = user_signs_up(&app, None).await;
+    let (access_token, _) = user_signs_up(&app, None).await;
 
     let user_id = user_has_access_to_protected_route(&app, &access_token)
         .await
@@ -47,7 +47,7 @@ pub async fn user_can_get_other_users_public_data() {
     let users = user_gets_other_user_data(&app, &access_token, vec![user_id]).await;
     assert_eq!(users.len(), 1);
 
-    let (access_token, _, _) = user_signs_up(&app, Some("testusername2")).await;
+    let (access_token, _) = user_signs_up(&app, Some("testusername2")).await;
 
     let user_id2 = user_has_access_to_protected_route(&app, &access_token)
         .await

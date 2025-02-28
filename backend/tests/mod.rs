@@ -7,6 +7,7 @@ pub mod auth {
         pub mod recover_account_without_2fa_enabled;
     }
     pub mod logout;
+    pub mod recovery_code;
     pub mod signup;
     pub mod token;
 }
@@ -37,10 +38,16 @@ pub mod challenges {
     pub mod challenge_participation;
 }
 
-pub mod public_messages {
+pub mod public_discussions {
     pub mod public_message;
     pub mod public_message_like;
     pub mod public_message_report;
+}
+
+pub mod private_discussions {
+    pub mod private_discussion;
+    pub mod private_discussion_participation;
+    pub mod private_message;
 }
 
 pub mod helpers;

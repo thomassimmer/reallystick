@@ -140,7 +140,7 @@ pub async fn user_can_create_a_habit_daily_tracking() {
     let habit_category_id = user_creates_a_habit_category(&app, &access_token).await;
     let unit_id = user_creates_a_unit(&app, &access_token).await;
 
-    let (access_token, _, _) = user_signs_up(&app, None).await;
+    let (access_token, _) = user_signs_up(&app, None).await;
     let habit_id = user_creates_a_habit(
         &app,
         &access_token,
@@ -165,7 +165,7 @@ pub async fn user_can_update_a_habit_daily_tracking() {
     let habit_category_id = user_creates_a_habit_category(&app, &access_token).await;
     let unit_id = user_creates_a_unit(&app, &access_token).await;
 
-    let (access_token, _, _) = user_signs_up(&app, None).await;
+    let (access_token, _) = user_signs_up(&app, None).await;
     let habit_id = user_creates_a_habit(
         &app,
         &access_token,
@@ -186,7 +186,7 @@ pub async fn user_can_delete_a_habit_daily_tracking() {
     let habit_category_id = user_creates_a_habit_category(&app, &access_token).await;
     let unit_id = user_creates_a_unit(&app, &access_token).await;
 
-    let (access_token, _, _) = user_signs_up(&app, None).await;
+    let (access_token, _) = user_signs_up(&app, None).await;
     let habit_id = user_creates_a_habit(
         &app,
         &access_token,

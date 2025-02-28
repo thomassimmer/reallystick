@@ -113,6 +113,12 @@ String getTranslatedMessage(BuildContext context, Message message) {
       case 'passwordNotExpiredError':
         return localizations.passwordNotExpiredError;
 
+      // Private messages
+      case 'recipientMissingPublicKey':
+        return localizations.recipientMissingPublicKey;
+      case 'creatorMissingPublicKey':
+        return localizations.creatorMissingPublicKey;
+
       default:
         return localizations.defaultError;
     }
@@ -190,8 +196,8 @@ String getTranslatedMessage(BuildContext context, Message message) {
   } else if (message is InfoMessage) {
     switch (message.messageKey) {
       // Auth
-      case 'recoveryCodesCopied':
-        return localizations.recoveryCodesCopied;
+      case 'recoveryCodeCopied':
+        return localizations.recoveryCodeCopied;
       case 'qrCodeSecretKeyCopied':
         return localizations.qrCodeSecretKeyCopied;
 

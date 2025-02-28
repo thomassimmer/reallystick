@@ -18,11 +18,13 @@ pub async fn create_user(
             otp_auth_url,
             created_at,
             updated_at,
-            recovery_codes,
             password_is_expired,
-            is_admin
+            is_admin,
+            public_key,
+            private_key_encrypted,
+            salt_used_to_derive_key_from_password
         )
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
         "#,
         user.id,
         user.username,
@@ -32,9 +34,79 @@ pub async fn create_user(
         user.otp_auth_url,
         user.created_at,
         user.updated_at,
-        user.recovery_codes,
         user.password_is_expired,
-        user.is_admin
+        user.is_admin,
+        user.public_key,
+        user.private_key_encrypted,
+        user.salt_used_to_derive_key_from_password,
+    )
+    .execute(conn)
+    .await
+}
+
+pub async fn update_user(
+    conn: &mut PgConnection,
+    user: &User,
+) -> Result<PgQueryResult, sqlx::Error> {
+    sqlx::query!(
+        r#"
+        UPDATE users
+        SET 
+            username = $1,
+            locale = $2,
+            theme = $3,
+            age_category = $4,
+            gender = $5,
+            continent = $6,
+            country = $7,
+            region = $8,
+            activity = $9,
+            financial_situation = $10,
+            lives_in_urban_area = $11,
+            relationship_status = $12,
+            level_of_education = $13,
+            has_children = $14,
+            has_seen_questions = $15
+        WHERE id = $16
+        "#,
+        user.username,
+        user.locale,
+        user.theme,
+        user.age_category,
+        user.gender,
+        user.continent,
+        user.country,
+        user.region,
+        user.activity,
+        user.financial_situation,
+        user.lives_in_urban_area,
+        user.relationship_status,
+        user.level_of_education,
+        user.has_children,
+        user.has_seen_questions,
+        user.id,
+    )
+    .execute(conn)
+    .await
+}
+
+pub async fn update_user_keys(
+    conn: &mut PgConnection,
+    user: &User,
+) -> Result<PgQueryResult, sqlx::Error> {
+    sqlx::query!(
+        r#"
+        UPDATE users
+        SET 
+           public_key = $1,
+           private_key_encrypted = $2,
+           salt_used_to_derive_key_from_password = $3
+        WHERE id = $4
+        "#,
+        user.public_key,
+        user.private_key_encrypted,
+        user.salt_used_to_derive_key_from_password,
+        user.id,
     )
     .execute(conn)
     .await

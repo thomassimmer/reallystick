@@ -3,7 +3,6 @@ use serde::{Deserialize, Serialize};
 #[derive(Serialize, Debug, Deserialize)]
 pub struct UserSignupResponse {
     pub code: String,
-    pub recovery_codes: Vec<String>,
     pub access_token: String,
     pub refresh_token: String,
 }
@@ -12,6 +11,9 @@ pub struct UserSignupResponse {
 pub struct UserLoginWhenOtpEnabledResponse {
     pub code: String,
     pub user_id: String,
+    pub public_key: Option<String>,
+    pub private_key_encrypted: Option<String>,
+    pub salt_used_to_derive_key: Option<String>,
 }
 
 #[derive(Serialize, Debug, Deserialize)]
@@ -19,6 +21,9 @@ pub struct UserLoginResponse {
     pub code: String,
     pub access_token: String,
     pub refresh_token: String,
+    pub public_key: Option<String>,
+    pub private_key_encrypted: Option<String>,
+    pub salt_used_to_derive_key: Option<String>,
 }
 
 #[derive(Serialize, Debug, Deserialize)]
@@ -45,4 +50,9 @@ pub struct VerifyOtpResponse {
 pub struct DisableOtpResponse {
     pub code: String,
     pub two_fa_enabled: bool,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct SaveRecoveryCodeResponse {
+    pub code: String,
 }

@@ -18,6 +18,11 @@ import 'package:reallystick/features/habits/presentation/blocs/habit_daily_track
 import 'package:reallystick/features/habits/presentation/blocs/habit_daily_tracking_update/habit_daily_tracking_update_bloc.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit_merge/habit_merge_bloc.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit_review/habit_review_bloc.dart';
+import 'package:reallystick/features/private_messages/presentation/blocs/private_discussion/private_discussion_bloc.dart';
+import 'package:reallystick/features/private_messages/presentation/blocs/private_message/private_message_bloc.dart';
+import 'package:reallystick/features/private_messages/presentation/blocs/private_message_creation/private_message_creation_bloc.dart';
+import 'package:reallystick/features/private_messages/presentation/blocs/private_message_update/private_message_update_bloc.dart';
+import 'package:reallystick/features/private_messages/presentation/helpers/websocket_service.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
 import 'package:reallystick/features/profile/presentation/blocs/set_password/set_password_bloc.dart';
@@ -68,6 +73,8 @@ class ReallyStickApp extends StatelessWidget {
   }
 
   List<BlocProvider> _createBlocProviders() {
+    final webSocketService = WebSocketService();
+
     final authBloc = AuthBloc();
     final authSignupFormBloc = AuthSignupFormBloc();
     final profileBloc = ProfileBloc(authBloc: authBloc);
@@ -106,6 +113,20 @@ class ReallyStickApp extends StatelessWidget {
       threadBloc: threadBloc,
       replyBloc: replyBloc,
     );
+    final privateMessageBloc = PrivateMessageBloc(
+      authBloc: authBloc,
+      profileBloc: profileBloc,
+      userBloc: userBloc,
+    );
+    final privateDiscussionBloc = PrivateDiscussionBloc(
+      authBloc: authBloc,
+      userBloc: userBloc,
+      profileBloc: profileBloc,
+      privateMessageBloc: privateMessageBloc,
+      webSocketService: webSocketService,
+    );
+    final privateMessageCreationFormBloc = PrivateMessageCreationFormBloc();
+    final privateMessageUpdateFormBloc = PrivateMessageUpdateFormBloc();
 
     authBloc.add(AuthInitializeEvent());
 
@@ -178,6 +199,18 @@ class ReallyStickApp extends StatelessWidget {
       ),
       BlocProvider<ReplyBloc>(
         create: (context) => replyBloc,
+      ),
+      BlocProvider<PrivateMessageBloc>(
+        create: (context) => privateMessageBloc,
+      ),
+      BlocProvider<PrivateDiscussionBloc>(
+        create: (context) => privateDiscussionBloc,
+      ),
+      BlocProvider<PrivateMessageCreationFormBloc>(
+        create: (context) => privateMessageCreationFormBloc,
+      ),
+      BlocProvider<PrivateMessageUpdateFormBloc>(
+        create: (context) => privateMessageUpdateFormBloc,
       ),
     ];
   }

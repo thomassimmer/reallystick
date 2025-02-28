@@ -37,10 +37,12 @@ class ProfileAuthenticated extends ProfileState {
   Profile get profile => super.profile!; // Use '!' to ensure non-nullability
 
   final List<Device> devices;
+  final String? recoveryCode;
 
   const ProfileAuthenticated({
     required super.profile,
     required this.devices,
+    this.recoveryCode,
     super.message,
   });
 
@@ -48,6 +50,7 @@ class ProfileAuthenticated extends ProfileState {
   List<Object?> get props => [
         profile,
         devices,
+        recoveryCode,
         message,
       ];
 }

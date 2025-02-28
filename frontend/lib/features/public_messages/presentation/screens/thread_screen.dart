@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:reallystick/core/presentation/screens/loading_screen.dart';
 import 'package:reallystick/core/ui/colors.dart';
+import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_bloc.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_events.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_states.dart';
@@ -192,6 +193,19 @@ class ThreadScreenState extends State<ThreadScreen> {
                           hintText: AppLocalizations.of(context)!.replyTo(
                             userState.users[message.creator]?.username ??
                                 AppLocalizations.of(context)!.unknown,
+                          ),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              Icons.send,
+                              color: _content.trim().isNotEmpty
+                                  ? context.colors.primary
+                                  : context.colors.hint,
+                            ),
+                            onPressed: _content.trim().isNotEmpty
+                                ? () {
+                                    _replyToMessage();
+                                  }
+                                : null,
                           ),
                         ),
                       ),

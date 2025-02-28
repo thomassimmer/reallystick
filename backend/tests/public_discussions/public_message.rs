@@ -230,7 +230,7 @@ pub async fn user_can_create_a_public_message_on_a_habit() {
     )
     .await;
 
-    let (access_token, _, _) = user_signs_up(&app, None).await;
+    let (access_token, _) = user_signs_up(&app, None).await;
 
     let public_messages =
         user_gets_public_messages(&app, &access_token, None, Some(habit_id)).await;
@@ -258,7 +258,7 @@ pub async fn user_can_create_a_public_message_on_a_challenge() {
     let (access_token, _) = user_logs_in(&app, "thomas", "").await;
     let challenge_id = user_creates_a_challenge(&app, &access_token).await;
 
-    let (access_token, _, _) = user_signs_up(&app, None).await;
+    let (access_token, _) = user_signs_up(&app, None).await;
 
     let public_messages =
         user_gets_public_messages(&app, &access_token, Some(challenge_id), None).await;
@@ -286,7 +286,7 @@ pub async fn user_can_answer_a_public_message() {
     let (access_token, _) = user_logs_in(&app, "thomas", "").await;
     let challenge_id = user_creates_a_challenge(&app, &access_token).await;
 
-    let (access_token, _, _) = user_signs_up(&app, None).await;
+    let (access_token, _) = user_signs_up(&app, None).await;
 
     let public_messages =
         user_gets_public_messages(&app, &access_token, Some(challenge_id), None).await;
@@ -307,7 +307,7 @@ pub async fn user_can_answer_a_public_message() {
         user_gets_public_messages(&app, &access_token, Some(challenge_id), None).await;
     assert_eq!(public_messages.len(), 1);
 
-    let (access_token, _, _) = user_signs_up(&app, Some("user2")).await;
+    let (access_token, _) = user_signs_up(&app, Some("user2")).await;
 
     let public_message_2 = user_creates_a_public_message(
         &app,
@@ -339,7 +339,7 @@ pub async fn creator_can_update_a_public_message() {
     let (access_token, _) = user_logs_in(&app, "thomas", "").await;
     let challenge_id = user_creates_a_challenge(&app, &access_token).await;
 
-    let (access_token, _, _) = user_signs_up(&app, None).await;
+    let (access_token, _) = user_signs_up(&app, None).await;
 
     let public_messages =
         user_gets_public_messages(&app, &access_token, Some(challenge_id), None).await;
@@ -370,7 +370,7 @@ pub async fn creator_can_delete_a_public_message() {
     let (access_token, _) = user_logs_in(&app, "thomas", "").await;
     let challenge_id = user_creates_a_challenge(&app, &access_token).await;
 
-    let (access_token, _, _) = user_signs_up(&app, None).await;
+    let (access_token, _) = user_signs_up(&app, None).await;
 
     let public_messages =
         user_gets_public_messages(&app, &access_token, Some(challenge_id), None).await;
@@ -395,9 +395,7 @@ pub async fn creator_can_delete_a_public_message() {
 
     let public_messages =
         user_gets_public_messages(&app, &access_token, Some(challenge_id), None).await;
-    assert_eq!(public_messages.len(), 1);
-    assert_eq!(public_messages[0].deleted_by_creator, true);
-    assert_eq!(public_messages[0].deleted_by_admin, false);
+    assert_eq!(public_messages.len(), 0);
 }
 
 #[tokio::test]
@@ -406,7 +404,7 @@ pub async fn admin_can_delete_a_public_message() {
     let (access_token, _) = user_logs_in(&app, "thomas", "").await;
     let challenge_id = user_creates_a_challenge(&app, &access_token).await;
 
-    let (access_token, _, _) = user_signs_up(&app, None).await;
+    let (access_token, _) = user_signs_up(&app, None).await;
 
     let public_messages =
         user_gets_public_messages(&app, &access_token, Some(challenge_id), None).await;
@@ -433,7 +431,5 @@ pub async fn admin_can_delete_a_public_message() {
 
     let public_messages =
         user_gets_public_messages(&app, &access_token, Some(challenge_id), None).await;
-    assert_eq!(public_messages.len(), 1);
-    assert_eq!(public_messages[0].deleted_by_creator, false);
-    assert_eq!(public_messages[0].deleted_by_admin, true);
+    assert_eq!(public_messages.len(), 0);
 }

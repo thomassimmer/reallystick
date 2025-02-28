@@ -11,18 +11,6 @@ RUN cargo install cargo-watch
 # Set the working directory inside the container
 WORKDIR /app
 
-# First, copy the Cargo.toml and Cargo.lock files to build the dependency cache
-COPY --chown=rustuser:rustuser Cargo.toml Cargo.lock ./
-
-# Create a dummy main.rs file to build the dependencies
-RUN mkdir src && echo "fn main() {}" > src/main.rs
-
-# Build the dependencies only (this will be cached unless Cargo.toml or Cargo.lock changes)
-RUN cargo build
-
-# Remove the dummy main.rs to prepare for copying the actual source code
-RUN rm -rf src
-
 # Now copy the rest of the source code
 COPY --chown=rustuser:rustuser . .
 

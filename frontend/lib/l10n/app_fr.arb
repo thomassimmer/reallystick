@@ -18,6 +18,7 @@
   "analyticsInfoTooltip": "Ces statistiques sont rafraîchies toutes les heures.",
   "atLeastOneTranslationNeededError": "Au moins une traduction est requise.",
   "average": "Moyen",
+  "blockThisUser": "Bloquer cet utilisateur",
   "cancel": "Annuler",
   "category": "Catégorie",
   "changeColor": "Changer la couleur",
@@ -68,6 +69,7 @@
   "createHabit": "Créer l'habitude",
   "createANewChallenge": "Créez un nouveau défi",
   "createANewHabit": "Créez une nouvelle habitude",
+  "creatorMissingPublicKey": "Vous n'avez encore de clés secrètes. Reconnectez-vous pour en créer.",
   "currentPassword": "Mot de passe actuel",
   "dark": "Sombre",
   "dateTimeIsInTheFutureError": "La date ne peut pas être dans le futur.",
@@ -104,13 +106,22 @@
   "discussionsComingSoon": "Des discussions intéressantes vont bientôt arriver...",
   "duplicate": "Créer une copie",
   "duplicateChallenge": "Copie de défi",
+  "edit": "Modifier",
   "editActivity": "Modifier cette activité",
   "editChallenge": "Modifier ce défi",
+  "editedAt": "Modifié le {time}",
+  "@editedAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "enable": "Activer",
   "endDate": "Date de fin",
   "enterOneTimePassword": "Entrez le code à 6 chiffres généré par votre application pour confirmer votre authentification.",
   "enterPassword": "Entrez votre mot de passe.",
-  "enterRecoveryCode": "Entrez un de vos codes de récupération.",
+  "enterRecoveryCode": "Entrez votre code de récupération.",
   "enterUsername": "Entrez votre nom d'utilisateur.",
   "enterValidationCode": "Entrez le code de votre application d'authentification.",
   "failedToLoadChallenges": "Une erreur s'est produite lors de la récupération de vos défis.",
@@ -181,7 +192,7 @@
       }
     }
   },
-  "keepRecoveryCodesSafe": "Merci de garder ces codes de récupération bien à l'abri.\nIls seront nécessaires si vous perdez votre mot de passe ou l'acès à votre application d'authentification.",
+  "keepRecoveryCodeSafe": "Merci de garder ce code de récupération bien à l'abri.\nIl sera nécessaire si vous perdez votre mot de passe ou l'accès à votre application d'authentification.",
   "language": "Langue",
   "lastActivity": "Dernière activité :",
   "lastActivityDate": "Date de la dernière activité :",
@@ -260,6 +271,7 @@
   "missingDateTimeError": "La date ne peut pas être laissée vide.",
   "myChallenges": "Mes Défis",
   "myHabits": "Mes Habitudes",
+  "newDiscussion": "Nouvelle Discussion",
   "newPassword": "Nouveau mot de passe",
   "next": "Suivant",
   "no": "Non",
@@ -278,6 +290,7 @@
   "noDiscussionsForHabitYet": "Il n'y a pas encore de discussion pour cette habitude.\nCréez la première !",
   "noHabitsYet": "Vous n'avez pas encore d'habitude.",
   "noLikedMessages": "Vous n'avez pas encore aimé un message.",
+  "noMessagesYet": "Il n'y a pas encore de message dans cette discussion.",
   "noRecoveryCodeAvailable": "Aucun code de récupération disponible.",
   "noReportedMessages": "Vous n'avez pas encore signalé un message.",
   "noResultsFound": "Pas de résultat.",
@@ -345,9 +358,10 @@
   "quitThisHabit": "Sortir de cette habitude",
   "qrCodeSecretKeyCopied": "La clé secrète du QR-code a été copiée dans le presse-papiers.",
   "reason": "Raison",
+  "recipientMissingPublicKey": "Ce destinataire n'a pas encore de clés secrètes.",
   "recoverAccount": "Récupération de compte",
   "recoveryCode": "Code de récupération",
-  "recoveryCodesCopied": "Les codes de récupération ont été copiés dans le presse-papiers.",
+  "recoveryCodeCopied": "Le code de récupération a été copié dans le presse-papiers.",
   "refreshTokenExpiredError": "Votre session a expiré. Veuillez vous reconnecter.",
   "regenerateQrCode": "Régénérer un QR-code",
   "region": "Région",
@@ -425,9 +439,10 @@
   },
   "twoFASetup": "Activez l'authentification à deux facteurs pour sécuriser votre compte.",
   "twoFactorAuthenticationNotEnabledError": "L'authentification à deux facteurs n'est pas activée sur votre compte.",
-  "unableToLoadRecoveryCodes": "Impossible de charger les codes de récupération.",
+  "unableToLoadRecoveryCode": "Impossible de charger le code de récupération.",
   "unauthorizedError": "Vous n'êtes pas autorisé à effectuer cette opération.",
   "unemployed": "Sans emploi",
+  "unblockThisUser": "Débloquer cet utilisateur",
   "unit": "Unité",
   "unitNotFoundError": "Cette unité n'existe pas.",
   "unknown": "Inconnu",
@@ -449,6 +464,15 @@
   "welcome": "Bienvenue sur ReallyStick",
   "worker": "Travailleur",
   "writtenMessages": "Messages écrits",
+  "writeTo": "Écrivez à {user}...",
+  "@writeTo": {
+    "placeholders": {
+      "user": {
+        "type": "String"
+      }
+    }
+  },
   "yes": "Oui",
-  "youAreNotTheCreatorOfThisChallenge": "Vous n'êtes pas le créateur de ce challenge."
+  "youAreNotTheCreatorOfThisChallenge": "Vous n'êtes pas le créateur de ce challenge.",
+  "youBlockedThisUser": "Vous avez bloqué cet utilisateur."
 }

@@ -8,13 +8,22 @@ use actix_web::{
 use argon2::PasswordHasher;
 use argon2::{password_hash::SaltString, Argon2};
 use rand::rngs::OsRng;
-use reallystick::core::helpers::mock_now::now;
 use reallystick::{
     configuration::{get_configuration, DatabaseSettings},
     features::profile::{helpers::profile::create_user, structs::models::User},
     startup::create_app,
 };
-use sqlx::{migrate, Connection, Executor, PgConnection, PgPool};
+use reallystick::{
+    core::helpers::mock_now::now,
+    features::{
+        auth::structs::models::TokenCache,
+        challenges::structs::models::challenge_statistics::ChallengeStatisticsCache,
+        habits::structs::models::habit_statistics::HabitStatisticsCache,
+        private_discussions::structs::models::private_message::ChannelsData,
+        profile::structs::models::UserPublicDataCache,
+    },
+};
+use sqlx::{migrate, Connection, Executor, PgConnection, PgPool, Pool, Postgres};
 use uuid::Uuid;
 
 pub async fn spawn_app(
@@ -29,11 +38,28 @@ pub async fn spawn_app(
         c
     };
 
-    configure_database(&configuration.database).await;
-    init_service(create_app(&configuration)).await
+    let habit_statistics_cache = HabitStatisticsCache::default();
+    let challenge_statistics_cache = ChallengeStatisticsCache::default();
+    let token_cache = TokenCache::default();
+    let user_public_data_cache = UserPublicDataCache::default();
+    let channels_data = ChannelsData::default();
+
+    let connection_pool = configure_database(&configuration.database).await;
+    let secret = configuration.application.secret;
+
+    init_service(create_app(
+        connection_pool.clone(),
+        secret.clone(),
+        habit_statistics_cache.clone(),
+        challenge_statistics_cache.clone(),
+        token_cache.clone(),
+        user_public_data_cache.clone(),
+        channels_data.clone(),
+    ))
+    .await
 }
 
-async fn configure_database(config: &DatabaseSettings) {
+async fn configure_database(config: &DatabaseSettings) -> Pool<Postgres> {
     // Create database
     let mut connection = PgConnection::connect_with(&config.without_db())
         .await
@@ -72,7 +98,9 @@ async fn configure_database(config: &DatabaseSettings) {
         otp_auth_url: None,
         created_at: now(),
         updated_at: now(),
-        recovery_codes: "".to_string(),
+        public_key: None,
+        private_key_encrypted: None,
+        salt_used_to_derive_key_from_password: None,
         password_is_expired: false,
         has_seen_questions: false,
         age_category: None,
@@ -101,4 +129,6 @@ async fn configure_database(config: &DatabaseSettings) {
     if let Err(e) = result {
         eprintln!("{}", e);
     }
+
+    connection_pool
 }

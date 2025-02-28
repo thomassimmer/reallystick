@@ -3,9 +3,16 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:reallystick/core/messages/message.dart';
+import 'package:reallystick/core/utils/recovery_code_generator.dart';
+import 'package:reallystick/features/auth/data/storage/private_message_key_storage.dart';
 import 'package:reallystick/features/auth/domain/errors/domain_error.dart';
+import 'package:reallystick/features/auth/domain/usecases/derive_key_from_password_usecase.dart';
 import 'package:reallystick/features/auth/domain/usecases/disable_two_factor_authentication_use_case.dart';
+import 'package:reallystick/features/auth/domain/usecases/encrypt_key_using_derivated_key_usecase.dart';
+import 'package:reallystick/features/auth/domain/usecases/generate_rsa_keys_usecase.dart';
 import 'package:reallystick/features/auth/domain/usecases/generate_two_factor_authentication_config_use_case.dart';
+import 'package:reallystick/features/auth/domain/usecases/save_keys_usecase.dart';
+import 'package:reallystick/features/auth/domain/usecases/save_recovery_code_usecase.dart';
 import 'package:reallystick/features/auth/domain/usecases/verify_one_time_password_use_case.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_bloc.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_events.dart';
@@ -49,6 +56,15 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       GetIt.instance<GetDevicesUsecase>();
   final DeleteDeviceUseCase deleteDeviceUseCase =
       GetIt.instance<DeleteDeviceUseCase>();
+  final SaveRecoveryCodeUsecase saveRecoveryCodeUsecase =
+      GetIt.instance<SaveRecoveryCodeUsecase>();
+  final SaveKeysUsecase saveKeysUsecase = GetIt.instance<SaveKeysUsecase>();
+  final DeriveKeyFromPasswordUsecase deriveKeyFromPasswordUsecase =
+      GetIt.instance<DeriveKeyFromPasswordUsecase>();
+  final EncryptKeyUsingDerivatedKeyUsecase encryptKeyUsingDerivatedKeyUsecase =
+      GetIt.instance<EncryptKeyUsingDerivatedKeyUsecase>();
+  final GenerateRSAKeysUsecase generateRSAKeysUsecase =
+      GetIt.instance<GenerateRSAKeysUsecase>();
 
   ProfileBloc({required this.authBloc}) : super(ProfileLoading()) {
     authBlocSubscription = authBloc.stream.listen((authState) {
@@ -71,6 +87,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     on<ProfileUpdatePasswordEvent>(_updatePassword);
     on<DeleteAccountEvent>(_deleteAccount);
     on<DeleteDeviceEvent>(_deleteDevice);
+    on<GenerateNewRecoveryCodeEvent>(_generateNewRecoveryCode);
   }
 
   @override
@@ -100,6 +117,15 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         }
       },
       (profile) async {
+        if (profile.publicKey == null) {
+          // Logout to force login again and create keys using password
+          authBloc.add(
+            AuthLogoutEvent(
+              message: ErrorMessage('logoutDueToMissingKeys'),
+            ),
+          );
+        }
+
         final getDevicesResult = await getDevicesUsecase.call();
 
         getDevicesResult.fold(
@@ -392,6 +418,39 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
                 .toList(),
             message: SuccessMessage('deviceDeleteSuccessful')));
       },
+    );
+  }
+
+  void _generateNewRecoveryCode(
+      GenerateNewRecoveryCodeEvent event, Emitter<ProfileState> emit) async {
+    final currentState = state as ProfileAuthenticated;
+    emit(ProfileLoading(profile: state.profile));
+
+    String recoveryCode = RecoveryCodeGenerator.generate();
+    String privateKey = await PrivateMessageKeyStorage().getPrivateKey() ?? "";
+
+    final derivatedKeyResult = await deriveKeyFromPasswordUsecase.call(
+      password: recoveryCode,
+      salt: null,
+    );
+
+    String privateKeyEncrypted = encryptKeyUsingDerivatedKeyUsecase.call(
+      privateKey: privateKey,
+      derivedKey: derivatedKeyResult.derivedKey,
+    );
+
+    saveRecoveryCodeUsecase.call(
+      recoveryCode: recoveryCode,
+      privateKeyEncrypted: privateKeyEncrypted,
+      saltUsedToDeriveKeyFromRecoveryCode: derivatedKeyResult.salt,
+    );
+
+    emit(
+      ProfileAuthenticated(
+        profile: currentState.profile,
+        devices: currentState.devices,
+        recoveryCode: recoveryCode,
+      ),
     );
   }
 }

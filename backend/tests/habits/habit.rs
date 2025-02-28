@@ -239,7 +239,7 @@ pub async fn user_can_create_a_habit() {
     let habit_category_id = user_creates_a_habit_category(&app, &access_token).await;
     let unit_id = user_creates_a_unit(&app, &access_token).await;
 
-    let (access_token, _, _) = user_signs_up(&app, None).await;
+    let (access_token, _) = user_signs_up(&app, None).await;
 
     let habits = user_gets_habits(&app, &access_token).await;
     assert!(habits.is_empty());
@@ -258,7 +258,7 @@ pub async fn user_can_create_a_habit() {
     assert_eq!(habits.len(), 1);
 
     // Before it has been reviewed, other users can't see it
-    let (access_token, _, _) = user_signs_up(&app, Some("testusername2")).await;
+    let (access_token, _) = user_signs_up(&app, Some("testusername2")).await;
 
     let habits = user_gets_habits(&app, &access_token).await;
     assert!(habits.is_empty());
@@ -343,7 +343,7 @@ pub async fn normal_user_can_not_merge_two_habits() {
     let habit_category_id = user_creates_a_habit_category(&app, &access_token).await;
     let unit_id = user_creates_a_unit(&app, &access_token).await;
 
-    let (access_token, _, _) = user_signs_up(&app, None).await;
+    let (access_token, _) = user_signs_up(&app, None).await;
     let (first_habit_id, second_habit_id) =
         user_create_two_habits_to_merge(&app, &access_token, habit_category_id, vec![unit_id])
             .await;
@@ -485,7 +485,6 @@ pub async fn user_can_get_habit_statistics() {
         .insert_header((header::AUTHORIZATION, format!("Bearer {}", access_token)))
         .insert_header(ContentType::json())
         .set_json(&serde_json::json!({
-            "username": "thomas",
             "locale": "fr",
             "theme": "light",
             "has_seen_questions": true,
@@ -574,14 +573,13 @@ pub async fn user_can_get_habit_statistics() {
     );
     assert_eq!(statistics[0].challenges, Vec::<String>::new());
 
-    let (access_token, refresh_token, _) = user_signs_up(&app, None).await;
+    let (access_token, refresh_token) = user_signs_up(&app, None).await;
 
     let req = test::TestRequest::post()
         .uri("/api/users/me")
         .insert_header((header::AUTHORIZATION, format!("Bearer {}", access_token)))
         .insert_header(ContentType::json())
         .set_json(&serde_json::json!({
-            "username": "testusername",
             "locale": "fr",
             "theme": "light",
             "has_seen_questions": true,

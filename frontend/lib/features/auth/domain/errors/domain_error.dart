@@ -43,6 +43,11 @@ class UserNotFoundDomainError implements DomainError {
   final String messageKey = 'userNotFoundError';
 }
 
+class UserHasAlreadyKeysDomainError implements DomainError {
+  @override
+  final String messageKey = 'userHasAlreadyKeysError';
+}
+
 class InvalidOneTimePasswordDomainError implements DomainError {
   @override
   final String messageKey = 'invalidOneTimePasswordError';

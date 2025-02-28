@@ -1,5 +1,4 @@
 class UpdateProfileRequestModel {
-  final String username;
   final String locale;
   final String theme;
   final bool hasSeenQuestions;
@@ -15,26 +14,25 @@ class UpdateProfileRequestModel {
   final String? levelOfEducation;
   final bool? hasChildren;
 
-  const UpdateProfileRequestModel(
-      {required this.username,
-      required this.locale,
-      required this.theme,
-      required this.hasSeenQuestions,
-      this.ageCategory,
-      this.gender,
-      this.continent,
-      this.country,
-      this.region,
-      this.activity,
-      this.financialSituation,
-      this.livesInUrbanArea,
-      this.relationshipStatus,
-      this.levelOfEducation,
-      this.hasChildren});
+  const UpdateProfileRequestModel({
+    required this.locale,
+    required this.theme,
+    required this.hasSeenQuestions,
+    this.ageCategory,
+    this.gender,
+    this.continent,
+    this.country,
+    this.region,
+    this.activity,
+    this.financialSituation,
+    this.livesInUrbanArea,
+    this.relationshipStatus,
+    this.levelOfEducation,
+    this.hasChildren,
+  });
 
   Map<String, dynamic> toJson() {
     return {
-      'username': username,
       'locale': locale,
       'theme': theme,
       'has_seen_questions': hasSeenQuestions,

@@ -8,6 +8,9 @@ class Profile {
   bool otpVerified;
   bool passwordIsExpired;
   bool isAdmin;
+  String? publicKey;
+  String? privateKeyEncrypted;
+  String? saltUsedToDerivateKeyFromPassword;
 
   bool hasSeenQuestions;
   String? ageCategory;
@@ -33,6 +36,9 @@ class Profile {
     required this.passwordIsExpired,
     required this.isAdmin,
     required this.hasSeenQuestions,
+    required this.publicKey,
+    required this.privateKeyEncrypted,
+    required this.saltUsedToDerivateKeyFromPassword,
     this.ageCategory,
     this.gender,
     this.continent,

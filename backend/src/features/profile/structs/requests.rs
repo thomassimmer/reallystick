@@ -3,7 +3,6 @@ use uuid::Uuid;
 
 #[derive(Debug, Deserialize)]
 pub struct UserUpdateRequest {
-    pub username: String,
     pub locale: String,
     pub theme: String,
 
@@ -26,15 +25,19 @@ pub struct IsOtpEnabledRequest {
     pub username: String,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct SetUserPasswordRequest {
     pub new_password: String,
+    pub private_key_encrypted: String,
+    pub salt_used_to_derive_key_from_password: String,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct UpdateUserPasswordRequest {
     pub current_password: String,
     pub new_password: String,
+    pub private_key_encrypted: String,
+    pub salt_used_to_derive_key_from_password: String,
 }
 
 #[derive(Deserialize)]

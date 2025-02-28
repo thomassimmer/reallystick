@@ -1,6 +1,6 @@
 use actix_web::{post, web, HttpRequest, HttpResponse, Responder};
 use argon2::{password_hash::SaltString, Argon2, PasswordHasher};
-use rand::{distributions::Alphanumeric, rngs::OsRng, Rng};
+use rand::rngs::OsRng;
 use sqlx::PgPool;
 use uuid::Uuid;
 
@@ -84,32 +84,6 @@ pub async fn register_user(
         }
     };
 
-    // Generate recovery codes
-    let mut clear_recovery_codes = Vec::new();
-    let mut hashed_recovery_codes = Vec::new();
-    for _ in 0..5 {
-        let code: String = rand::thread_rng()
-            .sample_iter(&Alphanumeric)
-            .take(16)
-            .map(char::from)
-            .collect();
-
-        clear_recovery_codes.push(code.clone());
-
-        let hashed_code = match argon2.hash_password(code.as_bytes(), &salt) {
-            Ok(hash) => hash.to_string(),
-            Err(e) => {
-                eprintln!("Error: {}", e);
-                return HttpResponse::InternalServerError().json(GenericResponse {
-                    code: "RECOVERY_CODE_HASH".to_string(),
-                    message: "Failed to hash recovery code".to_string(),
-                });
-            }
-        };
-
-        hashed_recovery_codes.push(hashed_code);
-    }
-
     let new_user = User {
         id: Uuid::new_v4(),
         username: username_lower,
@@ -122,7 +96,6 @@ pub async fn register_user(
         otp_auth_url: None,
         created_at: now(),
         updated_at: now(),
-        recovery_codes: hashed_recovery_codes.join(";"),
         password_is_expired: false,
         has_seen_questions: false,
         age_category: None,
@@ -136,6 +109,11 @@ pub async fn register_user(
         relationship_status: None,
         level_of_education: None,
         has_children: None,
+        public_key: Some(body.public_key.clone()),
+        private_key_encrypted: Some(body.private_key_encrypted.clone()),
+        salt_used_to_derive_key_from_password: Some(
+            body.salt_used_to_derive_key_from_password.clone(),
+        ),
     };
 
     let insert_result = create_user(&mut transaction, new_user.clone()).await;
@@ -175,7 +153,6 @@ pub async fn register_user(
 
     let json_response = UserSignupResponse {
         code: "USER_SIGNED_UP".to_string(),
-        recovery_codes: clear_recovery_codes,
         access_token,
         refresh_token,
     };

@@ -109,7 +109,7 @@ pub async fn user_can_report_a_public_message() {
     let (access_token, _) = user_logs_in(&app, "thomas", "").await;
     let challenge_id = user_creates_a_challenge(&app, &access_token).await;
 
-    let (access_token, _, _) = user_signs_up(&app, None).await;
+    let (access_token, _) = user_signs_up(&app, None).await;
 
     let public_message_reports = user_gets_user_message_reports(&app, &access_token).await;
     assert_eq!(public_message_reports.0.len(), 0);

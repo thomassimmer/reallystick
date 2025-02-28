@@ -8,9 +8,12 @@ import 'package:reallystick/core/messages/errors/data_error.dart';
 import 'package:reallystick/core/messages/errors/domain_error.dart';
 import 'package:reallystick/features/auth/data/errors/data_error.dart';
 import 'package:reallystick/features/auth/data/models/otp_request_model.dart';
+import 'package:reallystick/features/auth/data/models/save_keys_request_model.dart';
+import 'package:reallystick/features/auth/data/models/save_recovery_code_request_model.dart';
 import 'package:reallystick/features/auth/data/models/user_token_request_model.dart';
 import 'package:reallystick/features/auth/data/sources/remote_data_sources.dart';
 import 'package:reallystick/features/auth/domain/entities/two_factor_authentication_config.dart';
+import 'package:reallystick/features/auth/domain/entities/user_data_before_otp_verified.dart';
 import 'package:reallystick/features/auth/domain/entities/user_token.dart';
 import 'package:reallystick/features/auth/domain/errors/domain_error.dart';
 import 'package:reallystick/features/auth/domain/repositories/auth_repository.dart';
@@ -27,6 +30,9 @@ class AuthRepositoryImpl implements AuthRepository {
     required String password,
     required String locale,
     required String theme,
+    required String publicKey,
+    required String privateKeyEncrypted,
+    required String saltUsedToDeriveKeyFromPassword,
   }) async {
     try {
       final userTokenDataModel = await remoteDataSource.signup(
@@ -35,6 +41,9 @@ class AuthRepositoryImpl implements AuthRepository {
           password: password,
           locale: locale,
           theme: theme,
+          publicKey: publicKey,
+          privateKeyEncrypted: privateKeyEncrypted,
+          saltUsedToDeriveKeyFromPassword: saltUsedToDeriveKeyFromPassword,
         ),
       );
 
@@ -67,7 +76,8 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<DomainError, Either<UserToken, String>>> login({
+  Future<Either<DomainError, Either<UserToken, UserDataBeforeOtpVerified>>>
+      login({
     required String username,
     required String password,
   }) async {
@@ -80,8 +90,17 @@ class AuthRepositoryImpl implements AuthRepository {
       );
 
       return result.fold(
-          (userTokenDataModel) => Right(Left(userTokenDataModel.toDomain())),
-          (string) => Right(Right(string)));
+        (userTokenDataModel) => Right(
+          Left(
+            userTokenDataModel.toDomain(),
+          ),
+        ),
+        (userDataBeforeOtpVerifiedModel) => Right(
+          Right(
+            userDataBeforeOtpVerifiedModel.toDomain(),
+          ),
+        ),
+      );
     } on ParsingError {
       logger.e('ParsingError occurred.');
       return Left(InvalidResponseDomainError());
@@ -336,8 +355,11 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       final userTokenDataModel = await remoteDataSource
           .recoverAccountWithoutTwoFactorAuthenticationEnabled(
-              RecoverAccountWithRecoveryCodeRequestModel(
-                  username: username, recoveryCode: recoveryCode));
+        RecoverAccountWithRecoveryCodeRequestModel(
+          username: username,
+          recoveryCode: recoveryCode,
+        ),
+      );
 
       return Right(userTokenDataModel.toDomain());
     } on ParsingError {
@@ -376,6 +398,81 @@ class AuthRepositoryImpl implements AuthRepository {
     } on InternalServerError {
       logger.e('InternalServerError occured.');
       return Left(InternalServerDomainError());
+    } catch (e) {
+      logger.e('Data error occurred: ${e.toString()}');
+      return Left(UnknownDomainError());
+    }
+  }
+
+  @override
+  Future<Either<DomainError, void>> saveKeys({
+    required String publicKey,
+    required String privateKeyEncrypted,
+    required String saltUsedToDeriveKeyFromPassword,
+  }) async {
+    try {
+      await remoteDataSource.saveKeys(
+        SaveKeysRequestModel(
+          publicKey: publicKey,
+          privateKeyEncrypted: privateKeyEncrypted,
+          saltUsedToDeriveKeyFromPassword: saltUsedToDeriveKeyFromPassword,
+        ),
+      );
+
+      return Right(null);
+    } on ParsingError {
+      logger.e('ParsingError occurred.');
+      return Left(InvalidResponseDomainError());
+    } on UnauthorizedError {
+      logger.e('UnauthorizedError occurred.');
+      return Left(UnauthorizedDomainError());
+    } on InternalServerError {
+      logger.e('InternalServerError occured.');
+      return Left(InternalServerDomainError());
+    } on InvalidUsernameOrRecoveryCodeError {
+      logger.e('InvalidUsernameOrRecoveryCodeError occured.');
+      return Left(InvalidUsernameOrRecoveryCodeDomainError());
+    } on UserNotFoundError {
+      logger.e('UserNotFoundError occured.');
+      return Left(UserNotFoundDomainError());
+    } on UserHasAlreadyKeysError {
+      logger.e('UserHasAlreadyKeysError occured.');
+      return Left(UserHasAlreadyKeysDomainError());
+    } catch (e) {
+      logger.e('Data error occurred: ${e.toString()}');
+      return Left(UnknownDomainError());
+    }
+  }
+
+  @override
+  Future<Either<DomainError, void>> saveRecoveryCode({
+    required String recoveryCode,
+    required String privateKeyEncrypted,
+    required String saltUsedToDeriveKeyFromRecoveryCode,
+  }) async {
+    try {
+      await remoteDataSource.saveRecoveryCode(
+        SaveRecoveryCodeRequestModel(
+          recoveryCode: recoveryCode,
+          privateKeyEncrypted: privateKeyEncrypted,
+          saltUsedToDeriveKeyFromRecoveryCode:
+              saltUsedToDeriveKeyFromRecoveryCode,
+        ),
+      );
+
+      return Right(null);
+    } on ParsingError {
+      logger.e('ParsingError occurred.');
+      return Left(InvalidResponseDomainError());
+    } on UnauthorizedError {
+      logger.e('UnauthorizedError occurred.');
+      return Left(UnauthorizedDomainError());
+    } on InternalServerError {
+      logger.e('InternalServerError occured.');
+      return Left(InternalServerDomainError());
+    } on InvalidUsernameOrRecoveryCodeError {
+      logger.e('InvalidUsernameOrRecoveryCodeError occured.');
+      return Left(InvalidUsernameOrRecoveryCodeDomainError());
     } catch (e) {
       logger.e('Data error occurred: ${e.toString()}');
       return Left(UnknownDomainError());

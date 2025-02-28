@@ -30,6 +30,7 @@ pub mod features {
         pub mod helpers {
             pub mod errors;
             pub mod password;
+            pub mod recovery_code;
             pub mod token;
             pub mod username;
         }
@@ -43,6 +44,8 @@ pub mod features {
             pub mod recover_account_using_password;
             pub mod recover_account_without_2fa_enabled;
             pub mod refresh_token;
+            pub mod save_keys;
+            pub mod save_recovery_code;
             pub mod signup;
             pub mod validate_otp;
             pub mod verify_otp;
@@ -233,6 +236,46 @@ pub mod features {
                 pub mod public_message_like;
                 pub mod public_message_report;
             }
+        }
+    }
+
+    pub mod private_discussions {
+        pub mod helpers {
+            pub mod private_discussion;
+            pub mod private_discussion_participation;
+            pub mod private_message;
+        }
+
+        pub mod structs {
+            pub mod models {
+                pub mod private_discussion;
+                pub mod private_discussion_participation;
+                pub mod private_message;
+            }
+
+            pub mod requests {
+                pub mod private_discussion;
+                pub mod private_discussion_participation;
+                pub mod private_message;
+            }
+
+            pub mod responses {
+                pub mod private_discussion;
+                pub mod private_discussion_participation;
+                pub mod private_message;
+            }
+        }
+
+        pub mod routes {
+            pub mod create_private_discussion;
+            pub mod create_private_message;
+            pub mod delete_private_message;
+            pub mod get_private_discussion_messages;
+            pub mod get_private_discussions;
+            pub mod mark_message_as_seen;
+            pub mod update_private_discussion_participation;
+            pub mod update_private_message;
+            pub mod websocket;
         }
     }
 }

@@ -185,7 +185,7 @@ pub async fn user_gets_challenge_statistics(
 pub async fn user_can_create_a_challenge() {
     let app = spawn_app().await;
 
-    let (access_token, _, _) = user_signs_up(&app, None).await;
+    let (access_token, _) = user_signs_up(&app, None).await;
 
     let challenges = user_gets_challenges(&app, &access_token).await;
     assert!(challenges.is_empty());
@@ -195,7 +195,7 @@ pub async fn user_can_create_a_challenge() {
     let challenges = user_gets_challenges(&app, &access_token).await;
     assert_eq!(challenges.len(), 1);
 
-    let (access_token, _, _) = user_signs_up(&app, Some("testusername2")).await;
+    let (access_token, _) = user_signs_up(&app, Some("testusername2")).await;
 
     let challenges = user_gets_challenges(&app, &access_token).await;
     assert_eq!(challenges.len(), 0);
@@ -247,7 +247,7 @@ pub async fn user_can_duplicate_a_challenge() {
     assert!(challenge_daily_trackings[0].id == challenge_daily_tracking_id);
     assert!(challenge_daily_trackings[0].challenge_id == initial_challenge.id);
 
-    let (access_token, _, _) = user_signs_up(&app, None).await;
+    let (access_token, _) = user_signs_up(&app, None).await;
 
     let challenges = user_gets_challenges(&app, &access_token).await;
     assert_eq!(challenges.len(), 0);
@@ -272,10 +272,10 @@ pub async fn user_can_duplicate_a_challenge() {
 #[tokio::test]
 pub async fn normal_user_cannot_update_a_challenge() {
     let app = spawn_app().await;
-    let (access_token, _, _) = user_signs_up(&app, None).await;
+    let (access_token, _) = user_signs_up(&app, None).await;
     let challenge_id = user_creates_a_challenge(&app, &access_token).await;
 
-    let (access_token, _, _) = user_signs_up(&app, Some("testusername2")).await;
+    let (access_token, _) = user_signs_up(&app, Some("testusername2")).await;
 
     let req = test::TestRequest::put()
         .uri(&format!("/api/challenges/{}", challenge_id))
@@ -304,7 +304,7 @@ pub async fn normal_user_cannot_update_a_challenge() {
 #[tokio::test]
 pub async fn creator_can_update_a_challenge() {
     let app = spawn_app().await;
-    let (access_token, _, _) = user_signs_up(&app, None).await;
+    let (access_token, _) = user_signs_up(&app, None).await;
 
     let challenge_id = user_creates_a_challenge(&app, &access_token).await;
 
@@ -324,7 +324,7 @@ pub async fn admin_user_can_update_a_challenge() {
 #[tokio::test]
 pub async fn normal_user_cannot_delete_a_challenge() {
     let app = spawn_app().await;
-    let (access_token, _, _) = user_signs_up(&app, None).await;
+    let (access_token, _) = user_signs_up(&app, None).await;
 
     let challenges = user_gets_challenges(&app, &access_token).await;
     assert!(challenges.is_empty());
@@ -334,7 +334,7 @@ pub async fn normal_user_cannot_delete_a_challenge() {
     let challenges = user_gets_challenges(&app, &access_token).await;
     assert!(!challenges.is_empty());
 
-    let (access_token, _, _) = user_signs_up(&app, Some("testusername2")).await;
+    let (access_token, _) = user_signs_up(&app, Some("testusername2")).await;
 
     let req = test::TestRequest::delete()
         .uri(&format!("/api/challenges/{}", challenge_id))
@@ -353,7 +353,7 @@ pub async fn normal_user_cannot_delete_a_challenge() {
 #[tokio::test]
 pub async fn creator_can_delete_a_challenge() {
     let app = spawn_app().await;
-    let (access_token, _, _) = user_signs_up(&app, None).await;
+    let (access_token, _) = user_signs_up(&app, None).await;
 
     let challenges = user_gets_challenges(&app, &access_token).await;
     assert!(challenges.is_empty());
@@ -401,7 +401,6 @@ pub async fn user_can_get_challenge_statistics() {
         .insert_header((header::AUTHORIZATION, format!("Bearer {}", access_token)))
         .insert_header(ContentType::json())
         .set_json(&serde_json::json!({
-            "username": "thomas",
             "locale": "fr",
             "theme": "light",
             "has_seen_questions": true,
@@ -489,14 +488,13 @@ pub async fn user_can_get_challenge_statistics() {
         HashSet::from([("single".to_string(), 1)])
     );
 
-    let (access_token, refresh_token, _) = user_signs_up(&app, None).await;
+    let (access_token, refresh_token) = user_signs_up(&app, None).await;
 
     let req = test::TestRequest::post()
         .uri("/api/users/me")
         .insert_header((header::AUTHORIZATION, format!("Bearer {}", access_token)))
         .insert_header(ContentType::json())
         .set_json(&serde_json::json!({
-            "username": "testusername",
             "locale": "fr",
             "theme": "light",
             "has_seen_questions": true,

@@ -14,6 +14,8 @@ class InvalidUsernameOrPasswordOrRecoveryCodeError extends DataError {}
 
 class UserNotFoundError extends DataError {}
 
+class UserHasAlreadyKeysError extends DataError {}
+
 class InvalidOneTimePasswordError extends DataError {}
 
 class InvalidUsernameOrPasswordError extends DataError {}

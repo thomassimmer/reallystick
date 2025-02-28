@@ -45,12 +45,14 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
         locale: "fr".to_string(),
         theme: "light".to_string(),
         is_admin: true,
+        private_key_encrypted: None,
+        salt_used_to_derive_key_from_password: None,
+        public_key: None,
         otp_verified: false,
         otp_base32: None,
         otp_auth_url: None,
         created_at: now(),
         updated_at: now(),
-        recovery_codes: "".to_string(),
         password_is_expired: false,
         has_seen_questions: false,
         age_category: None,
@@ -750,15 +752,25 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
 }
 
 pub async fn reset_database(pool: &PgPool) -> Result<(), sqlx::Error> {
-    sqlx::query("DELETE FROM users;").execute(pool).await?;
     sqlx::query("DELETE FROM user_tokens;")
         .execute(pool)
         .await?;
+    sqlx::query("DELETE FROM recovery_codes;")
+        .execute(pool)
+        .await?;
+    sqlx::query("DELETE FROM public_messages;").execute(pool).await?;
+    sqlx::query("DELETE FROM private_messages;").execute(pool).await?;
+    sqlx::query("DELETE FROM private_discussion_participations;").execute(pool).await?;
+    sqlx::query("DELETE FROM private_discussions;").execute(pool).await?;
     sqlx::query("DELETE FROM habits;").execute(pool).await?;
     sqlx::query("DELETE FROM habit_categories;")
         .execute(pool)
         .await?;
+    sqlx::query("DELETE FROM challenge_daily_trackings;").execute(pool).await?;
+    sqlx::query("DELETE FROM challenge_participations;").execute(pool).await?;
+    sqlx::query("DELETE FROM challenges;").execute(pool).await?;
     sqlx::query("DELETE FROM units;").execute(pool).await?;
+    sqlx::query("DELETE FROM users;").execute(pool).await?;
 
     Ok(())
 }

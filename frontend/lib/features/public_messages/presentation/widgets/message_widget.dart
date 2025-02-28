@@ -3,6 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reallystick/core/ui/extensions.dart';
+import 'package:reallystick/features/private_messages/domain/entities/private_discussion.dart';
+import 'package:reallystick/features/private_messages/presentation/blocs/private_discussion/private_discussion_bloc.dart';
+import 'package:reallystick/features/private_messages/presentation/blocs/private_discussion/private_discussion_states.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
 import 'package:reallystick/features/public_messages/domain/entities/public_message.dart';
@@ -130,6 +133,7 @@ class MessageWidget extends StatelessWidget {
     final userState = context.watch<UserBloc>().state;
     final profileState = context.watch<ProfileBloc>().state;
     final publicMessageState = context.watch<PublicMessageBloc>().state;
+    final privateDiscussionState = context.watch<PrivateDiscussionBloc>().state;
     final threadState = context.watch<ThreadBloc>().state;
     final replyState = context.watch<ReplyBloc>().state;
 
@@ -137,7 +141,8 @@ class MessageWidget extends StatelessWidget {
         publicMessageState is PublicMessagesLoaded &&
         profileState is ProfileAuthenticated &&
         threadState is ThreadLoaded &&
-        replyState is ReplyLoaded) {
+        replyState is ReplyLoaded &&
+        privateDiscussionState is PrivateDiscussionLoaded) {
       final userLocale = profileState.profile.locale;
 
       PublicMessage? message = publicMessageState.threads
@@ -181,6 +186,10 @@ class MessageWidget extends StatelessWidget {
           .toList()
           .isNotEmpty;
 
+      PrivateDiscussion? discussion = privateDiscussionState.discussions.values
+          .where((d) => d.recipientId == message.creator)
+          .firstOrNull;
+
       return Padding(
         padding: EdgeInsets.all(16),
         child: Column(
@@ -189,12 +198,32 @@ class MessageWidget extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text(
-                  userState.users[message.creator]?.username ??
-                      AppLocalizations.of(context)!.unknown,
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
+                InkWell(
+                  onTap: () => {
+                    if (discussion != null)
+                      {
+                        context.goNamed(
+                          'discussion',
+                          pathParameters: {
+                            'discussionId': discussion.id,
+                          },
+                        )
+                      }
+                    else
+                      {
+                        context.goNamed(
+                          'newDiscussion',
+                          pathParameters: {'recipientId': message.creator},
+                        )
+                      }
+                  },
+                  child: Text(
+                    userState.users[message.creator]?.username ??
+                        AppLocalizations.of(context)!.unknown,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
                 SizedBox(width: 10),

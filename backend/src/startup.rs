@@ -12,6 +12,8 @@ use crate::features::auth::routes::log_user_out::log_user_out;
 use crate::features::auth::routes::recover_account_using_2fa::recover_account_using_2fa;
 use crate::features::auth::routes::recover_account_using_password::recover_account_using_password;
 use crate::features::auth::routes::recover_account_without_2fa_enabled::recover_account_without_2fa_enabled;
+use crate::features::auth::routes::save_keys::save_keys;
+use crate::features::auth::routes::save_recovery_code::save_recovery_code;
 use crate::features::auth::routes::validate_otp::validate;
 use crate::features::auth::routes::verify_otp::verify;
 
@@ -58,6 +60,16 @@ use crate::features::habits::routes::update_habit_daily_tracking::update_habit_d
 use crate::features::habits::routes::update_habit_participation::update_habit_participation;
 use crate::features::habits::routes::update_unit::update_unit;
 use crate::features::habits::structs::models::habit_statistics::HabitStatisticsCache;
+use crate::features::private_discussions::routes::create_private_discussion::create_private_discussion;
+use crate::features::private_discussions::routes::create_private_message::create_private_message;
+use crate::features::private_discussions::routes::delete_private_message::delete_private_message;
+use crate::features::private_discussions::routes::get_private_discussion_messages::get_private_discussion_messages;
+use crate::features::private_discussions::routes::get_private_discussions::get_private_discussions;
+use crate::features::private_discussions::routes::mark_message_as_seen::mark_message_as_seen;
+use crate::features::private_discussions::routes::update_private_discussion_participation::update_private_discussion_participation;
+use crate::features::private_discussions::routes::update_private_message::update_private_message;
+use crate::features::private_discussions::routes::websocket::broadcast_ws;
+use crate::features::private_discussions::structs::models::private_message::ChannelsData;
 use crate::features::profile::routes::delete_account::delete_account;
 use crate::features::profile::routes::delete_device::delete_device;
 use crate::features::profile::routes::get_devices::get_devices;
@@ -91,19 +103,45 @@ use actix_web::dev::{Server, ServiceFactory, ServiceRequest, ServiceResponse};
 use actix_web::http::header;
 use actix_web::middleware::Logger;
 use actix_web::{web, App, Error, HttpServer};
+
 use sqlx::postgres::PgPoolOptions;
-use sqlx::PgPool;
+use sqlx::{PgPool, Pool, Postgres};
 
 pub fn run(listener: TcpListener, configuration: Settings) -> Result<Server, std::io::Error> {
-    let server = HttpServer::new(move || create_app(&configuration))
-        .listen(listener)?
-        .run();
+    let connection_pool = get_connection_pool(&configuration.database);
+    let secret = configuration.application.secret;
+
+    let habit_statistics_cache = HabitStatisticsCache::default();
+    let challenge_statistics_cache = ChallengeStatisticsCache::default();
+    let token_cache = TokenCache::default();
+    let user_public_data_cache = UserPublicDataCache::default();
+    let channels_data = ChannelsData::default();
+
+    let server = HttpServer::new(move || {
+        create_app(
+            connection_pool.clone(),
+            secret.clone(),
+            habit_statistics_cache.clone(),
+            challenge_statistics_cache.clone(),
+            token_cache.clone(),
+            user_public_data_cache.clone(),
+            channels_data.clone(),
+        )
+    })
+    .listen(listener)?
+    .run();
 
     Ok(server)
 }
 
 pub fn create_app(
-    configuration: &Settings,
+    connection_pool: Pool<Postgres>,
+    secret: String,
+    habit_statistics_cache: HabitStatisticsCache,
+    challenge_statistics_cache: ChallengeStatisticsCache,
+    token_cache: TokenCache,
+    user_public_data_cache: UserPublicDataCache,
+    channels_data: ChannelsData,
 ) -> App<
     impl ServiceFactory<
         ServiceRequest,
@@ -113,9 +151,6 @@ pub fn create_app(
         InitError = (),
     >,
 > {
-    let connection_pool = get_connection_pool(&configuration.database);
-    let secret = &configuration.application.secret;
-
     let cors = Cors::default()
         .allowed_origin_fn(|origin, _req_head| origin.as_bytes().starts_with(b"http://localhost:"))
         .allowed_origin("https://reallystick.com")
@@ -127,11 +162,6 @@ pub fn create_app(
             HeaderName::from_static("x-user-agent"),
         ])
         .supports_credentials();
-
-    let habit_cache = HabitStatisticsCache::new();
-    let challenge_cache = ChallengeStatisticsCache::new();
-    let cached_tokens = TokenCache::default();
-    let cached_user_public_data = UserPublicDataCache::default();
 
     App::new()
         .service(
@@ -162,6 +192,12 @@ pub fn create_app(
                                         .service(verify)
                                         .service(disable),
                                 ),
+                        )
+                        .service(
+                            web::scope("")
+                                .wrap(TokenValidator {})
+                                .service(save_keys)
+                                .service(save_recovery_code),
                         ),
                 )
                 .service(
@@ -312,16 +348,45 @@ pub fn create_app(
                             .service(get_message_reports)
                             .service(get_user_message_reports),
                     ),
+                )
+                .service(
+                    web::scope("/private-messages")
+                        .service(broadcast_ws)
+                        .service(
+                            web::scope("")
+                                .wrap(TokenValidator {})
+                                .service(create_private_message)
+                                .service(delete_private_message)
+                                .service(update_private_message)
+                                .service(mark_message_as_seen)
+                                .service(get_private_discussion_messages),
+                        ),
+                )
+                .service(
+                    web::scope("/private-discussion-participations").service(
+                        web::scope("")
+                            .wrap(TokenValidator {})
+                            .service(update_private_discussion_participation),
+                    ),
+                )
+                .service(
+                    web::scope("/private-discussions").service(
+                        web::scope("")
+                            .wrap(TokenValidator {})
+                            .service(create_private_discussion)
+                            .service(get_private_discussions),
+                    ),
                 ),
         )
         .wrap(cors)
         .wrap(Logger::default())
-        .app_data(web::Data::new(connection_pool.clone()))
-        .app_data(web::Data::new(secret.clone()))
-        .app_data(web::Data::new(habit_cache))
-        .app_data(web::Data::new(challenge_cache))
-        .app_data(web::Data::new(cached_tokens))
-        .app_data(web::Data::new(cached_user_public_data))
+        .app_data(web::Data::new(connection_pool))
+        .app_data(web::Data::new(secret))
+        .app_data(web::Data::new(habit_statistics_cache))
+        .app_data(web::Data::new(challenge_statistics_cache))
+        .app_data(web::Data::new(token_cache))
+        .app_data(web::Data::new(user_public_data_cache))
+        .app_data(web::Data::new(channels_data))
 }
 
 pub struct Application {

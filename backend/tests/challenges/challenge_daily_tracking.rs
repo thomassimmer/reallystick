@@ -163,7 +163,7 @@ pub async fn creator_can_create_a_challenge_daily_tracking() {
     )
     .await;
 
-    let (access_token, _, _) = user_signs_up(&app, None).await;
+    let (access_token, _) = user_signs_up(&app, None).await;
 
     let challenge_id = user_creates_a_challenge(&app, &access_token).await;
 
@@ -193,7 +193,7 @@ pub async fn creator_can_update_a_challenge_daily_tracking() {
     )
     .await;
 
-    let (access_token, _, _) = user_signs_up(&app, None).await;
+    let (access_token, _) = user_signs_up(&app, None).await;
 
     let challenge_id = user_creates_a_challenge(&app, &access_token).await;
 
@@ -234,7 +234,7 @@ pub async fn creator_can_delete_a_challenge_daily_tracking() {
     )
     .await;
 
-    let (access_token, _, _) = user_signs_up(&app, None).await;
+    let (access_token, _) = user_signs_up(&app, None).await;
 
     let challenge_id = user_creates_a_challenge(&app, &access_token).await;
 

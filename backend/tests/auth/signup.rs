@@ -7,26 +7,38 @@ use actix_web::{
 };
 use reallystick::{
     core::structs::responses::GenericResponse,
-    features::auth::structs::responses::UserSignupResponse,
+    features::auth::structs::{requests::UserRegisterRequest, responses::UserSignupResponse},
 };
 
-use crate::{helpers::spawn_app, profile::profile::user_has_access_to_protected_route};
+use crate::{
+    auth::recovery_code::{encrypt_private_key_with_password, generate_key_pair},
+    helpers::spawn_app,
+    profile::profile::user_has_access_to_protected_route,
+};
 
 pub async fn user_signs_up(
     app: impl Service<Request, Response = ServiceResponse<impl MessageBody>, Error = Error>,
     username: Option<&str>,
-) -> (String, String, Vec<String>) {
+) -> (String, String) {
     let username = username.unwrap_or("testusername");
+    let password = "password1_".to_string();
+
+    let (private_key, public_key) = generate_key_pair();
+    let (private_key_encrypted, salt_used_to_derive_key_from_password) =
+        encrypt_private_key_with_password(&private_key, &password);
 
     let req = test::TestRequest::post()
         .uri("/api/auth/signup")
         .insert_header(ContentType::json())
-        .set_json(&serde_json::json!({
-        "username": username,
-        "password": "password1_",
-        "locale": "en",
-        "theme": "dark",
-        }))
+        .set_json(UserRegisterRequest {
+            username: username.to_string(),
+            password,
+            locale: "en".to_string(),
+            theme: "dark".to_string(),
+            public_key,
+            private_key_encrypted,
+            salt_used_to_derive_key_from_password,
+        })
         .to_request();
     let response = test::call_service(&app, req).await;
 
@@ -37,11 +49,7 @@ pub async fn user_signs_up(
 
     assert_eq!(response.code, "USER_SIGNED_UP");
 
-    (
-        response.access_token,
-        response.refresh_token,
-        response.recovery_codes,
-    )
+    (response.access_token, response.refresh_token)
 }
 
 #[tokio::test]
@@ -53,7 +61,7 @@ async fn user_can_signup() {
 #[tokio::test]
 async fn registered_user_can_access_profile_information() {
     let app = spawn_app().await;
-    let (access_token, _, _) = user_signs_up(&app, None).await;
+    let (access_token, _) = user_signs_up(&app, None).await;
 
     // User can access a route protected by token authentication
     user_has_access_to_protected_route(&app, &access_token).await;
@@ -62,7 +70,7 @@ async fn registered_user_can_access_profile_information() {
 #[tokio::test]
 async fn user_with_invalid_token_cannot_access_profile_information() {
     let app = spawn_app().await;
-    let (access_token, _, _) = user_signs_up(&app, None).await;
+    let (access_token, _) = user_signs_up(&app, None).await;
 
     // A wrong token would not work
     let wrong_access_token = access_token
@@ -102,15 +110,24 @@ async fn user_cannot_signup_with_existing_username() {
     let app = spawn_app().await;
     user_signs_up(&app, None).await;
 
+    let password = "password1_".to_string();
+
+    let (private_key, public_key) = generate_key_pair();
+    let (private_key_encrypted, salt_used_to_derive_key_from_password) =
+        encrypt_private_key_with_password(&private_key, &password);
+
     let req = test::TestRequest::post()
         .uri("/api/auth/signup")
         .insert_header(ContentType::json())
-        .set_json(&serde_json::json!({
-        "username": "testusername",
-        "password": "password1_",
-        "locale": "en",
-        "theme": "dark",
-        }))
+        .set_json(UserRegisterRequest {
+            username: "testusername".to_string(),
+            password,
+            locale: "en".to_string(),
+            theme: "dark".to_string(),
+            public_key,
+            private_key_encrypted,
+            salt_used_to_derive_key_from_password,
+        })
         .to_request();
     let response = test::call_service(&app, req).await;
 
@@ -126,15 +143,24 @@ async fn user_cannot_signup_with_existing_username() {
 async fn user_cannot_signup_with_short_password() {
     let app = spawn_app().await;
 
+    let password = "passwor".to_string();
+
+    let (private_key, public_key) = generate_key_pair();
+    let (private_key_encrypted, salt_used_to_derive_key_from_password) =
+        encrypt_private_key_with_password(&private_key, &password);
+
     let req = test::TestRequest::post()
         .uri("/api/auth/signup")
         .insert_header(ContentType::json())
-        .set_json(&serde_json::json!({
-        "username": "testusername",
-        "password": "passwor",
-        "locale": "en",
-        "theme": "dark",
-        }))
+        .set_json(UserRegisterRequest {
+            username: "testusername".to_string(),
+            password,
+            locale: "en".to_string(),
+            theme: "dark".to_string(),
+            public_key,
+            private_key_encrypted,
+            salt_used_to_derive_key_from_password,
+        })
         .to_request();
     let response = test::call_service(&app, req).await;
 
@@ -150,15 +176,24 @@ async fn user_cannot_signup_with_short_password() {
 async fn user_cannot_signup_with_short_username() {
     let app = spawn_app().await;
 
+    let password = "password1_".to_string();
+
+    let (private_key, public_key) = generate_key_pair();
+    let (private_key_encrypted, salt_used_to_derive_key_from_password) =
+        encrypt_private_key_with_password(&private_key, &password);
+
     let req = test::TestRequest::post()
         .uri("/api/auth/signup")
         .insert_header(ContentType::json())
-        .set_json(&serde_json::json!({
-        "username": "te",
-        "password": "password1_",
-        "locale": "en",
-        "theme": "dark",
-        }))
+        .set_json(UserRegisterRequest {
+            username: "te".to_string(),
+            password,
+            locale: "en".to_string(),
+            theme: "dark".to_string(),
+            public_key,
+            private_key_encrypted,
+            salt_used_to_derive_key_from_password,
+        })
         .to_request();
     let response = test::call_service(&app, req).await;
 
@@ -174,15 +209,24 @@ async fn user_cannot_signup_with_short_username() {
 async fn user_cannot_signup_with_long_username() {
     let app = spawn_app().await;
 
+    let password = "password1_".to_string();
+
+    let (private_key, public_key) = generate_key_pair();
+    let (private_key_encrypted, salt_used_to_derive_key_from_password) =
+        encrypt_private_key_with_password(&private_key, &password);
+
     let req = test::TestRequest::post()
         .uri("/api/auth/signup")
         .insert_header(ContentType::json())
-        .set_json(&serde_json::json!({
-        "username": "testusernametestusernametestusername",
-        "password": "password1_",
-        "locale": "en",
-        "theme": "dark",
-        }))
+        .set_json(UserRegisterRequest {
+            username: "testusernametestusernametestusername".to_string(),
+            password,
+            locale: "en".to_string(),
+            theme: "dark".to_string(),
+            public_key,
+            private_key_encrypted,
+            salt_used_to_derive_key_from_password,
+        })
         .to_request();
     let response = test::call_service(&app, req).await;
 
@@ -198,15 +242,24 @@ async fn user_cannot_signup_with_long_username() {
 async fn user_cannot_signup_with_username_not_respecting_rules() {
     let app = spawn_app().await;
 
+    let password = "password1_".to_string();
+
+    let (private_key, public_key) = generate_key_pair();
+    let (private_key_encrypted, salt_used_to_derive_key_from_password) =
+        encrypt_private_key_with_password(&private_key, &password);
+
     let req = test::TestRequest::post()
         .uri("/api/auth/signup")
         .insert_header(ContentType::json())
-        .set_json(&serde_json::json!({
-        "username": "__x__",
-        "password": "password1_",
-        "locale": "en",
-        "theme": "dark",
-        }))
+        .set_json(UserRegisterRequest {
+            username: "__x__".to_string(),
+            password,
+            locale: "en".to_string(),
+            theme: "dark".to_string(),
+            public_key,
+            private_key_encrypted,
+            salt_used_to_derive_key_from_password,
+        })
         .to_request();
     let response = test::call_service(&app, req).await;
 

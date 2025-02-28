@@ -72,3 +72,5 @@ class DeleteDeviceEvent extends ProfileEvent {
         deviceId,
       ];
 }
+
+class GenerateNewRecoveryCodeEvent extends ProfileEvent {}

@@ -178,6 +178,22 @@ pub async fn delete_token(
     .await
 }
 
+pub async fn delete_user_tokens(
+    user_id: Uuid,
+    transaction: &mut PgConnection,
+) -> Result<PgQueryResult, Error> {
+    sqlx::query!(
+        r#"
+        DELETE
+        FROM user_tokens
+        WHERE user_id = $1
+        "#,
+        user_id
+    )
+    .execute(transaction)
+    .await
+}
+
 pub async fn get_user_token(
     user_id: Uuid,
     token_id: Uuid,

@@ -30,7 +30,7 @@ pub async fn user_logs_out(
 #[tokio::test]
 async fn user_can_logout() {
     let app = spawn_app().await;
-    let (access_token, _, _) = user_signs_up(&app, None).await;
+    let (access_token, _) = user_signs_up(&app, None).await;
 
     user_logs_out(&app, &access_token).await;
 }
@@ -38,7 +38,7 @@ async fn user_can_logout() {
 #[tokio::test]
 async fn user_cannot_use_access_token_or_refresh_token_after_logout() {
     let app = spawn_app().await;
-    let (access_token, refresh_token, _) = user_signs_up(&app, None).await;
+    let (access_token, refresh_token) = user_signs_up(&app, None).await;
 
     user_has_access_to_protected_route(&app, &access_token).await;
 

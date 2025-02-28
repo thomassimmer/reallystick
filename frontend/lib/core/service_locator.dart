@@ -9,13 +9,19 @@ import 'package:reallystick/features/auth/data/sources/remote_data_sources.dart'
 import 'package:reallystick/features/auth/data/storage/token_storage.dart';
 import 'package:reallystick/features/auth/domain/repositories/auth_repository.dart';
 import 'package:reallystick/features/auth/domain/usecases/check_if_account_has_two_factor_authentication_enabled_use_case.dart';
+import 'package:reallystick/features/auth/domain/usecases/decrypt_key_using_derivated_key_usecase.dart';
+import 'package:reallystick/features/auth/domain/usecases/derive_key_from_password_usecase.dart';
 import 'package:reallystick/features/auth/domain/usecases/disable_two_factor_authentication_use_case.dart';
+import 'package:reallystick/features/auth/domain/usecases/encrypt_key_using_derivated_key_usecase.dart';
+import 'package:reallystick/features/auth/domain/usecases/generate_rsa_keys_usecase.dart';
 import 'package:reallystick/features/auth/domain/usecases/generate_two_factor_authentication_config_use_case.dart';
 import 'package:reallystick/features/auth/domain/usecases/login_usecase.dart';
 import 'package:reallystick/features/auth/domain/usecases/logout_usecase.dart';
 import 'package:reallystick/features/auth/domain/usecases/recover_account_with_two_factor_authentication_and_one_time_password_use_case.dart';
 import 'package:reallystick/features/auth/domain/usecases/recover_account_with_two_factor_authentication_and_password_use_case.dart';
 import 'package:reallystick/features/auth/domain/usecases/recover_account_without_two_factor_authentication_enabled_use_case.dart';
+import 'package:reallystick/features/auth/domain/usecases/save_keys_usecase.dart';
+import 'package:reallystick/features/auth/domain/usecases/save_recovery_code_usecase.dart';
 import 'package:reallystick/features/auth/domain/usecases/signup_usecase.dart';
 import 'package:reallystick/features/auth/domain/usecases/validate_one_time_password_use_case.dart';
 import 'package:reallystick/features/auth/domain/usecases/verify_one_time_password_use_case.dart';
@@ -74,6 +80,25 @@ import 'package:reallystick/features/habits/domain/usecases/update_habit_daily_t
 import 'package:reallystick/features/habits/domain/usecases/update_habit_participation_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/update_habit_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/update_unit_usecase.dart';
+import 'package:reallystick/features/private_messages/data/repositories/private_discussion_participation_repository_impl.dart';
+import 'package:reallystick/features/private_messages/data/repositories/private_discussion_repository_impl.dart';
+import 'package:reallystick/features/private_messages/data/repositories/private_message_repository_impl.dart';
+import 'package:reallystick/features/private_messages/data/sources/remote_data_sources.dart';
+import 'package:reallystick/features/private_messages/domain/repositories/private_discussion_participation_repository.dart';
+import 'package:reallystick/features/private_messages/domain/repositories/private_discussion_repository.dart';
+import 'package:reallystick/features/private_messages/domain/repositories/private_message_repository.dart';
+import 'package:reallystick/features/private_messages/domain/usecases/create_private_discussion_usecase.dart';
+import 'package:reallystick/features/private_messages/domain/usecases/create_private_message_usecase.dart';
+import 'package:reallystick/features/private_messages/domain/usecases/decrypt_message_using_aes_usecase.dart';
+import 'package:reallystick/features/private_messages/domain/usecases/decrypt_symmetric_key_with_rsa_private_key_usecase.dart';
+import 'package:reallystick/features/private_messages/domain/usecases/delete_private_message_usecase.dart';
+import 'package:reallystick/features/private_messages/domain/usecases/encrypt_message_using_aes_usecase.dart';
+import 'package:reallystick/features/private_messages/domain/usecases/encrypt_symmetric_key_with_rsa_public_key_usecase.dart';
+import 'package:reallystick/features/private_messages/domain/usecases/get_private_discussions.dart';
+import 'package:reallystick/features/private_messages/domain/usecases/get_private_messages_of_discussion_usecase.dart';
+import 'package:reallystick/features/private_messages/domain/usecases/mark_private_message_as_seen_usecase.dart';
+import 'package:reallystick/features/private_messages/domain/usecases/update_private_discussion_participation_usecase.dart';
+import 'package:reallystick/features/private_messages/domain/usecases/update_private_message_usecase.dart';
 import 'package:reallystick/features/profile/data/repositories/profile_repository_impl.dart';
 import 'package:reallystick/features/profile/data/sources/local_data_sources.dart';
 import 'package:reallystick/features/profile/data/sources/remote_data_sources.dart';
@@ -142,6 +167,8 @@ void setupServiceLocator() {
       PublicMessageRemoteDataSource(apiClient: apiClient, baseUrl: baseUrl));
   sl.registerSingleton<UserPublicDataRemoteDataSource>(
       UserPublicDataRemoteDataSource(apiClient: apiClient, baseUrl: baseUrl));
+  sl.registerSingleton<PrivateMessageRemoteDataSource>(
+      PrivateMessageRemoteDataSource(apiClient: apiClient, baseUrl: baseUrl));
 
   // Repositories
   sl.registerSingleton<AuthRepository>(
@@ -184,6 +211,14 @@ void setupServiceLocator() {
           remoteDataSource: sl<PublicMessageRemoteDataSource>()));
   sl.registerSingleton<UserPublicDataRepository>(UserPublicDataRepositoryImpl(
       remoteDataSource: sl<UserPublicDataRemoteDataSource>()));
+  sl.registerSingleton<PrivateDiscussionRepository>(
+      PrivateDiscussionRepositoryImpl(
+          remoteDataSource: sl<PrivateMessageRemoteDataSource>()));
+  sl.registerSingleton<PrivateDiscussionParticipationRepository>(
+      PrivateDiscussionParticipationRepositoryImpl(
+          remoteDataSource: sl<PrivateMessageRemoteDataSource>()));
+  sl.registerSingleton<PrivateMessageRepository>(PrivateMessageRepositoryImpl(
+      remoteDataSource: sl<PrivateMessageRemoteDataSource>()));
 
   // Use cases
   sl.registerSingleton<LoginUseCase>(LoginUseCase(sl<AuthRepository>()));
@@ -212,6 +247,24 @@ void setupServiceLocator() {
           RecoverAccountWithoutTwoFactorAuthenticationEnabledUseCase>(
       RecoverAccountWithoutTwoFactorAuthenticationEnabledUseCase(
           sl<AuthRepository>()));
+  sl.registerSingleton<SaveKeysUsecase>(SaveKeysUsecase(sl<AuthRepository>()));
+  sl.registerSingleton<SaveRecoveryCodeUsecase>(
+      SaveRecoveryCodeUsecase(sl<AuthRepository>()));
+  sl.registerSingleton<DecryptKeyUsingDerivatedKeyUsecase>(
+      DecryptKeyUsingDerivatedKeyUsecase());
+  sl.registerSingleton<DecryptMessageUsingAesUsecase>(
+      DecryptMessageUsingAesUsecase());
+  sl.registerSingleton<DeriveKeyFromPasswordUsecase>(
+      DeriveKeyFromPasswordUsecase());
+  sl.registerSingleton<EncryptKeyUsingDerivatedKeyUsecase>(
+      EncryptKeyUsingDerivatedKeyUsecase());
+  sl.registerSingleton<EncryptMessageUsingAesUsecase>(
+      EncryptMessageUsingAesUsecase());
+  sl.registerSingleton<GenerateRSAKeysUsecase>(GenerateRSAKeysUsecase());
+  sl.registerSingleton<EncryptSymmetricKeyWithRsaPublicKeyUsecase>(
+      EncryptSymmetricKeyWithRsaPublicKeyUsecase());
+  sl.registerSingleton<DecryptSymmetricKeyWithRsaPrivateKeyUsecase>(
+      DecryptSymmetricKeyWithRsaPrivateKeyUsecase());
   sl.registerSingleton<GetProfileUsecase>(
       GetProfileUsecase(sl<ProfileRepository>()));
   sl.registerSingleton<PostProfileUsecase>(
@@ -334,4 +387,21 @@ void setupServiceLocator() {
       GetUsersPublicDataUsecase(sl<UserPublicDataRepository>()));
   sl.registerSingleton<GetMessageUsecase>(
       GetMessageUsecase(sl<PublicMessageRepository>()));
+  sl.registerSingleton<CreatePrivateDiscussionUsecase>(
+      CreatePrivateDiscussionUsecase(sl<PrivateDiscussionRepository>()));
+  sl.registerSingleton<GetPrivateDiscussionsUsecase>(
+      GetPrivateDiscussionsUsecase(sl<PrivateDiscussionRepository>()));
+  sl.registerSingleton<CreatePrivateMessageUsecase>(
+      CreatePrivateMessageUsecase(sl<PrivateMessageRepository>()));
+  sl.registerSingleton<DeletePrivateMessageUsecase>(
+      DeletePrivateMessageUsecase(sl<PrivateMessageRepository>()));
+  sl.registerSingleton<GetPrivateMessagesOfDiscussionUsecase>(
+      GetPrivateMessagesOfDiscussionUsecase(sl<PrivateMessageRepository>()));
+  sl.registerSingleton<MarkPrivateMessageAsSeenUsecase>(
+      MarkPrivateMessageAsSeenUsecase(sl<PrivateMessageRepository>()));
+  sl.registerSingleton<UpdatePrivateMessageUsecase>(
+      UpdatePrivateMessageUsecase(sl<PrivateMessageRepository>()));
+  sl.registerSingleton<UpdatePrivateDiscussionParticipationUsecase>(
+      UpdatePrivateDiscussionParticipationUsecase(
+          sl<PrivateDiscussionParticipationRepository>()));
 }

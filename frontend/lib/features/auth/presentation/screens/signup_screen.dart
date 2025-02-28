@@ -80,7 +80,7 @@ class SignupScreenState extends State<SignupScreen>
         isVisible: _isAuthenticated,
         onAnimationComplete: () {
           GlobalSnackBar.show(context, authMessage);
-          context.goNamed('recovery-codes');
+          context.goNamed('recovery-code');
         },
       ),
     ]));

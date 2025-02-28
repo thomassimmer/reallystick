@@ -27,14 +27,21 @@ class AuthAuthenticatedState extends AuthState {
 }
 
 class AuthAuthenticatedAfterRegistrationState extends AuthAuthenticatedState {
-  final List<String>? recoveryCodes;
+  final String? recoveryCode;
   final bool hasVerifiedOtp;
 
-  AuthAuthenticatedAfterRegistrationState(
-      {super.message, this.recoveryCodes, required this.hasVerifiedOtp});
+  AuthAuthenticatedAfterRegistrationState({
+    super.message,
+    this.recoveryCode,
+    required this.hasVerifiedOtp,
+  });
 
   @override
-  List<Object?> get props => [message, recoveryCodes, hasVerifiedOtp];
+  List<Object?> get props => [
+        message,
+        recoveryCode,
+        hasVerifiedOtp,
+      ];
 }
 
 class AuthAuthenticatedAfterLoginState extends AuthAuthenticatedState {

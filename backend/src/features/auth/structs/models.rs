@@ -8,6 +8,16 @@ use uuid::Uuid;
 
 #[allow(non_snake_case)]
 #[derive(Debug, Deserialize, Serialize, Clone, FromRow)]
+pub struct RecoveryCode {
+    pub id: Uuid,
+    pub user_id: Uuid,
+    pub recovery_code: String,
+    pub private_key_encrypted: String, // the user's private key encrypted using the recovery code
+    pub salt_used_to_derive_key_from_recovery_code: String,
+}
+
+#[allow(non_snake_case)]
+#[derive(Debug, Deserialize, Serialize, Clone, FromRow)]
 pub struct UserToken {
     pub id: Uuid,
     pub user_id: Uuid,
@@ -28,7 +38,7 @@ pub struct Claims {
     pub is_admin: bool,
 }
 
-#[derive(Default)]
+#[derive(Default, Clone)]
 pub struct TokenCache {
     data: Arc<RwLock<HashMap<Uuid, DateTime<Utc>>>>,
 }

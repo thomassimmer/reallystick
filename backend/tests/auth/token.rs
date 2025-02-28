@@ -75,7 +75,7 @@ async fn user_cannot_refresh_using_a_wrong_refresh_token() {
 async fn access_token_becomes_expired_after_15_minutes() {
     let app = spawn_app().await;
 
-    let (access_token, _, _) = user_signs_up(&app, None).await;
+    let (access_token, _) = user_signs_up(&app, None).await;
 
     user_has_access_to_protected_route(&app, &access_token).await;
 
