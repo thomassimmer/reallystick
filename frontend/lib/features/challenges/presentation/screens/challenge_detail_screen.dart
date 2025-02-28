@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reallystick/core/constants/icons.dart';
@@ -20,6 +21,7 @@ import 'package:reallystick/features/habits/presentation/screens/color_picker_mo
 import 'package:reallystick/features/habits/presentation/widgets/add_activity_button.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
+import 'package:share_plus/share_plus.dart';
 
 class ChallengeDetailsScreen extends StatefulWidget {
   final String challengeId;
@@ -113,6 +115,26 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
       startDate: DateTime.now(), // TODO : Modal to create
     );
     context.read<ChallengeBloc>().add(createChallengeParticipationEvent);
+  }
+
+  void _shareChallenge() async {
+    final String relativeUri = context.namedLocation(
+      'challengeDetails',
+      pathParameters: {'challengeId': widget.challengeId},
+    );
+
+    final String baseUrl = dotenv.env['API_BASE_URL'] ?? "";
+    final Uri fullUri = Uri.parse('$baseUrl$relativeUri');
+
+    final String message =
+        AppLocalizations.of(context)!.shareChallengeText(fullUri.toString());
+    final String subject = AppLocalizations.of(context)!.shareChallengeSubject;
+
+    try {
+      await Share.share(message, subject: subject);
+    } catch (e) {
+      print(e);
+    }
   }
 
   Future<void> _pullRefresh() async {
@@ -213,6 +235,8 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
                         context.goNamed(
                           'challenges',
                         );
+                      } else if (value == 'share') {
+                        _shareChallenge();
                       }
                     },
                     itemBuilder: (BuildContext context) => [
@@ -226,6 +250,10 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
                           value: 'change_color',
                           child:
                               Text(AppLocalizations.of(context)!.changeColor),
+                        ),
+                        PopupMenuItem(
+                          value: 'share',
+                          child: Text(AppLocalizations.of(context)!.share),
                         ),
                       ],
                       if (challenge.creator == profileState.profile.id) ...[

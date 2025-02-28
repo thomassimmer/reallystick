@@ -296,6 +296,16 @@
   "selectTheme": "Select Theme",
   "selectUnits": "Select units of measure for this habit",
   "setNewPassword": "Enter your new password.",
+  "share": "Share",
+  "shareChallengeSubject": "Join a challenge",
+  "shareChallengeText": "Hey! This challenge could be interesting for you: {link}",
+  "@shareChallengeText": {
+    "placeholders": {
+      "link": {
+        "type": "String"
+      }
+    }
+  },
   "shortName": "Short name",
   "signUp": "Sign Up",
   "skip": "Skip",
