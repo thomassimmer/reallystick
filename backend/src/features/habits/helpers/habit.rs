@@ -40,15 +40,22 @@ pub async fn update_habit(
         Habit,
         r#"
         UPDATE habits
-        SET short_name = $1, long_name = $2, description = $3, reviewed = $4, icon = $5
-        WHERE id = $6
+        SET 
+            short_name = $1,
+            long_name = $2,
+            description = $3,
+            reviewed = $4,
+            icon = $5,
+            category_id = $6
+        WHERE id = $7
         "#,
         habit.short_name,
         habit.long_name,
         habit.description,
         habit.reviewed,
         habit.icon,
-        habit.id
+        habit.category_id,
+        habit.id,
     )
     .execute(conn)
     .await

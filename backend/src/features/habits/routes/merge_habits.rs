@@ -106,14 +106,42 @@ pub async fn merge_habits(
         return HttpResponse::InternalServerError().json(AppError::HabitUpdate.to_response());
     }
 
-    let replace_habit_participations_result = habit_participation::replace_participation_habit(
+    // If we have a participation with the new habit, no need to replace the old one with the new one
+    // We can just remove the participation with the old one
+    // We do this to ensure unique constraint on 'habit_id / user_id' for habit_participations.
+    match habit_participation::get_habit_participations_for_user_and_habit(
         &mut transaction,
-        habit_to_delete.id,
+        request_user.id,
         habit_to_merge_on.id,
     )
-    .await;
+    .await
+    {
+        Ok(habit_participations) => {
+            if habit_participations.is_empty() {
+                let replace_habit_participations_result =
+                    habit_participation::replace_participation_habit(
+                        &mut transaction,
+                        habit_to_delete.id,
+                        habit_to_merge_on.id,
+                    )
+                    .await;
 
-    if let Err(e) = replace_habit_participations_result {
+                if let Err(e) = replace_habit_participations_result {
+                    eprintln!("Error: {}", e);
+                    return HttpResponse::InternalServerError()
+                        .json(AppError::HabitUpdate.to_response());
+                }
+            }
+        }
+        Err(e) => {
+            eprintln!("Error: {}", e);
+            return HttpResponse::InternalServerError().json(AppError::HabitUpdate.to_response());
+        }
+    }
+
+    let delete_habit_result = habit::delete_habit_by_id(&mut transaction, habit_to_delete.id).await;
+
+    if let Err(e) = delete_habit_result {
         eprintln!("Error: {}", e);
         return HttpResponse::InternalServerError().json(AppError::HabitUpdate.to_response());
     }

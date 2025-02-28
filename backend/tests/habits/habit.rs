@@ -292,9 +292,11 @@ pub async fn admin_user_can_merge_two_habits() {
     assert_eq!(habit_daily_trackings[0].habit_id, second_habit_id);
 
     // Same for habit participation
+    user_creates_a_habit_participation(&app, &access_token, first_habit_id).await; // to ensure unique constraint is considered
     user_creates_a_habit_participation(&app, &access_token, second_habit_id).await;
     let habit_participations = user_gets_habit_participations(&app, &access_token).await;
-    assert_eq!(habit_participations[0].habit_id, second_habit_id);
+    assert_eq!(habit_participations[0].habit_id, first_habit_id);
+    assert_eq!(habit_participations[1].habit_id, second_habit_id);
 
     let req = test::TestRequest::post()
         .uri(&format!(
