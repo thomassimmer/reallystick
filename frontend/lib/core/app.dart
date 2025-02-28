@@ -8,6 +8,7 @@ import 'package:reallystick/features/auth/presentation/blocs/auth/auth_bloc.dart
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_events.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth_login/auth_login_bloc.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.dart';
+import 'package:reallystick/features/habits/presentation/blocs/habit_creation/habit_creation_bloc.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
 import 'package:reallystick/features/profile/presentation/blocs/set_password/set_password_bloc.dart';
@@ -57,6 +58,7 @@ class ReallyStickApp extends StatelessWidget {
     final profileSetPasswordFormBloc = ProfileSetPasswordFormBloc();
     final profileUpdatePasswordFormBloc = ProfileUpdatePasswordFormBloc();
     final habitBloc = HabitBloc(authBloc: authBloc);
+    final habitCreationFormBloc = HabitCreationFormBloc();
 
     authBloc.add(AuthInitializeEvent());
 
@@ -78,7 +80,10 @@ class ReallyStickApp extends StatelessWidget {
       ),
       BlocProvider<HabitBloc>(
         create: (context) => habitBloc,
-      )
+      ),
+      BlocProvider<HabitCreationFormBloc>(
+        create: (context) => habitCreationFormBloc,
+      ),
     ];
   }
 }

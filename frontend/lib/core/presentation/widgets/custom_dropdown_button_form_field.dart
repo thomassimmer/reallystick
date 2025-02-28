@@ -1,39 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 
-class CustomTextField extends StatelessWidget {
-  final TextEditingController controller;
+class CustomDropdownButtonFormField extends StatelessWidget {
+  final String? value;
+  final List<DropdownMenuItem<String>> items;
   final String label;
-  final TextInputType keyboardType;
   final String? Function(String?)? validator;
-  final bool obscureText;
-  final int? maxLength;
   final String? errorText;
-  final void Function(String)? onChanged;
-  final void Function(String)? onFieldSubmitted;
+  final ValueChanged<String?>? onChanged;
 
-  CustomTextField(
-      {required this.controller,
-      required this.label,
-      this.keyboardType = TextInputType.text,
-      this.validator,
-      this.obscureText = false,
-      this.maxLength,
-      this.errorText,
-      this.onChanged,
-      this.onFieldSubmitted});
+  CustomDropdownButtonFormField({
+    required this.value,
+    required this.items,
+    required this.label,
+    this.validator,
+    this.errorText,
+    this.onChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: 300.0,
-      child: TextFormField(
-        controller: controller,
-        keyboardType: keyboardType,
-        obscureText: obscureText,
-        maxLength: maxLength,
+      child: DropdownButtonFormField(
+        value: value,
+        items: items,
         onChanged: onChanged,
-        onFieldSubmitted: onFieldSubmitted,
         decoration: InputDecoration(
           labelText: label,
           errorMaxLines: 10,

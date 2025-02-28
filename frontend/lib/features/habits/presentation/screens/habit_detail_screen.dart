@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reallystick/core/constants/icons.dart';
 import 'package:reallystick/core/constants/screen_size.dart';
 import 'package:reallystick/core/ui/colors.dart';
-import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_states.dart';
 import 'package:reallystick/features/habits/presentation/helpers/translations.dart';
@@ -64,7 +63,6 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
 
           return Scaffold(
             appBar: AppBar(
-              titleTextStyle: context.typographies.heading,
               title: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

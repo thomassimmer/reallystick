@@ -51,6 +51,24 @@ String getTranslatedMessage(BuildContext context, Message message) {
       case 'usernameWrongSizeError':
         return localizations.usernameWrongSizeError;
 
+      // Habits
+      case 'habitNotFoundError':
+        return localizations.habitNotFoundError;
+      case 'habitParticipationNotFoundError':
+        return localizations.habitParticipationNotFoundError;
+      case 'habitCategoryNotFoundError':
+        return localizations.habitCategoryNotFoundError;
+      case 'habitDailyTrackingNotFoundError':
+        return localizations.habitDailyTrackingNotFoundError;
+      case 'habitShortNameWrongSizeError':
+        return localizations.habitShortNameWrongSizeError;
+      case 'habitLongNameWrongSizeError':
+        return localizations.habitLongNameWrongSizeError;
+      case 'habitDescriptionWrongSizeError':
+        return localizations.habitDescriptionWrongSizeError;
+      case 'habitIconNotFoundError':
+        return localizations.habitIconNotFoundError;
+
       // Profile
       case 'passwordNotExpiredError':
         return localizations.passwordNotExpiredError;
@@ -67,6 +85,10 @@ String getTranslatedMessage(BuildContext context, Message message) {
         return localizations.logoutSuccessful;
       case 'validationCodeCorrect':
         return localizations.validationCodeCorrect;
+
+      // Habits
+      case 'habitCreated':
+      return localizations.habitCreated;
 
       // Profile
       case 'passwordUpdateSuccessful':

@@ -27,6 +27,8 @@ import 'package:reallystick/features/habits/domain/repositories/habit_category_r
 import 'package:reallystick/features/habits/domain/repositories/habit_daily_tracking_repository.dart';
 import 'package:reallystick/features/habits/domain/repositories/habit_participation_repository.dart';
 import 'package:reallystick/features/habits/domain/repositories/habit_repository.dart';
+import 'package:reallystick/features/habits/domain/usecases/create_habit_participation_usecase.dart';
+import 'package:reallystick/features/habits/domain/usecases/create_habit_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/get_habit_categories_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/get_habit_participations_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/get_habits_daily_tracking_usecase.dart';
@@ -126,4 +128,8 @@ void setupServiceLocator() {
       GetHabitParticipationsUsecase(sl<HabitParticipationRepository>()));
   sl.registerSingleton<GetHabitsDailyTrackingUsecase>(
       GetHabitsDailyTrackingUsecase(sl<HabitDailyTrackingRepository>()));
+  sl.registerSingleton<CreateHabitUsecase>(
+      CreateHabitUsecase(sl<HabitRepository>()));
+  sl.registerSingleton<CreateHabitParticipationUsecase>(
+      CreateHabitParticipationUsecase(sl<HabitParticipationRepository>()));
 }

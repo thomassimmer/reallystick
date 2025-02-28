@@ -3,11 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reallystick/core/constants/screen_size.dart';
+import 'package:reallystick/core/presentation/widgets/global_snack_bar.dart';
+import 'package:reallystick/core/presentation/widgets/icon_with_warning.dart';
 import 'package:reallystick/core/ui/extensions.dart';
-import 'package:reallystick/core/widgets/global_snack_bar.dart';
-import 'package:reallystick/core/widgets/icon_with_warning.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_bloc.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_states.dart';
+import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.dart';
+import 'package:reallystick/features/habits/presentation/blocs/habit/habit_states.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
 
@@ -60,6 +62,9 @@ class RootScreen extends StatelessWidget {
             }
           }),
           BlocListener<ProfileBloc, ProfileState>(listener: (context, state) {
+            GlobalSnackBar.show(context, state.message);
+          }),
+          BlocListener<HabitBloc, HabitState>(listener: (context, state) {
             GlobalSnackBar.show(context, state.message);
           }),
         ],

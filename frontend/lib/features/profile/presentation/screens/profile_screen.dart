@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reallystick/core/ui/extensions.dart';
-import 'package:reallystick/core/widgets/icon_with_warning.dart';
+import 'package:reallystick/core/presentation/widgets/icon_with_warning.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_bloc.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_events.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';

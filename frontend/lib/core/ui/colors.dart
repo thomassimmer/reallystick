@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 class AppThemeColors {
@@ -210,4 +212,44 @@ Color getAppColorsFromString(String colorString) {
     default:
       return AppColors.black; // Fallback color
   }
+}
+
+// Function to get a random color from the available AppColors
+String getRandomAppColor() {
+  final List<String> availableColors = [
+    "white",
+    "beige",
+    "black",
+    "blue",
+    "brown",
+    "dark_brown",
+    "grey",
+    "indigo",
+    "light_blue",
+    "light_brown",
+    "white_grey",
+    "light_cyan",
+    "light_green",
+    "lighter_grey",
+    "light_grey",
+    "light_pink",
+    "light_purple",
+    "light_red",
+    "light_teal",
+    "light_yellow",
+    "lilac",
+    "pink",
+    "purple",
+    "red",
+    "teal",
+    "yellow",
+    "semi_grey",
+    "violet",
+    "orange",
+  ];
+
+  final Random random = Random();
+  final String randomColorName =
+      availableColors[random.nextInt(availableColors.length)];
+  return randomColorName;
 }

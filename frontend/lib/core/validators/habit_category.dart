@@ -1,0 +1,24 @@
+import 'package:formz/formz.dart';
+import 'package:reallystick/core/messages/errors/domain_error.dart';
+import 'package:reallystick/features/habits/domain/errors/domain_error.dart';
+
+class HabitCategoryValidator extends FormzInput<String, DomainError> {
+  const HabitCategoryValidator.pure() : super.pure('');
+
+  const HabitCategoryValidator.dirty([super.value = '']) : super.dirty();
+
+  @override
+  DomainError? validator(String? value) {
+    final RegExp pattern = RegExp(
+      r'^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$',
+      caseSensitive: false,
+    );
+
+    // Regex pattern check
+    if (value != null && pattern.hasMatch(value)) {
+      return null;
+    }
+
+    return HabitCategoryNotFoundDomainError();
+  }
+}

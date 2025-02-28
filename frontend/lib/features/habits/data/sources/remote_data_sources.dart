@@ -61,7 +61,6 @@ class HabitRemoteDataSource {
                 HabitCategoryDataModel.fromJson(habitCategory))
             .toList();
       } catch (e) {
-        print(e);
         throw ParsingError();
       }
     }

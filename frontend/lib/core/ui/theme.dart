@@ -45,7 +45,8 @@ class AppTheme extends ThemeExtension<AppTheme> {
         ),
         appBarTheme: AppBarTheme(
           elevation: 0,
-          titleTextStyle: typographies.body.copyWith(color: colors.text),
+          titleTextStyle:
+              typographies.headingSmall.copyWith(color: colors.text),
           centerTitle: true,
           color: Colors.transparent,
           foregroundColor: colors.text,
