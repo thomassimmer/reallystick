@@ -171,9 +171,10 @@ class RecoverAccountScreenState extends State<RecoverAccountScreen>
       ),
       SizedBox(height: 16),
       CustomTextField(
-          controller: passwordController,
-          label: AppLocalizations.of(context)!.password,
-          obscureText: true),
+        controller: passwordController,
+        label: AppLocalizations.of(context)!.password,
+        obscureText: true,
+      ),
       SizedBox(height: 16),
       Text(
         AppLocalizations.of(context)!.enterRecoveryCode,
