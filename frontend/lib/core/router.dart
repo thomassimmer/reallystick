@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:reallystick/core/presentation/screens/error_screen.dart';
 import 'package:reallystick/core/presentation/screens/root_screen.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_bloc.dart';
@@ -14,10 +15,10 @@ import 'package:reallystick/features/messages/presentation/messages_screen.dart'
 import 'package:reallystick/features/profile/presentation/screens/about_screen.dart';
 import 'package:reallystick/features/profile/presentation/screens/language_selection_screen.dart';
 import 'package:reallystick/features/profile/presentation/screens/password_screen.dart';
+import 'package:reallystick/features/profile/presentation/screens/profile_information_screen.dart';
 import 'package:reallystick/features/profile/presentation/screens/profile_screen.dart';
 import 'package:reallystick/features/profile/presentation/screens/theme_selection_screen.dart';
 import 'package:reallystick/features/profile/presentation/screens/two_factor_authentication_screen.dart';
-import 'package:go_router/go_router.dart';
 
 final router = GoRouter(
   initialLocation: '/',
@@ -88,6 +89,11 @@ final router = GoRouter(
               path: 'about',
               name: 'about',
               builder: (context, state) => AboutScreen(),
+            ),
+            GoRoute(
+              path: 'profile-information',
+              name: 'profile-information',
+              builder: (context, state) => ProfileInformationScreen(),
             ),
           ],
         ),

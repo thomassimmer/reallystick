@@ -7,6 +7,18 @@ class Profile {
   bool otpVerified;
   bool passwordIsExpired;
 
+  String? ageCategory;
+  String? gender;
+  String? continent;
+  String? country;
+  String? region;
+  String? activity;
+  String? financialSituation;
+  bool? livesInUrbanArea;
+  String? relationshipStatus;
+  String? levelOfEducation;
+  bool? hasChildren;
+
   Profile(
       {required this.username,
       required this.locale,
@@ -14,5 +26,16 @@ class Profile {
       required this.otpBase32,
       required this.otpAuthUrl,
       required this.otpVerified,
-      required this.passwordIsExpired});
+      required this.passwordIsExpired,
+      this.ageCategory,
+      this.gender,
+      this.continent,
+      this.country,
+      this.region,
+      this.activity,
+      this.financialSituation,
+      this.livesInUrbanArea,
+      this.relationshipStatus,
+      this.levelOfEducation,
+      this.hasChildren});
 }

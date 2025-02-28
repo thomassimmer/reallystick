@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:go_router/go_router.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/core/widgets/icon_with_warning.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_bloc.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_events.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
-import 'package:go_router/go_router.dart';
 
 class ProfileScreen extends StatelessWidget {
   @override
@@ -26,21 +26,21 @@ class ProfileScreen extends StatelessWidget {
               title: Text(AppLocalizations.of(context)!.language),
               trailing: Icon(Icons.chevron_right),
               onTap: () {
-                context.goNamed('language'); // Navigate using GoRouter
+                context.goNamed('language');
               },
             ),
             ListTile(
               title: Text(AppLocalizations.of(context)!.theme),
               trailing: Icon(Icons.chevron_right),
               onTap: () {
-                context.goNamed('theme'); // Navigate using GoRouter
+                context.goNamed('theme');
               },
             ),
             ListTile(
               title: Text(AppLocalizations.of(context)!.twoFA),
               trailing: Icon(Icons.chevron_right),
               onTap: () {
-                context.goNamed('two-factor-authentication'); // Go to 2FA
+                context.goNamed('two-factor-authentication');
               },
             ),
             ListTile(
@@ -49,14 +49,21 @@ class ProfileScreen extends StatelessWidget {
                   iconData: Icons.chevron_right,
                   shouldBeWarning: shouldBeWarning),
               onTap: () {
-                context.goNamed('password'); // Navigate to password change
+                context.goNamed('password');
+              },
+            ),
+            ListTile(
+              title: Text(AppLocalizations.of(context)!.profileInformation),
+              trailing: Icon(Icons.chevron_right),
+              onTap: () {
+                context.goNamed('profile-information');
               },
             ),
             ListTile(
               title: Text(AppLocalizations.of(context)!.about),
               trailing: Icon(Icons.chevron_right),
               onTap: () {
-                context.goNamed('about'); // Navigate to password change
+                context.goNamed('about');
               },
             ),
             Padding(

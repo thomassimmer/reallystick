@@ -3,6 +3,7 @@
 import 'dart:async';
 
 import 'package:dartz/dartz.dart';
+import 'package:logger/web.dart';
 import 'package:reallystick/core/messages/errors/data_error.dart';
 import 'package:reallystick/core/messages/errors/domain_error.dart';
 import 'package:reallystick/features/auth/data/errors/data_error.dart';
@@ -13,7 +14,6 @@ import 'package:reallystick/features/profile/data/sources/remote_data_sources.da
 import 'package:reallystick/features/profile/domain/entities/profile.dart';
 import 'package:reallystick/features/profile/domain/errors/domain_error.dart';
 import 'package:reallystick/features/profile/domain/repositories/profile_repository.dart';
-import 'package:logger/web.dart';
 
 class ProfileRepositoryImpl implements ProfileRepository {
   final ProfileRemoteDataSource remoteDataSource;
@@ -33,7 +33,18 @@ class ProfileRepositoryImpl implements ProfileRepository {
           otpBase32: profileModel.otpBase32,
           otpAuthUrl: profileModel.otpAuthUrl,
           otpVerified: profileModel.otpVerified,
-          passwordIsExpired: profileModel.passwordIsExpired));
+          passwordIsExpired: profileModel.passwordIsExpired,
+          ageCategory: profileModel.ageCategory,
+          gender: profileModel.gender,
+          continent: profileModel.continent,
+          country: profileModel.country,
+          region: profileModel.region,
+          activity: profileModel.activity,
+          financialSituation: profileModel.financialSituation,
+          livesInUrbanArea: profileModel.livesInUrbanArea,
+          relationshipStatus: profileModel.relationshipStatus,
+          levelOfEducation: profileModel.levelOfEducation,
+          hasChildren: profileModel.hasChildren));
     } on ParsingError {
       logger.e('ParsingError occurred.');
       return Left(InvalidResponseDomainError());
@@ -66,7 +77,18 @@ class ProfileRepositoryImpl implements ProfileRepository {
           UpdateProfileRequestModel(
               username: profile.username,
               locale: profile.locale,
-              theme: profile.theme));
+              theme: profile.theme,
+              ageCategory: profile.ageCategory,
+              gender: profile.gender,
+              continent: profile.continent,
+              country: profile.country,
+              region: profile.region,
+              activity: profile.activity,
+              financialSituation: profile.financialSituation,
+              livesInUrbanArea: profile.livesInUrbanArea,
+              relationshipStatus: profile.relationshipStatus,
+              levelOfEducation: profile.levelOfEducation,
+              hasChildren: profile.hasChildren));
 
       return Right(Profile(
           username: profileModel.username,
@@ -75,7 +97,18 @@ class ProfileRepositoryImpl implements ProfileRepository {
           otpBase32: profileModel.otpBase32,
           otpAuthUrl: profileModel.otpAuthUrl,
           otpVerified: profileModel.otpVerified,
-          passwordIsExpired: profileModel.passwordIsExpired));
+          passwordIsExpired: profileModel.passwordIsExpired,
+          ageCategory: profileModel.ageCategory,
+          gender: profileModel.gender,
+          continent: profileModel.continent,
+          country: profileModel.country,
+          region: profileModel.region,
+          activity: profileModel.activity,
+          financialSituation: profileModel.financialSituation,
+          livesInUrbanArea: profileModel.livesInUrbanArea,
+          relationshipStatus: profileModel.relationshipStatus,
+          levelOfEducation: profileModel.levelOfEducation,
+          hasChildren: profileModel.hasChildren));
     } on ParsingError {
       logger.e('ParsingError occurred.');
       return Left(InvalidResponseDomainError());

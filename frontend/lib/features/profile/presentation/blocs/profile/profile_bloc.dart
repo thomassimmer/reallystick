@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:reallystick/core/messages/message.dart';
 import 'package:reallystick/features/auth/domain/errors/domain_error.dart';
 import 'package:reallystick/features/auth/domain/usecases/disable_two_factor_authentication_use_case.dart';
@@ -16,7 +17,6 @@ import 'package:reallystick/features/profile/domain/usecases/set_password_use_ca
 import 'package:reallystick/features/profile/domain/usecases/update_password_use_case.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_events.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
-import 'package:get_it/get_it.dart';
 
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   final AuthBloc authBloc;
@@ -49,8 +49,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
     on<ProfileInitializeEvent>(_initialize);
     on<ProfileLogoutEvent>(_logout);
-    on<ProfileUpdateThemeEvent>(_updateTheme);
-    on<ProfileUpdateLocaleEvent>(_updateLocale);
+    on<ProfileUpdateEvent>(_updateProfile);
     on<ProfileGenerateTwoFactorAuthenticationConfigEvent>(
         _generateTwoFactorAuthenticationConfig);
     on<ProfileDisableTwoFactorAuthenticationEvent>(
@@ -78,42 +77,13 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     emit(ProfileUnauthenticated());
   }
 
-  Future<void> _updateTheme(
-      ProfileUpdateThemeEvent event, Emitter<ProfileState> emit) async {
+  Future<void> _updateProfile(
+      ProfileUpdateEvent event, Emitter<ProfileState> emit) async {
     final currentState = state as ProfileAuthenticated;
 
     emit(ProfileLoading(profile: state.profile));
 
-    Profile profile = currentState.profile;
-    profile.theme = event.theme;
-
-    final result = await postProfileUsecase.call(profile);
-
-    result.fold((error) {
-      if (error is ShouldLogoutError) {
-        authBloc.add(AuthLogoutEvent(message: ErrorMessage(error.messageKey)));
-      } else {
-        emit(ProfileAuthenticated(
-          profile: currentState.profile,
-          message: ErrorMessage(error.messageKey),
-        ));
-      }
-    },
-        (profile) => emit(ProfileAuthenticated(
-            profile: profile,
-            message: SuccessMessage('profileUpdateSuccessful'))));
-  }
-
-  Future<void> _updateLocale(
-      ProfileUpdateLocaleEvent event, Emitter<ProfileState> emit) async {
-    final currentState = state as ProfileAuthenticated;
-
-    emit(ProfileLoading(profile: state.profile));
-
-    Profile profile = currentState.profile;
-    profile.locale = event.locale;
-
-    final result = await postProfileUsecase.call(profile);
+    final result = await postProfileUsecase.call(event.newProfile);
 
     result.fold((error) {
       if (error is ShouldLogoutError) {

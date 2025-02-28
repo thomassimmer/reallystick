@@ -5,6 +5,18 @@ pub struct UserUpdateRequest {
     pub username: String,
     pub locale: String,
     pub theme: String,
+
+    pub age_category: Option<String>,
+    pub gender: Option<String>,
+    pub continent: Option<String>,
+    pub country: Option<String>,
+    pub region: Option<String>,
+    pub activity: Option<String>,
+    pub financial_situation: Option<String>,
+    pub lives_in_urban_area: Option<bool>,
+    pub relationship_status: Option<String>,
+    pub level_of_education: Option<String>,
+    pub has_children: Option<bool>,
 }
 
 #[derive(Debug, Deserialize)]

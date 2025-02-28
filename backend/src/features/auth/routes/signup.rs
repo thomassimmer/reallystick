@@ -10,7 +10,9 @@ use crate::{
     },
     features::{
         auth::{
-            helpers::{password::is_password_valid, token::generate_tokens, username::is_username_valid},
+            helpers::{
+                password::is_password_valid, token::generate_tokens, username::is_username_valid,
+            },
             structs::{requests::UserRegisterRequest, responses::UserSignupResponse},
         },
         profile::structs::models::User,
@@ -120,6 +122,17 @@ pub async fn register_user(
         updated_at: now(),
         recovery_codes: hashed_recovery_codes.join(";"),
         password_is_expired: false,
+        age_category: None,
+        gender: None,
+        continent: None,
+        country: None,
+        region: None,
+        activity: None,
+        financial_situation: None,
+        lives_in_urban_area: None,
+        relationship_status: None,
+        level_of_education: None,
+        has_children: None,
     };
 
     // Insert the new user into the database

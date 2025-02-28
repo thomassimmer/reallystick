@@ -1,36 +1,24 @@
 import 'package:equatable/equatable.dart';
+import 'package:reallystick/features/profile/domain/entities/profile.dart';
 
 abstract class ProfileEvent extends Equatable {
   const ProfileEvent();
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 class ProfileInitializeEvent extends ProfileEvent {}
 
 class ProfileLogoutEvent extends ProfileEvent {}
 
-class ProfileUpdateThemeEvent extends ProfileEvent {
-  final String theme;
+class ProfileUpdateEvent extends ProfileEvent {
+  final Profile newProfile;
 
-  const ProfileUpdateThemeEvent({
-    required this.theme,
-  });
+  const ProfileUpdateEvent({required this.newProfile});
 
   @override
-  List<Object> get props => [theme];
-}
-
-class ProfileUpdateLocaleEvent extends ProfileEvent {
-  final String locale;
-
-  const ProfileUpdateLocaleEvent({
-    required this.locale,
-  });
-
-  @override
-  List<Object> get props => [locale];
+  List<Object?> get props => [newProfile];
 }
 
 class ProfileGenerateTwoFactorAuthenticationConfigEvent extends ProfileEvent {}
