@@ -41,7 +41,7 @@ pub async fn user_recovers_account_using_2fa(
 #[tokio::test]
 async fn user_can_recover_account_using_2fa() {
     let app = spawn_app().await;
-    let (access_token, _, recovery_codes) = user_signs_up(&app).await;
+    let (access_token, _, recovery_codes) = user_signs_up(&app, None).await;
     let otp_base32 = user_generates_otp(&app, &access_token).await;
 
     user_verifies_otp(&app, &access_token, &otp_base32).await;
@@ -66,7 +66,7 @@ async fn user_can_recover_account_using_2fa() {
 #[tokio::test]
 async fn user_cannot_recover_account_using_2fa_without_2fa_enabled() {
     let app = spawn_app().await;
-    user_signs_up(&app).await;
+    user_signs_up(&app, None).await;
 
     // Without this
     // let otp_base32 = user_generates_otp(&app, &access_token).await;
@@ -94,7 +94,7 @@ async fn user_cannot_recover_account_using_2fa_without_2fa_enabled() {
 #[tokio::test]
 async fn user_cannot_recover_account_using_2fa_with_wrong_code() {
     let app = spawn_app().await;
-    let (access_token, _, _) = user_signs_up(&app).await;
+    let (access_token, _, _) = user_signs_up(&app, None).await;
     let otp_base32 = user_generates_otp(&app, &access_token).await;
 
     user_verifies_otp(&app, &access_token, &otp_base32).await;
@@ -121,7 +121,7 @@ async fn user_cannot_recover_account_using_2fa_with_wrong_code() {
 #[tokio::test]
 async fn user_cannot_recover_account_using_2fa_with_wrong_username() {
     let app = spawn_app().await;
-    let (access_token, _, recovery_codes) = user_signs_up(&app).await;
+    let (access_token, _, recovery_codes) = user_signs_up(&app, None).await;
     let otp_base32 = user_generates_otp(&app, &access_token).await;
 
     user_verifies_otp(&app, &access_token, &otp_base32).await;
@@ -157,7 +157,7 @@ async fn user_cannot_recover_account_using_2fa_with_wrong_username() {
 #[tokio::test]
 async fn user_cannot_recover_account_using_2fa_using_code_twice() {
     let app = spawn_app().await;
-    let (access_token, _, recovery_codes) = user_signs_up(&app).await;
+    let (access_token, _, recovery_codes) = user_signs_up(&app, None).await;
     let otp_base32 = user_generates_otp(&app, &access_token).await;
 
     user_verifies_otp(&app, &access_token, &otp_base32).await;

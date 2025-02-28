@@ -44,7 +44,7 @@ pub async fn user_sets_password(
 #[tokio::test]
 pub async fn user_can_set_password_after_account_recovery() {
     let app = spawn_app().await;
-    let (_, _, recovery_codes) = user_signs_up(&app).await;
+    let (_, _, recovery_codes) = user_signs_up(&app, None).await;
 
     let (access_token, _) =
         user_recovers_account_without_2fa_enabled(&app, &recovery_codes[0]).await;
@@ -56,7 +56,7 @@ pub async fn user_can_set_password_after_account_recovery() {
 #[tokio::test]
 pub async fn user_cannot_set_password_if_its_not_expired() {
     let app = spawn_app().await;
-    let (access_token, _, _) = user_signs_up(&app).await;
+    let (access_token, _, _) = user_signs_up(&app, None).await;
 
     let req = test::TestRequest::post()
         .uri("/api/users/set-password")

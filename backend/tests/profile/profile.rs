@@ -38,7 +38,7 @@ pub async fn user_has_access_to_protected_route(
 #[tokio::test]
 pub async fn user_can_update_profile() {
     let app = spawn_app().await;
-    let (access_token, _, _) = user_signs_up(&app).await;
+    let (access_token, _, _) = user_signs_up(&app, None).await;
 
     user_has_access_to_protected_route(&app, &access_token).await;
 
@@ -69,7 +69,7 @@ pub async fn user_can_update_profile() {
 #[tokio::test]
 pub async fn is_otp_enabled_for_user_that_activated_it() {
     let app = spawn_app().await;
-    let (access_token, _, _) = user_signs_up(&app).await;
+    let (access_token, _, _) = user_signs_up(&app, None).await;
 
     let req = test::TestRequest::post()
         .uri("/api/users/is-otp-enabled")

@@ -14,7 +14,11 @@ use reallystick::features::habits::structs::{
 use uuid::Uuid;
 
 use crate::{
-    auth::{login::user_logs_in, signup::user_signs_up}, habits::{habit::user_creates_a_habit, habit_category::user_creates_a_habit_category, unit::user_creates_a_unit},
+    auth::{login::user_logs_in, signup::user_signs_up},
+    habits::{
+        habit::user_creates_a_habit, habit_category::user_creates_a_habit_category,
+        unit::user_creates_a_unit,
+    },
     helpers::spawn_app,
 };
 
@@ -127,8 +131,8 @@ pub async fn user_can_create_a_habit_participation() {
     let (access_token, _) = user_logs_in(&app, "thomas", "").await;
     let habit_category_id = user_creates_a_habit_category(&app, &access_token).await;
     let unit_id = user_creates_a_unit(&app, &access_token).await;
-    
-    let (access_token, _, _) = user_signs_up(&app).await;
+
+    let (access_token, _, _) = user_signs_up(&app, None).await;
     let habit_id = user_creates_a_habit(
         &app,
         &access_token,
@@ -153,7 +157,7 @@ pub async fn user_can_update_a_habit_participation() {
     let habit_category_id = user_creates_a_habit_category(&app, &access_token).await;
     let unit_id = user_creates_a_unit(&app, &access_token).await;
 
-    let (access_token, _, _) = user_signs_up(&app).await;
+    let (access_token, _, _) = user_signs_up(&app, None).await;
     let habit_id = user_creates_a_habit(
         &app,
         &access_token,
@@ -174,7 +178,7 @@ pub async fn user_can_delete_a_habit_participation() {
     let habit_category_id = user_creates_a_habit_category(&app, &access_token).await;
     let unit_id = user_creates_a_unit(&app, &access_token).await;
 
-    let (access_token, _, _) = user_signs_up(&app).await;
+    let (access_token, _, _) = user_signs_up(&app, None).await;
     let habit_id = user_creates_a_habit(
         &app,
         &access_token,

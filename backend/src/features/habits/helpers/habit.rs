@@ -32,6 +32,33 @@ pub async fn get_habits(conn: &mut PgConnection) -> Result<Vec<Habit>, sqlx::Err
     .await
 }
 
+pub async fn get_reviewed_and_personnal_habits(
+    conn: &mut PgConnection,
+    user_id: Uuid,
+) -> Result<Vec<Habit>, sqlx::Error> {
+    sqlx::query_as!(
+        Habit,
+        r#"
+        SELECT DISTINCT
+            h.id,
+            h.short_name,
+            h.long_name,
+            h.category_id,
+            h.reviewed,
+            h.description,
+            h.icon,
+            h.created_at,
+            h.unit_ids
+        FROM habits h
+        LEFT JOIN habit_participations hp ON h.id = hp.habit_id
+        WHERE h.reviewed = true OR hp.user_id = $1;
+        "#,
+        user_id
+    )
+    .fetch_all(conn)
+    .await
+}
+
 pub async fn update_habit(
     conn: &mut PgConnection,
     habit: &Habit,

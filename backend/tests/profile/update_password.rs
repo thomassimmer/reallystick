@@ -44,7 +44,7 @@ pub async fn user_updates_password(
 #[tokio::test]
 pub async fn user_can_update_password_even_when_not_expired() {
     let app = spawn_app().await;
-    let (access_token, _, _) = user_signs_up(&app).await;
+    let (access_token, _, _) = user_signs_up(&app, None).await;
 
     user_updates_password(&app, &access_token, "password1_", "new_password1_").await;
     user_logs_in(&app, "testusername", "new_password1_").await;
@@ -53,7 +53,7 @@ pub async fn user_can_update_password_even_when_not_expired() {
 #[tokio::test]
 pub async fn user_can_update_password_after_account_recovery() {
     let app = spawn_app().await;
-    let (_, _, recovery_codes) = user_signs_up(&app).await;
+    let (_, _, recovery_codes) = user_signs_up(&app, None).await;
 
     let (access_token, _) =
         user_recovers_account_without_2fa_enabled(&app, &recovery_codes[0]).await;

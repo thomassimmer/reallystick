@@ -72,7 +72,7 @@ pub async fn user_verifies_otp(
 async fn registered_user_can_generate_and_verify_otp() {
     let app = spawn_app().await;
 
-    let (access_token, _, _) = user_signs_up(&app).await;
+    let (access_token, _, _) = user_signs_up(&app, None).await;
     let otp_base32 = user_generates_otp(&app, &access_token).await;
     user_verifies_otp(&app, &access_token, &otp_base32).await;
 }
@@ -81,7 +81,7 @@ async fn registered_user_can_generate_and_verify_otp() {
 async fn registered_user_can_validate_otp() {
     let app = spawn_app().await;
 
-    let (access_token, _, _) = user_signs_up(&app).await;
+    let (access_token, _, _) = user_signs_up(&app, None).await;
     let otp_base32 = user_generates_otp(&app, &access_token).await;
     user_verifies_otp(&app, &access_token, &otp_base32).await;
 
@@ -137,7 +137,7 @@ async fn registered_user_can_validate_otp() {
 async fn registered_user_can_disable_otp() {
     let app = spawn_app().await;
 
-    let (access_token, _, _) = user_signs_up(&app).await;
+    let (access_token, _, _) = user_signs_up(&app, None).await;
     let otp_base32 = user_generates_otp(&app, &access_token).await;
     user_verifies_otp(&app, &access_token, &otp_base32).await;
 
@@ -177,7 +177,7 @@ async fn user_cannot_generate_otp_with_wrong_token() {
 #[tokio::test]
 async fn user_cannot_validate_otp_for_a_wrong_user() {
     let app = spawn_app().await;
-    let (access_token, _, _) = user_signs_up(&app).await;
+    let (access_token, _, _) = user_signs_up(&app, None).await;
 
     let req = test::TestRequest::post()
         .uri("/api/auth/otp/validate")

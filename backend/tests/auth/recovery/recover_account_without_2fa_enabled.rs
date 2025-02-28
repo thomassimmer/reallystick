@@ -37,7 +37,7 @@ pub async fn user_recovers_account_without_2fa_enabled(
 #[tokio::test]
 async fn user_can_recover_account_without_2fa_enabled() {
     let app = spawn_app().await;
-    let (_, _, recovery_codes) = user_signs_up(&app).await;
+    let (_, _, recovery_codes) = user_signs_up(&app, None).await;
 
     for recovery_code in recovery_codes {
         let (access_token, _) =
@@ -50,7 +50,7 @@ async fn user_can_recover_account_without_2fa_enabled() {
 #[tokio::test]
 async fn user_cannot_recover_account_without_2fa_enabled_with_wrong_code() {
     let app = spawn_app().await;
-    user_signs_up(&app).await;
+    user_signs_up(&app, None).await;
     let req = test::TestRequest::post()
         .uri("/api/auth/recover")
         .insert_header(ContentType::json())
@@ -72,7 +72,7 @@ async fn user_cannot_recover_account_without_2fa_enabled_with_wrong_code() {
 #[tokio::test]
 async fn user_cannot_recover_account_without_2fa_enabled_with_wrong_username() {
     let app = spawn_app().await;
-    let (_, _, recovery_codes) = user_signs_up(&app).await;
+    let (_, _, recovery_codes) = user_signs_up(&app, None).await;
     let req = test::TestRequest::post()
         .uri("/api/auth/recover")
         .insert_header(ContentType::json())
@@ -94,7 +94,7 @@ async fn user_cannot_recover_account_without_2fa_enabled_with_wrong_username() {
 #[tokio::test]
 async fn user_cannot_recover_account_without_2fa_enabled_using_code_twice() {
     let app = spawn_app().await;
-    let (_, _, recovery_codes) = user_signs_up(&app).await;
+    let (_, _, recovery_codes) = user_signs_up(&app, None).await;
     let (access_token, _) =
         user_recovers_account_without_2fa_enabled(&app, &recovery_codes[0]).await;
 
@@ -121,7 +121,7 @@ async fn user_cannot_recover_account_without_2fa_enabled_using_code_twice() {
 #[tokio::test]
 async fn user_cannot_login_with_old_password_after_recovery() {
     let app = spawn_app().await;
-    let (_, _, recovery_codes) = user_signs_up(&app).await;
+    let (_, _, recovery_codes) = user_signs_up(&app, None).await;
     let (access_token, _) =
         user_recovers_account_without_2fa_enabled(&app, &recovery_codes[0]).await;
 

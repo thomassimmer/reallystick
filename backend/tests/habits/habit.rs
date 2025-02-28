@@ -206,18 +206,52 @@ pub async fn user_create_two_habits_to_merge(
 pub async fn user_can_create_a_habit() {
     let app = spawn_app().await;
     let (access_token, _) = user_logs_in(&app, "thomas", "").await;
-    let category_id = user_creates_a_habit_category(&app, &access_token).await;
+    let habit_category_id = user_creates_a_habit_category(&app, &access_token).await;
     let unit_id = user_creates_a_unit(&app, &access_token).await;
 
-    let (access_token, _, _) = user_signs_up(&app).await;
+    let (access_token, _, _) = user_signs_up(&app, None).await;
 
     let habits = user_gets_habits(&app, &access_token).await;
     assert!(habits.is_empty());
 
-    user_creates_a_habit(&app, &access_token, category_id, HashSet::from([unit_id])).await;
+    let habit_id = user_creates_a_habit(
+        &app,
+        &access_token,
+        habit_category_id,
+        HashSet::from([unit_id]),
+    )
+    .await;
+
+    user_creates_a_habit_participation(&app, &access_token, habit_id).await;
 
     let habits = user_gets_habits(&app, &access_token).await;
-    assert!(!habits.is_empty());
+    assert_eq!(habits.len(), 1);
+
+    // Before it has been reviewed, other users can't see it
+    let (access_token, _, _) = user_signs_up(&app, Some("testusername2")).await;
+
+    let habits = user_gets_habits(&app, &access_token).await;
+    assert!(habits.is_empty());
+
+    // Admin reviews it
+    let (access_token, _) = user_logs_in(&app, "thomas", "").await;
+    user_updates_a_habit(
+        &app,
+        &access_token,
+        habit_category_id,
+        habit_id,
+        HashSet::from([unit_id]),
+    )
+    .await;
+
+    // Both users can see it
+    let (access_token, _) = user_logs_in(&app, "testusername", "password1_").await;
+    let habits = user_gets_habits(&app, &access_token).await;
+    assert_eq!(habits.len(), 1);
+
+    let (access_token, _) = user_logs_in(&app, "testusername2", "password1_").await;
+    let habits = user_gets_habits(&app, &access_token).await;
+    assert_eq!(habits.len(), 1);
 }
 
 #[tokio::test]
@@ -279,7 +313,7 @@ pub async fn normal_user_can_not_merge_two_habits() {
     let habit_category_id = user_creates_a_habit_category(&app, &access_token).await;
     let unit_id = user_creates_a_unit(&app, &access_token).await;
 
-    let (access_token, _, _) = user_signs_up(&app).await;
+    let (access_token, _, _) = user_signs_up(&app, None).await;
     let (first_habit_id, second_habit_id) =
         user_create_two_habits_to_merge(&app, &access_token, habit_category_id, vec![unit_id])
             .await;

@@ -38,14 +38,14 @@ pub async fn user_logs_in(
 #[tokio::test]
 async fn user_can_login() {
     let app = spawn_app().await;
-    user_signs_up(&app).await;
+    user_signs_up(&app, None).await;
     user_logs_in(&app, "testusername", "password1_").await;
 }
 
 #[tokio::test]
 async fn user_cannot_login_with_wrong_password() {
     let app = spawn_app().await;
-    user_signs_up(&app).await;
+    user_signs_up(&app, None).await;
 
     let req = test::TestRequest::post()
         .uri("/api/auth/login")
@@ -68,7 +68,7 @@ async fn user_cannot_login_with_wrong_password() {
 #[tokio::test]
 async fn user_cannot_login_with_wrong_username() {
     let app = spawn_app().await;
-    user_signs_up(&app).await;
+    user_signs_up(&app, None).await;
 
     let req = test::TestRequest::post()
         .uri("/api/auth/login")
@@ -91,7 +91,7 @@ async fn user_cannot_login_with_wrong_username() {
 #[tokio::test]
 async fn logged_in_user_can_access_profile_information() {
     let app = spawn_app().await;
-    user_signs_up(&app).await;
+    user_signs_up(&app, None).await;
 
     let (access_token, _) = user_logs_in(&app, "testusername", "password1_").await;
 

@@ -14,12 +14,15 @@ use crate::{helpers::spawn_app, profile::profile::user_has_access_to_protected_r
 
 pub async fn user_signs_up(
     app: impl Service<Request, Response = ServiceResponse<impl MessageBody>, Error = Error>,
+    username: Option<&str>,
 ) -> (String, String, Vec<String>) {
+    let username = username.unwrap_or("testusername");
+
     let req = test::TestRequest::post()
         .uri("/api/auth/signup")
         .insert_header(ContentType::json())
         .set_json(&serde_json::json!({
-        "username": "testusername",
+        "username": username,
         "password": "password1_",
         "locale": "en",
         "theme": "dark",
@@ -44,13 +47,13 @@ pub async fn user_signs_up(
 #[tokio::test]
 async fn user_can_signup() {
     let app = spawn_app().await;
-    user_signs_up(&app).await;
+    user_signs_up(&app, None).await;
 }
 
 #[tokio::test]
 async fn registered_user_can_access_profile_information() {
     let app = spawn_app().await;
-    let (access_token, _, _) = user_signs_up(&app).await;
+    let (access_token, _, _) = user_signs_up(&app, None).await;
 
     // User can access a route protected by token authentication
     user_has_access_to_protected_route(&app, &access_token).await;
@@ -59,7 +62,7 @@ async fn registered_user_can_access_profile_information() {
 #[tokio::test]
 async fn user_with_invalid_token_cannot_access_profile_information() {
     let app = spawn_app().await;
-    let (access_token, _, _) = user_signs_up(&app).await;
+    let (access_token, _, _) = user_signs_up(&app, None).await;
 
     // A wrong token would not work
     let wrong_access_token = access_token
@@ -97,7 +100,7 @@ async fn unauthenticated_user_cannot_access_profile_information() {
 #[tokio::test]
 async fn user_cannot_signup_with_existing_username() {
     let app = spawn_app().await;
-    user_signs_up(&app).await;
+    user_signs_up(&app, None).await;
 
     let req = test::TestRequest::post()
         .uri("/api/auth/signup")

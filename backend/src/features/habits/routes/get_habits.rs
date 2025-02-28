@@ -1,12 +1,12 @@
 use crate::{
     core::constants::errors::AppError,
-    features::habits::{helpers::habit, structs::responses::habit::HabitsResponse},
+    features::{habits::{helpers::habit, structs::responses::habit::HabitsResponse}, profile::structs::models::User},
 };
 use actix_web::{get, web::Data, HttpResponse, Responder};
 use sqlx::PgPool;
 
 #[get("/")]
-pub async fn get_habits(pool: Data<PgPool>) -> impl Responder {
+pub async fn get_habits(pool: Data<PgPool>, request_user: User) -> impl Responder {
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
         Err(e) => {
@@ -16,7 +16,11 @@ pub async fn get_habits(pool: Data<PgPool>) -> impl Responder {
         }
     };
 
-    let get_habits_result = habit::get_habits(&mut transaction).await;
+    let get_habits_result = if request_user.is_admin {
+        habit::get_habits(&mut transaction).await
+    } else {
+        habit::get_reviewed_and_personnal_habits(&mut transaction, request_user.id).await
+    };
 
     if let Err(e) = transaction.commit().await {
         eprintln!("Error: {}", e);
