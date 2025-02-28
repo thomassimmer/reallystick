@@ -50,7 +50,7 @@ class ChallengesCarouselWidget extends StatelessWidget {
             children: [
               Icon(
                 Icons.emoji_events,
-                size: 30,
+                size: 20,
                 color: habitColor,
               ),
               SizedBox(width: 10),
@@ -58,7 +58,6 @@ class ChallengesCarouselWidget extends StatelessWidget {
                 AppLocalizations.of(context)!.relatedChallenges,
                 style: TextStyle(
                   fontSize: 20,
-                  fontWeight: FontWeight.bold,
                   color: habitColor,
                 ),
               ),
@@ -107,6 +106,7 @@ class ChallengesCarouselWidget extends StatelessWidget {
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: InkWell(
+                      borderRadius: BorderRadius.circular(16),
                       onTap: () {
                         context.pushNamed(
                           'challengeDetails',
@@ -191,46 +191,35 @@ class ChallengesCarouselWidget extends StatelessWidget {
               ),
             ),
           ] else ...[
-            Row(
-              children: [
-                Container(
-                  margin: const EdgeInsets.only(right: 8.0),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        habitColor.withAlpha(100),
-                        habitColor.withBlue(100).withAlpha(100)
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: habitColor.withOpacity(0.3),
-                        blurRadius: 10,
-                        offset: Offset(0, 4),
-                      ),
-                    ],
-                    borderRadius: BorderRadius.circular(16),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 8),
+              decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    color: habitColor.withOpacity(0.2),
+                    blurRadius: 10,
                   ),
-                  child: InkWell(
-                    onTap: () {
-                      context.pushNamed('createChallenge');
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Center(
-                        child: Text(
-                          AppLocalizations.of(context)!.noChallengesForHabitYet,
-                          style: TextStyle(color: context.colors.textOnPrimary),
-                        ),
-                      ),
+                ],
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: InkWell(
+                borderRadius: BorderRadius.circular(16),
+                onTap: () {
+                  context.pushNamed('createChallenge');
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Center(
+                    child: Text(
+                      AppLocalizations.of(context)!.noChallengesForHabitYet,
+                      style: TextStyle(color: context.colors.text),
+                      textAlign: TextAlign.center,
                     ),
                   ),
                 ),
-              ],
+              ),
             ),
-          ]
+          ],
         ],
       );
     } else {

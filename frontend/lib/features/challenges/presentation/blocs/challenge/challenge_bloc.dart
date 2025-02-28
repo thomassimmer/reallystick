@@ -93,6 +93,12 @@ class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
     on<DuplicateChallengeEvent>(_duplicateChallenge);
   }
 
+  @override
+  Future<void> close() {
+    authBlocSubscription.cancel();
+    return super.close();
+  }
+
   Future<void> _initialize(
       ChallengeInitializeEvent event, Emitter<ChallengeState> emit) async {
     final resultOfGetChallengesUsecase = await getChallengesUsecase.call();

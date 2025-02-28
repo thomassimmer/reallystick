@@ -74,6 +74,23 @@ pub async fn get_user_by_id(
     .await
 }
 
+pub async fn get_users_by_id(
+    conn: &mut PgConnection,
+    ids: Vec<Uuid>,
+) -> Result<Vec<User>, sqlx::Error> {
+    sqlx::query_as!(
+        User,
+        r#"
+        SELECT *
+        FROM users
+        WHERE id = ANY($1)
+        "#,
+        &ids,
+    )
+    .fetch_all(conn)
+    .await
+}
+
 pub async fn delete_user_by_id(
     conn: &mut PgConnection,
     user_id: Uuid,

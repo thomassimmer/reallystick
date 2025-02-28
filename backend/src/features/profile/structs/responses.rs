@@ -2,12 +2,18 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-use super::models::{ParsedDeviceInfo, UserData};
+use super::models::{ParsedDeviceInfo, UserData, UserPublicData};
 
 #[derive(Serialize, Deserialize)]
 pub struct UserResponse {
     pub code: String,
     pub user: UserData,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct UsersResponse {
+    pub code: String,
+    pub users: Vec<UserPublicData>,
 }
 
 #[derive(Serialize, Deserialize)]

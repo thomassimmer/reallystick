@@ -70,7 +70,7 @@ class UnauthenticatedHomeScreen extends StatelessWidget {
             Text(
               'Stick',
               style: context.typographies.headingLarge
-                  .copyWith(color: context.colors.hint),
+                  .copyWith(color: context.colors.textOnPrimary),
             ),
           ],
         ),
@@ -79,7 +79,7 @@ class UnauthenticatedHomeScreen extends StatelessWidget {
           AppLocalizations.of(context)!.pleaseLoginOrSignUp,
           style: TextStyle(
             fontSize: 18,
-            color: context.colors.hint,
+            color: context.colors.textOnPrimary,
           ),
           textAlign: TextAlign.center,
         ),

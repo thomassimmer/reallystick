@@ -4,7 +4,7 @@ import 'package:reallystick/core/ui/extensions.dart';
 class AddActivityButton extends StatelessWidget {
   final void Function() action;
   final Color? color;
-  final String label;
+  final String? label;
 
   const AddActivityButton({
     required this.action,
@@ -15,12 +15,21 @@ class AddActivityButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FloatingActionButton.extended(
+    if (label != null) {
+      return FloatingActionButton.extended(
+        onPressed: action,
+        icon: Icon(Icons.add),
+        label: Text(label!),
+        backgroundColor: color ?? context.colors.primary,
+        extendedTextStyle:
+            TextStyle(letterSpacing: 0.7, fontFamily: 'Montserrat'),
+      );
+    }
+
+    return FloatingActionButton(
       onPressed: action,
-      icon: Icon(Icons.add),
-      label: Text(label),
       backgroundColor: color ?? context.colors.primary,
-      extendedTextStyle: TextStyle(letterSpacing: 1, fontFamily: 'Montserrat'),
+      child: const Icon(Icons.add),
     );
   }
 }

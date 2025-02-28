@@ -77,6 +77,12 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
     on<DeleteHabitParticipationEvent>(deleteHabitParticipation);
   }
 
+  @override
+  Future<void> close() {
+    authBlocSubscription.cancel();
+    return super.close();
+  }
+
   Future<void> _initialize(
       HabitInitializeEvent event, Emitter<HabitState> emit) async {
     final resultGetHabitCategoriesUseCase =

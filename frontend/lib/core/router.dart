@@ -24,13 +24,19 @@ import 'package:reallystick/features/messages/presentation/messages_screen.dart'
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
 import 'package:reallystick/features/profile/presentation/screens/about_screen.dart';
+import 'package:reallystick/features/profile/presentation/screens/all_reported_messages_screen.dart';
 import 'package:reallystick/features/profile/presentation/screens/device_screen.dart';
 import 'package:reallystick/features/profile/presentation/screens/language_selection_screen.dart';
+import 'package:reallystick/features/profile/presentation/screens/liked_messages_screen.dart';
 import 'package:reallystick/features/profile/presentation/screens/password_screen.dart';
 import 'package:reallystick/features/profile/presentation/screens/profile_information_screen.dart';
 import 'package:reallystick/features/profile/presentation/screens/profile_screen.dart';
 import 'package:reallystick/features/profile/presentation/screens/theme_selection_screen.dart';
 import 'package:reallystick/features/profile/presentation/screens/two_factor_authentication_screen.dart';
+import 'package:reallystick/features/profile/presentation/screens/user_reported_messages_screen.dart';
+import 'package:reallystick/features/profile/presentation/screens/written_messages_screen.dart';
+import 'package:reallystick/features/public_messages/presentation/screens/reply_screen.dart';
+import 'package:reallystick/features/public_messages/presentation/screens/thread_screen.dart';
 
 final router = GoRouter(
   initialLocation: '/',
@@ -116,6 +122,40 @@ final router = GoRouter(
                   habitId: habitId,
                 );
               },
+              routes: [
+                GoRoute(
+                  path: 'threads/:threadId',
+                  name: 'habitThread',
+                  builder: (context, state) {
+                    final habitId = state.pathParameters['habitId']!;
+                    final threadId = state.pathParameters['threadId']!;
+
+                    return ThreadScreen(
+                      habitId: habitId,
+                      challengeId: null,
+                      threadId: threadId,
+                    );
+                  },
+                  routes: [
+                    GoRoute(
+                      path: 'reply/:messageId',
+                      name: 'habitThreadReply',
+                      builder: (context, state) {
+                        final habitId = state.pathParameters['habitId']!;
+                        final messageId = state.pathParameters['messageId']!;
+                        final threadId = state.pathParameters['threadId']!;
+
+                        return ReplyScreen(
+                          habitId: habitId,
+                          challengeId: null,
+                          messageId: messageId,
+                          threadId: threadId,
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ],
             ),
           ],
         ),
@@ -153,6 +193,41 @@ final router = GoRouter(
                   challengeId: challengeId,
                 );
               },
+              routes: [
+                GoRoute(
+                  path: 'threads/:threadId',
+                  name: 'challengeThread',
+                  builder: (context, state) {
+                    final challengeId = state.pathParameters['challengeId']!;
+                    final threadId = state.pathParameters['threadId']!;
+
+                    return ThreadScreen(
+                      habitId: null,
+                      challengeId: challengeId,
+                      threadId: threadId,
+                    );
+                  },
+                  routes: [
+                    GoRoute(
+                      path: 'reply/:messageId',
+                      name: 'challengeThreadReply',
+                      builder: (context, state) {
+                        final challengeId =
+                            state.pathParameters['challengeId']!;
+                        final threadId = state.pathParameters['threadId']!;
+                        final messageId = state.pathParameters['messageId']!;
+
+                        return ReplyScreen(
+                          habitId: null,
+                          challengeId: challengeId,
+                          threadId: threadId,
+                          messageId: messageId,
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ],
             ),
           ],
         ),
@@ -200,6 +275,36 @@ final router = GoRouter(
               path: 'profile-information',
               name: 'profile-information',
               builder: (context, state) => ProfileInformationScreen(),
+            ),
+            GoRoute(
+              path: 'liked-messages',
+              name: 'liked-messages',
+              builder: (context, state) => LikedMessagesScreen(),
+            ),
+            GoRoute(
+              path: 'written-messages',
+              name: 'written-messages',
+              builder: (context, state) => WrittenMessagesScreen(),
+            ),
+            GoRoute(
+              path: 'reported-messages',
+              name: 'reported-messages',
+              builder: (context, state) => UserReportedMessagesScreen(),
+            ),
+            GoRoute(
+              path: 'all-reported-messages',
+              name: 'all-reported-messages',
+              builder: (context, state) => AllReportedMessagesScreen(),
+              redirect: (context, state) {
+                final profileState = context.read<ProfileBloc>().state;
+
+                if (profileState is ProfileAuthenticated &&
+                    !profileState.profile.isAdmin) {
+                  return '/profil'; // Redirect non admin users to profil page
+                }
+
+                return null;
+              },
             ),
           ],
         ),

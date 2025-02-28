@@ -5,8 +5,9 @@ use actix_web::{
     http::header::ContentType,
     test, Error,
 };
-use reallystick::features::profile::structs::responses::{
-    DeleteAccountResponse, IsOtpEnabledResponse, UserResponse,
+use reallystick::features::profile::structs::{
+    models::UserData,
+    responses::{DeleteAccountResponse, IsOtpEnabledResponse, UserResponse},
 };
 
 use crate::{
@@ -20,7 +21,7 @@ use crate::{
 pub async fn user_has_access_to_protected_route(
     app: impl Service<Request, Response = ServiceResponse<impl MessageBody>, Error = Error>,
     access_token: &str,
-) {
+) -> UserData {
     let req = test::TestRequest::get()
         .uri("/api/users/me")
         .insert_header((header::AUTHORIZATION, format!("Bearer {}", access_token)))
@@ -33,8 +34,8 @@ pub async fn user_has_access_to_protected_route(
     let response: UserResponse = serde_json::from_slice(&body).unwrap();
 
     assert_eq!(response.code, "PROFILE_FETCHED");
-    assert_eq!(response.user.username, "testusername");
-    assert_eq!(response.user.locale, "en");
+
+    response.user
 }
 
 #[tokio::test]

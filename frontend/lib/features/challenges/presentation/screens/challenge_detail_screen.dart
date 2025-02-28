@@ -14,7 +14,6 @@ import 'package:reallystick/features/challenges/presentation/screens/add_daily_t
 import 'package:reallystick/features/challenges/presentation/screens/challenge_not_found_screen.dart';
 import 'package:reallystick/features/challenges/presentation/screens/duplicate_challenge_modal.dart';
 import 'package:reallystick/features/challenges/presentation/widgets/analytics_carousel_widget.dart';
-import 'package:reallystick/features/challenges/presentation/widgets/challenge_discussion_list_widget.dart';
 import 'package:reallystick/features/challenges/presentation/widgets/daily_tracking_carousel_widget.dart';
 import 'package:reallystick/features/challenges/presentation/widgets/list_of_concerned_habits.dart';
 import 'package:reallystick/features/habits/presentation/helpers/translations.dart';
@@ -22,6 +21,9 @@ import 'package:reallystick/features/habits/presentation/screens/color_picker_mo
 import 'package:reallystick/features/habits/presentation/widgets/add_activity_button.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
+import 'package:reallystick/features/public_messages/presentation/blocs/public_message/public_message_bloc.dart';
+import 'package:reallystick/features/public_messages/presentation/blocs/public_message/public_message_events.dart';
+import 'package:reallystick/features/public_messages/presentation/widgets/discussion_list_widget.dart';
 import 'package:share_plus/share_plus.dart';
 
 class ChallengeDetailsScreen extends StatefulWidget {
@@ -162,6 +164,23 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
   }
 
   @override
+  void didChangeDependencies() async {
+    super.didChangeDependencies();
+
+    final profileState = context.watch<ProfileBloc>().state;
+
+    if (profileState is ProfileAuthenticated) {
+      BlocProvider.of<PublicMessageBloc>(context).add(
+        PublicMessageInitializeEvent(
+          habitId: null,
+          challengeId: widget.challengeId,
+          isAdmin: profileState.profile.isAdmin,
+        ),
+      );
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Builder(
       builder: (context) {
@@ -224,7 +243,7 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
                     padding: const EdgeInsets.only(right: 16.0),
                     child: getIconWidget(
                       iconString: challenge.icon,
-                      size: 30,
+                      size: 25,
                       color: challengeColor,
                     ),
                   ),
@@ -306,8 +325,9 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
                 ? AddActivityButton(
                     action: _showAddDailyTrackingBottomSheet,
                     color: challengeColor,
-                    label: AppLocalizations.of(context)!.addDailyObjective,
-                  )
+                    label:
+                        null //AppLocalizations.of(context)!.addDailyObjective,
+                    )
                 : challengeParticipation == null
                     ? FloatingActionButton.extended(
                         onPressed: _joinChallenge,
@@ -378,7 +398,11 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
                       ),
                       SizedBox(height: 30),
                     ],
-                    ChallengeDiscussionListWidget(color: challengeColor),
+                    DiscussionListWidget(
+                      color: challengeColor,
+                      habitId: null,
+                      challengeId: widget.challengeId,
+                    ),
                     SizedBox(height: 72),
                   ],
                 ),

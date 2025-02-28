@@ -221,7 +221,7 @@ pub async fn creator_can_update_a_challenge_daily_tracking() {
 }
 
 #[tokio::test]
-pub async fn creator_can_delete_a_habit_daily_tracking() {
+pub async fn creator_can_delete_a_challenge_daily_tracking() {
     let app = spawn_app().await;
     let (access_token, _) = user_logs_in(&app, "thomas", "").await;
     let habit_category_id = user_creates_a_habit_category(&app, &access_token).await;

@@ -48,60 +48,77 @@ class HabitCardWidget extends StatelessWidget {
             pathParameters: {'habitId': habit.id},
           );
         },
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Icon(
-                    getIconData(iconDataString: habit.icon.substring(10)),
-                    color: color,
-                  ),
-                  SizedBox(width: 10),
-                  Text(
-                    getRightTranslationFromJson(
-                      isLargeScreen ? habit.longName : habit.shortName,
-                      userLocale,
-                    ),
-                    style: TextStyle(
-                      color: color,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(width: 10),
-                  if (hasParticipation) ...[
-                    Icon(
-                      Icons.check_box,
-                      color: color,
-                    ),
-                  ] else ...[
-                    MaterialButton(
-                      // style: ElevatedButton.styleFrom(
-                      // fixedSize:/ Size(50, 10),
-                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      height: 15,
-                      padding: EdgeInsets.all(5),
-                      color: color,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      textColor: context.colors.textOnPrimary,
-                      onPressed: () {
-                        startTrackingThisHabit();
-                      },
-                      child: Text(
-                        AppLocalizations.of(context)!.startHabitShort,
-                        style: context.typographies.captionSmall,
-                      ),
-                    ),
-                  ]
-                ],
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                color.withAlpha(100),
+                color.withBlue(100).withAlpha(100)
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: color.withOpacity(0.2),
+                blurRadius: 10,
               ),
             ],
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(
+                      getIconData(iconDataString: habit.icon.substring(10)),
+                      color: context.colors.text,
+                      size: 20,
+                    ),
+                    SizedBox(width: 10),
+                    Text(
+                      getRightTranslationFromJson(
+                        isLargeScreen ? habit.longName : habit.shortName,
+                        userLocale,
+                      ),
+                      style: TextStyle(
+                        color: context.colors.text,
+                        fontSize: 16,
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    if (hasParticipation) ...[
+                      Icon(
+                        Icons.check_box,
+                        color: context.colors.text,
+                      ),
+                    ] else ...[
+                      MaterialButton(
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        height: 10,
+                        padding: EdgeInsets.all(5),
+                        color: color,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        textColor: context.colors.textOnPrimary,
+                        onPressed: () {
+                          startTrackingThisHabit();
+                        },
+                        child: Text(
+                          AppLocalizations.of(context)!.startHabitShort,
+                          style: context.typographies.captionSmall,
+                        ),
+                      ),
+                    ]
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

@@ -38,7 +38,7 @@ pub async fn get_profile_information(
         },
         Err(e) => {
             eprintln!("Error: {}", e);
-            return HttpResponse::InternalServerError().json(AppError::UserUpdate.to_response());
+            HttpResponse::InternalServerError().json(AppError::UserUpdate.to_response())
         }
     }
 }

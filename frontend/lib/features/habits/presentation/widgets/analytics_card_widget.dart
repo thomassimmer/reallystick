@@ -70,9 +70,8 @@ class _AnalyticsCardWidgetState extends State<AnalyticsCardWidget> {
         ),
         boxShadow: [
           BoxShadow(
-            color: widget.color.withOpacity(0.3),
+            color: widget.color.withOpacity(0.2),
             blurRadius: 10,
-            offset: Offset(0, 4),
           ),
         ],
         borderRadius: BorderRadius.circular(16),
@@ -83,16 +82,19 @@ class _AnalyticsCardWidgetState extends State<AnalyticsCardWidget> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Icon(widget.analyticsCardInfo.icon, color: Colors.white),
+                Icon(
+                  widget.analyticsCardInfo.icon,
+                  color: Colors.white,
+                  size: 20,
+                ),
                 SizedBox(width: 10),
                 Text(
                   widget.analyticsCardInfo.title,
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 16,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ],

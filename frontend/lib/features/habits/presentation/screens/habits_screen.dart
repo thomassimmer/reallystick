@@ -157,6 +157,12 @@ class HabitsScreenState extends State<HabitsScreen> {
                   ),
                 ],
               ),
+              floatingActionButton: categories.isNotEmpty
+                  ? AddActivityButton(
+                      action: _showAddDailyTrackingBottomSheet,
+                      label: null // AppLocalizations.of(context)!.addActivity,
+                      )
+                  : null,
               body: RefreshIndicator(
                 onRefresh: _pullRefresh,
                 child: Padding(
@@ -280,14 +286,6 @@ class HabitsScreenState extends State<HabitsScreen> {
                   ),
                 ),
               ),
-              floatingActionButton: categories.isNotEmpty
-                  ? AddActivityButton(
-                      action: _showAddDailyTrackingBottomSheet,
-                      label: AppLocalizations.of(context)!.addActivity,
-                    )
-                  : null,
-              floatingActionButtonLocation:
-                  FloatingActionButtonLocation.centerFloat,
             );
           } else if (habitState is HabitsFailed) {
             return Center(

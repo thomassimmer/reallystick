@@ -149,7 +149,7 @@ class DailyTrackingCarouselWidgetState
                   children: [
                     Icon(
                       Icons.bar_chart,
-                      size: 30,
+                      size: 20,
                       color: widget.habitColor,
                     ),
                     SizedBox(width: 10),
@@ -157,7 +157,6 @@ class DailyTrackingCarouselWidgetState
                       AppLocalizations.of(context)!.habitDailyTracking,
                       style: TextStyle(
                         fontSize: 20,
-                        fontWeight: FontWeight.bold,
                         color: widget.habitColor,
                       ),
                     ),

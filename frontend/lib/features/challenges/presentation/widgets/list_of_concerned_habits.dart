@@ -45,7 +45,7 @@ class ListOfConcernedHabits extends StatelessWidget {
             children: [
               Icon(
                 Icons.list,
-                size: 30,
+                size: 20,
                 color: challengeColor,
               ),
               SizedBox(width: 10),
@@ -53,7 +53,6 @@ class ListOfConcernedHabits extends StatelessWidget {
                 AppLocalizations.of(context)!.habitsConcerned,
                 style: TextStyle(
                   fontSize: 20,
-                  fontWeight: FontWeight.bold,
                   color: challengeColor,
                 ),
               ),

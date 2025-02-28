@@ -86,6 +86,32 @@ import 'package:reallystick/features/profile/domain/usecases/load_countries.dart
 import 'package:reallystick/features/profile/domain/usecases/post_profile_usecase.dart';
 import 'package:reallystick/features/profile/domain/usecases/set_password_use_case.dart';
 import 'package:reallystick/features/profile/domain/usecases/update_password_use_case.dart';
+import 'package:reallystick/features/public_messages/data/repositories/public_message_like_repository_impl.dart';
+import 'package:reallystick/features/public_messages/data/repositories/public_message_report_repository_impl.dart';
+import 'package:reallystick/features/public_messages/data/repositories/public_message_repository_impl.dart';
+import 'package:reallystick/features/public_messages/data/sources/remote_data_sources.dart';
+import 'package:reallystick/features/public_messages/domain/repositories/public_message_like_repository.dart';
+import 'package:reallystick/features/public_messages/domain/repositories/public_message_report_repository.dart';
+import 'package:reallystick/features/public_messages/domain/repositories/public_message_repository.dart';
+import 'package:reallystick/features/public_messages/domain/usecases/create_public_message_like_usecase.dart';
+import 'package:reallystick/features/public_messages/domain/usecases/create_public_message_report_usecase.dart';
+import 'package:reallystick/features/public_messages/domain/usecases/create_public_message_usecase.dart';
+import 'package:reallystick/features/public_messages/domain/usecases/delete_public_message_like_usecase.dart';
+import 'package:reallystick/features/public_messages/domain/usecases/delete_public_message_report_usecase.dart';
+import 'package:reallystick/features/public_messages/domain/usecases/delete_public_message_usecase.dart';
+import 'package:reallystick/features/public_messages/domain/usecases/get_liked_messages_usecase.dart';
+import 'package:reallystick/features/public_messages/domain/usecases/get_message_parents_usecase.dart';
+import 'package:reallystick/features/public_messages/domain/usecases/get_message_reports_usecase.dart';
+import 'package:reallystick/features/public_messages/domain/usecases/get_message_usecase.dart';
+import 'package:reallystick/features/public_messages/domain/usecases/get_public_messages_usecase.dart';
+import 'package:reallystick/features/public_messages/domain/usecases/get_replies_usecase.dart';
+import 'package:reallystick/features/public_messages/domain/usecases/get_user_message_reports_usecase.dart';
+import 'package:reallystick/features/public_messages/domain/usecases/get_written_messages_usecase.dart';
+import 'package:reallystick/features/public_messages/domain/usecases/update_public_message_usecase.dart';
+import 'package:reallystick/features/users/data/repositories/user_public_data_repository_impl.dart';
+import 'package:reallystick/features/users/data/sources/remote_data_sources.dart';
+import 'package:reallystick/features/users/domain/repositories/user_public_data_repository.dart';
+import 'package:reallystick/features/users/domain/usecases/get_users_public_data_usecase.dart';
 
 final sl = GetIt.instance;
 
@@ -112,6 +138,10 @@ void setupServiceLocator() {
       HabitRemoteDataSource(apiClient: apiClient, baseUrl: baseUrl));
   sl.registerSingleton<ChallengeRemoteDataSource>(
       ChallengeRemoteDataSource(apiClient: apiClient, baseUrl: baseUrl));
+  sl.registerSingleton<PublicMessageRemoteDataSource>(
+      PublicMessageRemoteDataSource(apiClient: apiClient, baseUrl: baseUrl));
+  sl.registerSingleton<UserPublicDataRemoteDataSource>(
+      UserPublicDataRemoteDataSource(apiClient: apiClient, baseUrl: baseUrl));
 
   // Repositories
   sl.registerSingleton<AuthRepository>(
@@ -144,6 +174,16 @@ void setupServiceLocator() {
   sl.registerSingleton<ChallengeStatisticRepository>(
       ChallengeStatisticRepositoryImpl(
           remoteDataSource: sl<ChallengeRemoteDataSource>()));
+  sl.registerSingleton<PublicMessageLikeRepository>(
+      PublicMessageLikeRepositoryImpl(
+          remoteDataSource: sl<PublicMessageRemoteDataSource>()));
+  sl.registerSingleton<PublicMessageRepository>(PublicMessageRepositoryImpl(
+      remoteDataSource: sl<PublicMessageRemoteDataSource>()));
+  sl.registerSingleton<PublicMessageReportRepository>(
+      PublicMessageReportRepositoryImpl(
+          remoteDataSource: sl<PublicMessageRemoteDataSource>()));
+  sl.registerSingleton<UserPublicDataRepository>(UserPublicDataRepositoryImpl(
+      remoteDataSource: sl<UserPublicDataRemoteDataSource>()));
 
   // Use cases
   sl.registerSingleton<LoginUseCase>(LoginUseCase(sl<AuthRepository>()));
@@ -262,4 +302,36 @@ void setupServiceLocator() {
       GetDevicesUsecase(sl<ProfileRepository>()));
   sl.registerSingleton<DeleteDeviceUseCase>(
       DeleteDeviceUseCase(sl<ProfileRepository>()));
+  sl.registerSingleton<CreatePublicMessageLikeUsecase>(
+      CreatePublicMessageLikeUsecase(sl<PublicMessageLikeRepository>()));
+  sl.registerSingleton<CreatePublicMessageReportUsecase>(
+      CreatePublicMessageReportUsecase(sl<PublicMessageReportRepository>()));
+  sl.registerSingleton<CreatePublicMessageUsecase>(
+      CreatePublicMessageUsecase(sl<PublicMessageRepository>()));
+  sl.registerSingleton<DeletePublicMessageLikeUsecase>(
+      DeletePublicMessageLikeUsecase(sl<PublicMessageLikeRepository>()));
+  sl.registerSingleton<DeletePublicMessageReportUsecase>(
+      DeletePublicMessageReportUsecase(sl<PublicMessageReportRepository>()));
+  sl.registerSingleton<DeletePublicMessageUsecase>(
+      DeletePublicMessageUsecase(sl<PublicMessageRepository>()));
+  sl.registerSingleton<GetLikedMessagesUsecase>(
+      GetLikedMessagesUsecase(sl<PublicMessageRepository>()));
+  sl.registerSingleton<GetMessageParentsUsecase>(
+      GetMessageParentsUsecase(sl<PublicMessageRepository>()));
+  sl.registerSingleton<GetMessageReportsUsecase>(
+      GetMessageReportsUsecase(sl<PublicMessageReportRepository>()));
+  sl.registerSingleton<GetPublicMessagesUsecase>(
+      GetPublicMessagesUsecase(sl<PublicMessageRepository>()));
+  sl.registerSingleton<GetRepliesUsecase>(
+      GetRepliesUsecase(sl<PublicMessageRepository>()));
+  sl.registerSingleton<GetUserMessageReportsUsecase>(
+      GetUserMessageReportsUsecase(sl<PublicMessageReportRepository>()));
+  sl.registerSingleton<GetWrittenMessagesUsecase>(
+      GetWrittenMessagesUsecase(sl<PublicMessageRepository>()));
+  sl.registerSingleton<UpdatePublicMessageUsecase>(
+      UpdatePublicMessageUsecase(sl<PublicMessageRepository>()));
+  sl.registerSingleton<GetUsersPublicDataUsecase>(
+      GetUsersPublicDataUsecase(sl<UserPublicDataRepository>()));
+  sl.registerSingleton<GetMessageUsecase>(
+      GetMessageUsecase(sl<PublicMessageRepository>()));
 }

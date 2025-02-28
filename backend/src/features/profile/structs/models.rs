@@ -1,40 +1,11 @@
-use std::collections::HashMap;
-
 use actix_http::Payload;
 use actix_web::{FromRequest, HttpMessage, HttpRequest};
 use futures_util::future::{err, ok, Ready};
 use serde::{Deserialize, Serialize};
 use sqlx::prelude::FromRow;
+use std::{collections::HashMap, sync::Arc};
+use tokio::sync::RwLock;
 use uuid::Uuid;
-
-#[derive(Serialize, Debug, Deserialize)]
-pub struct UserData {
-    pub id: Uuid,
-    pub username: String,
-    pub locale: String,
-    pub theme: String,
-
-    pub is_admin: bool,
-
-    pub otp_verified: bool,
-    pub otp_base32: Option<String>,
-    pub otp_auth_url: Option<String>,
-
-    pub password_is_expired: bool,
-
-    pub has_seen_questions: bool,
-    pub age_category: Option<String>,
-    pub gender: Option<String>,
-    pub continent: Option<String>,
-    pub country: Option<String>,
-    pub region: Option<String>,
-    pub activity: Option<String>,
-    pub financial_situation: Option<String>,
-    pub lives_in_urban_area: Option<bool>,
-    pub relationship_status: Option<String>,
-    pub level_of_education: Option<String>,
-    pub has_children: Option<bool>,
-}
 
 #[derive(Debug, Deserialize, Serialize, Clone, FromRow)]
 pub struct User {
@@ -96,6 +67,13 @@ impl User {
             has_children: self.has_children,
         }
     }
+
+    pub fn to_user_public_data(&self) -> UserPublicData {
+        UserPublicData {
+            id: self.id,
+            username: self.username.to_owned(),
+        }
+    }
 }
 
 impl FromRequest for User {
@@ -107,6 +85,69 @@ impl FromRequest for User {
             Some(user) => ok(user.clone()),
             None => err(actix_web::error::ErrorBadRequest("ups...")),
         }
+    }
+}
+
+#[derive(Serialize, Debug, Deserialize)]
+pub struct UserData {
+    pub id: Uuid,
+    pub username: String,
+    pub locale: String,
+    pub theme: String,
+
+    pub is_admin: bool,
+
+    pub otp_verified: bool,
+    pub otp_base32: Option<String>,
+    pub otp_auth_url: Option<String>,
+
+    pub password_is_expired: bool,
+
+    pub has_seen_questions: bool,
+    pub age_category: Option<String>,
+    pub gender: Option<String>,
+    pub continent: Option<String>,
+    pub country: Option<String>,
+    pub region: Option<String>,
+    pub activity: Option<String>,
+    pub financial_situation: Option<String>,
+    pub lives_in_urban_area: Option<bool>,
+    pub relationship_status: Option<String>,
+    pub level_of_education: Option<String>,
+    pub has_children: Option<bool>,
+}
+
+#[derive(Serialize, Debug, Deserialize, Clone)]
+pub struct UserPublicData {
+    pub id: Uuid,
+    pub username: String,
+}
+
+#[derive(Default)]
+pub struct UserPublicDataCache {
+    data: Arc<RwLock<HashMap<Uuid, UserPublicData>>>,
+}
+
+impl UserPublicDataCache {
+    pub async fn update_or_insert_key(&self, key: Uuid, value: UserPublicData) {
+        self.data
+            .write()
+            .await
+            .entry(key)
+            .and_modify(|v| *v = value.clone())
+            .or_insert(value);
+    }
+
+    pub async fn insert_mutiple_keys(&self, key_value_couples: Vec<(Uuid, UserPublicData)>) {
+        self.data.write().await.extend(key_value_couples);
+    }
+
+    pub async fn remove_key(&self, key: Uuid) {
+        self.data.write().await.remove(&key);
+    }
+
+    pub async fn get_value_for_key(&self, key: &Uuid) -> Option<UserPublicData> {
+        self.data.read().await.get(key).cloned()
     }
 }
 

@@ -1,0 +1,210 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:reallystick/core/presentation/screens/loading_screen.dart';
+import 'package:reallystick/core/ui/colors.dart';
+import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_bloc.dart';
+import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_events.dart';
+import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_states.dart';
+import 'package:reallystick/features/challenges/presentation/screens/challenge_not_found_screen.dart';
+import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.dart';
+import 'package:reallystick/features/habits/presentation/blocs/habit/habit_states.dart';
+import 'package:reallystick/features/habits/presentation/screens/habit_not_found_screen.dart';
+import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
+import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
+import 'package:reallystick/features/public_messages/presentation/blocs/public_message/public_message_bloc.dart';
+import 'package:reallystick/features/public_messages/presentation/blocs/public_message/public_message_events.dart';
+import 'package:reallystick/features/public_messages/presentation/blocs/public_message/public_message_states.dart';
+import 'package:reallystick/features/public_messages/presentation/blocs/public_message_creation/public_message_creation_bloc.dart';
+import 'package:reallystick/features/public_messages/presentation/blocs/public_message_creation/public_message_creation_events.dart';
+import 'package:reallystick/features/public_messages/presentation/blocs/thread/thread_bloc.dart';
+import 'package:reallystick/features/public_messages/presentation/blocs/thread/thread_events.dart';
+import 'package:reallystick/features/public_messages/presentation/blocs/thread/thread_states.dart';
+import 'package:reallystick/features/public_messages/presentation/widgets/message_widget.dart';
+import 'package:reallystick/features/users/presentation/blocs/user/user_bloc.dart';
+import 'package:reallystick/features/users/presentation/blocs/user/user_states.dart';
+
+class ThreadScreen extends StatefulWidget {
+  final String threadId;
+  final String? habitId;
+  final String? challengeId;
+
+  const ThreadScreen({
+    Key? key,
+    required this.threadId,
+    required this.habitId,
+    required this.challengeId,
+  }) : super(key: key);
+
+  @override
+  ThreadScreenState createState() => ThreadScreenState();
+}
+
+class ThreadScreenState extends State<ThreadScreen> {
+  String _content = "";
+
+  Future<void> _pullRefresh() async {
+    BlocProvider.of<ThreadBloc>(context).add(
+      InitializeThreadEvent(
+        threadId: widget.threadId,
+      ),
+    );
+    await Future.delayed(Duration(seconds: 2));
+  }
+
+  void _replyToMessage() {
+    final publicMessageCreationFormBloc =
+        context.read<PublicMessageCreationFormBloc>();
+
+    publicMessageCreationFormBloc.add(
+      PublicMessageCreationFormContentChangedEvent(_content),
+    );
+
+    Future.delayed(const Duration(milliseconds: 50), () {
+      if (publicMessageCreationFormBloc.state.isValid) {
+        final newMessageEvent = CreatePublicMessageEvent(
+          habitId: widget.habitId,
+          challengeId: widget.challengeId,
+          repliesTo: widget.threadId,
+          content: _content,
+          threadId: widget.threadId,
+        );
+
+        if (mounted) {
+          context.read<PublicMessageBloc>().add(newMessageEvent);
+        }
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final profileState = context.watch<ProfileBloc>().state;
+    final threadState = context.watch<ThreadBloc>().state;
+
+    if (profileState is ProfileAuthenticated &&
+        threadState is ThreadLoaded &&
+        (threadState.threadId == null ||
+            threadState.threadId != widget.threadId)) {
+      BlocProvider.of<ThreadBloc>(context).add(
+        InitializeThreadEvent(
+          threadId: widget.threadId,
+        ),
+      );
+    }
+
+    return Builder(
+      builder: (context) {
+        final profileState = context.watch<ProfileBloc>().state;
+        final challengeState = context.watch<ChallengeBloc>().state;
+        final habitState = context.watch<HabitBloc>().state;
+        final publicMessageState = context.watch<PublicMessageBloc>().state;
+        final userState = context.watch<UserBloc>().state;
+
+        if (userState is UsersLoaded &&
+            profileState is ProfileAuthenticated &&
+            challengeState is ChallengesLoaded &&
+            publicMessageState is PublicMessagesLoaded &&
+            habitState is HabitsLoaded) {
+          Color color = AppColorExtension.getRandomColor().color;
+
+          if (widget.challengeId != null) {
+            final challenge = challengeState.challenges[widget.challengeId];
+
+            if (challenge == null) {
+              if (challengeState.notFoundChallenge == widget.challengeId) {
+                return ChallengeNotFoundScreen();
+              } else {
+                context
+                    .read<ChallengeBloc>()
+                    .add(GetChallengeEvent(challengeId: widget.challengeId!));
+                return LoadingScreen();
+              }
+            }
+
+            final challengeParticipation = challengeState
+                .challengeParticipations
+                .where((hp) => hp.challengeId == widget.challengeId)
+                .firstOrNull;
+
+            if (challengeParticipation != null) {
+              color = AppColorExtension.fromString(
+                challengeParticipation.color,
+              ).color;
+            }
+          } else if (widget.habitId != null) {
+            final habit = habitState.habits[widget.habitId];
+
+            if (habit == null) {
+              return HabitNotFoundScreen();
+            }
+
+            final habitParticipation = habitState.habitParticipations
+                .where((hp) => hp.habitId == widget.habitId)
+                .firstOrNull;
+
+            if (habitParticipation != null) {
+              color = AppColorExtension.fromString(
+                habitParticipation.color,
+              ).color;
+            }
+          }
+
+          final message = publicMessageState.threads
+              .where((m) => m.id == widget.threadId)
+              .firstOrNull;
+
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(
+                AppLocalizations.of(context)!.discussion,
+                style: TextStyle(color: color),
+              ),
+            ),
+            body: RefreshIndicator(
+              onRefresh: _pullRefresh,
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: MessageWidget(
+                          messageId: widget.threadId,
+                          color: color,
+                          habitId: widget.habitId,
+                          challengeId: widget.challengeId,
+                          threadId: widget.threadId,
+                          withReplies: true,
+                        ),
+                      ),
+                    ),
+                    if (message != null) ...[
+                      TextField(
+                        onSubmitted: (_) => _replyToMessage(),
+                        onChanged: (value) => {
+                          setState(() {
+                            _content = value;
+                          })
+                        },
+                        decoration: InputDecoration(
+                          hintText: AppLocalizations.of(context)!.replyTo(
+                            userState.users[message.creator]?.username ??
+                                AppLocalizations.of(context)!.unknown,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            ),
+          );
+        } else {
+          return SizedBox.shrink();
+        }
+      },
+    );
+  }
+}

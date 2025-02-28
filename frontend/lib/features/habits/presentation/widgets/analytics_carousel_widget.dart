@@ -151,7 +151,7 @@ class AnalyticsCarouselWidget extends StatelessWidget {
             children: [
               Icon(
                 Icons.query_stats,
-                size: 30,
+                size: 20,
                 color: habitColor,
               ),
               SizedBox(width: 10),
@@ -159,7 +159,6 @@ class AnalyticsCarouselWidget extends StatelessWidget {
                 AppLocalizations.of(context)!.analytics,
                 style: TextStyle(
                   fontSize: 20,
-                  fontWeight: FontWeight.bold,
                   color: habitColor,
                 ),
               ),

@@ -22,6 +22,13 @@ import 'package:reallystick/features/profile/presentation/blocs/profile/profile_
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
 import 'package:reallystick/features/profile/presentation/blocs/set_password/set_password_bloc.dart';
 import 'package:reallystick/features/profile/presentation/blocs/update_password/update_password_bloc.dart';
+import 'package:reallystick/features/public_messages/presentation/blocs/public_message/public_message_bloc.dart';
+import 'package:reallystick/features/public_messages/presentation/blocs/public_message_creation/public_message_creation_bloc.dart';
+import 'package:reallystick/features/public_messages/presentation/blocs/public_message_report_creation/public_message_report_creation_bloc.dart';
+import 'package:reallystick/features/public_messages/presentation/blocs/public_message_update/public_message_update_bloc.dart';
+import 'package:reallystick/features/public_messages/presentation/blocs/reply/reply_bloc.dart';
+import 'package:reallystick/features/public_messages/presentation/blocs/thread/thread_bloc.dart';
+import 'package:reallystick/features/users/presentation/blocs/user/user_bloc.dart';
 import 'package:universal_io/io.dart';
 
 class ReallyStickApp extends StatelessWidget {
@@ -80,6 +87,19 @@ class ReallyStickApp extends StatelessWidget {
         ChallengeDailyTrackingCreationFormBloc();
     final challengeDailyTrackingUpdateFormBloc =
         ChallengeDailyTrackingUpdateFormBloc();
+    final userBloc = UserBloc(authBloc: authBloc);
+    final publicMessageCreationFormBloc = PublicMessageCreationFormBloc();
+    final publicMessageUpdateFormBloc = PublicMessageUpdateFormBloc();
+    final publicMessageReportCreationFormBloc =
+        PublicMessageReportCreationFormBloc();
+    final threadBloc = ThreadBloc(authBloc: authBloc, userBloc: userBloc);
+    final replyBloc = ReplyBloc(authBloc: authBloc, userBloc: userBloc);
+    final publicMessageBloc = PublicMessageBloc(
+      authBloc: authBloc,
+      userBloc: userBloc,
+      threadBloc: threadBloc,
+      replyBloc: replyBloc,
+    );
 
     authBloc.add(AuthInitializeEvent());
 
@@ -131,6 +151,27 @@ class ReallyStickApp extends StatelessWidget {
       ),
       BlocProvider<ChallengeDailyTrackingUpdateFormBloc>(
         create: (context) => challengeDailyTrackingUpdateFormBloc,
+      ),
+      BlocProvider<UserBloc>(
+        create: (context) => userBloc,
+      ),
+      BlocProvider<PublicMessageBloc>(
+        create: (context) => publicMessageBloc,
+      ),
+      BlocProvider<PublicMessageCreationFormBloc>(
+        create: (context) => publicMessageCreationFormBloc,
+      ),
+      BlocProvider<PublicMessageUpdateFormBloc>(
+        create: (context) => publicMessageUpdateFormBloc,
+      ),
+      BlocProvider<PublicMessageReportCreationFormBloc>(
+        create: (context) => publicMessageReportCreationFormBloc,
+      ),
+      BlocProvider<ThreadBloc>(
+        create: (context) => threadBloc,
+      ),
+      BlocProvider<ReplyBloc>(
+        create: (context) => replyBloc,
       ),
     ];
   }

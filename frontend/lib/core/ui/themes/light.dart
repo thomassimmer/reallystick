@@ -14,7 +14,7 @@ class LightAppTheme extends AppTheme {
             accent: Color(0xFF27C754),
             background: Color(0xFFFFFFFF),
             backgroundDark: Color(0xFFF5F5F5),
-            disabled: Color(0x64303943),
+            disabled: Colors.grey,
             information: Color(0xFF6C79DB),
             success: Color(0xFF78C850),
             alert: Color(0xFFF6C747),
@@ -23,7 +23,7 @@ class LightAppTheme extends AppTheme {
             text: Color(0xFF303943),
             textOnPrimary: Color(0xFFFFFFFF),
             border: Color(0xFFEBEBEB),
-            hint: Color(0x99FFFFFF),
+            hint: Colors.grey,
           ),
         );
 }

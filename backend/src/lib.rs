@@ -61,6 +61,7 @@ pub mod features {
             pub mod delete_device;
             pub mod get_devices;
             pub mod get_profile_information;
+            pub mod get_users_data;
             pub mod is_otp_enabled;
             pub mod post_profile_information;
             pub mod set_password;
@@ -186,6 +187,52 @@ pub mod features {
             pub mod challenge;
             pub mod challenge_daily_tracking;
             pub mod challenge_participation;
+        }
+    }
+
+    pub mod public_discussions {
+        pub mod helpers {
+            pub mod public_message;
+            pub mod public_message_like;
+            pub mod public_message_report;
+        }
+
+        pub mod routes {
+            pub mod create_public_message;
+            pub mod create_public_message_like;
+            pub mod create_public_message_report;
+            pub mod delete_public_message;
+            pub mod delete_public_message_like;
+            pub mod delete_public_message_report;
+            pub mod get_message;
+            pub mod get_message_parents;
+            pub mod get_message_reports;
+            pub mod get_public_messages;
+            pub mod get_replies;
+            pub mod get_user_liked_messages;
+            pub mod get_user_message_reports;
+            pub mod get_user_written_messages;
+            pub mod update_public_message;
+        }
+
+        pub mod structs {
+            pub mod models {
+                pub mod public_message;
+                pub mod public_message_like;
+                pub mod public_message_report;
+            }
+
+            pub mod requests {
+                pub mod public_message;
+                pub mod public_message_like;
+                pub mod public_message_report;
+            }
+
+            pub mod responses {
+                pub mod public_message;
+                pub mod public_message_like;
+                pub mod public_message_report;
+            }
         }
     }
 }

@@ -41,6 +41,34 @@ class ProfileScreen extends StatelessWidget {
                 },
               ),
               ListTile(
+                title: Text(AppLocalizations.of(context)!.likedMessages),
+                trailing: Icon(Icons.chevron_right),
+                onTap: () {
+                  context.goNamed('liked-messages');
+                },
+              ),
+              ListTile(
+                title: Text(AppLocalizations.of(context)!.writtenMessages),
+                trailing: Icon(Icons.chevron_right),
+                onTap: () {
+                  context.goNamed('written-messages');
+                },
+              ),
+              ListTile(
+                title: Text(AppLocalizations.of(context)!.reportedMessages),
+                trailing: Icon(Icons.chevron_right),
+                onTap: () {
+                  context.goNamed('reported-messages');
+                },
+              ),
+              ListTile(
+                title: Text(AppLocalizations.of(context)!.allReportedMessages),
+                trailing: Icon(Icons.chevron_right),
+                onTap: () {
+                  context.goNamed('all-reported-messages');
+                },
+              ),
+              ListTile(
                 title: Text(AppLocalizations.of(context)!.twoFA),
                 trailing: Icon(Icons.chevron_right),
                 onTap: () {

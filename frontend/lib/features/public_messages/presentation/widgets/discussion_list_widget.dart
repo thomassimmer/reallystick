@@ -1,0 +1,152 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:reallystick/core/ui/extensions.dart';
+import 'package:reallystick/features/public_messages/presentation/blocs/public_message/public_message_bloc.dart';
+import 'package:reallystick/features/public_messages/presentation/blocs/public_message/public_message_states.dart';
+import 'package:reallystick/features/public_messages/presentation/screens/add_thread_modal.dart';
+import 'package:reallystick/features/public_messages/presentation/widgets/thread_widget.dart';
+
+class DiscussionListWidget extends StatefulWidget {
+  final Color color;
+  final String? habitId;
+  final String? challengeId;
+
+  const DiscussionListWidget({
+    required this.color,
+    required this.habitId,
+    required this.challengeId,
+  });
+
+  @override
+  DiscussionListState createState() => DiscussionListState();
+}
+
+class DiscussionListState extends State<DiscussionListWidget> {
+  void _showAddThreadBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      isDismissible: true,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
+      ),
+      constraints: BoxConstraints(
+        maxWidth: 600,
+      ),
+      builder: (BuildContext context) {
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom:
+                MediaQuery.of(context).viewInsets.bottom, // Adjust for keyboard
+            left: 16.0,
+            right: 16.0,
+            top: 16.0,
+          ),
+          child: Wrap(
+            children: [
+              AddThreadModal(
+                habitId: widget.habitId,
+                challengeId: widget.challengeId,
+              )
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final publicMessageState = context.watch<PublicMessageBloc>().state;
+
+    if (publicMessageState is PublicMessagesLoaded) {
+      final threads = publicMessageState.threads;
+
+      threads.sort((a, b) {
+        if (b.likeCount != a.likeCount) {
+          return b.likeCount - a.likeCount;
+        }
+
+        return b.createdAt.compareTo(a.createdAt);
+      });
+
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              Icon(
+                Icons.forum,
+                size: 20,
+                color: widget.color,
+              ),
+              SizedBox(width: 10),
+              Text(
+                AppLocalizations.of(context)!.discussions,
+                style: TextStyle(
+                  fontSize: 20,
+                  color: widget.color,
+                ),
+              ),
+              Spacer(),
+              InkWell(
+                onTap: _showAddThreadBottomSheet,
+                child: Icon(
+                  Icons.add_circle_outline,
+                  size: 25,
+                  color: widget.color.withOpacity(0.8),
+                ),
+              )
+            ],
+          ),
+          SizedBox(height: 10),
+          if (threads.isNotEmpty) ...[
+            for (final thread in threads) ...[
+              ThreadWidget(
+                thread: thread,
+                color: widget.color,
+                habitId: widget.habitId,
+                challengeId: widget.challengeId,
+              ),
+              SizedBox(height: 10),
+            ],
+          ] else ...[
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 8),
+              decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    color: widget.color.withOpacity(0.2),
+                    blurRadius: 10,
+                  ),
+                ],
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: InkWell(
+                borderRadius: BorderRadius.circular(16),
+                onTap: _showAddThreadBottomSheet,
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Center(
+                    child: Text(
+                      AppLocalizations.of(context)!.noDiscussionsForHabitYet,
+                      style: TextStyle(color: context.colors.text),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ]
+        ],
+      );
+    } else {
+      return Center(
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(widget.color),
+        ),
+      );
+    }
+  }
+}

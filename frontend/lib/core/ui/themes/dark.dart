@@ -15,7 +15,7 @@ class DarkAppTheme extends AppTheme {
             accent: Color(0xFF27C754),
             background: Color(0xFF25272A),
             backgroundDark: Color(0xFF191A1D),
-            disabled: Color(0x64303943),
+            disabled: Colors.grey,
             information: Color(0xFF6C79DB),
             success: Color(0xFF78C850),
             alert: Color(0xFFF6C747),
@@ -24,7 +24,7 @@ class DarkAppTheme extends AppTheme {
             text: Color(0xFFFFFFFF),
             textOnPrimary: Color(0xFFFFFFFF),
             border: Color(0x33FFFFFF),
-            hint: Color(0x99FFFFFF),
+            hint: Colors.grey,
           ),
           styles: const AppThemeStyles(
             cardShadow: [

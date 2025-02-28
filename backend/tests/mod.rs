@@ -16,6 +16,7 @@ pub mod profile {
     pub mod profile;
     pub mod set_password;
     pub mod update_password;
+    pub mod user_public_data;
 }
 
 pub mod core {
@@ -34,6 +35,12 @@ pub mod challenges {
     pub mod challenge;
     pub mod challenge_daily_tracking;
     pub mod challenge_participation;
+}
+
+pub mod public_messages {
+    pub mod public_message;
+    pub mod public_message_like;
+    pub mod public_message_report;
 }
 
 pub mod helpers;

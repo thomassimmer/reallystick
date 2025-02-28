@@ -1,7 +1,11 @@
-use crate::core::structs::responses::GenericResponse;
+use crate::{
+    core::structs::responses::GenericResponse,
+    features::public_discussions::structs::models::public_message::PUBLIC_MESSAGE_CONTENT_MAX_LENGTH,
+};
 
 pub enum AppError {
     AccessTokenExpired,
+    BothHabitAndChallengePassed,
     ChallengeCreation,
     ChallengeDailyTrackingCreation,
     ChallengeDailyTrackingDelete,
@@ -43,9 +47,26 @@ pub enum AppError {
     HabitParticipationNotFound,
     HabitParticipationUpdate,
     HabitUpdate,
+    NoHabitNorChallengePassed,
+    NotAdmin,
     PasswordHash,
     PasswordTooShort,
     PasswordTooWeak,
+    PublicMessageCreation,
+    PublicMessageDeletionNotDoneByAdmin,
+    PublicMessageDeletionNotDoneByCreator,
+    PublicMessageContentEmpty,
+    PublicMessageContentTooLong,
+    PublicMessageLikeCreation,
+    PublicMessageLikeDeletion,
+    PublicMessageReportCreation,
+    PublicMessageReportDeletion,
+    PublicMessageReportNotFound,
+    PublicMessageReportReasonTooLong,
+    PublicMessageReportReporterIsNotRequestUser,
+    PublicMessageNeedsHabitOrChallenge,
+    PublicMessageNotFound,
+    PublicMessageUpdate,
     TokenGeneration,
     TwoFactorAuthenticationNotEnabled,
     UnitCreation,
@@ -66,6 +87,10 @@ impl AppError {
                 code: "ACCESS_TOKEN_EXPIRED".to_string(),
                 message: "Token expired".to_string(),
             },
+            AppError::BothHabitAndChallengePassed => GenericResponse {
+                code: "BOTH_HABIT_AND_CHALLENGE_PASSED".to_string(),
+                message: "Both habit's id and challenge's id were passed".to_string(),
+            },
             AppError::ChallengeCreation => GenericResponse {
                 code: "CHALLENGE_NOT_CREATED".to_string(),
                 message: "Failed to create this challenge".to_string(),
@@ -80,7 +105,8 @@ impl AppError {
             },
             AppError::ChallengeDailyTrackingNoteTooLong => GenericResponse {
                 code: "CHALLENGE_DAILY_TRACKING_NOTE_TOO_LONG".to_string(),
-                message: "The note is too long. It has to be no more than 1000 characters.".to_string(),
+                message: "The note is too long. It has to be no more than 1000 characters."
+                    .to_string(),
             },
             AppError::ChallengeDailyTrackingNotFound => GenericResponse {
                 code: "CHALLENGE_DAILY_TRACKING_NOT_FOUND".to_string(),
@@ -230,6 +256,14 @@ impl AppError {
                 code: "HABIT_UPDATE".to_string(),
                 message: "Failed to update habit".to_string(),
             },
+            AppError::NoHabitNorChallengePassed => GenericResponse {
+                code: "NO_HABIT_NOR_CHALLENGE_PASSED".to_string(),
+                message: "No habit's id nor challenge's id were passed".to_string(),
+            },
+            AppError::NotAdmin => GenericResponse {
+                code: "NOT_ADMIN".to_string(),
+                message: "You are not administrator".to_string(),
+            },
             AppError::PasswordHash => GenericResponse {
                 code: "PASSWORD_HASH".to_string(),
                 message: "Failed to retrieve hashed password".to_string(),
@@ -241,6 +275,73 @@ impl AppError {
             AppError::PasswordTooWeak => GenericResponse {
                 code: "PASSWORD_TOO_WEAK".to_string(),
                 message: "This password is too weak".to_string(),
+            },
+            AppError::PublicMessageCreation => GenericResponse {
+                code: "PUBLIC_MESSAGE_CREATION".to_string(),
+                message: "Failed to create this message".to_string(),
+            },
+            AppError::PublicMessageDeletionNotDoneByAdmin => GenericResponse {
+                code: "PUBLIC_MESSAGE_DELETION_NOT_DONE_BY_ADMIN".to_string(),
+                message: "You are not an admin".to_string(),
+            },
+            AppError::PublicMessageDeletionNotDoneByCreator => GenericResponse {
+                code: "PUBLIC_MESSAGE_DELETION_NOT_DONE_BY_CREATOR".to_string(),
+                message: "You are not the creator of this message".to_string(),
+            },
+            AppError::PublicMessageContentEmpty => GenericResponse {
+                code: "PUBLIC_MESSAGE_CONTENT_EMPTY".to_string(),
+                message: "A public message's content must not be empty.".to_string(),
+            },
+            AppError::PublicMessageContentTooLong => GenericResponse {
+                code: "PUBLIC_MESSAGE_CONTENT_TOO_LONG".to_string(),
+                message: format!(
+                    "A public message's content must be less than {} characters.",
+                    PUBLIC_MESSAGE_CONTENT_MAX_LENGTH
+                ),
+            },
+            AppError::PublicMessageLikeCreation => GenericResponse {
+                code: "PUBLIC_MESSAGE_LIKE_CREATION".to_string(),
+                message: "Failed to create this like".to_string(),
+            },
+            AppError::PublicMessageLikeDeletion => GenericResponse {
+                code: "PUBLIC_MESSAGE_LIKE_DELETION".to_string(),
+                message: "Failed to delete this like".to_string(),
+            },
+            AppError::PublicMessageReportCreation => GenericResponse {
+                code: "PUBLIC_MESSAGE_REPORT_CREATION".to_string(),
+                message: "Failed to create this report".to_string(),
+            },
+            AppError::PublicMessageReportDeletion => GenericResponse {
+                code: "PUBLIC_MESSAGE_REPORT_DELETION".to_string(),
+                message: "Failed to delete this report".to_string(),
+            },
+            AppError::PublicMessageReportNotFound => GenericResponse {
+                code: "PUBLIC_MESSAGE_REPORT_NOT_FOUND".to_string(),
+                message: "This message report does not exist".to_string(),
+            },
+            AppError::PublicMessageReportReasonTooLong => GenericResponse {
+                code: "PUBLIC_MESSAGE_REPORT_REASON_TOO_LONG".to_string(),
+                message: format!(
+                    "A public message report's reason must be less than {} characters.",
+                    PUBLIC_MESSAGE_CONTENT_MAX_LENGTH
+                ),
+            },
+            AppError::PublicMessageReportReporterIsNotRequestUser => GenericResponse {
+                code: "PUBLIC_MESSAGE_REPORT_REPORTER_IS_NOT_REQUEST_USER".to_string(),
+                message: "This message report wad not created by you".to_string(),
+            },
+            AppError::PublicMessageNeedsHabitOrChallenge => GenericResponse {
+                code: "PUBLIC_MESSAGE_NEEDS_HABIT_OR_CHALLENGE".to_string(),
+                message: "A public message must be associated to a habit or a challenge."
+                    .to_string(),
+            },
+            AppError::PublicMessageNotFound => GenericResponse {
+                code: "PUBLIC_MESSAGE_NOT_FOUND".to_string(),
+                message: "This public message does not exist.".to_string(),
+            },
+            AppError::PublicMessageUpdate => GenericResponse {
+                code: "PUBLIC_MESSAGE_UPDATE".to_string(),
+                message: "Failed to update this message".to_string(),
             },
             AppError::TokenGeneration => GenericResponse {
                 code: "TOKEN_GENERATION".to_string(),

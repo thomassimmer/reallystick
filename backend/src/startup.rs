@@ -62,11 +62,28 @@ use crate::features::profile::routes::delete_account::delete_account;
 use crate::features::profile::routes::delete_device::delete_device;
 use crate::features::profile::routes::get_devices::get_devices;
 use crate::features::profile::routes::get_profile_information::get_profile_information;
+use crate::features::profile::routes::get_users_data::get_users_data;
 use crate::features::profile::routes::is_otp_enabled::is_otp_enabled;
 use crate::features::profile::routes::post_profile_information::post_profile_information;
 
 use crate::features::profile::routes::set_password::set_password;
 use crate::features::profile::routes::update_password::update_password;
+use crate::features::profile::structs::models::UserPublicDataCache;
+use crate::features::public_discussions::routes::create_public_message::create_public_message;
+use crate::features::public_discussions::routes::create_public_message_like::create_public_message_like;
+use crate::features::public_discussions::routes::create_public_message_report::create_public_message_report;
+use crate::features::public_discussions::routes::delete_public_message::delete_public_message;
+use crate::features::public_discussions::routes::delete_public_message_like::delete_public_message_like;
+use crate::features::public_discussions::routes::delete_public_message_report::delete_public_message_report;
+use crate::features::public_discussions::routes::get_message::get_message;
+use crate::features::public_discussions::routes::get_message_parents::get_message_parents;
+use crate::features::public_discussions::routes::get_message_reports::get_message_reports;
+use crate::features::public_discussions::routes::get_public_messages::get_public_messages;
+use crate::features::public_discussions::routes::get_replies::get_replies;
+use crate::features::public_discussions::routes::get_user_liked_messages::get_user_liked_messages;
+use crate::features::public_discussions::routes::get_user_message_reports::get_user_message_reports;
+use crate::features::public_discussions::routes::get_user_written_messages::get_user_written_messages;
+use crate::features::public_discussions::routes::update_public_message::update_public_message;
 use actix_cors::Cors;
 use actix_http::header::HeaderName;
 use actix_web::body::MessageBody;
@@ -114,6 +131,7 @@ pub fn create_app(
     let habit_cache = HabitStatisticsCache::new();
     let challenge_cache = ChallengeStatisticsCache::new();
     let cached_tokens = TokenCache::default();
+    let cached_user_public_data = UserPublicDataCache::default();
 
     App::new()
         .service(
@@ -151,6 +169,7 @@ pub fn create_app(
                         web::scope("")
                             .wrap(TokenValidator {})
                             .service(get_profile_information)
+                            .service(get_users_data)
                             .service(post_profile_information)
                             .service(set_password)
                             .service(delete_account)
@@ -260,6 +279,39 @@ pub fn create_app(
                             .service(create_challenge_participation)
                             .service(delete_challenge_participation),
                     ),
+                )
+                .service(
+                    web::scope("/public-messages").service(
+                        web::scope("")
+                            .wrap(TokenValidator {})
+                            .service(create_public_message)
+                            .service(delete_public_message)
+                            .service(get_message_parents)
+                            .service(get_public_messages)
+                            .service(get_replies)
+                            .service(get_message)
+                            .service(get_user_liked_messages)
+                            .service(get_user_written_messages)
+                            .service(update_public_message),
+                    ),
+                )
+                .service(
+                    web::scope("/public-message-likes").service(
+                        web::scope("")
+                            .wrap(TokenValidator {})
+                            .service(create_public_message_like)
+                            .service(delete_public_message_like),
+                    ),
+                )
+                .service(
+                    web::scope("/public-message-reports").service(
+                        web::scope("")
+                            .wrap(TokenValidator {})
+                            .service(create_public_message_report)
+                            .service(delete_public_message_report)
+                            .service(get_message_reports)
+                            .service(get_user_message_reports),
+                    ),
                 ),
         )
         .wrap(cors)
@@ -269,6 +321,7 @@ pub fn create_app(
         .app_data(web::Data::new(habit_cache))
         .app_data(web::Data::new(challenge_cache))
         .app_data(web::Data::new(cached_tokens))
+        .app_data(web::Data::new(cached_user_public_data))
 }
 
 pub struct Application {

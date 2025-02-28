@@ -15,9 +15,11 @@ import 'package:reallystick/features/habits/presentation/widgets/add_activity_bu
 import 'package:reallystick/features/habits/presentation/widgets/analytics_carousel_widget.dart';
 import 'package:reallystick/features/habits/presentation/widgets/challenges_carousel_widget.dart';
 import 'package:reallystick/features/habits/presentation/widgets/daily_tracking_carousel_widget.dart';
-import 'package:reallystick/features/habits/presentation/widgets/habit_discussion_list_widget.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
+import 'package:reallystick/features/public_messages/presentation/blocs/public_message/public_message_bloc.dart';
+import 'package:reallystick/features/public_messages/presentation/blocs/public_message/public_message_events.dart';
+import 'package:reallystick/features/public_messages/presentation/widgets/discussion_list_widget.dart';
 
 class HabitDetailsScreen extends StatefulWidget {
   final String habitId;
@@ -106,6 +108,23 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
   }
 
   @override
+  void didChangeDependencies() async {
+    super.didChangeDependencies();
+
+    final profileState = context.watch<ProfileBloc>().state;
+
+    if (profileState is ProfileAuthenticated) {
+      BlocProvider.of<PublicMessageBloc>(context).add(
+        PublicMessageInitializeEvent(
+          habitId: widget.habitId,
+          challengeId: null,
+          isAdmin: profileState.profile.isAdmin,
+        ),
+      );
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Builder(
       builder: (context) {
@@ -154,7 +173,7 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
                     padding: const EdgeInsets.only(right: 16.0),
                     child: getIconWidget(
                       iconString: habit.icon,
-                      size: 40,
+                      size: 25,
                       color: habitColor,
                     ),
                   ),
@@ -193,8 +212,8 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
                 ? AddActivityButton(
                     action: _showAddDailyTrackingBottomSheet,
                     color: habitColor,
-                    label: AppLocalizations.of(context)!.addActivity,
-                  )
+                    label: null // AppLocalizations.of(context)!.addActivity,
+                    )
                 : FloatingActionButton.extended(
                     onPressed: _startTrackingThisHabit,
                     icon: Icon(Icons.login),
@@ -246,7 +265,11 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
                       habitId: widget.habitId,
                     ),
                     SizedBox(height: 40),
-                    HabitDiscussionListWidget(habitColor: habitColor),
+                    DiscussionListWidget(
+                      color: habitColor,
+                      habitId: widget.habitId,
+                      challengeId: null,
+                    ),
                     SizedBox(height: 72),
                   ],
                 ),

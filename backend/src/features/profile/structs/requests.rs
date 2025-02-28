@@ -1,4 +1,4 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
 #[derive(Debug, Deserialize)]
@@ -40,4 +40,9 @@ pub struct UpdateUserPasswordRequest {
 #[derive(Deserialize)]
 pub struct DeleteDeviceParams {
     pub token_id: Uuid,
+}
+
+#[derive(Deserialize, Serialize)]
+pub struct GetUserPublicDataRequest {
+    pub user_ids: Vec<Uuid>,
 }

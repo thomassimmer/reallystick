@@ -178,6 +178,12 @@ String getTranslatedMessage(BuildContext context, Message message) {
       case 'deviceDeleteSuccessful':
         return localizations.deviceDeleteSuccessful;
 
+      // Messages
+      case 'publicMessageDeletionSuccessful':
+        return localizations.publicMessageDeletionSuccessful;
+      case 'publicMessageReportCreationSuccessful':
+        return localizations.publicMessageReportCreationSuccessful;
+
       default:
         return localizations.defaultError;
     }

@@ -1,0 +1,64 @@
+use sqlx::{postgres::PgQueryResult, PgConnection};
+use uuid::Uuid;
+
+use crate::features::public_discussions::structs::models::public_message_like::PublicMessageLike;
+
+pub async fn create_public_message_like(
+    conn: &mut PgConnection,
+    public_message_like: PublicMessageLike,
+) -> Result<PgQueryResult, sqlx::Error> {
+    sqlx::query_as!(
+        PublicMessageLike,
+        r#"
+        INSERT INTO public_message_likes (
+            id,
+            user_id,
+            message_id,
+            created_at
+        )
+        VALUES ( $1, $2, $3, $4)
+        ON CONFLICT (message_id, user_id) DO NOTHING;
+        "#,
+        public_message_like.id,
+        public_message_like.user_id,
+        public_message_like.message_id,
+        public_message_like.created_at
+    )
+    .execute(conn)
+    .await
+}
+
+pub async fn delete_public_message_like(
+    conn: &mut PgConnection,
+    id: Uuid,
+) -> Result<PgQueryResult, sqlx::Error> {
+    sqlx::query_as!(
+        PublicMessageLike,
+        r#"
+        DELETE FROM public_message_likes
+        WHERE id = $1
+        "#,
+        id,
+    )
+    .execute(conn)
+    .await
+}
+
+pub async fn get_public_message_like_by_message_id_and_user_id(
+    conn: &mut PgConnection,
+    message_id: Uuid,
+    user_id: Uuid,
+) -> Result<Option<PublicMessageLike>, sqlx::Error> {
+    sqlx::query_as!(
+        PublicMessageLike,
+        r#"
+        SELECT *
+        from public_message_likes
+        WHERE message_id = $1 and user_id = $2
+        "#,
+        message_id,
+        user_id,
+    )
+    .fetch_optional(conn)
+    .await
+}

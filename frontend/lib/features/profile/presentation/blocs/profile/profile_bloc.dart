@@ -73,6 +73,12 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     on<DeleteDeviceEvent>(_deleteDevice);
   }
 
+  @override
+  Future<void> close() {
+    authBlocSubscription.cancel();
+    return super.close();
+  }
+
   Future<void> _initialize(
       ProfileInitializeEvent event, Emitter<ProfileState> emit) async {
     final getProfileResult = await getProfileUsecase.call();
