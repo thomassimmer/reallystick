@@ -9,7 +9,7 @@ sealed class HabitDailyTrackingCreationEvent extends Equatable {
 
 class HabitDailyTrackingCreationFormHabitChangedEvent
     extends HabitDailyTrackingCreationEvent {
-  final String habitId;
+  final String? habitId;
 
   const HabitDailyTrackingCreationFormHabitChangedEvent(this.habitId);
 

@@ -216,7 +216,7 @@ class ChallengesScreenState extends State<ChallengesScreen> {
                             },
                             icon: const Icon(Icons.add),
                             label: Text(
-                              AppLocalizations.of(context)!.addANewChallenge,
+                              AppLocalizations.of(context)!.addNewChallenge,
                             ),
                           ),
                         ],

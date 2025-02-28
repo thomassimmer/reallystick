@@ -9,7 +9,7 @@ sealed class ChallengeDailyTrackingUpdateEvent extends Equatable {
 
 class ChallengeDailyTrackingUpdateFormHabitChangedEvent
     extends ChallengeDailyTrackingUpdateEvent {
-  final String habitId;
+  final String? habitId;
 
   const ChallengeDailyTrackingUpdateFormHabitChangedEvent(this.habitId);
 

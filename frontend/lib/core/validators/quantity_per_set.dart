@@ -9,7 +9,7 @@ class QuantityPerSetValidator extends FormzInput<int?, DomainError> {
 
   @override
   DomainError? validator(int? value) {
-    if (value == null || value == 0) {
+    if (value == null) {
       return QuantityPerSetIsNullError();
     }
 

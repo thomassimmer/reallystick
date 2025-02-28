@@ -54,7 +54,7 @@ class SearchChallengesScreenState extends State<SearchChallengesScreen> {
 
       return Scaffold(
         appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.addANewChallenge),
+          title: Text(AppLocalizations.of(context)!.addNewChallenge),
         ),
         body: Column(
           children: [

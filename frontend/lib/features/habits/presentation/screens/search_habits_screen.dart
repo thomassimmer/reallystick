@@ -58,7 +58,7 @@ class SearchHabitsScreenState extends State<SearchHabitsScreen> {
 
       return Scaffold(
         appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.addANewHabit),
+          title: Text(AppLocalizations.of(context)!.addNewHabit),
         ),
         body: Column(
           children: [

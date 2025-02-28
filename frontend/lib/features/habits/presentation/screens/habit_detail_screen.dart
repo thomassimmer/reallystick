@@ -193,6 +193,7 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
                 ? AddActivityButton(
                     action: _showAddDailyTrackingBottomSheet,
                     color: habitColor,
+                    label: AppLocalizations.of(context)!.addActivity,
                   )
                 : FloatingActionButton.extended(
                     onPressed: _startTrackingThisHabit,

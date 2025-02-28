@@ -88,6 +88,10 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
 
     // Dispatch validation events for all fields
     challengeDailyTrackingFormBloc.add(
+      ChallengeDailyTrackingUpdateFormHabitChangedEvent(_selectedHabitId),
+    );
+
+    challengeDailyTrackingFormBloc.add(
       ChallengeDailyTrackingUpdateFormDateTimeChangedEvent(_selectedDateTime),
     );
 
@@ -261,8 +265,8 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
             ).toList(),
             onChanged: (value) {
               BlocProvider.of<ChallengeDailyTrackingUpdateFormBloc>(context)
-                  .add(ChallengeDailyTrackingUpdateFormHabitChangedEvent(
-                      value ?? ""));
+                  .add(
+                      ChallengeDailyTrackingUpdateFormHabitChangedEvent(value));
               setState(() {
                 _selectedHabitId = value;
                 _selectedUnitId = _selectedHabitId != null

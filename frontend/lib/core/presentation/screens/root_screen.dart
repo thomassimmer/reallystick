@@ -205,7 +205,7 @@ class RootScreen extends StatelessWidget {
                           clipBehavior: Clip.antiAlias,
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 32.0, vertical: 4),
+                                horizontal: 16.0, vertical: 4),
                             child: child,
                           ),
                         ),

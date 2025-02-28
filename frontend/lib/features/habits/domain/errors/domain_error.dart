@@ -1,5 +1,10 @@
 import 'package:reallystick/core/messages/errors/domain_error.dart';
 
+class HabitIsEmptyDomainError implements DomainError {
+  @override
+  final String messageKey = 'habitIsEmptyError';
+}
+
 class HabitNotFoundDomainError implements DomainError {
   @override
   final String messageKey = 'habitNotFoundError';

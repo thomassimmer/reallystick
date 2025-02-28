@@ -7,7 +7,7 @@ class UserIsNotChallengeCreatorScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.addANewChallenge),
+        title: Text(AppLocalizations.of(context)!.addNewChallenge),
       ),
       body: Center(
         child: Padding(

@@ -2,7 +2,7 @@ import 'package:formz/formz.dart';
 import 'package:reallystick/core/messages/errors/domain_error.dart';
 import 'package:reallystick/features/habits/domain/errors/domain_error.dart';
 
-class HabitValidator extends FormzInput<String, DomainError> {
+class HabitValidator extends FormzInput<String?, DomainError> {
   const HabitValidator.pure() : super.pure('');
 
   const HabitValidator.dirty([super.value = '']) : super.dirty();
@@ -14,8 +14,12 @@ class HabitValidator extends FormzInput<String, DomainError> {
       caseSensitive: false,
     );
 
+    if (value == null) {
+      return HabitIsEmptyDomainError();
+    }
+
     // Regex pattern check
-    if (value != null && pattern.hasMatch(value)) {
+    if (pattern.hasMatch(value)) {
       return null;
     }
 

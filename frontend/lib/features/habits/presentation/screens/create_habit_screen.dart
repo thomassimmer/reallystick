@@ -186,7 +186,7 @@ class CreateHabitScreenState extends State<CreateHabitScreen> {
 
             return Scaffold(
               appBar: AppBar(
-                title: Text(AppLocalizations.of(context)!.addANewHabit),
+                title: Text(AppLocalizations.of(context)!.addNewHabit),
               ),
               body: SingleChildScrollView(
                 child: Padding(
@@ -321,7 +321,7 @@ class CreateHabitScreenState extends State<CreateHabitScreen> {
           } else {
             return Scaffold(
               appBar: AppBar(
-                title: Text(AppLocalizations.of(context)!.addANewHabit),
+                title: Text(AppLocalizations.of(context)!.addNewHabit),
               ),
               body: Center(
                 child: CircularProgressIndicator(),

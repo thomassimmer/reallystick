@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 
 class AddActivityButton extends StatelessWidget {
   final void Function() action;
   final Color? color;
+  final String label;
 
   const AddActivityButton({
     required this.action,
     this.color,
+    required this.label,
     Key? key,
   }) : super(key: key);
 
@@ -17,7 +18,7 @@ class AddActivityButton extends StatelessWidget {
     return FloatingActionButton.extended(
       onPressed: action,
       icon: Icon(Icons.add),
-      label: Text(AppLocalizations.of(context)!.addActivity),
+      label: Text(label),
       backgroundColor: color ?? context.colors.primary,
       extendedTextStyle: TextStyle(letterSpacing: 1, fontFamily: 'Montserrat'),
     );

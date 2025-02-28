@@ -138,8 +138,15 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
           final challengeParticipation = challengeState.challengeParticipations
               .where((hp) => hp.challengeId == widget.challengeId)
               .firstOrNull;
-          final challengeDailyTrackings =
-              challengeState.challengeDailyTrackings[widget.challengeId] ?? [];
+          var challengeDailyTrackings =
+              challengeState.challengeDailyTrackings[widget.challengeId];
+
+          if (challengeDailyTrackings == null) {
+            BlocProvider.of<ChallengeBloc>(context).add(
+              GetChallengeDailyTrackingsEvent(challengeId: widget.challengeId),
+            );
+            challengeDailyTrackings = [];
+          }
 
           final name = getRightTranslationFromJson(
             challenge.name,
@@ -224,6 +231,7 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
                 ? AddActivityButton(
                     action: _showAddDailyTrackingBottomSheet,
                     color: challengeColor,
+                    label: AppLocalizations.of(context)!.addDailyObjective,
                   )
                 : challengeParticipation == null
                     ? FloatingActionButton.extended(

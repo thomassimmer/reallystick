@@ -17,7 +17,7 @@ import 'package:reallystick/features/challenges/domain/usecases/delete_challenge
 import 'package:reallystick/features/challenges/domain/usecases/get_challenge_daily_trackings_usecase.dart';
 import 'package:reallystick/features/challenges/domain/usecases/get_challenge_participations_usecase.dart';
 import 'package:reallystick/features/challenges/domain/usecases/get_challenge_statistics_usecase.dart';
-import 'package:reallystick/features/challenges/domain/usecases/get_challenges_usecase%20copy.dart';
+import 'package:reallystick/features/challenges/domain/usecases/get_challenge_usecase.dart';
 import 'package:reallystick/features/challenges/domain/usecases/get_challenges_usecase.dart';
 import 'package:reallystick/features/challenges/domain/usecases/update_challenge_daily_tracking_usecase.dart';
 import 'package:reallystick/features/challenges/domain/usecases/update_challenge_participation_usecase.dart';
@@ -78,6 +78,7 @@ class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
     on<UpdateChallengeParticipationEvent>(updateChallengeParticipation);
     on<DeleteChallengeParticipationEvent>(deleteChallengeParticipation);
     on<GetChallengeEvent>(_getChallenge);
+    on<GetChallengeDailyTrackingsEvent>(_getChallengeDailyTrackings);
   }
 
   Future<void> _initialize(
@@ -599,6 +600,49 @@ class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
       },
       (challenge) async {
         currentState.challenges[challenge.id] = challenge;
+        emit(
+          ChallengesLoaded(
+            challengeDailyTrackings: currentState.challengeDailyTrackings,
+            challengeParticipations: currentState.challengeParticipations,
+            challenges: currentState.challenges,
+            challengeStatistics: currentState.challengeStatistics,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _getChallengeDailyTrackings(
+      GetChallengeDailyTrackingsEvent event,
+      Emitter<ChallengeState> emit) async {
+    final currentState = state as ChallengesLoaded;
+    emit(ChallengesLoading());
+
+    final resultGetChallengeDailyTrackingsUsecase =
+        await getChallengeDailyTrackingsUsecase.call(
+      challengeId: event.challengeId,
+    );
+
+    await resultGetChallengeDailyTrackingsUsecase.fold(
+      (error) {
+        if (error is ShouldLogoutError) {
+          authBloc
+              .add(AuthLogoutEvent(message: ErrorMessage(error.messageKey)));
+        } else {
+          emit(
+            ChallengesLoaded(
+              challengeDailyTrackings: currentState.challengeDailyTrackings,
+              challengeParticipations: currentState.challengeParticipations,
+              challenges: currentState.challenges,
+              challengeStatistics: currentState.challengeStatistics,
+              message: ErrorMessage(error.messageKey),
+            ),
+          );
+        }
+      },
+      (challengeDailyTrackings) async {
+        currentState.challengeDailyTrackings[event.challengeId] =
+            challengeDailyTrackings;
         emit(
           ChallengesLoaded(
             challengeDailyTrackings: currentState.challengeDailyTrackings,

@@ -52,6 +52,8 @@ String getTranslatedMessage(BuildContext context, Message message) {
         return localizations.usernameWrongSizeError;
 
       // Habits
+      case 'habitIsEmptyError':
+        return localizations.habitIsEmptyError;
       case 'habitNotFoundError':
         return localizations.habitNotFoundError;
       case 'habitParticipationNotFoundError':

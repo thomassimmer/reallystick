@@ -8,7 +8,6 @@ import 'package:reallystick/core/validators/unit.dart';
 import 'package:reallystick/core/validators/weight.dart';
 
 final class ChallengeDailyTrackingCreationFormState extends Equatable {
-  final ChallengeValidator challengeId;
   final HabitValidator habitId;
   final QuantityOfSetValidator quantityOfSet;
   final QuantityPerSetValidator quantityPerSet;
@@ -20,7 +19,6 @@ final class ChallengeDailyTrackingCreationFormState extends Equatable {
   final String? errorMessage;
 
   const ChallengeDailyTrackingCreationFormState({
-    this.challengeId = const ChallengeValidator.pure(),
     this.habitId = const HabitValidator.pure(),
     this.quantityOfSet = const QuantityOfSetValidator.pure(),
     this.quantityPerSet = const QuantityPerSetValidator.pure(),
@@ -34,7 +32,6 @@ final class ChallengeDailyTrackingCreationFormState extends Equatable {
 
   @override
   List<Object?> get props => [
-        challengeId,
         habitId,
         quantityOfSet,
         quantityPerSet,
@@ -59,7 +56,6 @@ final class ChallengeDailyTrackingCreationFormState extends Equatable {
     String? errorMessage,
   }) {
     return ChallengeDailyTrackingCreationFormState(
-      challengeId: challengeId ?? this.challengeId,
       habitId: habitId ?? this.habitId,
       quantityOfSet: quantityOfSet ?? this.quantityOfSet,
       quantityPerSet: quantityPerSet ?? this.quantityPerSet,

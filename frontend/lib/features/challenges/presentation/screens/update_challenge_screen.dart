@@ -206,7 +206,7 @@ class UpdateChallengeScreenState extends State<UpdateChallengeScreen> {
             );
             return Scaffold(
               appBar: AppBar(
-                title: Text(AppLocalizations.of(context)!.addANewChallenge),
+                title: Text(AppLocalizations.of(context)!.addNewChallenge),
               ),
               body: SingleChildScrollView(
                 child: Padding(

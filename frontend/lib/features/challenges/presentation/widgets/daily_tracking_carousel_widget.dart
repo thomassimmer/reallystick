@@ -46,7 +46,8 @@ class DailyTrackingCarouselWidgetState
     // Ensure that the scroll happens after layout is complete
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // Check if the controller has clients and if the scroll position is at the top
-      if (scrollController.hasClients &&
+      if (widget.challengeDailyTrackings.isNotEmpty &&
+          scrollController.hasClients &&
           scrollController.position.minScrollExtent ==
               scrollController.offset) {
         Future.delayed(Duration(milliseconds: 50), () {

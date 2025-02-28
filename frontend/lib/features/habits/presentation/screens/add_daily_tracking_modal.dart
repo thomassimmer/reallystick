@@ -71,7 +71,7 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
       HabitDailyTrackingCreationFormDateTimeChangedEvent(_selectedDateTime),
     );
     habitDailyTrackingFormBloc.add(
-      HabitDailyTrackingCreationFormHabitChangedEvent(_selectedHabitId ?? ""),
+      HabitDailyTrackingCreationFormHabitChangedEvent(_selectedHabitId),
     );
     habitDailyTrackingFormBloc.add(
       HabitDailyTrackingCreationFormQuantityOfSetChangedEvent(_quantityOfSet),
@@ -230,8 +230,8 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
               },
             ).toList(),
             onChanged: (value) {
-              BlocProvider.of<HabitDailyTrackingCreationFormBloc>(context).add(
-                  HabitDailyTrackingCreationFormHabitChangedEvent(value ?? ""));
+              BlocProvider.of<HabitDailyTrackingCreationFormBloc>(context)
+                  .add(HabitDailyTrackingCreationFormHabitChangedEvent(value));
               setState(() {
                 _selectedHabitId = value;
                 _selectedUnitId = _selectedHabitId != null

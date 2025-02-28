@@ -35,7 +35,7 @@ import 'package:reallystick/features/challenges/domain/usecases/delete_challenge
 import 'package:reallystick/features/challenges/domain/usecases/get_challenge_daily_trackings_usecase.dart';
 import 'package:reallystick/features/challenges/domain/usecases/get_challenge_participations_usecase.dart';
 import 'package:reallystick/features/challenges/domain/usecases/get_challenge_statistics_usecase.dart';
-import 'package:reallystick/features/challenges/domain/usecases/get_challenges_usecase%20copy.dart';
+import 'package:reallystick/features/challenges/domain/usecases/get_challenge_usecase.dart';
 import 'package:reallystick/features/challenges/domain/usecases/get_challenges_usecase.dart';
 import 'package:reallystick/features/challenges/domain/usecases/update_challenge_daily_tracking_usecase.dart';
 import 'package:reallystick/features/challenges/domain/usecases/update_challenge_participation_usecase.dart';

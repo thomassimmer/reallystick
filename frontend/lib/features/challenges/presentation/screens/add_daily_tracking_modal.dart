@@ -37,11 +37,35 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
   int _weight = 0;
   String? _selectedWeightUnitId;
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (_selectedWeightUnitId == null) {
+      // Only initialize if it's not already set
+      final habitState = context.watch<HabitBloc>().state;
+
+      if (habitState is HabitsLoaded) {
+        setState(() {
+          _selectedWeightUnitId = habitState.units.values
+              .where((unit) =>
+                  getRightTranslationFromJson(unit.shortName, 'en') == 'kg')
+              .firstOrNull
+              ?.id;
+        });
+      }
+    }
+  }
+
   void addChallengeDailyTracking() {
     final challengeDailyTrackingFormBloc =
         context.read<ChallengeDailyTrackingCreationFormBloc>();
 
     // Dispatch validation events for all fields
+    challengeDailyTrackingFormBloc.add(
+      ChallengeDailyTrackingCreationFormHabitChangedEvent(_selectedHabitId),
+    );
+
     challengeDailyTrackingFormBloc.add(
       ChallengeDailyTrackingCreationFormDateTimeChangedEvent(_selectedDateTime),
     );
@@ -105,9 +129,9 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
 
       final units = habitState.units;
 
-      final displayChallengeErrorMessage = context.select(
+      final displayHabitErrorMessage = context.select(
         (ChallengeDailyTrackingCreationFormBloc bloc) {
-          final error = bloc.state.challengeId.displayError;
+          final error = bloc.state.habitId.displayError;
           return error != null
               ? getTranslatedMessage(context, ErrorMessage(error.messageKey))
               : null;
@@ -168,6 +192,8 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
         },
       );
 
+      print(displayWeightUnitErrorMessage);
+
       final shouldDisplaySportSpecificInputsResult =
           shouldDisplaySportSpecificInputs(
               habits[_selectedHabitId], habitState.habitCategories);
@@ -178,7 +204,7 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            AppLocalizations.of(context)!.addActivity,
+            AppLocalizations.of(context)!.addDailyObjective,
             textAlign: TextAlign.center,
             style: context.typographies.headingSmall,
           ),
@@ -203,7 +229,7 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
             onChanged: (value) {
               BlocProvider.of<ChallengeDailyTrackingCreationFormBloc>(context)
                   .add(ChallengeDailyTrackingCreationFormHabitChangedEvent(
-                      value ?? ""));
+                      value));
               setState(() {
                 _selectedHabitId = value;
                 _selectedUnitId = _selectedHabitId != null
@@ -215,7 +241,7 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
               });
             },
             label: AppLocalizations.of(context)!.habit,
-            errorText: displayChallengeErrorMessage,
+            errorText: displayHabitErrorMessage,
           ),
 
           const SizedBox(height: 16),
