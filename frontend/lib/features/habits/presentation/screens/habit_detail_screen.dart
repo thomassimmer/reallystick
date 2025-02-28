@@ -94,6 +94,11 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
     context.read<HabitBloc>().add(createHabitParticipationEvent);
   }
 
+  Future<void> _pullRefresh() async {
+    BlocProvider.of<HabitBloc>(context).add(HabitInitializeEvent());
+    await Future.delayed(Duration(seconds: 2));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Builder(
@@ -192,11 +197,11 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
                     extendedTextStyle:
                         TextStyle(letterSpacing: 1, fontFamily: 'Montserrat'),
                   ),
-            body: SingleChildScrollView(
+            body: RefreshIndicator(
+              onRefresh: _pullRefresh,
               child: Padding(
                 padding: EdgeInsets.all(10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                child: ListView(
                   children: [
                     Container(
                       margin: EdgeInsets.symmetric(horizontal: 16),

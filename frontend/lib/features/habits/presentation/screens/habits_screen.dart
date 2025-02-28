@@ -105,6 +105,11 @@ class HabitsScreenState extends State<HabitsScreen> {
     }
   }
 
+  Future<void> _pullRefresh() async {
+    BlocProvider.of<HabitBloc>(context).add(HabitInitializeEvent());
+    await Future.delayed(Duration(seconds: 2));
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<ProfileBloc, ProfileState>(
@@ -125,37 +130,41 @@ class HabitsScreenState extends State<HabitsScreen> {
             final categories = getCategoriesOrderedByLatestTracking(habitState);
 
             return Scaffold(
-              body: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                      padding: const EdgeInsets.only(
-                        left: 30.0,
-                        top: 25.0,
-                        bottom: 15,
-                        right: 20,
+              appBar: AppBar(
+                title: Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Text(
+                        AppLocalizations.of(context)!.myHabits,
+                        style: context.typographies.heading,
                       ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            AppLocalizations.of(context)!.myHabits,
-                            style: context.typographies.heading,
-                          ),
-                          InkWell(
-                            onTap: () {
-                              context.goNamed('habitSearch');
-                            },
-                            child: Icon(
-                              Icons.add_circle_outline,
-                              size: 30,
-                            ),
-                          )
-                        ],
-                      )),
-                  if (categories.isNotEmpty) ...[
-                    Expanded(
-                      child: ListView.builder(
+                    ),
+                  ],
+                ),
+                actions: [
+                  Padding(
+                    padding: EdgeInsets.all(16),
+                    child: InkWell(
+                      onTap: () {
+                        context.goNamed('habitSearch');
+                      },
+                      child: Icon(
+                        Icons.add_circle_outline,
+                        size: 30,
+                      ),
+                    ),
+                  )
+                ],
+              ),
+              body: RefreshIndicator(
+                onRefresh: _pullRefresh,
+                child: ListView(
+                  children: [
+                    if (categories.isNotEmpty) ...[
+                      ListView.builder(
+                        shrinkWrap: true, // Prevent it from taking full height
+                        physics: NeverScrollableScrollPhysics(),
                         itemCount: categories.length,
                         itemBuilder: (context, index) {
                           final habitCategory = categories[index];
@@ -189,40 +198,38 @@ class HabitsScreenState extends State<HabitsScreen> {
                               habitDailyTrackings: habitDailyTrackings);
                         },
                       ),
-                    )
-                  ] else ...[
-                    Expanded(
-                      child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    AppLocalizations.of(context)!.noHabitsYet,
-                                    textAlign: TextAlign.center,
+                    ] else ...[
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  AppLocalizations.of(context)!.noHabitsYet,
+                                  textAlign: TextAlign.center,
+                                ),
+                                const SizedBox(height: 24),
+                                ElevatedButton.icon(
+                                  onPressed: () {
+                                    context.goNamed('habitSearch');
+                                  },
+                                  icon: const Icon(Icons.add),
+                                  label: Text(
+                                    AppLocalizations.of(context)!.addANewHabit,
                                   ),
-                                  const SizedBox(height: 24),
-                                  ElevatedButton.icon(
-                                    onPressed: () {
-                                      context.goNamed('habitSearch');
-                                    },
-                                    icon: const Icon(Icons.add),
-                                    label: Text(
-                                      AppLocalizations.of(context)!
-                                          .addANewHabit,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          )),
-                    )
-                  ]
-                ],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ]
+                  ],
+                ),
               ),
               floatingActionButton: categories.isNotEmpty
                   ? AddActivityButton(action: _showAddDailyTrackingBottomSheet)
