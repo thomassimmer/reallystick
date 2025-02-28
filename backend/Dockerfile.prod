@@ -12,7 +12,7 @@ WORKDIR /app
 COPY --chown=rustuser:rustuser . .
 
 # Build the application
-RUN cargo build --bin reallystick --release
+# RUN cargo build --bin reallystick --release
 
 # Expose the port the app runs on
 EXPOSE 8000
