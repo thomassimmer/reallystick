@@ -11,7 +11,7 @@ pub fn username_respects_conventions(input: &str) -> bool {
     // •	Allows alphanumeric characters, optionally separated by a single period, underscore, or hyphen.
     // •	Does not allow consecutive special characters.
     // •	Ends with an alphanumeric character.
-    let pattern = Regex::new(r"^[\p{L}\p{N}_]([._-]?[\p{L}\p{N}_]+)*$").unwrap();
+    let pattern = Regex::new(r"^[\p{L}\p{N}]([._-]?[\p{L}\p{N}]+)*$").unwrap();
 
     pattern.is_match(input)
 }
