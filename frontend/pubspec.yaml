@@ -32,6 +32,7 @@ dependencies:
   formz: ^0.7.0
   url_launcher: ^6.3.0
   flutter_iconpicker: ^4.0.1
+  icon_generator: ^4.0.3
 
 dev_dependencies:
   flutter_test:
@@ -44,8 +45,6 @@ flutter:
   uses-material-design: true
   assets:
     - .env
-    - assets/images/actix-logo.png
-    - assets/images/flutter-logo.png
     - assets/images/github-logo.png
     - assets/ressources/countries.json
   fonts:
@@ -64,3 +63,6 @@ flutter:
 
         - asset: assets/fonts/Montserrat-Bold.ttf
           weight: 900
+    - family: CustomIcons
+      fonts:
+        - asset: assets/fonts/custom_icons.ttf

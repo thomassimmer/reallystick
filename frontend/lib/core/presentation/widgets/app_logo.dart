@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:reallystick/core/presentation/widgets/custom_icons.dart';
+import 'package:reallystick/core/ui/extensions.dart';
 
 class AppLogo extends StatelessWidget {
+  final double size;
+
+  const AppLogo({
+    this.size = 100,
+  });
+
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Image.asset(
-          'assets/images/flutter-logo.png',
-          width: 80,
-          height: 80,
-        ),
-        Image.asset(
-          'assets/images/actix-logo.png',
-          width: 80,
-          height: 80,
+        Icon(
+          CustomIcons.reallystickLogo,
+          size: size,
+          color: context.colors.background,
         ),
       ],
     );

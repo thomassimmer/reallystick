@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:reallystick/core/ui/extensions.dart';
+import 'package:go_router/go_router.dart';
 import 'package:reallystick/core/presentation/widgets/app_logo.dart';
 import 'package:reallystick/core/presentation/widgets/global_snack_bar.dart';
+import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_bloc.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_states.dart';
 import 'package:reallystick/features/auth/presentation/widgets/background.dart';
-import 'package:go_router/go_router.dart';
 
 class UnauthenticatedHomeScreen extends StatelessWidget {
   @override
@@ -56,7 +56,7 @@ class UnauthenticatedHomeScreen extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        AppLogo(),
+        AppLogo(size: 200),
         SizedBox(height: 40),
         Text(
           AppLocalizations.of(context)!.welcome,

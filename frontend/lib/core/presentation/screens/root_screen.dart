@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reallystick/core/constants/screen_size.dart';
+import 'package:reallystick/core/presentation/widgets/app_logo.dart';
 import 'package:reallystick/core/presentation/widgets/global_snack_bar.dart';
 import 'package:reallystick/core/presentation/widgets/icon_with_warning.dart';
 import 'package:reallystick/core/ui/extensions.dart';
@@ -75,6 +76,7 @@ class RootScreen extends StatelessWidget {
 
           return Scaffold(
               appBar: AppBar(
+                titleSpacing: 0,
                 title: Row(
                   children: [
                     TextButton(
@@ -83,6 +85,8 @@ class RootScreen extends StatelessWidget {
                       },
                       child: Row(
                         children: [
+                          AppLogo(size: 50),
+                          SizedBox(width: 10),
                           Text('Really',
                               style: context.typographies.headingSmall
                                   .copyWith(color: context.colors.background)),
