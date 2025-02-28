@@ -65,166 +65,179 @@ class ChallengesScreenState extends State<ChallengesScreen> {
               ),
               centerTitle: false,
               actions: [
-                InkWell(
-                  onTap: () {
-                    context.goNamed('challengeSearch');
-                  },
-                  child: Icon(
-                    Icons.add_circle_outline,
-                    size: 30,
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
+                  child: InkWell(
+                    onTap: () {
+                      context.goNamed('challengeSearch');
+                    },
+                    child: Icon(
+                      Icons.add_circle_outline,
+                      size: 30,
+                    ),
                   ),
                 ),
               ],
             ),
             body: RefreshIndicator(
               onRefresh: _pullRefresh,
-              child: CustomScrollView(slivers: [
-                if (challenges.isNotEmpty) ...[
-                  if (createdChallenges.isNotEmpty) ...[
-                    SliverAppBar(
-                      title: Row(
-                        children: [
-                          Text(
-                            AppLocalizations.of(context)!.createdChallenges,
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w500,
-                            ),
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
+                child: CustomScrollView(
+                  slivers: [
+                    if (challenges.isNotEmpty) ...[
+                      if (createdChallenges.isNotEmpty) ...[
+                        SliverAppBar(
+                          title: Row(
+                            children: [
+                              Text(
+                                AppLocalizations.of(context)!.createdChallenges,
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    ),
-                    SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          final challenge = createdChallenges[index];
+                        ),
+                        SliverList(
+                          delegate: SliverChildBuilderDelegate(
+                            (context, index) {
+                              final challenge = createdChallenges[index];
 
-                          final challengeParticipation = challengeState
-                              .challengeParticipations
-                              .where((challengeParticipation) =>
-                                  challengeParticipation.challengeId ==
-                                  challenge.id)
-                              .firstOrNull;
+                              final challengeParticipation = challengeState
+                                  .challengeParticipations
+                                  .where((challengeParticipation) =>
+                                      challengeParticipation.challengeId ==
+                                      challenge.id)
+                                  .firstOrNull;
 
-                          final challengeDailyTrackings = challengeState
-                                  .challengeDailyTrackings[challenge.id] ??
-                              [];
+                              final challengeDailyTrackings = challengeState
+                                      .challengeDailyTrackings[challenge.id] ??
+                                  [];
 
-                          return ChallengeWidget(
-                            challenge: challenge,
-                            challengeParticipation: challengeParticipation,
-                            challengeDailyTrackings: challengeDailyTrackings,
-                          );
-                        },
-                        childCount: createdChallenges.length,
-                      ),
-                    ),
-                  ],
-
-                  if (participatedChallenges.isNotEmpty) ...[
-                    SliverAppBar(
-                      title: Row(
-                        children: [
-                          Text(
-                            AppLocalizations.of(context)!
-                                .participatedChallenges,
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          final challenge = participatedChallenges[index];
-
-                          final challengeParticipation = challengeState
-                              .challengeParticipations
-                              .where((challengeParticipation) =>
-                                  challengeParticipation.challengeId ==
-                                  challenge.id)
-                              .firstOrNull;
-
-                          final challengeDailyTrackings = challengeState
-                                  .challengeDailyTrackings[challenge.id] ??
-                              [];
-
-                          return ChallengeWidget(
-                            challenge: challenge,
-                            challengeParticipation: challengeParticipation,
-                            challengeDailyTrackings: challengeDailyTrackings,
-                          );
-                        },
-                        childCount: participatedChallenges.length,
-                      ),
-                    ),
-                  ],
-
-                  // Section for Participated Challenges
-                  if (otherChallenges.isNotEmpty) ...[
-                    SliverAppBar(
-                      title: Row(
-                        children: [
-                          Text(
-                            AppLocalizations.of(context)!.otherChallenges,
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          final challenge = otherChallenges[index];
-
-                          final challengeDailyTrackings = challengeState
-                                  .challengeDailyTrackings[challenge.id] ??
-                              [];
-
-                          return ChallengeWidget(
-                            challenge: challenge,
-                            challengeParticipation: null,
-                            challengeDailyTrackings: challengeDailyTrackings,
-                          );
-                        },
-                        childCount: otherChallenges.length,
-                      ),
-                    ),
-                  ]
-                ] else ...[
-                  SliverFillRemaining(
-                    hasScrollBody: false,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            AppLocalizations.of(context)!.noChallengesYet,
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: 24),
-                          ElevatedButton.icon(
-                            onPressed: () {
-                              context.goNamed('challengeSearch');
+                              return ChallengeWidget(
+                                challenge: challenge,
+                                challengeParticipation: challengeParticipation,
+                                challengeDailyTrackings:
+                                    challengeDailyTrackings,
+                              );
                             },
-                            icon: const Icon(Icons.add),
-                            label: Text(
-                              AppLocalizations.of(context)!.addNewChallenge,
-                            ),
+                            childCount: createdChallenges.length,
                           ),
-                        ],
+                        ),
+                      ],
+
+                      if (participatedChallenges.isNotEmpty) ...[
+                        SliverAppBar(
+                          title: Row(
+                            children: [
+                              Text(
+                                AppLocalizations.of(context)!
+                                    .participatedChallenges,
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SliverList(
+                          delegate: SliverChildBuilderDelegate(
+                            (context, index) {
+                              final challenge = participatedChallenges[index];
+
+                              final challengeParticipation = challengeState
+                                  .challengeParticipations
+                                  .where((challengeParticipation) =>
+                                      challengeParticipation.challengeId ==
+                                      challenge.id)
+                                  .firstOrNull;
+
+                              final challengeDailyTrackings = challengeState
+                                      .challengeDailyTrackings[challenge.id] ??
+                                  [];
+
+                              return ChallengeWidget(
+                                challenge: challenge,
+                                challengeParticipation: challengeParticipation,
+                                challengeDailyTrackings:
+                                    challengeDailyTrackings,
+                              );
+                            },
+                            childCount: participatedChallenges.length,
+                          ),
+                        ),
+                      ],
+
+                      // Section for Participated Challenges
+                      if (otherChallenges.isNotEmpty) ...[
+                        SliverAppBar(
+                          title: Row(
+                            children: [
+                              Text(
+                                AppLocalizations.of(context)!.otherChallenges,
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SliverList(
+                          delegate: SliverChildBuilderDelegate(
+                            (context, index) {
+                              final challenge = otherChallenges[index];
+
+                              final challengeDailyTrackings = challengeState
+                                      .challengeDailyTrackings[challenge.id] ??
+                                  [];
+
+                              return ChallengeWidget(
+                                challenge: challenge,
+                                challengeParticipation: null,
+                                challengeDailyTrackings:
+                                    challengeDailyTrackings,
+                              );
+                            },
+                            childCount: otherChallenges.length,
+                          ),
+                        ),
+                      ]
+                    ] else ...[
+                      SliverFillRemaining(
+                        hasScrollBody: false,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                AppLocalizations.of(context)!.noChallengesYet,
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: 24),
+                              ElevatedButton.icon(
+                                onPressed: () {
+                                  context.goNamed('challengeSearch');
+                                },
+                                icon: const Icon(Icons.add),
+                                label: Text(
+                                  AppLocalizations.of(context)!.addNewChallenge,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                ]
-              ]),
+                    ]
+                  ],
+                ),
+              ),
             ),
           );
         } else if (challengeState is ChallengesFailed) {

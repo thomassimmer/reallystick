@@ -246,40 +246,44 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
                     : null,
             body: RefreshIndicator(
               onRefresh: _pullRefresh,
-              child: ListView(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: challengeColor.withAlpha(155),
-                      borderRadius: BorderRadius.circular(16.0),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: Text(
-                        description,
-                        style: TextStyle(color: Colors.white),
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
+                child: ListView(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        color: challengeColor.withAlpha(155),
+                        borderRadius: BorderRadius.circular(16.0),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(15.0),
+                        child: Text(
+                          description,
+                          style: TextStyle(color: Colors.white),
+                        ),
                       ),
                     ),
-                  ),
-                  SizedBox(height: 25),
-                  AnalyticsCarouselWidget(
-                    challengeColor: challengeColor,
-                    challengeId: challenge.id,
-                  ),
-                  SizedBox(height: 25),
-                  if (challengeParticipation != null) ...[
-                    DailyTrackingCarouselWidget(
-                      challengeDailyTrackings: challengeDailyTrackings,
+                    SizedBox(height: 25),
+                    AnalyticsCarouselWidget(
                       challengeColor: challengeColor,
-                      challengeId: widget.challengeId,
-                      canOpenDayBoxes: true,
-                      displayTitle: true,
+                      challengeId: challenge.id,
                     ),
                     SizedBox(height: 25),
+                    if (challengeParticipation != null) ...[
+                      DailyTrackingCarouselWidget(
+                        challengeDailyTrackings: challengeDailyTrackings,
+                        challengeColor: challengeColor,
+                        challengeId: widget.challengeId,
+                        canOpenDayBoxes: true,
+                        displayTitle: true,
+                      ),
+                      SizedBox(height: 25),
+                    ],
+                    ChallengeDiscussionListWidget(color: challengeColor),
+                    SizedBox(height: 72),
                   ],
-                  ChallengeDiscussionListWidget(color: challengeColor),
-                  SizedBox(height: 64),
-                ],
+                ),
               ),
             ),
           );

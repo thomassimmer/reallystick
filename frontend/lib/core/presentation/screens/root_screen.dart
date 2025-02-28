@@ -203,11 +203,7 @@ class RootScreen extends StatelessWidget {
                             color: context.colors.background,
                           ),
                           clipBehavior: Clip.antiAlias,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 16.0, vertical: 4),
-                            child: child,
-                          ),
+                          child: child,
                         ),
                       )
                     : Expanded(
@@ -215,11 +211,7 @@ class RootScreen extends StatelessWidget {
                           decoration: BoxDecoration(
                             color: context.colors.background,
                           ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 16.0, vertical: 4),
-                            child: child,
-                          ),
+                          child: child,
                         ),
                       ),
               ],
