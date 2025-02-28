@@ -1,9 +1,10 @@
 import 'dart:convert';
 
+import 'package:http/http.dart' as http;
+import 'package:reallystick/core/constants/json_decode.dart';
 import 'package:reallystick/core/messages/errors/data_error.dart';
 import 'package:reallystick/features/auth/data/errors/data_error.dart';
 import 'package:reallystick/features/auth/data/storage/token_storage.dart';
-import 'package:http/http.dart' as http;
 
 class AuthService {
   final String baseUrl;
@@ -24,7 +25,7 @@ class AuthService {
       headers: {'Content-Type': 'application/json'},
       body: json.encode({'refresh_token': refreshToken}),
     );
-    final jsonBody = json.decode(response.body);
+    final jsonBody = customJsonDecode(response.body);
     final responseCode = jsonBody['code'] as String;
 
     if (response.statusCode == 200) {

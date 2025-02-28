@@ -1,14 +1,15 @@
 import 'dart:convert';
 
 import 'package:dartz/dartz.dart';
+import 'package:http_interceptor/http_interceptor.dart';
+import 'package:reallystick/core/constants/json_decode.dart';
 import 'package:reallystick/core/messages/errors/data_error.dart';
 import 'package:reallystick/features/auth/data/errors/data_error.dart';
-import 'package:reallystick/features/auth/data/models/two_factor_authentication_config.dart';
 import 'package:reallystick/features/auth/data/models/otp_request_model.dart';
+import 'package:reallystick/features/auth/data/models/two_factor_authentication_config.dart';
 import 'package:reallystick/features/auth/data/models/user_token_model.dart';
 import 'package:reallystick/features/auth/data/models/user_token_request_model.dart';
 import 'package:reallystick/features/auth/domain/errors/domain_error.dart';
-import 'package:http_interceptor/http_interceptor.dart';
 
 class AuthRemoteDataSource {
   final InterceptedClient apiClient;
@@ -25,7 +26,7 @@ class AuthRemoteDataSource {
       body: json.encode(registerUserRequestModel.toJson()),
     );
 
-    final jsonBody = json.decode(response.body);
+    final jsonBody = customJsonDecode(response.body);
     final responseCode = jsonBody['code'] as String;
 
     if (response.statusCode == 201) {
@@ -73,7 +74,7 @@ class AuthRemoteDataSource {
       body: json.encode(loginUserRequestModel.toJson()),
     );
 
-    final jsonBody = json.decode(response.body);
+    final jsonBody = customJsonDecode(response.body);
     final responseCode = jsonBody['code'] as String;
 
     if (response.statusCode == 200) {
@@ -122,7 +123,7 @@ class AuthRemoteDataSource {
       url,
     );
 
-    final jsonBody = json.decode(response.body);
+    final jsonBody = customJsonDecode(response.body);
 
     if (response.statusCode == 200) {
       try {
@@ -155,7 +156,7 @@ class AuthRemoteDataSource {
       body: json.encode(verifyOneTimePasswordRequestModel.toJson()),
     );
 
-    final jsonBody = json.decode(response.body);
+    final jsonBody = customJsonDecode(response.body);
     final responseCode = jsonBody['code'] as String;
 
     if (response.statusCode == 200) {
@@ -193,7 +194,7 @@ class AuthRemoteDataSource {
       body: json.encode(validateOneTimePasswordRequestModel.toJson()),
     );
 
-    final jsonBody = json.decode(response.body);
+    final jsonBody = customJsonDecode(response.body);
     final responseCode = jsonBody['code'] as String;
 
     if (response.statusCode == 200) {
@@ -229,7 +230,7 @@ class AuthRemoteDataSource {
     final url = Uri.parse('$baseUrl/auth/otp/disable');
     final response = await apiClient.get(url);
 
-    final jsonBody = json.decode(response.body);
+    final jsonBody = customJsonDecode(response.body);
 
     if (response.statusCode == 200) {
       try {
@@ -263,7 +264,7 @@ class AuthRemoteDataSource {
             checkIfAccountHasTwoFactorAuthenticationEnabledRequestModel
                 .toJson()));
 
-    final jsonBody = json.decode(response.body);
+    final jsonBody = customJsonDecode(response.body);
 
     if (response.statusCode == 200) {
       try {
@@ -294,7 +295,7 @@ class AuthRemoteDataSource {
           recoverAccountWithRecoveryCodeAndPasswordRequestModel.toJson()),
     );
 
-    final jsonBody = json.decode(response.body);
+    final jsonBody = customJsonDecode(response.body);
     final responseCode = jsonBody['code'] as String;
 
     if (response.statusCode == 200) {
@@ -341,7 +342,7 @@ class AuthRemoteDataSource {
               .toJson()),
     );
 
-    final jsonBody = json.decode(response.body);
+    final jsonBody = customJsonDecode(response.body);
     final responseCode = jsonBody['code'] as String;
 
     if (response.statusCode == 200) {
@@ -386,7 +387,7 @@ class AuthRemoteDataSource {
       body: json.encode(recoverAccountWithRecoveryCodeRequestModel.toJson()),
     );
 
-    final jsonBody = json.decode(response.body);
+    final jsonBody = customJsonDecode(response.body);
     final responseCode = jsonBody['code'] as String;
 
     if (response.statusCode == 200) {

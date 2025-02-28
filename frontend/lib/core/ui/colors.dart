@@ -131,3 +131,83 @@ abstract class AppColors {
   static const Color violet = Color(0xD07038F8);
   static const Color orange = Color(0xFFFF9D5C);
 }
+
+Color getAppColorsFromString(String colorString) {
+  switch (colorString.toLowerCase()) {
+    case "white":
+      return AppColors.white;
+    case "beige":
+      return AppColors.beige;
+    case "black":
+      return AppColors.black;
+    case "blue":
+      return AppColors.blue;
+    case "brown":
+      return AppColors.brown;
+    case "darkbrown":
+    case "dark_brown":
+      return AppColors.darkBrown;
+    case "grey":
+      return AppColors.grey;
+    case "indigo":
+      return AppColors.indigo;
+    case "lightblue":
+    case "light_blue":
+      return AppColors.lightBlue;
+    case "lightbrown":
+    case "light_brown":
+      return AppColors.lightBrown;
+    case "whitegrey":
+    case "white_grey":
+      return AppColors.whiteGrey;
+    case "lightcyan":
+    case "light_cyan":
+      return AppColors.lightCyan;
+    case "lightgreen":
+    case "light_green":
+    case "green":
+      return AppColors.lightGreen;
+    case "lightergrey":
+    case "lighter_grey":
+      return AppColors.lighterGrey;
+    case "lightgrey":
+    case "light_grey":
+      return AppColors.lightGrey;
+    case "lightpink":
+    case "light_pink":
+      return AppColors.lightPink;
+    case "lightpurple":
+    case "light_purple":
+      return AppColors.lightPurple;
+    case "lightred":
+    case "light_red":
+      return AppColors.lightRed;
+    case "lightteal":
+    case "light_teal":
+      return AppColors.lightTeal;
+    case "lightyellow":
+    case "light_yellow":
+      return AppColors.lightYellow;
+    case "lilac":
+      return AppColors.lilac;
+    case "pink":
+      return AppColors.pink;
+    case "purple":
+      return AppColors.purple;
+    case "red":
+      return AppColors.red;
+    case "teal":
+      return AppColors.teal;
+    case "yellow":
+      return AppColors.yellow;
+    case "semigrey":
+    case "semi_grey":
+      return AppColors.semiGrey;
+    case "violet":
+      return AppColors.violet;
+    case "orange":
+      return AppColors.orange;
+    default:
+      return AppColors.black; // Fallback color
+  }
+}

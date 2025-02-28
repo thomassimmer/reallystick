@@ -9,8 +9,8 @@ class DarkAppTheme extends AppTheme {
           name: 'dark',
           brightness: Brightness.dark,
           colors: const AppThemeColors(
-            primarySwatch: Colors.blue,
-            primary: Colors.blueAccent,
+            primarySwatch: Colors.purple,
+            primary: Colors.deepPurple,
             secondary: Colors.indigo,
             accent: Color(0xFF27C754),
             background: Color(0xFF25272A),

@@ -10,7 +10,9 @@ import 'package:reallystick/features/auth/presentation/screens/recovery_codes_sc
 import 'package:reallystick/features/auth/presentation/screens/signup_screen.dart';
 import 'package:reallystick/features/auth/presentation/screens/unauthenticated_home_screen.dart';
 import 'package:reallystick/features/challenges/presentation/challenges_screen.dart';
-import 'package:reallystick/features/habits/presentation/habits_screen.dart';
+import 'package:reallystick/features/habits/presentation/screens/habit_detail_screen.dart';
+import 'package:reallystick/features/habits/presentation/screens/habit_search_screen.dart';
+import 'package:reallystick/features/habits/presentation/screens/habits_screen.dart';
 import 'package:reallystick/features/messages/presentation/messages_screen.dart';
 import 'package:reallystick/features/profile/presentation/screens/about_screen.dart';
 import 'package:reallystick/features/profile/presentation/screens/language_selection_screen.dart';
@@ -49,6 +51,24 @@ final router = GoRouter(
           path: '/habits',
           name: 'habits',
           builder: (context, state) => HabitsScreen(),
+          routes: [
+            GoRoute(
+              path: 'search',
+              name: 'habitSearch',
+              builder: (context, state) => SearchHabitsScreen(),
+            ),
+            GoRoute(
+              path: ':habitId',
+              name: 'habitDetails',
+              builder: (context, state) {
+                final habitId = state.pathParameters['habitId']!;
+
+                return HabitDetailsScreen(
+                  habitId: habitId,
+                );
+              },
+            ),
+          ],
         ),
         GoRoute(
           path: '/challenges',

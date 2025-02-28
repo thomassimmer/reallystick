@@ -18,6 +18,19 @@ import 'package:reallystick/features/auth/domain/usecases/recover_account_withou
 import 'package:reallystick/features/auth/domain/usecases/signup_usecase.dart';
 import 'package:reallystick/features/auth/domain/usecases/validate_one_time_password_use_case.dart';
 import 'package:reallystick/features/auth/domain/usecases/verify_one_time_password_use_case.dart';
+import 'package:reallystick/features/habits/data/repositories/habit_category_repository_impl.dart';
+import 'package:reallystick/features/habits/data/repositories/habit_daily_tracking_repository_impl.dart';
+import 'package:reallystick/features/habits/data/repositories/habit_participation_repository_impl.dart';
+import 'package:reallystick/features/habits/data/repositories/habit_repository_impl.dart';
+import 'package:reallystick/features/habits/data/sources/remote_data_sources.dart';
+import 'package:reallystick/features/habits/domain/repositories/habit_category_repository.dart';
+import 'package:reallystick/features/habits/domain/repositories/habit_daily_tracking_repository.dart';
+import 'package:reallystick/features/habits/domain/repositories/habit_participation_repository.dart';
+import 'package:reallystick/features/habits/domain/repositories/habit_repository.dart';
+import 'package:reallystick/features/habits/domain/usecases/get_habit_categories_usecase.dart';
+import 'package:reallystick/features/habits/domain/usecases/get_habit_participations_usecase.dart';
+import 'package:reallystick/features/habits/domain/usecases/get_habits_daily_tracking_usecase.dart';
+import 'package:reallystick/features/habits/domain/usecases/get_habits_usecase.dart';
 import 'package:reallystick/features/profile/data/repositories/profile_repository_impl.dart';
 import 'package:reallystick/features/profile/data/sources/local_data_sources.dart';
 import 'package:reallystick/features/profile/data/sources/remote_data_sources.dart';
@@ -49,6 +62,8 @@ void setupServiceLocator() {
   sl.registerSingleton<ProfileRemoteDataSource>(
       ProfileRemoteDataSource(apiClient: apiClient, baseUrl: baseUrl));
   sl.registerSingleton<ProfileLocalDataSource>(ProfileLocalDataSource());
+  sl.registerSingleton<HabitRemoteDataSource>(
+      HabitRemoteDataSource(apiClient: apiClient, baseUrl: baseUrl));
 
   // Repositories
   sl.registerSingleton<AuthRepository>(
@@ -56,6 +71,16 @@ void setupServiceLocator() {
   sl.registerSingleton<ProfileRepository>(ProfileRepositoryImpl(
       remoteDataSource: sl<ProfileRemoteDataSource>(),
       localDataSource: sl<ProfileLocalDataSource>()));
+  sl.registerSingleton<HabitRepository>(
+      HabitRepositoryImpl(remoteDataSource: sl<HabitRemoteDataSource>()));
+  sl.registerSingleton<HabitParticipationRepository>(
+      HabitParticipationRepositoryImpl(
+          remoteDataSource: sl<HabitRemoteDataSource>()));
+  sl.registerSingleton<HabitCategoryRepository>(HabitCategoryRepositoryImpl(
+      remoteDataSource: sl<HabitRemoteDataSource>()));
+  sl.registerSingleton<HabitDailyTrackingRepository>(
+      HabitDailyTrackingRepositoryImpl(
+          remoteDataSource: sl<HabitRemoteDataSource>()));
 
   // Use cases
   sl.registerSingleton<LoginUseCase>(LoginUseCase(sl<AuthRepository>()));
@@ -93,4 +118,12 @@ void setupServiceLocator() {
       UpdatePasswordUseCase(sl<ProfileRepository>()));
   sl.registerSingleton<LoadCountriesUseCase>(
       LoadCountriesUseCase(sl<ProfileRepository>()));
+  sl.registerSingleton<GetHabitsUsecase>(
+      GetHabitsUsecase(sl<HabitRepository>()));
+  sl.registerSingleton<GetHabitCategoriesUseCase>(
+      GetHabitCategoriesUseCase(sl<HabitCategoryRepository>()));
+  sl.registerSingleton<GetHabitParticipationsUsecase>(
+      GetHabitParticipationsUsecase(sl<HabitParticipationRepository>()));
+  sl.registerSingleton<GetHabitsDailyTrackingUsecase>(
+      GetHabitsDailyTrackingUsecase(sl<HabitDailyTrackingRepository>()));
 }

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:go_router/go_router.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_bloc.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_events.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_states.dart';
-import 'package:go_router/go_router.dart';
 
 class ErrorScreen extends StatelessWidget {
   final GoException? error;
@@ -23,11 +23,13 @@ class ErrorScreen extends StatelessWidget {
                     context.goNamed('home');
                   },
                   child: Row(children: [
-                    Text('Flutter',
-                        style: context.typographies.headingSmall
-                            .copyWith(color: context.colors.background)),
                     Text(
-                      'Actix',
+                      'Really',
+                      style: context.typographies.headingSmall
+                          .copyWith(color: context.colors.background),
+                    ),
+                    Text(
+                      'Stick',
                       style: context.typographies.headingSmall
                           .copyWith(color: context.colors.hint),
                     ),

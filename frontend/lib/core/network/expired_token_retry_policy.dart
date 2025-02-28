@@ -1,8 +1,8 @@
 import 'dart:async';
-import 'dart:convert';
 
-import 'package:reallystick/features/auth/data/services/auth_service.dart';
 import 'package:http_interceptor/http_interceptor.dart';
+import 'package:reallystick/core/constants/json_decode.dart';
+import 'package:reallystick/features/auth/data/services/auth_service.dart';
 
 class ExpiredTokenRetryPolicy implements RetryPolicy {
   final AuthService authService;
@@ -15,7 +15,7 @@ class ExpiredTokenRetryPolicy implements RetryPolicy {
   @override
   Future<bool> shouldAttemptRetryOnResponse(BaseResponse response) async {
     if (response is Response) {
-      final jsonBody = json.decode(response.body) as Map<String, dynamic>;
+      final jsonBody = customJsonDecode(response.body) as Map<String, dynamic>;
       final responseCode = jsonBody['code'] as String?;
 
       if (response.statusCode == 401 &&

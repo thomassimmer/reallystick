@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:go_router/go_router.dart';
+import 'package:reallystick/core/constants/screen_size.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/core/widgets/global_snack_bar.dart';
 import 'package:reallystick/core/widgets/icon_with_warning.dart';
@@ -8,7 +10,6 @@ import 'package:reallystick/features/auth/presentation/blocs/auth/auth_bloc.dart
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_states.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
-import 'package:go_router/go_router.dart';
 
 class RootScreen extends StatelessWidget {
   final Widget child;
@@ -34,7 +35,7 @@ class RootScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isLargeScreen = MediaQuery.of(context).size.width >= 800;
+    final bool isLargeScreen = checkIfLargeScreen(context);
 
     void onItemTapped(int index) {
       switch (index) {
@@ -69,23 +70,42 @@ class RootScreen extends StatelessWidget {
 
           return Scaffold(
               appBar: AppBar(
-                title: Row(children: [
-                  TextButton(
+                title: Row(
+                  children: [
+                    TextButton(
                       onPressed: () {
                         context.goNamed('home');
                       },
-                      child: Row(children: [
-                        Text('Flutter',
+                      child: Row(
+                        children: [
+                          Text('Really',
+                              style: context.typographies.headingSmall
+                                  .copyWith(color: context.colors.background)),
+                          Text(
+                            'Stick',
                             style: context.typographies.headingSmall
-                                .copyWith(color: context.colors.background)),
-                        Text(
-                          'Actix',
-                          style: context.typographies.headingSmall
-                              .copyWith(color: context.colors.hint),
-                        ),
-                      ])),
-                ]),
+                                .copyWith(color: context.colors.hint),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
                 backgroundColor: context.colors.primary,
+                actions: [
+                  if (state.profile != null)
+                    TextButton(
+                      onPressed: () {
+                        context.goNamed('profile');
+                      },
+                      child: Text(
+                        AppLocalizations.of(context)!
+                            .hello(state.profile!.username),
+                        style: context.typographies.body
+                            .copyWith(color: context.colors.textOnPrimary),
+                      ),
+                    )
+                ],
               ),
               body: Row(
                 children: [
@@ -152,9 +172,16 @@ class RootScreen extends StatelessWidget {
                           ],
                         )),
                   ],
-                  Expanded(
-                    child: child,
-                  ),
+                  isLargeScreen
+                      ? Expanded(
+                          child: Container(
+                            margin: EdgeInsets.all(8.0),
+                            child: child,
+                          ),
+                        )
+                      : Expanded(
+                          child: child,
+                        ),
                 ],
               ),
               bottomNavigationBar: isLargeScreen

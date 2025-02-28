@@ -3,13 +3,14 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:http_interceptor/http_interceptor.dart';
+import 'package:reallystick/core/constants/json_decode.dart';
 import 'package:reallystick/core/messages/errors/data_error.dart';
 import 'package:reallystick/features/auth/data/errors/data_error.dart';
 import 'package:reallystick/features/auth/domain/errors/domain_error.dart';
 import 'package:reallystick/features/profile/data/errors/data_error.dart';
 import 'package:reallystick/features/profile/data/models/profile.dart';
 import 'package:reallystick/features/profile/data/models/requests.dart';
-import 'package:http_interceptor/http_interceptor.dart';
 
 class ProfileRemoteDataSource {
   final InterceptedClient apiClient;
@@ -23,7 +24,7 @@ class ProfileRemoteDataSource {
       url,
     );
 
-    final jsonBody = json.decode(response.body);
+    final jsonBody = customJsonDecode(response.body);
 
     if (response.statusCode == 200) {
       try {
@@ -55,7 +56,7 @@ class ProfileRemoteDataSource {
       body: json.encode(profile.toJson()),
     );
 
-    final jsonBody = json.decode(response.body);
+    final jsonBody = customJsonDecode(response.body);
 
     if (response.statusCode == 200) {
       try {
@@ -87,7 +88,7 @@ class ProfileRemoteDataSource {
       body: json.encode(setPasswordRequestModel.toJson()),
     );
 
-    final jsonBody = json.decode(response.body);
+    final jsonBody = customJsonDecode(response.body);
     final responseCode = jsonBody['code'] as String;
 
     if (response.statusCode == 200) {
@@ -135,7 +136,7 @@ class ProfileRemoteDataSource {
       body: json.encode(updatePasswordRequestModel.toJson()),
     );
 
-    final jsonBody = json.decode(response.body);
+    final jsonBody = customJsonDecode(response.body);
     final responseCode = jsonBody['code'] as String;
 
     if (response.statusCode == 200) {
