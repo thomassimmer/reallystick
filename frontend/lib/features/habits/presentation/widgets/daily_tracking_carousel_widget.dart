@@ -141,9 +141,8 @@ class DailyTrackingCarouselWidgetState
                     children: [
                       SizedBox(height: 5),
                       LastActivityWidget(
-                        habitDailyTrackings: widget.habitDailyTrackings,
-                        userLocale: userLocale
-                      ),
+                          habitDailyTrackings: widget.habitDailyTrackings,
+                          userLocale: userLocale),
                     ],
                   )
                 ],
@@ -167,7 +166,7 @@ class DailyTrackingCarouselWidgetState
 
                   // Normalize the opacity
                   final normalizedOpacity = maxQuantity == minQuantity
-                      ? 1.0 // Avoid division by zero when all values are equal
+                      ? 0.1 // Avoid division by zero when all values are equal
                       : 0.1 +
                           ((totalQuantity - minQuantity) /
                               (maxQuantity - minQuantity) *

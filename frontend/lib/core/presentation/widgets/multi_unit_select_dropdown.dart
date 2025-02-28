@@ -92,48 +92,55 @@ class MultiUnitSelectDropdownState extends State<MultiUnitSelectDropdown> {
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.grey),
                 borderRadius: BorderRadius.circular(8),
-                color: Colors.white,
               ),
               child: ListView(
                 shrinkWrap: true,
-                children: widget.options.values.map((option) {
-                  return CheckboxListTile(
-                    value: selectedValues.contains(option.id),
-                    title: Text(getRightTranslationForUnitFromJson(
-                        option.longName, 2, widget.userLocale)),
-                    onChanged: (bool? isChecked) {
-                      setState(() {
-                        if (isChecked == true) {
-                          selectedValues.add(option.id);
-                        } else {
-                          selectedValues.remove(option.id);
-                        }
-                      });
-                      widget.onUnitsChanged(selectedValues);
-                    },
-                  );
-                }).toList(),
+                children: widget.options.values.map(
+                  (option) {
+                    return CheckboxListTile(
+                      value: selectedValues.contains(option.id),
+                      title: Text(getRightTranslationForUnitFromJson(
+                        option.longName,
+                        2,
+                        widget.userLocale,
+                      )),
+                      onChanged: (bool? isChecked) {
+                        setState(
+                          () {
+                            if (isChecked == true) {
+                              selectedValues.add(option.id);
+                            } else {
+                              selectedValues.remove(option.id);
+                            }
+                          },
+                        );
+                        widget.onUnitsChanged(selectedValues);
+                      },
+                    );
+                  },
+                ).toList(),
               ),
             ),
 
           if (widget.errors.isNotEmpty)
             Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 22.0, vertical: 8),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: widget.errors
-                      .map(
-                        (error) => Text(
-                          error,
-                          style: TextStyle(
-                            color: context.colors.error,
-                            fontSize: 12.0,
-                          ),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 22.0, vertical: 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: widget.errors
+                    .map(
+                      (error) => Text(
+                        error,
+                        style: TextStyle(
+                          color: context.colors.error,
+                          fontSize: 12.0,
                         ),
-                      )
-                      .toList(),
-                ))
+                      ),
+                    )
+                    .toList(),
+              ),
+            )
         ],
       ),
     );
