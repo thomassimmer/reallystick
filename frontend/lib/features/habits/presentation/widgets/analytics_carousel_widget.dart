@@ -165,6 +165,7 @@ class AnalyticsCarouselWidget extends StatelessWidget {
               ),
               Spacer(),
               Tooltip(
+                triggerMode: TooltipTriggerMode.tap,
                 message: AppLocalizations.of(context)!.analyticsInfoTooltip,
                 child: Icon(
                   Icons.info_outline,
