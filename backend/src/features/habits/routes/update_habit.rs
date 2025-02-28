@@ -4,6 +4,7 @@ use crate::{
         helpers::{
             habit::{self, get_habit_by_id},
             habit_category::get_habit_category_by_id,
+            unit::get_unit_by_id,
         },
         structs::{
             requests::habit::{HabitUpdateRequest, UpdateHabitParams},
@@ -60,7 +61,20 @@ pub async fn update_habit(
         }
     };
 
-    // TODO: Check units exist
+    for unit in body.unit_ids.clone() {
+        match get_unit_by_id(&mut transaction, unit).await {
+            Ok(r) => {
+                if r.is_none() {
+                    return HttpResponse::NotFound().json(AppError::UnitNotFound.to_response());
+                }
+            }
+            Err(e) => {
+                eprintln!("Error: {}", e);
+                return HttpResponse::InternalServerError()
+                    .json(AppError::DatabaseQuery.to_response());
+            }
+        }
+    }
 
     habit.short_name = json!(body.short_name).to_string();
     habit.long_name = json!(body.long_name).to_string();

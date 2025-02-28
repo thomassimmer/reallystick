@@ -27,7 +27,7 @@ pub struct HabitUpdateRequest {
     pub category_id: Uuid,
     pub reviewed: bool,
     pub icon: String,
-    pub unit_ids: HashSet<String>,
+    pub unit_ids: HashSet<Uuid>,
 }
 
 #[derive(Deserialize)]
@@ -37,5 +37,5 @@ pub struct HabitCreateRequest {
     pub description: HashMap<String, String>,
     pub category_id: Uuid,
     pub icon: String,
-    pub unit_ids: HashSet<String>,
+    pub unit_ids: HashSet<Uuid>,
 }

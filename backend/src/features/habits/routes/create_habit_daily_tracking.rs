@@ -2,7 +2,7 @@ use crate::{
     core::constants::errors::AppError,
     features::{
         habits::{
-            helpers::{habit::get_habit_by_id, habit_daily_tracking},
+            helpers::{habit::get_habit_by_id, habit_daily_tracking, unit::get_unit_by_id},
             structs::{
                 models::habit_daily_tracking::HabitDailyTracking,
                 requests::habit_daily_tracking::HabitDailyTrackingCreateRequest,
@@ -37,15 +37,28 @@ pub async fn create_habit_daily_tracking(
     };
 
     match get_habit_by_id(&mut transaction, body.habit_id).await {
-        Ok(r) => match r {
-            Some(_) => {}
-            None => return HttpResponse::NotFound().json(AppError::HabitNotFound.to_response()),
-        },
+        Ok(r) => {
+            if r.is_none() {
+                return HttpResponse::NotFound().json(AppError::HabitNotFound.to_response());
+            }
+        }
         Err(e) => {
             eprintln!("Error: {}", e);
             return HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response());
         }
     };
+
+    match get_unit_by_id(&mut transaction, body.unit_id).await {
+        Ok(r) => {
+            if r.is_none() {
+                return HttpResponse::NotFound().json(AppError::UnitNotFound.to_response());
+            }
+        }
+        Err(e) => {
+            eprintln!("Error: {}", e);
+            return HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response());
+        }
+    }
 
     let habit_daily_tracking = HabitDailyTracking {
         id: Uuid::new_v4(),

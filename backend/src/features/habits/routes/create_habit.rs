@@ -1,7 +1,7 @@
 use crate::{
     core::constants::errors::AppError,
     features::habits::{
-        helpers::{habit, habit_category::get_habit_category_by_id},
+        helpers::{habit, habit_category::get_habit_category_by_id, unit::get_unit_by_id},
         structs::{
             models::habit::Habit, requests::habit::HabitCreateRequest,
             responses::habit::HabitResponse,
@@ -42,7 +42,20 @@ pub async fn create_habit(pool: Data<PgPool>, body: Json<HabitCreateRequest>) ->
         }
     };
 
-    // TODO: check units exist
+    for unit in body.unit_ids.clone() {
+        match get_unit_by_id(&mut transaction, unit).await {
+            Ok(r) => {
+                if r.is_none() {
+                    return HttpResponse::NotFound().json(AppError::UnitNotFound.to_response());
+                }
+            }
+            Err(e) => {
+                eprintln!("Error: {}", e);
+                return HttpResponse::InternalServerError()
+                    .json(AppError::DatabaseQuery.to_response());
+            }
+        }
+    }
 
     let habit = Habit {
         id: Uuid::new_v4(),

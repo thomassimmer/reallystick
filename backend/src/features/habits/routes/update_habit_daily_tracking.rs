@@ -1,7 +1,10 @@
 use crate::{
     core::constants::errors::AppError,
     features::habits::{
-        helpers::habit_daily_tracking::{self, get_habit_daily_tracking_by_id},
+        helpers::{
+            habit_daily_tracking::{self, get_habit_daily_tracking_by_id},
+            unit::get_unit_by_id,
+        },
         structs::{
             requests::habit_daily_tracking::{
                 HabitDailyTrackingUpdateRequest, UpdateHabitDailyTrackingParams,
@@ -49,7 +52,17 @@ pub async fn update_habit_daily_tracking(
         }
     };
 
-    // TODO: check unit exists
+    match get_unit_by_id(&mut transaction, body.unit_id).await {
+        Ok(r) => {
+            if r.is_none() {
+                return HttpResponse::NotFound().json(AppError::UnitNotFound.to_response());
+            }
+        }
+        Err(e) => {
+            eprintln!("Error: {}", e);
+            return HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response());
+        }
+    }
 
     habit_daily_tracking.datetime = body.datetime;
     habit_daily_tracking.quantity_per_set = body.quantity_per_set;
