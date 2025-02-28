@@ -28,7 +28,7 @@ pub async fn spawn_app(
     init_service(create_app(&configuration)).await
 }
 
-async fn configure_database(config: &DatabaseSettings) -> PgPool {
+async fn configure_database(config: &DatabaseSettings) {
     // Create database
     let mut connection = PgConnection::connect_with(&config.without_db())
         .await
@@ -46,6 +46,4 @@ async fn configure_database(config: &DatabaseSettings) -> PgPool {
         .run(&connection_pool)
         .await
         .expect("Failed to migrate the database");
-
-    connection_pool
 }

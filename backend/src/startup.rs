@@ -16,6 +16,23 @@ use crate::features::auth::routes::verify_otp::verify;
 
 use crate::features::auth::routes::signup::register_user;
 use crate::features::auth::routes::token::refresh_token;
+use crate::features::habits::routes::create_habit::create_habit;
+use crate::features::habits::routes::create_habit_category::create_habit_category;
+use crate::features::habits::routes::create_habit_daily_tracking::create_habit_daily_tracking;
+use crate::features::habits::routes::create_habit_participation::create_habit_participation;
+use crate::features::habits::routes::delete_habit::delete_habit;
+use crate::features::habits::routes::delete_habit_category::delete_habit_category;
+use crate::features::habits::routes::delete_habit_daily_tracking::delete_habit_daily_tracking;
+use crate::features::habits::routes::delete_habit_participation::delete_habit_participation;
+use crate::features::habits::routes::get_habit::get_habit;
+use crate::features::habits::routes::get_habit_categories::get_habit_categories;
+use crate::features::habits::routes::get_habit_daily_tracking::get_habit_daily_tracking;
+use crate::features::habits::routes::get_habit_participations::get_habit_participations;
+use crate::features::habits::routes::get_habits::get_habits;
+use crate::features::habits::routes::update_habit::update_habit;
+use crate::features::habits::routes::update_habit_category::update_habit_category;
+use crate::features::habits::routes::update_habit_daily_tracking::update_habit_daily_tracking;
+use crate::features::habits::routes::update_habit_participation::update_habit_participation;
 use crate::features::profile::routes::get_profile_information::get_profile_information;
 use crate::features::profile::routes::is_otp_enabled::is_otp_enabled;
 use crate::features::profile::routes::post_profile_information::post_profile_information;
@@ -109,6 +126,59 @@ pub fn create_app(
                                 .service(set_password)
                                 .service(update_password),
                         ),
+                )
+                .service(
+                    web::scope("/habits").service(
+                        web::scope("")
+                            .wrap(TokenValidator::new(
+                                secret.to_string(),
+                                connection_pool.clone(),
+                            ))
+                            .service(get_habit)
+                            .service(get_habits)
+                            .service(update_habit)
+                            .service(create_habit)
+                            .service(delete_habit),
+                    ),
+                )
+                .service(
+                    web::scope("/habit-categories").service(
+                        web::scope("")
+                            .wrap(TokenValidator::new(
+                                secret.to_string(),
+                                connection_pool.clone(),
+                            ))
+                            .service(get_habit_categories)
+                            .service(update_habit_category)
+                            .service(create_habit_category)
+                            .service(delete_habit_category),
+                    ),
+                )
+                .service(
+                    web::scope("/habit-daily-tracking").service(
+                        web::scope("")
+                            .wrap(TokenValidator::new(
+                                secret.to_string(),
+                                connection_pool.clone(),
+                            ))
+                            .service(get_habit_daily_tracking)
+                            .service(update_habit_daily_tracking)
+                            .service(create_habit_daily_tracking)
+                            .service(delete_habit_daily_tracking),
+                    ),
+                )
+                .service(
+                    web::scope("/habit-participations").service(
+                        web::scope("")
+                            .wrap(TokenValidator::new(
+                                secret.to_string(),
+                                connection_pool.clone(),
+                            ))
+                            .service(get_habit_participations)
+                            .service(update_habit_participation)
+                            .service(create_habit_participation)
+                            .service(delete_habit_participation),
+                    ),
                 ),
         )
         .wrap(cors)

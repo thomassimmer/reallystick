@@ -1,0 +1,114 @@
+use sqlx::{postgres::PgQueryResult, PgConnection};
+use uuid::Uuid;
+
+use crate::features::habits::structs::models::habit_category::HabitCategory;
+
+pub async fn get_habit_category_by_id(
+    conn: &mut PgConnection,
+    habit_category_id: Uuid,
+) -> Result<Option<HabitCategory>, sqlx::Error> {
+    sqlx::query_as!(
+        HabitCategory,
+        r#"
+        SELECT *
+        from habit_categories
+        WHERE id = $1
+        "#,
+        habit_category_id,
+    )
+    .fetch_optional(conn)
+    .await
+}
+
+pub async fn get_habit_category_by_name(
+    conn: &mut PgConnection,
+    language_code: String,
+    habit_category_name: String,
+) -> Result<Option<HabitCategory>, sqlx::Error> {
+    sqlx::query_as!(
+        HabitCategory,
+        r#"
+        SELECT *
+        FROM habit_categories
+        WHERE name::jsonb ? $1 AND name::jsonb ->> $1 = $2
+        "#,
+        language_code,
+        habit_category_name,
+    )
+    .fetch_optional(conn)
+    .await
+}
+
+pub async fn get_habit_categories(
+    conn: &mut PgConnection,
+) -> Result<Vec<HabitCategory>, sqlx::Error> {
+    sqlx::query_as!(
+        HabitCategory,
+        r#"
+        SELECT *
+        from habit_categories
+        "#,
+    )
+    .fetch_all(conn)
+    .await
+}
+
+pub async fn update_habit_category(
+    conn: &mut PgConnection,
+    category: &HabitCategory,
+) -> Result<sqlx::postgres::PgQueryResult, sqlx::Error> {
+    sqlx::query_as!(
+        Habit,
+        r#"
+        UPDATE habit_categories
+        SET name = $1, icon = $2
+        WHERE id = $3
+        "#,
+        category.name,
+        category.icon,
+        category.id
+    )
+    .execute(conn)
+    .await
+}
+
+pub async fn create_habit_category(
+    conn: &mut PgConnection,
+    habit_category: &HabitCategory,
+) -> Result<sqlx::postgres::PgQueryResult, sqlx::Error> {
+    sqlx::query_as!(
+        Habit,
+        r#"
+        INSERT INTO habit_categories (
+            id,
+            name,
+            created_at,
+            icon
+        )
+        VALUES ( $1, $2, $3, $4 )
+        "#,
+        habit_category.id,
+        habit_category.name,
+        habit_category.created_at,
+        habit_category.icon
+    )
+    .execute(conn)
+    .await
+}
+
+pub async fn delete_habit_category_by_id(
+    conn: &mut PgConnection,
+    habit_category_id: Uuid,
+) -> Result<PgQueryResult, sqlx::Error> {
+    sqlx::query_as!(
+        Habit,
+        r#"
+        DELETE
+        from habit_categories
+        WHERE id = $1
+        "#,
+        habit_category_id,
+    )
+    .execute(conn)
+    .await
+}

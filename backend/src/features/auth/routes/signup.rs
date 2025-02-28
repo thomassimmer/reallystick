@@ -27,9 +27,10 @@ pub async fn register_user(
 ) -> impl Responder {
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
-        Err(_) => {
+        Err(e) => {
+            eprintln!("Error: {}", e);
             return HttpResponse::InternalServerError()
-                .json(AppError::DatabaseConnection.to_response())
+                .json(AppError::DatabaseConnection.to_response());
         }
     };
 
@@ -59,7 +60,8 @@ pub async fn register_user(
                 return HttpResponse::Conflict().json(error_response);
             }
         }
-        Err(_) => {
+        Err(e) => {
+            eprintln!("Error: {}", e);
             return HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response());
         }
     }
@@ -79,8 +81,9 @@ pub async fn register_user(
     let argon2 = Argon2::default();
     let password_hash = match argon2.hash_password(body.password.as_bytes(), &salt) {
         Ok(hash) => hash.to_string(),
-        Err(_) => {
-            return HttpResponse::InternalServerError().json(AppError::PasswordHash.to_response())
+        Err(e) => {
+            eprintln!("Error: {}", e);
+            return HttpResponse::InternalServerError().json(AppError::PasswordHash.to_response());
         }
     };
 
@@ -98,11 +101,12 @@ pub async fn register_user(
 
         let hashed_code = match argon2.hash_password(code.as_bytes(), &salt) {
             Ok(hash) => hash.to_string(),
-            Err(_) => {
+            Err(e) => {
+                eprintln!("Error: {}", e);
                 return HttpResponse::InternalServerError().json(GenericResponse {
                     code: "RECOVERY_CODE_HASH".to_string(),
                     message: "Failed to hash recovery code".to_string(),
-                })
+                });
             }
         };
 
@@ -167,7 +171,8 @@ pub async fn register_user(
     .execute(&mut *transaction)
     .await;
 
-    if insert_result.is_err() {
+    if let Err(e) = insert_result {
+        eprintln!("Error: {}", e);
         return HttpResponse::InternalServerError().json(GenericResponse {
             code: "USER_INSERT".to_string(),
             message: "Failed to insert user into the database".to_string(),
@@ -177,13 +182,15 @@ pub async fn register_user(
     let (access_token, refresh_token) =
         match generate_tokens(secret.as_bytes(), new_user.id, &mut transaction).await {
             Ok((access_token, refresh_token)) => (access_token, refresh_token),
-            Err(_) => {
+            Err(e) => {
+                eprintln!("Error: {}", e);
                 return HttpResponse::InternalServerError()
                     .json(AppError::TokenGeneration.to_response());
             }
         };
 
-    if (transaction.commit().await).is_err() {
+    if let Err(e) = transaction.commit().await {
+        eprintln!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::DatabaseTransaction.to_response());
     }

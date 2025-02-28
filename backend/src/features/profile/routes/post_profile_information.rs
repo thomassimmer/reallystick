@@ -4,20 +4,25 @@ use crate::{
         models::User, requests::UserUpdateRequest, responses::UserResponse,
     },
 };
-use actix_web::{post, web, HttpResponse, Responder};
+use actix_web::{
+    post,
+    web::{Data, Json},
+    HttpResponse, Responder,
+};
 use sqlx::PgPool;
 
 #[post("/me")]
 pub async fn post_profile_information(
-    body: web::Json<UserUpdateRequest>,
-    pool: web::Data<PgPool>,
+    body: Json<UserUpdateRequest>,
+    pool: Data<PgPool>,
     mut request_user: User,
 ) -> impl Responder {
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
-        Err(_) => {
+        Err(e) => {
+            eprintln!("Error: {}", e);
             return HttpResponse::InternalServerError()
-                .json(AppError::DatabaseConnection.to_response())
+                .json(AppError::DatabaseConnection.to_response());
         }
     };
 
@@ -31,11 +36,11 @@ pub async fn post_profile_information(
     request_user.region = body.region.clone();
     request_user.activity = body.activity.clone();
     request_user.financial_situation = body.financial_situation.clone();
-    request_user.lives_in_urban_area = body.lives_in_urban_area.clone();
+    request_user.lives_in_urban_area = body.lives_in_urban_area;
     request_user.relationship_status = body.relationship_status.clone();
     request_user.level_of_education = body.level_of_education.clone();
-    request_user.has_children = body.has_children.clone();
-    request_user.has_seen_questions = body.has_seen_questions.clone();
+    request_user.has_children = body.has_children;
+    request_user.has_seen_questions = body.has_seen_questions;
 
     let updated_user_result = sqlx::query!(
         r#"
@@ -78,7 +83,8 @@ pub async fn post_profile_information(
     .execute(&mut *transaction)
     .await;
 
-    if (transaction.commit().await).is_err() {
+    if let Err(e) = transaction.commit().await {
+        eprintln!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::DatabaseTransaction.to_response());
     }
@@ -88,6 +94,9 @@ pub async fn post_profile_information(
             code: "PROFILE_UPDATED".to_string(),
             user: request_user.to_user_data(),
         }),
-        Err(_) => HttpResponse::InternalServerError().json(AppError::UserUpdate.to_response()),
+        Err(e) => {
+            eprintln!("Error: {}", e);
+            HttpResponse::InternalServerError().json(AppError::UserUpdate.to_response())
+        }
     }
 }

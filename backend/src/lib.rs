@@ -13,6 +13,7 @@ pub mod core {
 
     pub mod helpers {
         pub mod mock_now;
+        pub mod startup;
     }
 
     pub mod structs {
@@ -66,6 +67,59 @@ pub mod features {
             pub mod models;
             pub mod requests;
             pub mod responses;
+        }
+    }
+
+    pub mod habits {
+        pub mod routes {
+            pub mod create_habit;
+            pub mod create_habit_category;
+            pub mod create_habit_daily_tracking;
+            pub mod create_habit_participation;
+            pub mod delete_habit;
+            pub mod delete_habit_category;
+            pub mod delete_habit_daily_tracking;
+            pub mod delete_habit_participation;
+            pub mod get_habit;
+            pub mod get_habit_categories;
+            pub mod get_habit_daily_tracking;
+            pub mod get_habit_participations;
+            pub mod get_habits;
+            pub mod update_habit;
+            pub mod update_habit_category;
+            pub mod update_habit_daily_tracking;
+            pub mod update_habit_participation;
+        }
+
+        pub mod structs {
+            pub mod models {
+                pub mod habit;
+                pub mod habit_category;
+                pub mod habit_daily_tracking;
+                pub mod habit_participation;
+            }
+
+            pub mod requests {
+                pub mod habit;
+                pub mod habit_category;
+                pub mod habit_daily_tracking;
+                pub mod habit_participation;
+            }
+
+            pub mod responses {
+                pub mod habit;
+                pub mod habit_category;
+                pub mod habit_daily_tracking;
+                pub mod habit_participation;
+            }
+        }
+
+        pub mod helpers {
+            pub mod dates;
+            pub mod habit;
+            pub mod habit_category;
+            pub mod habit_daily_tracking;
+            pub mod habit_participation;
         }
     }
 }

@@ -12,6 +12,21 @@ pub enum AppError {
     InvalidUsernameOrPassword,
     InvalidUsernameOrPasswordOrRecoveryCode,
     InvalidUsernameOrRecoveryCode,
+    HabitCategoryCreation,
+    HabitCategoryDelete,
+    HabitCategoryNotFound,
+    HabitCreation,
+    HabitDailyTrackingCreation,
+    HabitDailyTrackingDelete,
+    HabitDailyTrackingNotFound,
+    HabitDailyTrackingUpdate,
+    HabitDelete,
+    HabitNotFound,
+    HabitParticipationCreation,
+    HabitParticipationDelete,
+    HabitParticipationNotFound,
+    HabitParticipationUpdate,
+    HabitUpdate,
     PasswordHash,
     PasswordTooShort,
     PasswordTooWeak,
@@ -69,6 +84,66 @@ impl AppError {
             AppError::InvalidUsernameOrRecoveryCode => GenericResponse {
                 code: "INVALID_USERNAME_OR_RECOVERY_CODE".to_string(),
                 message: "Invalid username or recovery code".to_string(),
+            },
+            AppError::HabitCategoryCreation => GenericResponse {
+                code: "HABIT_CATEGORY_NOT_CREATED".to_string(),
+                message: "Failed to create this habit category".to_string(),
+            },
+            AppError::HabitCategoryDelete => GenericResponse {
+                code: "HABIT_CATEGORY_NOT_DELETED".to_string(),
+                message: "Failed to delete this habit category".to_string(),
+            },
+            AppError::HabitCategoryNotFound => GenericResponse {
+                code: "HABIT_CATEGORY_NOT_FOUND".to_string(),
+                message: "The habit category requested does not exist".to_string(),
+            },
+            AppError::HabitCreation => GenericResponse {
+                code: "HABIT_NOT_CREATED".to_string(),
+                message: "Failed to create this habit".to_string(),
+            },
+            AppError::HabitDailyTrackingCreation => GenericResponse {
+                code: "HABIT_DAILY_TRACKING_NOT_CREATED".to_string(),
+                message: "Failed to create this habit daily tracking".to_string(),
+            },
+            AppError::HabitDailyTrackingDelete => GenericResponse {
+                code: "HABIT_DAILY_TRACKING_NOT_DELETED".to_string(),
+                message: "Failed to delete this habit daily tracking".to_string(),
+            },
+            AppError::HabitDailyTrackingNotFound => GenericResponse {
+                code: "HABIT_DAILY_TRACKING_NOT_FOUND".to_string(),
+                message: "The habit daily tracking requested does not exist".to_string(),
+            },
+            AppError::HabitDailyTrackingUpdate => GenericResponse {
+                code: "HABIT_DAILY_TRACKING_UPDATE".to_string(),
+                message: "Failed to update habit daily tracking".to_string(),
+            },
+            AppError::HabitDelete => GenericResponse {
+                code: "HABIT_NOT_DELETED".to_string(),
+                message: "Failed to delete this habit".to_string(),
+            },
+            AppError::HabitNotFound => GenericResponse {
+                code: "HABIT_NOT_FOUND".to_string(),
+                message: "The habit requested does not exist".to_string(),
+            },
+            AppError::HabitParticipationCreation => GenericResponse {
+                code: "HABIT_PARTICIPATION_NOT_CREATED".to_string(),
+                message: "Failed to create this habit participation".to_string(),
+            },
+            AppError::HabitParticipationDelete => GenericResponse {
+                code: "HABIT_PARTICIPATION_NOT_DELETED".to_string(),
+                message: "Failed to delete this habit participation".to_string(),
+            },
+            AppError::HabitParticipationNotFound => GenericResponse {
+                code: "HABIT_PARTICIPATION_NOT_FOUND".to_string(),
+                message: "The habit participation requested does not exist".to_string(),
+            },
+            AppError::HabitParticipationUpdate => GenericResponse {
+                code: "HABIT_PARTICIPATION_UPDATE".to_string(),
+                message: "Failed to update habit participation".to_string(),
+            },
+            AppError::HabitUpdate => GenericResponse {
+                code: "HABIT_UPDATE".to_string(),
+                message: "Failed to update habit".to_string(),
             },
             AppError::PasswordHash => GenericResponse {
                 code: "PASSWORD_HASH".to_string(),

@@ -20,9 +20,10 @@ pub async fn recover_account_using_password(
 ) -> impl Responder {
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
-        Err(_) => {
+        Err(e) => {
+            eprintln!("Error: {}", e);
             return HttpResponse::InternalServerError()
-                .json(AppError::DatabaseConnection.to_response())
+                .json(AppError::DatabaseConnection.to_response());
         }
     };
 
@@ -51,8 +52,9 @@ pub async fn recover_account_using_password(
                     .json(AppError::InvalidUsernameOrPasswordOrRecoveryCode.to_response());
             }
         }
-        Err(_) => {
-            return HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response())
+        Err(e) => {
+            eprintln!("Error: {}", e);
+            return HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response());
         }
     };
 
@@ -106,7 +108,8 @@ pub async fn recover_account_using_password(
             .fetch_optional(&mut *transaction)
             .await;
 
-            if updated_user_result.is_err() {
+            if let Err(e) = updated_user_result {
+                eprintln!("Error: {}", e);
                 return HttpResponse::InternalServerError()
                     .json(AppError::UserUpdate.to_response());
             }
@@ -130,14 +133,16 @@ pub async fn recover_account_using_password(
     .execute(&mut *transaction)
     .await;
 
-    if delete_result.is_err() {
+    if let Err(e) = delete_result {
+        eprintln!("Error: {}", e);
         return HttpResponse::InternalServerError().json(AppError::UserTokenDeletion.to_response());
     }
 
     let (access_token, refresh_token) =
         match generate_tokens(secret.as_bytes(), user.id, &mut transaction).await {
             Ok((access_token, refresh_token)) => (access_token, refresh_token),
-            Err(_) => {
+            Err(e) => {
+                eprintln!("Error: {}", e);
                 return HttpResponse::InternalServerError()
                     .json(AppError::TokenGeneration.to_response());
             }
@@ -161,11 +166,13 @@ pub async fn recover_account_using_password(
     .fetch_optional(&mut *transaction)
     .await;
 
-    if updated_user_result.is_err() {
+    if let Err(e) = updated_user_result {
+        eprintln!("Error: {}", e);
         return HttpResponse::InternalServerError().json(AppError::UserUpdate.to_response());
     }
 
-    if (transaction.commit().await).is_err() {
+    if let Err(e) = transaction.commit().await {
+        eprintln!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::DatabaseTransaction.to_response());
     }

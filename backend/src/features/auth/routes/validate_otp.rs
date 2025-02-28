@@ -17,9 +17,10 @@ async fn validate(
 ) -> impl Responder {
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
-        Err(_) => {
+        Err(e) => {
+            eprintln!("Error: {}", e);
             return HttpResponse::InternalServerError()
-                .json(AppError::DatabaseConnection.to_response())
+                .json(AppError::DatabaseConnection.to_response());
         }
     };
 
@@ -50,8 +51,9 @@ async fn validate(
                 });
             }
         }
-        Err(_) => {
-            return HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response())
+        Err(e) => {
+            eprintln!("Error: {}", e);
+            return HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response());
         }
     };
 
@@ -80,13 +82,15 @@ async fn validate(
     let (access_token, refresh_token) =
         match generate_tokens(secret.as_bytes(), user.id, &mut transaction).await {
             Ok((access_token, refresh_token)) => (access_token, refresh_token),
-            Err(_) => {
+            Err(e) => {
+                eprintln!("Error: {}", e);
                 return HttpResponse::InternalServerError()
                     .json(AppError::TokenGeneration.to_response());
             }
         };
 
-    if (transaction.commit().await).is_err() {
+    if let Err(e) = transaction.commit().await {
+        eprintln!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::DatabaseTransaction.to_response());
     }

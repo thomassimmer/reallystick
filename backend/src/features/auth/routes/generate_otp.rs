@@ -13,9 +13,10 @@ use totp_rs::{Algorithm, Secret, TOTP};
 pub async fn generate(pool: web::Data<PgPool>, mut request_user: User) -> impl Responder {
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
-        Err(_) => {
+        Err(e) => {
+            eprintln!("Error: {}", e);
             return HttpResponse::InternalServerError()
-                .json(AppError::DatabaseConnection.to_response())
+                .json(AppError::DatabaseConnection.to_response());
         }
     };
 
@@ -59,7 +60,8 @@ pub async fn generate(pool: web::Data<PgPool>, mut request_user: User) -> impl R
     .fetch_optional(&mut *transaction)
     .await;
 
-    if (transaction.commit().await).is_err() {
+    if let Err(e) = transaction.commit().await {
+        eprintln!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::DatabaseTransaction.to_response());
     }
@@ -70,6 +72,9 @@ pub async fn generate(pool: web::Data<PgPool>, mut request_user: User) -> impl R
             otp_base32: otp_base32.to_owned(),
             otp_auth_url: otp_auth_url.to_owned(),
         }),
-        Err(_) => HttpResponse::InternalServerError().json(AppError::UserUpdate.to_response()),
+        Err(e) => {
+            eprintln!("Error: {}", e);
+            HttpResponse::InternalServerError().json(AppError::UserUpdate.to_response())
+        }
     }
 }
