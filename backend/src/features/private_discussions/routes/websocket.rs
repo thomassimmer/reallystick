@@ -7,6 +7,7 @@ use actix_ws::{self};
 use chrono::{DateTime, Utc};
 use jsonwebtoken::{decode, DecodingKey, Validation};
 use sqlx::PgPool;
+use tracing::info;
 use uuid::Uuid;
 
 use crate::core::constants::errors::AppError;
@@ -93,7 +94,7 @@ async fn broadcast_ws(
         )
         .await;
 
-    println!("{} just opened a websocket.", request_claims.username);
+    info!("{} just opened a websocket.", request_claims.username);
 
     // spawn websocket handler (and don't await it) so that the response is returned immediately
     rt::spawn(async move {
@@ -102,13 +103,13 @@ async fn broadcast_ws(
         loop {
             interval.tick().await;
 
-            println!("Sent a ping to {}.", request_claims.username);
+            info!("Sent a ping to {}.", request_claims.username);
 
             if session.ping(b"").await.is_err() {
                 break;
             }
 
-            println!("Received a pong from {}.", request_claims.username);
+            info!("Received a pong from {}.", request_claims.username);
         }
 
         channels_data
@@ -117,7 +118,7 @@ async fn broadcast_ws(
 
         let _ = session.close(None).await;
 
-        println!("{} just closed a websocket.", request_claims.username);
+        info!("{} just closed a websocket.", request_claims.username);
     });
 
     res

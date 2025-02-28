@@ -126,7 +126,7 @@ pub async fn handle_notification(
     // Try to deserialize the JSON payload into `NewPrivateMessageEvent`
     match serde_json::from_str::<NotificationEvent>(&payload) {
         Ok(event) => {
-            println!("📩 New message event received: {:?}", event);
+            info!("📩 New message event received: {:?}", event);
 
             let user_data = match users_data.get_value_for_key(event.recipient).await {
                 Some(user_data) => user_data,
@@ -192,7 +192,7 @@ pub async fn handle_notification(
                                     .await;
                             }
 
-                            println!(
+                            info!(
                                 "Message sent succesffully to {} on socket {}",
                                 user_data.user.username, session_uuid
                             );
