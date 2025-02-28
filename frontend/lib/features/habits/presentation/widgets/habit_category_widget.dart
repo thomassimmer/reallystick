@@ -36,7 +36,7 @@ class HabitCategoryWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 4),
           child: Row(
             children: [
               Padding(

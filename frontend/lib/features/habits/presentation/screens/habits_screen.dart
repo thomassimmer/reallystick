@@ -129,9 +129,11 @@ class HabitsScreenState extends State<HabitsScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16.0,
-                        vertical: 16.0,
+                      padding: const EdgeInsets.only(
+                        left: 30.0,
+                        top: 25.0,
+                        bottom: 15,
+                        right: 20,
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -209,8 +211,10 @@ class HabitsScreenState extends State<HabitsScreen> {
                                       context.goNamed('habitSearch');
                                     },
                                     icon: const Icon(Icons.add),
-                                    label: Text(AppLocalizations.of(context)!
-                                        .addANewHabit,),
+                                    label: Text(
+                                      AppLocalizations.of(context)!
+                                          .addANewHabit,
+                                    ),
                                   ),
                                 ],
                               ),
