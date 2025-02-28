@@ -1,5 +1,5 @@
 use crate::{
-    core::constants::errors::AppError,
+    core::{constants::errors::AppError, structs::redis_messages::UserTokenRemovedEvent},
     features::{
         auth::{
             helpers::token::{delete_token, get_user_token},
@@ -10,17 +10,20 @@ use crate::{
 };
 use actix_web::{
     delete,
-    web::{self, ReqData},
+    web::{Data, Path, ReqData},
     HttpResponse, Responder,
 };
+use redis::{AsyncCommands, Client};
+use serde_json::json;
 use sqlx::PgPool;
 
 #[delete("/{token_id}")]
 pub async fn delete_device(
     claims: ReqData<Claims>,
-    pool: web::Data<PgPool>,
-    params: web::Path<DeleteDeviceParams>,
-    cached_tokens: web::Data<TokenCache>,
+    pool: Data<PgPool>,
+    params: Path<DeleteDeviceParams>,
+    redis_client: Data<Client>,
+    cached_tokens: Data<TokenCache>,
 ) -> impl Responder {
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
@@ -59,6 +62,27 @@ pub async fn delete_device(
         eprintln!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::DatabaseTransaction.to_response());
+    }
+
+    match redis_client.get_multiplexed_async_connection().await {
+        Ok(mut con) => {
+            let result: Result<(), redis::RedisError> = con
+                .publish(
+                    "user_token_removed",
+                    json!(UserTokenRemovedEvent {
+                        token_id: params.token_id,
+                        user_id: claims.user_id,
+                    })
+                    .to_string(),
+                )
+                .await;
+            if let Err(e) = result {
+                eprintln!("Error: {}", e);
+            }
+        }
+        Err(e) => {
+            eprintln!("Error: {}", e);
+        }
     }
 
     HttpResponse::Ok().json(DeviceDeleteResponse {

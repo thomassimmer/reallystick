@@ -265,7 +265,7 @@ class DailyTrackingCarouselWidgetState
                                       .toString(),
                                   style: context.typographies.captionSmall
                                       .copyWith(
-                                    color: Colors.white.withOpacity(0.5),
+                                    color: Colors.white.withValues(alpha: 0.5),
                                   ),
                                 ),
                               ),
@@ -286,7 +286,7 @@ class DailyTrackingCarouselWidgetState
                                     .toString(),
                                 style:
                                     context.typographies.captionSmall.copyWith(
-                                  color: Colors.white.withOpacity(0.5),
+                                  color: Colors.white.withValues(alpha: 0.5),
                                 ),
                               ),
                             ),

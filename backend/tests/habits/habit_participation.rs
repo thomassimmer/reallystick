@@ -9,6 +9,7 @@ use actix_web::{
 };
 use reallystick::features::habits::structs::{
     models::habit_participation::HabitParticipationData,
+    requests::habit_participation::HabitParticipationUpdateRequest,
     responses::habit_participation::{HabitParticipationResponse, HabitParticipationsResponse},
 };
 use uuid::Uuid;
@@ -62,10 +63,13 @@ pub async fn user_updates_a_habit_participation(
         ))
         .insert_header((header::AUTHORIZATION, format!("Bearer {}", access_token)))
         .insert_header(ContentType::json())
-        .set_json(&serde_json::json!({
-            "color": "yellow",
-            "to_gain": false,
-        }))
+        .set_json(HabitParticipationUpdateRequest {
+            color: "yellow".to_string(),
+            to_gain: false,
+            notifications_reminder_enabled: false,
+            reminder_time: None,
+            timezone: None,
+        })
         .to_request();
     let response = test::call_service(&app, req).await;
 

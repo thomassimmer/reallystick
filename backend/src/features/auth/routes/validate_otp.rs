@@ -3,7 +3,7 @@ use crate::features::auth::helpers::token::generate_tokens;
 use crate::features::auth::structs::requests::ValidateOtpRequest;
 use crate::features::auth::structs::responses::UserLoginResponse;
 use crate::features::profile::helpers::device_info::get_user_agent;
-use crate::features::profile::structs::models::User;
+use crate::features::profile::helpers::profile::get_user_by_id;
 
 use actix_web::{post, web, HttpRequest, HttpResponse, Responder};
 
@@ -30,17 +30,7 @@ async fn validate(
     let user_id = body.user_id;
 
     // Check if user already exists
-    let existing_user = sqlx::query_as!(
-        User,
-        r#"
-        SELECT *
-        FROM users
-        WHERE id = $1
-        "#,
-        user_id,
-    )
-    .fetch_optional(&mut *transaction)
-    .await;
+    let existing_user = get_user_by_id(&mut transaction, user_id).await;
 
     let user = match existing_user {
         Ok(existing_user) => {
@@ -87,6 +77,7 @@ async fn validate(
         secret.as_bytes(),
         user.id,
         user.is_admin,
+        user.username,
         parsed_device_info,
         &mut transaction,
     )

@@ -95,7 +95,7 @@ class DiscussionListState extends State<DiscussionListWidget> {
                 child: Icon(
                   Icons.add_circle_outline,
                   size: 25,
-                  color: widget.color.withOpacity(0.8),
+                  color: widget.color.withValues(alpha: 0.8),
                 ),
               )
             ],
@@ -117,7 +117,7 @@ class DiscussionListState extends State<DiscussionListWidget> {
               decoration: BoxDecoration(
                 boxShadow: [
                   BoxShadow(
-                    color: widget.color.withOpacity(0.2),
+                    color: widget.color.withValues(alpha: 0.2),
                     blurRadius: 10,
                   ),
                 ],

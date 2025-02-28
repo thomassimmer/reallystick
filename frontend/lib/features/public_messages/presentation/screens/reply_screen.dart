@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reallystick/core/presentation/screens/loading_screen.dart';
 import 'package:reallystick/core/ui/colors.dart';
@@ -194,17 +193,12 @@ class ReplyScreenState extends State<ReplyScreen> {
               replyState.reply;
 
           return Scaffold(
-            appBar: AppBar(
-              title: Text(
-                AppLocalizations.of(context)!.reply,
-                style: TextStyle(color: color),
-              ),
-            ),
+            appBar: AppBar(),
             body: RefreshIndicator(
               onRefresh: _pullRefresh,
               child: Padding(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                    const EdgeInsets.fromLTRB(16, 0, 16, 16),
                 child: Column(
                   children: [
                     Expanded(

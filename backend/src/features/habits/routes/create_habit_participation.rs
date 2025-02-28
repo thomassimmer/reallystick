@@ -54,6 +54,9 @@ pub async fn create_habit_participation(
         color: body.color.clone(),
         to_gain: body.to_gain,
         created_at: Utc::now(),
+        notifications_reminder_enabled: false,
+        reminder_time: None,
+        timezone: None,
     };
 
     let create_habit_participation_result =

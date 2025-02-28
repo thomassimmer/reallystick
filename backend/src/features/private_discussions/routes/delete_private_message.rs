@@ -1,5 +1,5 @@
 use crate::{
-    core::constants::errors::AppError,
+    core::{constants::errors::AppError, structs::redis_messages::NotificationEvent},
     features::{
         auth::structs::models::Claims,
         private_discussions::{
@@ -8,7 +8,6 @@ use crate::{
                 private_message::{self, get_private_message_by_id},
             },
             structs::{
-                models::private_message::ChannelsData,
                 requests::private_message::DeletePrivateMessageParams,
                 responses::private_message::PrivateMessageResponse,
             },
@@ -20,6 +19,7 @@ use actix_web::{
     web::{Data, Query, ReqData},
     HttpResponse, Responder,
 };
+use redis::{AsyncCommands, Client};
 use serde_json::json;
 use sqlx::PgPool;
 
@@ -27,7 +27,7 @@ use sqlx::PgPool;
 pub async fn delete_private_message(
     pool: Data<PgPool>,
     query: Query<DeletePrivateMessageParams>,
-    channels_data: Data<ChannelsData>,
+    redis_client: Data<Client>,
     request_claims: ReqData<Claims>,
 ) -> impl Responder {
     let params = query.into_inner();
@@ -42,7 +42,8 @@ pub async fn delete_private_message(
     };
 
     // Check if message exists
-    let private_message = match get_private_message_by_id(&mut transaction, params.message_id).await
+    let mut private_message = match get_private_message_by_id(&mut transaction, params.message_id)
+        .await
     {
         Ok(r) => match r {
             Some(private_message) => private_message,
@@ -66,6 +67,8 @@ pub async fn delete_private_message(
     let delete_private_message_result =
         private_message::delete_message_by_id(&mut transaction, private_message.id).await;
 
+    private_message.deleted = true;
+
     if let Err(e) = delete_private_message_result {
         eprintln!("Error: {}", e);
         return HttpResponse::InternalServerError()
@@ -86,21 +89,47 @@ pub async fn delete_private_message(
         }
     };
 
-    if let Some(recipient) = recipients.iter().next() {
-        if let Some(mut session) = channels_data.get_value_for_key(recipient.user_id).await {
-            let _ = session
-                .text(json!(private_message.to_private_message_data()).to_string())
+    match redis_client.get_multiplexed_async_connection().await {
+        Ok(mut con) => {
+            let result: Result<(), redis::RedisError> = con
+                .publish(
+                    "private_message_deleted",
+                    json!(NotificationEvent {
+                        data: json!(private_message.to_private_message_data()).to_string(),
+                        recipient: request_claims.user_id,
+                        title: None,
+                        body: None,
+                        url: None,
+                    })
+                    .to_string(),
+                )
                 .await;
-        }
-    }
+            if let Err(e) = result {
+                eprintln!("Error: {}", e);
+            }
 
-    if let Some(mut session) = channels_data
-        .get_value_for_key(request_claims.user_id)
-        .await
-    {
-        let _ = session
-            .text(json!(private_message.to_private_message_data()).to_string())
-            .await;
+            if let Some(recipient) = recipients.iter().next() {
+                let result: Result<(), redis::RedisError> = con
+                    .publish(
+                        "private_message_deleted",
+                        json!(NotificationEvent {
+                            data: json!(private_message.to_private_message_data()).to_string(),
+                            recipient: recipient.user_id,
+                            title: None,
+                            body: None,
+                            url: None,
+                        })
+                        .to_string(),
+                    )
+                    .await;
+                if let Err(e) = result {
+                    eprintln!("Error: {}", e);
+                }
+            }
+        }
+        Err(e) => {
+            eprintln!("Error: {}", e);
+        }
     }
 
     if let Err(e) = transaction.commit().await {

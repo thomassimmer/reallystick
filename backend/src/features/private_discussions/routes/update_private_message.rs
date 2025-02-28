@@ -1,5 +1,8 @@
 use crate::{
-    core::{constants::errors::AppError, helpers::mock_now::now},
+    core::{
+        constants::errors::AppError, helpers::mock_now::now,
+        structs::redis_messages::NotificationEvent,
+    },
     features::{
         auth::structs::models::Claims,
         private_discussions::{
@@ -8,7 +11,7 @@ use crate::{
                 private_message::{self, get_private_message_by_id},
             },
             structs::{
-                models::private_message::{ChannelsData, PRIVATE_MESSAGE_CONTENT_MAX_LENGTH},
+                models::private_message::PRIVATE_MESSAGE_CONTENT_MAX_LENGTH,
                 requests::private_message::{
                     PrivateMessageUpdateRequest, UpdatePrivateMessageParams,
                 },
@@ -22,6 +25,7 @@ use actix_web::{
     web::{Data, Json, Path, ReqData},
     HttpResponse, Responder,
 };
+use redis::{AsyncCommands, Client};
 use serde_json::json;
 use sqlx::PgPool;
 
@@ -30,7 +34,7 @@ pub async fn update_private_message(
     pool: Data<PgPool>,
     params: Path<UpdatePrivateMessageParams>,
     body: Json<PrivateMessageUpdateRequest>,
-    channels_data: Data<ChannelsData>,
+    redis_client: Data<Client>,
     request_claims: ReqData<Claims>,
 ) -> impl Responder {
     let mut transaction = match pool.begin().await {
@@ -99,21 +103,47 @@ pub async fn update_private_message(
         }
     };
 
-    if let Some(recipient) = recipients.iter().next() {
-        if let Some(mut session) = channels_data.get_value_for_key(recipient.user_id).await {
-            let _ = session
-                .text(json!(private_message.to_private_message_data()).to_string())
+    match redis_client.get_multiplexed_async_connection().await {
+        Ok(mut con) => {
+            let result: Result<(), redis::RedisError> = con
+                .publish(
+                    "private_message_updated",
+                    json!(NotificationEvent {
+                        data: json!(private_message.to_private_message_data()).to_string(),
+                        recipient: request_claims.user_id,
+                        title: None,
+                        body: None,
+                        url: None,
+                    })
+                    .to_string(),
+                )
                 .await;
-        }
-    }
+            if let Err(e) = result {
+                eprintln!("Error: {}", e);
+            }
 
-    if let Some(mut session) = channels_data
-        .get_value_for_key(request_claims.user_id)
-        .await
-    {
-        let _ = session
-            .text(json!(private_message.to_private_message_data()).to_string())
-            .await;
+            if let Some(recipient) = recipients.iter().next() {
+                let result: Result<(), redis::RedisError> = con
+                    .publish(
+                        "private_message_updated",
+                        json!(NotificationEvent {
+                            data: json!(private_message.to_private_message_data()).to_string(),
+                            recipient: recipient.user_id,
+                            title: None,
+                            body: None,
+                            url: None,
+                        })
+                        .to_string(),
+                    )
+                    .await;
+                if let Err(e) = result {
+                    eprintln!("Error: {}", e);
+                }
+            }
+        }
+        Err(e) => {
+            eprintln!("Error: {}", e);
+        }
     }
 
     if let Err(e) = transaction.commit().await {

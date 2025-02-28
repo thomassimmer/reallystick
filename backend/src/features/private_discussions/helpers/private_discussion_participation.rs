@@ -116,7 +116,7 @@ pub async fn get_private_discussion_participations_by_discussion(
         r#"
         SELECT *
         FROM private_discussion_participations
-        WHERE  discussion_id = $1;
+        WHERE discussion_id = $1;
         "#,
         discussion_id
     )

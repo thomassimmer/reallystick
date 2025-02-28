@@ -118,6 +118,7 @@ pub async fn recover_account_using_password(
         secret.as_bytes(),
         user.id,
         user.is_admin,
+        user.username,
         parsed_device_info,
         &mut transaction,
     )

@@ -39,7 +39,10 @@ class RecoveryCodeScreen extends StatelessWidget {
                         CustomContainer(
                           child: BlocConsumer<AuthBloc, AuthState>(
                             listener: (context, state) {
-                              GlobalSnackBar.show(context, state.message);
+                              GlobalSnackBar.show(
+                                context: context,
+                                message: state.message,
+                              );
 
                               if (state
                                   is AuthAuthenticatedAfterRegistrationState) {
@@ -128,7 +131,7 @@ class RecoveryCodeScreen extends StatelessWidget {
               Clipboard.setData(ClipboardData(text: state.recoveryCode!));
 
               final message = InfoMessage('recoveryCodeCopied');
-              GlobalSnackBar.show(context, message);
+              GlobalSnackBar.show(context: context, message: message);
             },
           ),
           SizedBox(height: 16),
@@ -193,7 +196,7 @@ class RecoveryCodeScreen extends StatelessWidget {
 
                   // Create an InfoMessage for successfully copying the codes
                   final message = InfoMessage('qrCodeSecretKeyCopied');
-                  GlobalSnackBar.show(context, message);
+                  GlobalSnackBar.show(context: context, message: message);
                 },
               )
             ]),

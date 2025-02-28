@@ -10,7 +10,12 @@ class AboutScreen extends StatelessWidget {
 
     return Scaffold(
         appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.about),
+          title: Text(
+            AppLocalizations.of(context)!.about,
+            style: context.typographies.headingSmall,
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+          ),
         ),
         body: Center(
             child: Padding(
@@ -18,6 +23,7 @@ class AboutScreen extends StatelessWidget {
                 child: Column(children: [
                   Text(
                     AppLocalizations.of(context)!.aboutText,
+                    textAlign: TextAlign.center,
                   ),
                   SizedBox(
                     height: 20,
@@ -34,7 +40,7 @@ class AboutScreen extends StatelessWidget {
                     },
                     style: ButtonStyle(
                         backgroundColor: WidgetStatePropertyAll(
-                            context.colors.hint.withOpacity(0.1))),
+                            context.colors.hint.withValues(alpha: 0.1))),
                     child: Image.asset(
                       'assets/images/github-logo.png',
                       width: 50,

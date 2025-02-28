@@ -144,7 +144,9 @@ class HabitsScreenState extends State<HabitsScreen> {
                 actions: [
                   Padding(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 16.0, vertical: 4),
+                      horizontal: 16.0,
+                      vertical: 4,
+                    ),
                     child: InkWell(
                       onTap: () {
                         context.goNamed('habitSearch');

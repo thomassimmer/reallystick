@@ -1,8 +1,10 @@
 // Inspired by : https://github.com/actix/actix-web/issues/1147
 
 use std::net::TcpListener;
+use std::sync::Arc;
 
 use crate::configuration::{DatabaseSettings, Settings};
+use crate::core::helpers::translation::Translator;
 use crate::core::middlewares::token_validator::TokenValidator;
 use crate::core::routes::health_check::health_check;
 use crate::features::auth::routes::disable_otp::disable;
@@ -60,6 +62,10 @@ use crate::features::habits::routes::update_habit_daily_tracking::update_habit_d
 use crate::features::habits::routes::update_habit_participation::update_habit_participation;
 use crate::features::habits::routes::update_unit::update_unit;
 use crate::features::habits::structs::models::habit_statistics::HabitStatisticsCache;
+use crate::features::notifications::routes::delete_all_notifications::delete_all_notifications;
+use crate::features::notifications::routes::delete_notification::delete_notification;
+use crate::features::notifications::routes::get_notifications::get_notifications;
+use crate::features::notifications::routes::mark_notification_as_seen::mark_notification_as_seen;
 use crate::features::private_discussions::routes::create_private_discussion::create_private_discussion;
 use crate::features::private_discussions::routes::create_private_message::create_private_message;
 use crate::features::private_discussions::routes::delete_private_message::delete_private_message;
@@ -68,8 +74,6 @@ use crate::features::private_discussions::routes::get_private_discussions::get_p
 use crate::features::private_discussions::routes::mark_message_as_seen::mark_message_as_seen;
 use crate::features::private_discussions::routes::update_private_discussion_participation::update_private_discussion_participation;
 use crate::features::private_discussions::routes::update_private_message::update_private_message;
-use crate::features::private_discussions::routes::websocket::broadcast_ws;
-use crate::features::private_discussions::structs::models::private_message::ChannelsData;
 use crate::features::profile::routes::delete_account::delete_account;
 use crate::features::profile::routes::delete_device::delete_device;
 use crate::features::profile::routes::get_devices::get_devices;
@@ -78,6 +82,7 @@ use crate::features::profile::routes::get_users_data::get_users_data;
 use crate::features::profile::routes::is_otp_enabled::is_otp_enabled;
 use crate::features::profile::routes::post_profile_information::post_profile_information;
 
+use crate::features::profile::routes::set_fcm_token::set_fcm_token;
 use crate::features::profile::routes::set_password::set_password;
 use crate::features::profile::routes::update_password::update_password;
 use crate::features::profile::structs::models::UserPublicDataCache;
@@ -104,20 +109,22 @@ use actix_web::http::header;
 use actix_web::middleware::Logger;
 use actix_web::{web, App, Error, HttpServer};
 
+use redis::Client;
 use sqlx::postgres::PgPoolOptions;
 use sqlx::{PgPool, Pool, Postgres};
 
 pub fn run(listener: TcpListener, configuration: Settings) -> Result<Server, std::io::Error> {
     let connection_pool = get_connection_pool(&configuration.database);
     let secret = configuration.application.secret;
-
     let habit_statistics_cache = HabitStatisticsCache::default();
     let challenge_statistics_cache = ChallengeStatisticsCache::default();
     let token_cache = TokenCache::default();
     let user_public_data_cache = UserPublicDataCache::default();
-    let channels_data = ChannelsData::default();
+    let redis_client = redis::Client::open("redis://redis:6379").unwrap();
 
     let server = HttpServer::new(move || {
+        let translator = Arc::new(Translator::new());
+
         create_app(
             connection_pool.clone(),
             secret.clone(),
@@ -125,7 +132,8 @@ pub fn run(listener: TcpListener, configuration: Settings) -> Result<Server, std
             challenge_statistics_cache.clone(),
             token_cache.clone(),
             user_public_data_cache.clone(),
-            channels_data.clone(),
+            redis_client.clone(),
+            translator,
         )
     })
     .listen(listener)?
@@ -141,7 +149,8 @@ pub fn create_app(
     challenge_statistics_cache: ChallengeStatisticsCache,
     token_cache: TokenCache,
     user_public_data_cache: UserPublicDataCache,
-    channels_data: ChannelsData,
+    redis_client: Client,
+    translator: Arc<Translator>,
 ) -> App<
     impl ServiceFactory<
         ServiceRequest,
@@ -350,17 +359,15 @@ pub fn create_app(
                     ),
                 )
                 .service(
-                    web::scope("/private-messages")
-                        .service(broadcast_ws)
-                        .service(
-                            web::scope("")
-                                .wrap(TokenValidator {})
-                                .service(create_private_message)
-                                .service(delete_private_message)
-                                .service(update_private_message)
-                                .service(mark_message_as_seen)
-                                .service(get_private_discussion_messages),
-                        ),
+                    web::scope("/private-messages").service(
+                        web::scope("")
+                            .wrap(TokenValidator {})
+                            .service(create_private_message)
+                            .service(delete_private_message)
+                            .service(update_private_message)
+                            .service(mark_message_as_seen)
+                            .service(get_private_discussion_messages),
+                    ),
                 )
                 .service(
                     web::scope("/private-discussion-participations").service(
@@ -376,6 +383,17 @@ pub fn create_app(
                             .service(create_private_discussion)
                             .service(get_private_discussions),
                     ),
+                )
+                .service(
+                    web::scope("/notifications").service(
+                        web::scope("")
+                            .wrap(TokenValidator {})
+                            .service(get_notifications)
+                            .service(delete_notification)
+                            .service(delete_all_notifications)
+                            .service(mark_notification_as_seen)
+                            .service(set_fcm_token),
+                    ),
                 ),
         )
         .wrap(cors)
@@ -386,7 +404,8 @@ pub fn create_app(
         .app_data(web::Data::new(challenge_statistics_cache))
         .app_data(web::Data::new(token_cache))
         .app_data(web::Data::new(user_public_data_cache))
-        .app_data(web::Data::new(channels_data))
+        .app_data(web::Data::new(redis_client))
+        .app_data(web::Data::new(translator))
 }
 
 pub struct Application {

@@ -1,4 +1,5 @@
-use serde::Deserialize;
+use chrono::NaiveTime;
+use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
 #[derive(Deserialize)]
@@ -11,10 +12,13 @@ pub struct UpdateHabitParticipationParams {
     pub habit_participation_id: Uuid,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 pub struct HabitParticipationUpdateRequest {
     pub color: String,
     pub to_gain: bool,
+    pub notifications_reminder_enabled: bool,
+    pub reminder_time: Option<NaiveTime>,
+    pub timezone: Option<String>,
 }
 
 #[derive(Deserialize)]

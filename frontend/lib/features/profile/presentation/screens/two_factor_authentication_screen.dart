@@ -19,7 +19,12 @@ class TwoFactorAuthenticationScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.twoFA),
+        title: Text(
+          AppLocalizations.of(context)!.twoFA,
+          style: context.typographies.headingSmall,
+          overflow: TextOverflow.ellipsis,
+          maxLines: 1,
+        ),
       ),
       body: BlocBuilder<ProfileBloc, ProfileState>(
         builder: (context, state) {
@@ -132,7 +137,7 @@ class TwoFactorAuthenticationScreen extends StatelessWidget {
 
                             final message =
                                 InfoMessage('qrCodeSecretKeyCopied');
-                            GlobalSnackBar.show(context, message);
+                            GlobalSnackBar.show(context: context, message: message);
                           },
                         )
                       ]),

@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:reallystick/core/messages/message.dart';
@@ -14,25 +16,45 @@ import 'package:reallystick/features/public_messages/presentation/blocs/thread/t
 import 'package:reallystick/features/users/presentation/blocs/user/user_bloc.dart';
 import 'package:reallystick/features/users/presentation/blocs/user/user_events.dart';
 
-class ThreadBloc extends Bloc<ThreadEvent, ThreadState> {
-  final AuthBloc authBloc;
-  final UserBloc userBloc;
+class ThreadBloc extends Bloc<ThreadEvent, ThreadState>
+    with WidgetsBindingObserver {
+  final AuthBloc authBloc = GetIt.instance<AuthBloc>();
+  final UserBloc userBloc = GetIt.instance<UserBloc>();
 
   final GetRepliesUsecase getRepliesUsecase =
       GetIt.instance<GetRepliesUsecase>();
   final GetMessageParentsUsecase getMessageParentsUsecase =
       GetIt.instance<GetMessageParentsUsecase>();
 
-  ThreadBloc({
-    required this.authBloc,
-    required this.userBloc,
-  }) : super(ThreadLoaded(replies: [], threadId: null)) {
+  ThreadBloc() : super(ThreadLoaded(replies: [], threadId: null)) {
     on<InitializeThreadEvent>(initialize);
     on<AddNewThreadMessage>(addNewMessage);
     on<UpdateThreadMessage>(updateMessage);
     on<DeleteThreadMessage>(deleteMessage);
     on<AddLikeOnThreadMessage>(addLike);
     on<DeleteLikeOnThreadMessage>(deleteLike);
+
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (kIsWeb) return;
+
+    if (state == AppLifecycleState.resumed) {
+      if (this.state is ThreadLoaded) {
+        final currentState = this.state as ThreadLoaded;
+        if (currentState.threadId != null) {
+          add(InitializeThreadEvent(threadId: currentState.threadId!));
+        }
+      }
+    }
+  }
+
+  @override
+  Future<void> close() {
+    WidgetsBinding.instance.removeObserver(this);
+    return super.close();
   }
 
   Future<void> initialize(

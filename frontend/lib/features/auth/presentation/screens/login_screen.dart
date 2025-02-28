@@ -56,7 +56,10 @@ class LoginScreenState extends State<LoginScreen>
                                     _isAuthenticated = true;
                                   });
                                 } else {
-                                  GlobalSnackBar.show(context, state.message);
+                                  GlobalSnackBar.show(
+                                    context: context,
+                                    message: state.message,
+                                  );
                                 }
                               },
                               builder: (context, state) {
@@ -85,7 +88,7 @@ class LoginScreenState extends State<LoginScreen>
           SuccessfulLoginAnimation(
             isVisible: _isAuthenticated,
             onAnimationComplete: () {
-              GlobalSnackBar.show(context, authMessage);
+              GlobalSnackBar.show(context: context, message: authMessage);
               context.goNamed('home');
             },
           ),

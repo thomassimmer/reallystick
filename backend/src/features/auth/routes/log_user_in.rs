@@ -76,6 +76,7 @@ pub async fn log_user_in(
         secret.as_bytes(),
         user.id,
         user.is_admin,
+        user.username,
         parsed_device_info,
         &mut transaction,
     )

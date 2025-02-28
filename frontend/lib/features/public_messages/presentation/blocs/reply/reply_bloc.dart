@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:reallystick/core/messages/message.dart';
@@ -15,9 +17,10 @@ import 'package:reallystick/features/public_messages/presentation/blocs/reply/re
 import 'package:reallystick/features/users/presentation/blocs/user/user_bloc.dart';
 import 'package:reallystick/features/users/presentation/blocs/user/user_events.dart';
 
-class ReplyBloc extends Bloc<ReplyEvent, ReplyState> {
-  final AuthBloc authBloc;
-  final UserBloc userBloc;
+class ReplyBloc extends Bloc<ReplyEvent, ReplyState>
+    with WidgetsBindingObserver {
+  final AuthBloc authBloc = GetIt.instance<AuthBloc>();
+  final UserBloc userBloc = GetIt.instance<UserBloc>();
 
   final GetRepliesUsecase getRepliesUsecase =
       GetIt.instance<GetRepliesUsecase>();
@@ -26,10 +29,8 @@ class ReplyBloc extends Bloc<ReplyEvent, ReplyState> {
   final GetMessageUsecase getMessageUsecase =
       GetIt.instance<GetMessageUsecase>();
 
-  ReplyBloc({
-    required this.authBloc,
-    required this.userBloc,
-  }) : super(ReplyLoaded(
+  ReplyBloc()
+      : super(ReplyLoaded(
           reply: null,
           parents: [],
           replies: [],
@@ -40,6 +41,28 @@ class ReplyBloc extends Bloc<ReplyEvent, ReplyState> {
     on<DeleteReplyMessage>(deleteMessage);
     on<AddLikeOnReplyMessage>(addLike);
     on<DeleteLikeOnReplyMessage>(deleteLike);
+
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (kIsWeb) return;
+
+    if (state == AppLifecycleState.resumed) {
+      if (this.state is ReplyLoaded) {
+        final currentState = this.state as ReplyLoaded;
+        if (currentState.reply != null) {
+          add(InitializeReplyEvent(messageId: currentState.reply!.id));
+        }
+      }
+    }
+  }
+
+  @override
+  Future<void> close() {
+    WidgetsBinding.instance.removeObserver(this);
+    return super.close();
   }
 
   Future<void> initialize(

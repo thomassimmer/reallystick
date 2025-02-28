@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
+import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_events.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
@@ -11,7 +12,12 @@ class DeviceScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.devices),
+        title: Text(
+          AppLocalizations.of(context)!.devices,
+          style: context.typographies.headingSmall,
+          overflow: TextOverflow.ellipsis,
+          maxLines: 1,
+        ),
       ),
       body: BlocBuilder<ProfileBloc, ProfileState>(
         builder: (context, state) {
@@ -74,29 +80,32 @@ class DeviceScreen extends StatelessWidget {
 
   Widget _buildDeviceView(BuildContext context, ProfileAuthenticated state) {
     if (state.devices.isNotEmpty) {
-      return Column(
-          children: state.devices.map((device) {
-        return Padding(
-          padding: EdgeInsets.symmetric(vertical: 26, horizontal: 4),
-          child: ListTile(
-            title: Text(
-              AppLocalizations.of(context)!.deviceInfo(
-                device.parsedDeviceInfo.isMobile?.toString() ?? "null",
-                device.parsedDeviceInfo.os ?? "null",
-                device.parsedDeviceInfo.browser ?? "null",
-                device.parsedDeviceInfo.model ?? "null",
+      return ListView.builder(
+        itemCount: state.devices.length,
+        itemBuilder: (context, index) {
+          final device = state.devices[index];
+          return Padding(
+            padding: EdgeInsets.symmetric(vertical: 16, horizontal: 4),
+            child: ListTile(
+              title: Text(
+                AppLocalizations.of(context)!.deviceInfo(
+                  device.parsedDeviceInfo.isMobile?.toString() ?? "null",
+                  device.parsedDeviceInfo.os ?? "null",
+                  device.parsedDeviceInfo.browser ?? "null",
+                  device.parsedDeviceInfo.model ?? "null",
+                ),
+              ),
+              subtitle: Text(
+                "${AppLocalizations.of(context)!.lastActivityDate} ${device.lastActivityDate != null ? DateFormat.yMMMMEEEEd(state.profile.locale).add_Hm().format(device.lastActivityDate!) : AppLocalizations.of(context)!.unknown}",
+              ),
+              trailing: IconButton(
+                icon: Icon(Icons.delete_outline, color: Colors.red),
+                onPressed: () => _confirmDelete(context, device.tokenId),
               ),
             ),
-            subtitle: Text(
-              "${AppLocalizations.of(context)!.lastActivityDate} ${device.lastActivityDate != null ? DateFormat.yMMMMEEEEd(state.profile.locale).add_Hm().format(device.lastActivityDate!) : AppLocalizations.of(context)!.unknown}",
-            ),
-            trailing: IconButton(
-              icon: Icon(Icons.delete, color: Colors.red),
-              onPressed: () => _confirmDelete(context, device.tokenId),
-            ),
-          ),
-        );
-      }).toList());
+          );
+        },
+      );
     } else {
       return Center(child: Text(AppLocalizations.of(context)!.noDevices));
     }

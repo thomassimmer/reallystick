@@ -12,6 +12,13 @@ class Profile {
   String? privateKeyEncrypted;
   String? saltUsedToDerivateKeyFromPassword;
 
+  bool notificationsEnabled;
+  bool notificationsForPrivateMessagesEnabled;
+  bool notificationsForPublicMessageLikedEnabled;
+  bool notificationsForPublicMessageRepliesEnabled;
+  bool notificationsUserJoinedYourChallengeEnabled;
+  bool notificationsUserDuplicatedYourChallengeEnabled;
+
   bool hasSeenQuestions;
   String? ageCategory;
   String? gender;
@@ -39,6 +46,12 @@ class Profile {
     required this.publicKey,
     required this.privateKeyEncrypted,
     required this.saltUsedToDerivateKeyFromPassword,
+    required this.notificationsEnabled,
+    required this.notificationsForPrivateMessagesEnabled,
+    required this.notificationsForPublicMessageLikedEnabled,
+    required this.notificationsForPublicMessageRepliesEnabled,
+    required this.notificationsUserJoinedYourChallengeEnabled,
+    required this.notificationsUserDuplicatedYourChallengeEnabled,
     this.ageCategory,
     this.gender,
     this.continent,

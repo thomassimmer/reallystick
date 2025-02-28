@@ -1,0 +1,10 @@
+user-joined-your-challenge-title = Un utilisateur vient de rejoindre votre challenge.
+user-joined-your-challenge-body = Génial ! { $username } vient juste de rejoindre votre challenge.
+user-duplicated-your-challenge-title = Un utilisateur vient de créer une copie de votre challenge.
+user-duplicated-your-challenge-body = Vous inspirez les autres ! { $username } vient juste de créer une copie de votre challenge.
+message-created-title = Nouveau message
+message-created-body = { $username } vient juste de vous envoyer un message.
+user-liked-your-message-title = Quelqu'un a aimé votre message
+user-liked-your-message-body = { $username } vient juste d'aimer votre message.
+user-replied-to-your-message-title = Quelqu'un a répondu à votre message
+user-replied-to-your-message-body = { $username } vient juste de répondre à votre message.

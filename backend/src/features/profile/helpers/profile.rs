@@ -22,9 +22,15 @@ pub async fn create_user(
             is_admin,
             public_key,
             private_key_encrypted,
-            salt_used_to_derive_key_from_password
+            salt_used_to_derive_key_from_password,
+            notifications_enabled, 
+            notifications_for_private_messages_enabled, 
+            notifications_for_public_message_liked_enabled, 
+            notifications_for_public_message_replies_enabled, 
+            notifications_user_joined_your_challenge_enabled, 
+            notifications_user_duplicated_your_challenge_enabled
         )
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)
         "#,
         user.id,
         user.username,
@@ -39,6 +45,12 @@ pub async fn create_user(
         user.public_key,
         user.private_key_encrypted,
         user.salt_used_to_derive_key_from_password,
+        user.notifications_enabled, 
+        user.notifications_for_private_messages_enabled, 
+        user.notifications_for_public_message_liked_enabled, 
+        user.notifications_for_public_message_replies_enabled, 
+        user.notifications_user_joined_your_challenge_enabled, 
+        user.notifications_user_duplicated_your_challenge_enabled, 
     )
     .execute(conn)
     .await
@@ -66,8 +78,14 @@ pub async fn update_user(
             relationship_status = $12,
             level_of_education = $13,
             has_children = $14,
-            has_seen_questions = $15
-        WHERE id = $16
+            has_seen_questions = $15,
+            notifications_enabled = $16,
+            notifications_for_private_messages_enabled = $17,
+            notifications_for_public_message_liked_enabled = $18,
+            notifications_for_public_message_replies_enabled = $19,
+            notifications_user_joined_your_challenge_enabled = $20,
+            notifications_user_duplicated_your_challenge_enabled = $21
+        WHERE id = $22
         "#,
         user.username,
         user.locale,
@@ -84,6 +102,12 @@ pub async fn update_user(
         user.level_of_education,
         user.has_children,
         user.has_seen_questions,
+        user.notifications_enabled, 
+        user.notifications_for_private_messages_enabled, 
+        user.notifications_for_public_message_liked_enabled, 
+        user.notifications_for_public_message_replies_enabled, 
+        user.notifications_user_joined_your_challenge_enabled, 
+        user.notifications_user_duplicated_your_challenge_enabled, 
         user.id,
     )
     .execute(conn)

@@ -99,6 +99,8 @@ pub enum AppError {
     UserAlreadyHasKeys,
     UserNotFound,
     UserTokenDeletion,
+    UserTokenNotFound,
+    UserTokenUpdate,
     UserUpdate,
 }
 
@@ -483,6 +485,14 @@ impl AppError {
             AppError::UserTokenDeletion => GenericResponse {
                 code: "USER_TOKEN_DELETION".to_string(),
                 message: "Failed to delete user tokens into the database".to_string(),
+            },
+            AppError::UserTokenNotFound => GenericResponse {
+                code: "USER_TOKEN_NOT_FOUND".to_string(),
+                message: "This user token does not exist".to_string(),
+            },
+            AppError::UserTokenUpdate => GenericResponse {
+                code: "USER_TOKEN_UPDATE".to_string(),
+                message: "Failed to update user token".to_string(),
             },
             AppError::UserUpdate => GenericResponse {
                 code: "USER_UPDATE".to_string(),

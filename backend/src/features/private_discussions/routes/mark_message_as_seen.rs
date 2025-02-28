@@ -1,5 +1,5 @@
 use crate::{
-    core::constants::errors::AppError,
+    core::{constants::errors::AppError, structs::redis_messages::NotificationEvent},
     features::{
         auth::structs::models::Claims,
         private_discussions::{
@@ -8,7 +8,6 @@ use crate::{
                 private_message::{self, get_private_message_by_id},
             },
             structs::{
-                models::private_message::ChannelsData,
                 requests::private_message::UpdatePrivateMessageParams,
                 responses::private_message::PrivateMessageResponse,
             },
@@ -20,6 +19,7 @@ use actix_web::{
     web::{Data, Path, ReqData},
     HttpResponse, Responder,
 };
+use redis::{AsyncCommands, Client};
 use serde_json::json;
 use sqlx::PgPool;
 
@@ -27,7 +27,7 @@ use sqlx::PgPool;
 pub async fn mark_message_as_seen(
     pool: Data<PgPool>,
     params: Path<UpdatePrivateMessageParams>,
-    channels_data: Data<ChannelsData>,
+    redis_client: Data<Client>,
     request_claims: ReqData<Claims>,
 ) -> impl Responder {
     let mut transaction = match pool.begin().await {
@@ -56,8 +56,7 @@ pub async fn mark_message_as_seen(
         }
     };
 
-    //  Fetch participations
-    // Fetch conversation
+    // Fetch the participation of the expected message's recipient
     let recipient_participation = match get_private_discussion_participations_by_discussion(
         &mut transaction,
         private_message.discussion_id,
@@ -93,21 +92,45 @@ pub async fn mark_message_as_seen(
             .json(AppError::PrivateMessageUpdate.to_response());
     }
 
-    if let Some(p) = recipient_participation {
-        if let Some(mut session) = channels_data.get_value_for_key(p.user_id).await {
-            let _ = session
-                .text(json!(private_message.to_private_message_data()).to_string())
+    match redis_client.get_multiplexed_async_connection().await {
+        Ok(mut con) => {
+            let result: Result<(), redis::RedisError> = con
+                .publish(
+                    "private_message_marked_as_seen",
+                    json!(NotificationEvent {
+                        data: json!(private_message.to_private_message_data()).to_string(),
+                        recipient: request_claims.user_id,
+                        title: None,
+                        body: None,
+                        url: None,
+                    })
+                    .to_string(),
+                )
                 .await;
-        }
-    }
+            if let Err(e) = result {
+                eprintln!("Error: {}", e);
+            }
 
-    if let Some(mut session) = channels_data
-        .get_value_for_key(request_claims.user_id)
-        .await
-    {
-        let _ = session
-            .text(json!(private_message.to_private_message_data()).to_string())
-            .await;
+            let result: Result<(), redis::RedisError> = con
+                .publish(
+                    "private_message_marked_as_seen",
+                    json!(NotificationEvent {
+                        data: json!(private_message.to_private_message_data()).to_string(),
+                        recipient: private_message.creator,
+                        title: None,
+                        body: None,
+                        url: None,
+                    })
+                    .to_string(),
+                )
+                .await;
+            if let Err(e) = result {
+                eprintln!("Error: {}", e);
+            }
+        }
+        Err(e) => {
+            eprintln!("Error: {}", e);
+        }
     }
 
     if let Err(e) = transaction.commit().await {

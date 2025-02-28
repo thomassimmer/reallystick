@@ -1,4 +1,4 @@
-use chrono::{DateTime, Utc};
+use chrono::{DateTime, NaiveTime, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::prelude::FromRow;
 use uuid::Uuid;
@@ -12,6 +12,9 @@ pub struct HabitParticipation {
     pub color: String,
     pub to_gain: bool,
     pub created_at: DateTime<Utc>,
+    pub notifications_reminder_enabled: bool,
+    pub reminder_time: Option<NaiveTime>,
+    pub timezone: Option<String>,
 }
 
 

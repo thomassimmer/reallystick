@@ -7,6 +7,7 @@ use actix_web::{
 };
 use reallystick::features::profile::structs::{
     models::UserData,
+    requests::UserUpdateRequest,
     responses::{DeleteAccountResponse, IsOtpEnabledResponse, UserResponse},
 };
 
@@ -49,11 +50,28 @@ pub async fn user_can_update_profile() {
         .uri("/api/users/me")
         .insert_header((header::AUTHORIZATION, format!("Bearer {}", access_token)))
         .insert_header(ContentType::json())
-        .set_json(&serde_json::json!({
-            "locale": "fr",
-            "theme": "light",
-            "has_seen_questions": false
-        }))
+        .set_json(UserUpdateRequest {
+            locale: "fr".to_string(),
+            theme: "light".to_string(),
+            age_category: Some("20-25".to_string()),
+            gender: Some("male".to_string()),
+            continent: Some("europe".to_string()),
+            country: Some("france".to_string()),
+            region: None::<String>,
+            activity: None::<String>,
+            financial_situation: Some("poor".to_string()),
+            lives_in_urban_area: Some(true),
+            relationship_status: Some("single".to_string()),
+            level_of_education: Some("1".to_string()),
+            has_children: Some(false),
+            has_seen_questions: false,
+            notifications_enabled: false,
+            notifications_for_private_messages_enabled: false,
+            notifications_for_public_message_liked_enabled: false,
+            notifications_for_public_message_replies_enabled: false,
+            notifications_user_joined_your_challenge_enabled: false,
+            notifications_user_duplicated_your_challenge_enabled: false,
+        })
         .to_request();
     let response = test::call_service(&app, req).await;
 

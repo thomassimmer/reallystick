@@ -81,11 +81,19 @@ pub async fn update_challenge_participation(
         ChallengeParticipation,
         r#"
         UPDATE challenge_participations
-        SET color = $1, start_date = $2
-        WHERE id = $3
+        SET
+            color = $1,
+            start_date = $2,
+            notifications_reminder_enabled = $3,
+            reminder_time = $4,
+            timezone = $5
+        WHERE id = $6
         "#,
         challenge_participation.color,
         challenge_participation.start_date,
+        challenge_participation.notifications_reminder_enabled,
+        challenge_participation.reminder_time,
+        challenge_participation.timezone,
         challenge_participation.id
     )
     .execute(conn)
@@ -105,9 +113,12 @@ pub async fn create_challenge_participation(
             challenge_id,
             color,
             start_date,
-            created_at
+            created_at,
+            notifications_reminder_enabled,
+            reminder_time,
+            timezone
         )
-        VALUES ( $1, $2, $3, $4, $5, $6 )
+        VALUES ( $1, $2, $3, $4, $5, $6, $7, $8, $9 )
         "#,
         challenge_participation.id,
         challenge_participation.user_id,
@@ -115,6 +126,9 @@ pub async fn create_challenge_participation(
         challenge_participation.color,
         challenge_participation.start_date,
         challenge_participation.created_at,
+        challenge_participation.notifications_reminder_enabled,
+        challenge_participation.reminder_time,
+        challenge_participation.timezone,
     )
     .execute(conn)
     .await

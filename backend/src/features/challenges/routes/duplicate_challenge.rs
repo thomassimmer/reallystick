@@ -1,5 +1,10 @@
+use std::sync::Arc;
+
 use crate::{
-    core::{constants::errors::AppError, helpers::mock_now::now},
+    core::{
+        constants::errors::AppError,
+        helpers::{mock_now::now, translation::Translator},
+    },
     features::{
         auth::structs::models::Claims,
         challenges::{
@@ -15,6 +20,8 @@ use crate::{
                 responses::challenge::ChallengeResponse,
             },
         },
+        notifications::helpers::notification::generate_notification,
+        profile::structs::models::UserPublicDataCache,
     },
 };
 use actix_web::{
@@ -22,6 +29,8 @@ use actix_web::{
     web::{Data, Path, ReqData},
     HttpResponse, Responder,
 };
+use fluent::FluentArgs;
+use redis::Client;
 use sqlx::PgPool;
 use uuid::Uuid;
 
@@ -29,6 +38,9 @@ use uuid::Uuid;
 pub async fn duplicate_challenge(
     pool: Data<PgPool>,
     params: Path<ChallengeDuplicateParams>,
+    redis_client: Data<Client>,
+    translator: Data<Arc<Translator>>,
+    user_public_data_cache: Data<UserPublicDataCache>,
     request_claims: ReqData<Claims>,
 ) -> impl Responder {
     let mut transaction = match pool.begin().await {
@@ -111,6 +123,42 @@ pub async fn duplicate_challenge(
         eprintln!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::ChallengeDailyTrackingCreation.to_response());
+    }
+
+    // If user is not the challenge's creator
+    if request_claims.user_id != challenge_to_duplicate.creator {
+        if let (Some(duplicator), Some(creator)) = (
+            user_public_data_cache
+                .get_value_for_key_or_insert_it(&request_claims.user_id, &mut transaction)
+                .await,
+            user_public_data_cache
+                .get_value_for_key_or_insert_it(&challenge_to_duplicate.creator, &mut transaction)
+                .await,
+        ) {
+            let mut args = FluentArgs::new();
+            args.set("username", duplicator.username);
+
+            let url = Some(format!("/challenges/{}", challenge_to_create.id));
+
+            generate_notification(
+                &mut transaction,
+                challenge_to_duplicate.creator,
+                &translator.translate(
+                    &creator.locale,
+                    "user-duplicated-your-challenge-title",
+                    None,
+                ),
+                &translator.translate(
+                    &creator.locale,
+                    "user-duplicated-your-challenge-body",
+                    Some(&args),
+                ),
+                redis_client,
+                "challenge_duplicated",
+                url,
+            )
+            .await;
+        }
     }
 
     if let Err(e) = transaction.commit().await {

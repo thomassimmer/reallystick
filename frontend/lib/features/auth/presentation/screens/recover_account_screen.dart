@@ -53,7 +53,9 @@ class RecoverAccountScreenState extends State<RecoverAccountScreen>
                                       _isAuthenticated = true;
                                     });
                                   } else {
-                                    GlobalSnackBar.show(context, state.message);
+                                    GlobalSnackBar.show(
+                                        context: context,
+                                        message: state.message);
                                   }
                                 },
                                 builder: (context, state) {
@@ -98,7 +100,7 @@ class RecoverAccountScreenState extends State<RecoverAccountScreen>
           SuccessfulLoginAnimation(
             isVisible: _isAuthenticated,
             onAnimationComplete: () {
-              GlobalSnackBar.show(context, authMessage);
+              GlobalSnackBar.show(context: context, message: authMessage);
               context.goNamed('password');
             },
           ),

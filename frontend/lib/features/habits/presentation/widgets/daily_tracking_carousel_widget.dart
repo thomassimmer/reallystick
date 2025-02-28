@@ -209,7 +209,7 @@ class DailyTrackingCarouselWidgetState
                             height: dayBoxWidth,
                             decoration: BoxDecoration(
                               color: widget.habitColor
-                                  .withOpacity(normalizedOpacity),
+                                  .withValues(alpha: normalizedOpacity),
                               borderRadius: BorderRadius.circular(4),
                             ),
                           ),
@@ -220,7 +220,7 @@ class DailyTrackingCarouselWidgetState
                           height: dayBoxWidth,
                           decoration: BoxDecoration(
                             color: widget.habitColor
-                                .withOpacity(normalizedOpacity),
+                                .withValues(alpha: normalizedOpacity),
                             borderRadius: BorderRadius.circular(4),
                           ),
                         ),

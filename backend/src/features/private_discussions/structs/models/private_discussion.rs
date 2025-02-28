@@ -18,6 +18,7 @@ pub struct PrivateDiscussionData {
     pub has_blocked: Option<bool>,
     pub last_message: Option<PrivateMessageData>,
     pub recipient_id: Option<Uuid>,
+    pub unseen_messages: i64,
 }
 
 impl PrivateDiscussion {
@@ -27,6 +28,7 @@ impl PrivateDiscussion {
         has_blocked: Option<bool>,
         last_message: Option<PrivateMessageData>,
         recipient_id: Option<Uuid>,
+        unseen_messages: i64,
     ) -> PrivateDiscussionData {
         PrivateDiscussionData {
             id: self.id,
@@ -35,6 +37,7 @@ impl PrivateDiscussion {
             has_blocked,
             last_message,
             recipient_id,
+            unseen_messages,
         }
     }
 }

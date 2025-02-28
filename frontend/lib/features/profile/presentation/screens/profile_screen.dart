@@ -22,7 +22,11 @@ class ProfileScreen extends StatelessWidget {
 
         return Scaffold(
           appBar: AppBar(
-            title: Text(AppLocalizations.of(context)!.profileSettings),
+            title: Text(
+              AppLocalizations.of(context)!.profileSettings,
+              style: context.typographies.heading,
+            ),
+            centerTitle: false,
           ),
           body: ListView(
             children: [
@@ -38,6 +42,13 @@ class ProfileScreen extends StatelessWidget {
                 trailing: Icon(Icons.chevron_right),
                 onTap: () {
                   context.goNamed('theme');
+                },
+              ),
+              ListTile(
+                title: Text(AppLocalizations.of(context)!.notifications),
+                trailing: Icon(Icons.chevron_right),
+                onTap: () {
+                  context.goNamed('profile-notifications');
                 },
               ),
               ListTile(

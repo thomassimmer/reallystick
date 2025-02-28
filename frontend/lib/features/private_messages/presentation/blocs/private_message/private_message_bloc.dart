@@ -3,6 +3,8 @@ import 'dart:convert';
 
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:cryptography/cryptography.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:reallystick/core/messages/message.dart';
@@ -18,7 +20,6 @@ import 'package:reallystick/features/private_messages/domain/usecases/delete_pri
 import 'package:reallystick/features/private_messages/domain/usecases/encrypt_message_using_aes_usecase.dart';
 import 'package:reallystick/features/private_messages/domain/usecases/encrypt_symmetric_key_with_rsa_public_key_usecase.dart';
 import 'package:reallystick/features/private_messages/domain/usecases/get_private_messages_of_discussion_usecase.dart';
-import 'package:reallystick/features/private_messages/domain/usecases/mark_private_message_as_seen_usecase.dart';
 import 'package:reallystick/features/private_messages/domain/usecases/update_private_message_usecase.dart';
 import 'package:reallystick/features/private_messages/presentation/blocs/private_message/private_message_events.dart';
 import 'package:reallystick/features/private_messages/presentation/blocs/private_message/private_message_states.dart';
@@ -27,11 +28,12 @@ import 'package:reallystick/features/profile/presentation/blocs/profile/profile_
 import 'package:reallystick/features/users/presentation/blocs/user/user_bloc.dart';
 import 'package:reallystick/features/users/presentation/blocs/user/user_events.dart';
 
-class PrivateMessageBloc
-    extends Bloc<PrivateMessageEvent, PrivateMessageState> {
-  final AuthBloc authBloc;
-  final UserBloc userBloc;
-  final ProfileBloc profileBloc;
+class PrivateMessageBloc extends Bloc<PrivateMessageEvent, PrivateMessageState>
+    with WidgetsBindingObserver {
+  final AuthBloc authBloc = GetIt.instance<AuthBloc>();
+  final UserBloc userBloc = GetIt.instance<UserBloc>();
+  final ProfileBloc profileBloc = GetIt.instance<ProfileBloc>();
+
   late StreamSubscription profileBlocSubscription;
 
   final GetPrivateMessagesOfDiscussionUsecase
@@ -51,21 +53,17 @@ class PrivateMessageBloc
       GetIt.instance<DecryptMessageUsingAesUsecase>();
   final DeletePrivateMessageUsecase deletePrivateMessageUsecase =
       GetIt.instance<DeletePrivateMessageUsecase>();
-  final MarkPrivateMessageAsSeenUsecase markPrivateMessageAsSeenUsecase =
-      GetIt.instance<MarkPrivateMessageAsSeenUsecase>();
+
   final UpdatePrivateMessageUsecase updatePrivateMessageUsecase =
       GetIt.instance<UpdatePrivateMessageUsecase>();
 
   String? userId;
 
-  PrivateMessageBloc({
-    required this.authBloc,
-    required this.userBloc,
-    required this.profileBloc,
-  }) : super(PrivateMessagesLoaded(
+  PrivateMessageBloc()
+      : super(PrivateMessageState(
           discussionId: "",
           messagesByDiscussion: {},
-          lastMessageReceived: null,
+          lastPrivateMessageReceivedEvent: null,
         )) {
     profileBlocSubscription = profileBloc.stream.listen((profileState) {
       if (profileState is ProfileAuthenticated) {
@@ -74,20 +72,39 @@ class PrivateMessageBloc
     });
 
     on<InitializePrivateMessagesEvent>(initialize);
-    on<PrivateMessageReceivedEvent>(onMessageReceived,
-        transformer: sequential());
+    on<PrivateMessageReceivedEvent>(
+      onMessageReceived,
+      transformer: sequential(),
+    );
     on<AddNewMessageEvent>(onAddNewMessage);
     on<UpdateMessageEvent>(onUpdateMessage);
     on<DeleteMessageEvent>(onDeleteMessage);
-    on<MarkPrivateMessageAsSeenEvent>(onMarkMessageAsSeen);
+
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (kIsWeb) return;
+
+    if (state == AppLifecycleState.resumed) {
+      add(
+        InitializePrivateMessagesEvent(discussionId: this.state.discussionId),
+      );
+    }
+  }
+
+  @override
+  Future<void> close() {
+    WidgetsBinding.instance.removeObserver(this);
+    return super.close();
   }
 
   Future<void> initialize(
     InitializePrivateMessagesEvent event,
     Emitter<PrivateMessageState> emit,
   ) async {
-    final currentState = state as PrivateMessagesLoaded;
-    emit(PrivateMessagesLoading());
+    final currentState = state;
 
     final result = await getPrivateMessagesOfDiscussionUsecase.call(
       discussionId: event.discussionId,
@@ -103,10 +120,10 @@ class PrivateMessageBloc
           );
         } else {
           emit(
-            PrivateMessagesLoaded(
+            PrivateMessageState(
               discussionId: currentState.discussionId,
               messagesByDiscussion: currentState.messagesByDiscussion,
-              lastMessageReceived: null,
+              lastPrivateMessageReceivedEvent: null,
               message: ErrorMessage(error.messageKey),
             ),
           );
@@ -155,10 +172,10 @@ class PrivateMessageBloc
     );
 
     emit(
-      PrivateMessagesLoaded(
+      PrivateMessageState(
         discussionId: event.discussionId,
         messagesByDiscussion: currentState.messagesByDiscussion,
-        lastMessageReceived: null,
+        lastPrivateMessageReceivedEvent: null,
       ),
     );
   }
@@ -167,14 +184,7 @@ class PrivateMessageBloc
     PrivateMessageReceivedEvent event,
     Emitter<PrivateMessageState> emit,
   ) async {
-    if (state is! PrivateMessagesLoaded) {
-      // Wait for a second and retry the event
-      await Future.delayed(Duration(seconds: 1));
-      add(event);
-      return;
-    }
-
-    final currentState = state as PrivateMessagesLoaded;
+    final currentState = state;
 
     final isCreator = event.message.creator == userId;
     final privateKey = await PrivateMessageKeyStorage().getPrivateKey();
@@ -197,21 +207,30 @@ class PrivateMessageBloc
 
     event.message.content = clearContent;
 
+    Map<String, Map<String, PrivateMessage>> updatedDiscussions = {};
+
     if (currentState.messagesByDiscussion
         .containsKey(event.message.discussionId)) {
-      currentState.messagesByDiscussion[event.message.discussionId]![
-          event.message.id] = event.message;
+      final updatedDiscussion = Map<String, PrivateMessage>.from(
+          currentState.messagesByDiscussion[event.message.discussionId]!)
+        ..[event.message.id] = event.message;
+
+      updatedDiscussions = Map<String, Map<String, PrivateMessage>>.from(
+          currentState.messagesByDiscussion)
+        ..[event.message.discussionId] = updatedDiscussion;
     } else {
-      currentState.messagesByDiscussion[event.message.discussionId] = {
-        event.message.id: event.message
-      };
+      updatedDiscussions = Map<String, Map<String, PrivateMessage>>.from(
+          currentState.messagesByDiscussion)
+        ..[event.message.discussionId] = {
+          event.message.id: event.message,
+        };
     }
 
     emit(
-      PrivateMessagesLoaded(
+      PrivateMessageState(
         discussionId: currentState.discussionId,
-        messagesByDiscussion: currentState.messagesByDiscussion,
-        lastMessageReceived: event.message,
+        messagesByDiscussion: updatedDiscussions,
+        lastPrivateMessageReceivedEvent: event,
       ),
     );
   }
@@ -220,7 +239,7 @@ class PrivateMessageBloc
     AddNewMessageEvent event,
     Emitter<PrivateMessageState> emit,
   ) async {
-    final currentState = state as PrivateMessagesLoaded;
+    final currentState = state;
 
     final aesEncryptResult = await encryptMessageUsingAesUsecase.call(
       content: event.content,
@@ -254,55 +273,37 @@ class PrivateMessageBloc
           );
         } else {
           emit(
-            PrivateMessagesLoaded(
+            PrivateMessageState(
               discussionId: currentState.discussionId,
               messagesByDiscussion: currentState.messagesByDiscussion,
               message: ErrorMessage(error.messageKey),
-              lastMessageReceived: null,
+              lastPrivateMessageReceivedEvent: null,
             ),
           );
         }
         return [];
       },
-      (message) {
-        message.content = event.content;
-
-        if (currentState.messagesByDiscussion
-            .containsKey(message.discussionId)) {
-          currentState.messagesByDiscussion[message.discussionId]![message.id] =
-              message;
-        } else {
-          currentState.messagesByDiscussion[message.discussionId] = {
-            message.id: message
-          };
-        }
-
-        emit(
-          PrivateMessagesLoaded(
-            discussionId: currentState.discussionId,
-            messagesByDiscussion: currentState.messagesByDiscussion,
-            lastMessageReceived: message,
-          ),
-        );
-      },
+      (message) {},
     );
+
+    // Don't do anything here, we will receive a message on the websocket and
+    // update the state at this moment.
   }
 
   Future<void> onUpdateMessage(
     UpdateMessageEvent event,
     Emitter<PrivateMessageState> emit,
   ) async {
-    final currentState = state as PrivateMessagesLoaded;
-    emit(PrivateMessagesLoading());
+    final currentState = state;
 
     final privateKey = await PrivateMessageKeyStorage().getPrivateKey();
 
     if (privateKey == null) {
       emit(
-        PrivateMessagesLoaded(
+        PrivateMessageState(
           discussionId: currentState.discussionId,
           messagesByDiscussion: currentState.messagesByDiscussion,
-          lastMessageReceived: null,
+          lastPrivateMessageReceivedEvent: null,
           message: ErrorMessage("faildToEncryptMessage"),
         ),
       );
@@ -333,46 +334,28 @@ class PrivateMessageBloc
           );
         } else {
           emit(
-            PrivateMessagesLoaded(
+            PrivateMessageState(
               discussionId: currentState.discussionId,
               messagesByDiscussion: currentState.messagesByDiscussion,
-              lastMessageReceived: null,
+              lastPrivateMessageReceivedEvent: null,
               message: ErrorMessage(error.messageKey),
             ),
           );
         }
         return [];
       },
-      (message) {
-        message.content = event.content;
-
-        if (currentState.messagesByDiscussion
-            .containsKey(message.discussionId)) {
-          currentState.messagesByDiscussion[message.discussionId]![message.id] =
-              message;
-        } else {
-          currentState.messagesByDiscussion[message.discussionId] = {
-            message.id: message
-          };
-        }
-
-        emit(
-          PrivateMessagesLoaded(
-            discussionId: currentState.discussionId,
-            messagesByDiscussion: currentState.messagesByDiscussion,
-            lastMessageReceived: message,
-          ),
-        );
-      },
+      (_) {},
     );
+
+    // Don't do anything here, we will receive a message on the websocket and
+    // update the state at this moment.
   }
 
   Future<void> onDeleteMessage(
     DeleteMessageEvent event,
     Emitter<PrivateMessageState> emit,
   ) async {
-    final currentState = state as PrivateMessagesLoaded;
-    emit(PrivateMessagesLoading());
+    final currentState = state;
 
     final result = await deletePrivateMessageUsecase.call(
       messageId: event.messageId,
@@ -388,96 +371,19 @@ class PrivateMessageBloc
           );
         } else {
           emit(
-            PrivateMessagesLoaded(
+            PrivateMessageState(
               discussionId: currentState.discussionId,
               messagesByDiscussion: currentState.messagesByDiscussion,
-              lastMessageReceived: null,
+              lastPrivateMessageReceivedEvent: null,
               message: ErrorMessage(error.messageKey),
             ),
           );
         }
       },
-      (_) {
-        if (currentState.messagesByDiscussion.containsKey(event.discussionId)) {
-          if (currentState.messagesByDiscussion[event.discussionId]!
-              .containsKey(event.messageId)) {
-            currentState
-                .messagesByDiscussion[event.discussionId]![event.messageId]!
-                .deleted = true;
-          }
-        }
-      },
+      (_) {},
     );
 
-    PrivateMessage? lastMessage =
-        currentState.messagesByDiscussion[event.discussionId] != null
-            ? currentState
-                .messagesByDiscussion[event.discussionId]![event.messageId]
-            : null;
-
-    emit(
-      PrivateMessagesLoaded(
-        discussionId: currentState.discussionId,
-        messagesByDiscussion: currentState.messagesByDiscussion,
-        lastMessageReceived: lastMessage,
-      ),
-    );
-  }
-
-  Future<void> onMarkMessageAsSeen(
-    MarkPrivateMessageAsSeenEvent event,
-    Emitter<PrivateMessageState> emit,
-  ) async {
-    final currentState = state as PrivateMessagesLoaded;
-    emit(PrivateMessagesLoading());
-
-    final result = await markPrivateMessageAsSeenUsecase.call(
-      privateMessageId: event.messageId,
-    );
-
-    result.fold(
-      (error) {
-        if (error is ShouldLogoutError) {
-          authBloc.add(
-            AuthLogoutEvent(
-              message: ErrorMessage(error.messageKey),
-            ),
-          );
-        } else {
-          emit(
-            PrivateMessagesLoaded(
-              discussionId: currentState.discussionId,
-              messagesByDiscussion: currentState.messagesByDiscussion,
-              message: ErrorMessage(error.messageKey),
-              lastMessageReceived: null,
-            ),
-          );
-        }
-      },
-      (_) {
-        if (currentState.messagesByDiscussion.containsKey(event.discussionId)) {
-          if (currentState.messagesByDiscussion[event.discussionId]!
-              .containsKey(event.messageId)) {
-            currentState
-                .messagesByDiscussion[event.discussionId]![event.messageId]!
-                .seen = true;
-          }
-        }
-      },
-    );
-
-    PrivateMessage? lastMessage =
-        currentState.messagesByDiscussion[event.discussionId] != null
-            ? currentState
-                .messagesByDiscussion[event.discussionId]![event.messageId]
-            : null;
-
-    emit(
-      PrivateMessagesLoaded(
-        discussionId: currentState.discussionId,
-        messagesByDiscussion: currentState.messagesByDiscussion,
-        lastMessageReceived: lastMessage,
-      ),
-    );
+    // Don't do anything here, we will receive a message on the websocket and
+    // update the state at this moment.
   }
 }

@@ -66,6 +66,12 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
         relationship_status: None,
         level_of_education: None,
         has_children: None,
+        notifications_enabled: false,
+        notifications_for_private_messages_enabled: false,
+        notifications_for_public_message_liked_enabled: false,
+        notifications_for_public_message_replies_enabled: false,
+        notifications_user_duplicated_your_challenge_enabled: false,
+        notifications_user_joined_your_challenge_enabled: false,
     };
 
     let units = HashMap::from([
@@ -586,6 +592,9 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
             color: "blue".to_string(),
             to_gain: false,
             created_at: Utc::now(),
+            notifications_reminder_enabled: false,
+            reminder_time: None,
+            timezone: None,
         },
         HabitParticipation {
             id: Uuid::new_v4(),
@@ -594,6 +603,9 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
             color: "yellow".to_string(),
             to_gain: true,
             created_at: Utc::now(),
+            notifications_reminder_enabled: false,
+            reminder_time: None,
+            timezone: None,
         },
         HabitParticipation {
             id: Uuid::new_v4(),
@@ -602,6 +614,9 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
             color: "green".to_string(),
             to_gain: true,
             created_at: Utc::now(),
+            notifications_reminder_enabled: false,
+            reminder_time: None,
+            timezone: None,
         },
         HabitParticipation {
             id: Uuid::new_v4(),
@@ -610,6 +625,9 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
             color: "green".to_string(),
             to_gain: true,
             created_at: Utc::now(),
+            notifications_reminder_enabled: false,
+            reminder_time: None,
+            timezone: None,
         },
     ];
 
@@ -758,16 +776,28 @@ pub async fn reset_database(pool: &PgPool) -> Result<(), sqlx::Error> {
     sqlx::query("DELETE FROM recovery_codes;")
         .execute(pool)
         .await?;
-    sqlx::query("DELETE FROM public_messages;").execute(pool).await?;
-    sqlx::query("DELETE FROM private_messages;").execute(pool).await?;
-    sqlx::query("DELETE FROM private_discussion_participations;").execute(pool).await?;
-    sqlx::query("DELETE FROM private_discussions;").execute(pool).await?;
+    sqlx::query("DELETE FROM public_messages;")
+        .execute(pool)
+        .await?;
+    sqlx::query("DELETE FROM private_messages;")
+        .execute(pool)
+        .await?;
+    sqlx::query("DELETE FROM private_discussion_participations;")
+        .execute(pool)
+        .await?;
+    sqlx::query("DELETE FROM private_discussions;")
+        .execute(pool)
+        .await?;
     sqlx::query("DELETE FROM habits;").execute(pool).await?;
     sqlx::query("DELETE FROM habit_categories;")
         .execute(pool)
         .await?;
-    sqlx::query("DELETE FROM challenge_daily_trackings;").execute(pool).await?;
-    sqlx::query("DELETE FROM challenge_participations;").execute(pool).await?;
+    sqlx::query("DELETE FROM challenge_daily_trackings;")
+        .execute(pool)
+        .await?;
+    sqlx::query("DELETE FROM challenge_participations;")
+        .execute(pool)
+        .await?;
     sqlx::query("DELETE FROM challenges;").execute(pool).await?;
     sqlx::query("DELETE FROM units;").execute(pool).await?;
     sqlx::query("DELETE FROM users;").execute(pool).await?;

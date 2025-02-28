@@ -31,8 +31,8 @@ import 'package:reallystick/features/profile/presentation/blocs/profile/profile_
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
 
 class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
-  final AuthBloc authBloc;
-  final ProfileBloc profileBloc;
+  final AuthBloc authBloc = GetIt.instance<AuthBloc>();
+  final ProfileBloc profileBloc = GetIt.instance<ProfileBloc>();
   late StreamSubscription profileBlocSubscription;
 
   final GetChallengeParticipationsUsecase getChallengeParticipationsUsecase =
@@ -74,10 +74,7 @@ class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
   final GetChallengesDailyTrackingsUsecase getChallengesDailyTrackingsUsecase =
       GetIt.instance<GetChallengesDailyTrackingsUsecase>();
 
-  ChallengeBloc({
-    required this.authBloc,
-    required this.profileBloc,
-  }) : super(ChallengesLoading()) {
+  ChallengeBloc() : super(ChallengesLoading()) {
     profileBlocSubscription = profileBloc.stream.listen((profileBloc) {
       if (profileBloc is ProfileAuthenticated) {
         add(ChallengeInitializeEvent());

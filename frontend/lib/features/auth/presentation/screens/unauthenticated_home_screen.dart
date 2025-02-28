@@ -14,7 +14,7 @@ class UnauthenticatedHomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
-          GlobalSnackBar.show(context, state.message);
+          GlobalSnackBar.show(context: context, message: state.message);
 
           if (state is AuthAuthenticatedState) {
             context.goNamed('home');
@@ -70,7 +70,7 @@ class UnauthenticatedHomeScreen extends StatelessWidget {
             Text(
               'Stick',
               style: context.typographies.headingLarge
-                  .copyWith(color: context.colors.textOnPrimary),
+                  .copyWith(color: context.colors.text),
             ),
           ],
         ),

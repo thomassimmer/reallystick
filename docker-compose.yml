@@ -1,20 +1,6 @@
 services:
-  backend:
-    container_name: reallystick_backend
-    image: reallystick_backend
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    env_file:
-      - ./backend/.env.docker
-    ports:
-      - "8000:8000"
-    volumes:
-      - ./backend:/app
-    networks:
-      - app-network
-
   db:
+    container_name: db
     image: reallystick_db
     build:
       context: ./db
@@ -31,8 +17,78 @@ services:
     networks:
       - app-network
 
+  backend:
+    container_name: backend
+    image: reallystick_backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    env_file:
+      - ./backend/.env.docker
+    command:
+      [
+        "cargo",
+        "watch",
+        "-q",
+        "-c",
+        "-w",
+        "src/",
+        "-x",
+        "run --bin reallystick",
+      ]
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    networks:
+      - app-network
+    depends_on:
+      - db
+      - redis
+
+  notifications:
+    container_name: notifications
+    image: reallystick_backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.notifications
+    env_file:
+      - ./backend/.env.notifications.docker
+    command:
+      [
+        "cargo",
+        "watch",
+        "-q",
+        "-c",
+        "-w",
+        "src/",
+        "-x",
+        "run --bin notifications",
+      ]
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./backend:/app
+    networks:
+      - app-network
+    depends_on:
+      - db
+      - redis
+
+  redis:
+    image: redis:7
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - app-network
+
 volumes:
   postgres_data:
+  redis_data:
 
 networks:
   app-network:

@@ -40,7 +40,7 @@ class LocationSelectionState extends State<LocationSelectionWidget> {
 
     result.fold(
       (error) {
-        GlobalSnackBar.show(context, ErrorMessage(error.messageKey));
+        GlobalSnackBar.show(context: context, message: ErrorMessage(error.messageKey));
       },
       (newCountries) {
         List<String> newRegions =

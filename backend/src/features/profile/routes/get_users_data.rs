@@ -45,6 +45,12 @@ pub async fn get_users_data(
 
     let users = get_users_by_id(&mut transaction, user_ids_to_query).await;
 
+    if let Err(e) = transaction.commit().await {
+        eprintln!("Error: {}", e);
+        return HttpResponse::InternalServerError()
+            .json(AppError::DatabaseTransaction.to_response());
+    }
+
     match users {
         Ok(users) => {
             cache

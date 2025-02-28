@@ -1,4 +1,4 @@
-use chrono::{DateTime, Utc};
+use chrono::{DateTime, NaiveTime, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::prelude::FromRow;
 use uuid::Uuid;
@@ -11,6 +11,9 @@ pub struct ChallengeParticipation {
     pub color: String,
     pub start_date: DateTime<Utc>,
     pub created_at: DateTime<Utc>,
+    pub notifications_reminder_enabled: bool,
+    pub reminder_time: Option<NaiveTime>, // UTC
+    pub timezone: Option<String>,
 }
 
 #[derive(Serialize, Debug, Deserialize, Clone)]

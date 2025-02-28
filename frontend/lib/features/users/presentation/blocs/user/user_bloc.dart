@@ -12,12 +12,12 @@ import 'package:reallystick/features/users/presentation/blocs/user/user_events.d
 import 'package:reallystick/features/users/presentation/blocs/user/user_states.dart';
 
 class UserBloc extends Bloc<UserEvent, UserState> {
-  final AuthBloc authBloc;
+  final AuthBloc authBloc = GetIt.instance<AuthBloc>();
 
   final GetUsersPublicDataUsecase getUsersPublicDataUsecase =
       GetIt.instance<GetUsersPublicDataUsecase>();
 
-  UserBloc({required this.authBloc}) : super(UsersLoaded(users: {})) {
+  UserBloc() : super(UsersLoaded(users: {})) {
     on<GetUserPublicDataEvent>(_getUserPublicData, transformer: sequential());
   }
 

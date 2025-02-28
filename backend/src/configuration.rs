@@ -83,6 +83,7 @@ pub enum Environment {
     Local,
     Production,
     Docker,
+    NotificationsDocker,
 }
 
 impl Environment {
@@ -91,6 +92,7 @@ impl Environment {
             Environment::Local => "local",
             Environment::Production => "production",
             Environment::Docker => "docker",
+            Environment::NotificationsDocker => "notifications-docker",
         }
     }
 }
@@ -103,6 +105,7 @@ impl TryFrom<String> for Environment {
             "local" => Ok(Self::Local),
             "production" => Ok(Self::Production),
             "docker" => Ok(Self::Docker),
+            "notifications-docker" => Ok(Self::NotificationsDocker),
             other => Err(format!(
                 "{} is not a supported environment. Use either `local` or `production`.",
                 other

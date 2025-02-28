@@ -64,6 +64,9 @@ pub async fn update_challenge_participation(
 
     challenge_participation.color = body.color.clone();
     challenge_participation.start_date = body.start_date;
+    challenge_participation.notifications_reminder_enabled = body.notifications_reminder_enabled;
+    challenge_participation.reminder_time = body.reminder_time;
+    challenge_participation.timezone = body.timezone.clone();
 
     let update_challenge_participation_result =
         challenge_participation::update_challenge_participation(

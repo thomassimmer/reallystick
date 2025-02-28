@@ -12,6 +12,7 @@ import 'package:reallystick/core/presentation/widgets/custom_dropdown_button_for
 import 'package:reallystick/core/presentation/widgets/custom_elevated_button_form_field.dart';
 import 'package:reallystick/core/presentation/widgets/custom_text_field.dart';
 import 'package:reallystick/core/presentation/widgets/multi_unit_select_dropdown.dart';
+import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/habits/domain/entities/habit_category.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_events.dart';
@@ -186,7 +187,12 @@ class CreateHabitScreenState extends State<CreateHabitScreen> {
 
             return Scaffold(
               appBar: AppBar(
-                title: Text(AppLocalizations.of(context)!.addNewHabit),
+                title: Text(
+                  AppLocalizations.of(context)!.createANewHabit,
+                  style: context.typographies.headingSmall,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                ),
               ),
               body: SingleChildScrollView(
                 child: Padding(
@@ -321,7 +327,7 @@ class CreateHabitScreenState extends State<CreateHabitScreen> {
           } else {
             return Scaffold(
               appBar: AppBar(
-                title: Text(AppLocalizations.of(context)!.addNewHabit),
+                title: Text(AppLocalizations.of(context)!.createANewHabit),
               ),
               body: Center(
                 child: CircularProgressIndicator(),

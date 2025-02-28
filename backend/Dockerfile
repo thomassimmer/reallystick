@@ -16,6 +16,3 @@ COPY --chown=rustuser:rustuser . .
 
 # Expose the port the app runs on
 EXPOSE 8000
-
-# Run the Actix web server with cargo watch for automatic rebuilding and running
-CMD ["cargo", "watch", "-q", "-c", "-w", "src/", "-x", "run"]

@@ -13,7 +13,7 @@ use crate::{
                 responses::RefreshTokenResponse,
             },
         },
-        profile::helpers::device_info::get_user_agent,
+        profile::helpers::{device_info::get_user_agent, profile::get_user_by_id},
     },
 };
 use actix_web::{post, web, HttpRequest, HttpResponse, Responder};
@@ -92,12 +92,36 @@ pub async fn refresh_token(
 
     cached_tokens.remove_key(claims.jti).await;
 
+    let user = match get_user_by_id(&mut transaction, claims.user_id).await {
+        Ok(r) => match r {
+            Some(u) => u,
+            None => {
+                return HttpResponse::Unauthorized().json(AppError::UserNotFound.to_response());
+            }
+        },
+        Err(e) => {
+            eprintln!("Error: {}", e);
+            return HttpResponse::InternalServerError()
+                .json(AppError::DatabaseTransaction.to_response());
+        }
+    };
+
     let new_jti = Uuid::new_v4();
 
-    let (new_access_token, _) =
-        generate_access_token(secret.as_bytes(), new_jti, claims.user_id, claims.is_admin);
-    let (new_refresh_token, refresh_token_expires_at) =
-        generate_refresh_token(secret.as_bytes(), new_jti, claims.user_id, claims.is_admin);
+    let (new_access_token, _) = generate_access_token(
+        secret.as_bytes(),
+        new_jti,
+        claims.user_id,
+        claims.is_admin,
+        user.username.clone(),
+    );
+    let (new_refresh_token, refresh_token_expires_at) = generate_refresh_token(
+        secret.as_bytes(),
+        new_jti,
+        claims.user_id,
+        claims.is_admin,
+        user.username,
+    );
     let parsed_device_info = get_user_agent(req).await;
 
     if let Err(e) = save_tokens(

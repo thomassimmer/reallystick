@@ -17,7 +17,7 @@ pub struct RecoveryCode {
 }
 
 #[allow(non_snake_case)]
-#[derive(Debug, Deserialize, Serialize, Clone, FromRow)]
+#[derive(Debug, Deserialize, Serialize, Clone, FromRow, Default)]
 pub struct UserToken {
     pub id: Uuid,
     pub user_id: Uuid,
@@ -28,6 +28,7 @@ pub struct UserToken {
     pub browser: Option<String>,
     pub app_version: Option<String>,
     pub model: Option<String>,
+    pub fcm_token: Option<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -35,6 +36,7 @@ pub struct Claims {
     pub exp: i64,
     pub jti: Uuid,
     pub user_id: Uuid,
+    pub username: String,
     pub is_admin: bool,
 }
 

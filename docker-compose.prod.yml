@@ -1,6 +1,6 @@
 services:
   db:
-    container_name: reallystick_db
+    container_name: db
     image: reallystick_db
     build:
       context: ./db
@@ -18,13 +18,14 @@ services:
       - app-network
 
   backend:
-    container_name: reallystick_backend
+    container_name: backend
     image: reallystick_backend
     build:
       context: ./backend
       dockerfile: Dockerfile.prod
     env_file:
       - ./backend/.env.docker
+    command: ["./target/release/reallystick"]
     ports:
       - "8000:8000"
     volumes:
@@ -33,9 +34,41 @@ services:
       - app-network
     depends_on:
       - db
+      - redis
+
+  notifications:
+    container_name: notifications
+    image: reallystick_backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.notifications.prod
+    env_file:
+      - ./backend/.env.notifications.docker
+    command: ["./target/release/notifications"]
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    networks:
+      - app-network
+    depends_on:
+      - db
+      - redis
+
+  redis:
+    image: redis:7
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - app-network
 
 volumes:
   postgres_data:
+  redis_data:
 
 networks:
   app-network:

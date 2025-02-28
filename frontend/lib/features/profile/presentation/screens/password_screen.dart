@@ -4,9 +4,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:reallystick/core/messages/errors/domain_error.dart';
 import 'package:reallystick/core/messages/message.dart';
 import 'package:reallystick/core/messages/message_mapper.dart';
-import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/core/presentation/widgets/custom_container.dart';
 import 'package:reallystick/core/presentation/widgets/custom_text_field.dart';
+import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_events.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
@@ -24,7 +24,12 @@ class PasswordScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.changePassword),
+        title: Text(
+          AppLocalizations.of(context)!.changePassword,
+          style: context.typographies.headingSmall,
+          overflow: TextOverflow.ellipsis,
+          maxLines: 1,
+        ),
       ),
       body: BlocBuilder<ProfileBloc, ProfileState>(
         builder: (context, state) {

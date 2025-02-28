@@ -293,6 +293,11 @@ pub async fn fetch_habit_statistics(pool: &PgPool) -> Result<Vec<HabitStatistics
     .fetch_all(pool)
     .await?;
 
+    if let Err(e) = transaction.commit().await {
+        eprintln!("Error: {}", e);
+        return Err(e);
+    }
+
     // Process results
     let mut statistics = Vec::new();
 

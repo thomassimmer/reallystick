@@ -426,7 +426,12 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
 
             return Scaffold(
               appBar: AppBar(
-                title: Text(AppLocalizations.of(context)!.reviewHabit),
+                title: Text(
+                  AppLocalizations.of(context)!.reviewHabit,
+                  style: context.typographies.headingSmall,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                ),
               ),
               body: SingleChildScrollView(
                 child: Padding(
@@ -732,7 +737,12 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
           } else {
             return Scaffold(
               appBar: AppBar(
-                title: Text(AppLocalizations.of(context)!.reviewHabit),
+                title: Text(
+                  AppLocalizations.of(context)!.reviewHabit,
+                  style: context.typographies.headingSmall,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                ),
               ),
               body: Center(
                 child: CircularProgressIndicator(),

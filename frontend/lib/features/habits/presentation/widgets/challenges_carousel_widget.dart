@@ -68,7 +68,7 @@ class ChallengesCarouselWidget extends StatelessWidget {
                 child: Icon(
                   Icons.info_outline,
                   size: 25,
-                  color: habitColor.withOpacity(0.8),
+                  color: habitColor.withValues(alpha: 0.8),
                 ),
               ),
             ],
@@ -98,7 +98,7 @@ class ChallengesCarouselWidget extends StatelessWidget {
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: habitColor.withOpacity(0.3),
+                          color: habitColor.withValues(alpha: 0.3),
                           blurRadius: 10,
                           offset: Offset(0, 4),
                         ),
@@ -196,7 +196,7 @@ class ChallengesCarouselWidget extends StatelessWidget {
               decoration: BoxDecoration(
                 boxShadow: [
                   BoxShadow(
-                    color: habitColor.withOpacity(0.2),
+                    color: habitColor.withValues(alpha: 0.2),
                     blurRadius: 10,
                   ),
                 ],

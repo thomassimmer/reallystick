@@ -81,11 +81,19 @@ pub async fn update_habit_participation(
         HabitParticipation,
         r#"
         UPDATE habit_participations
-        SET color = $1, to_gain = $2
-        WHERE id = $3
+        SET 
+            color = $1,
+            to_gain = $2,
+            notifications_reminder_enabled = $3,
+            reminder_time = $4,
+            timezone = $5
+        WHERE id = $6
         "#,
         habit_participation.color,
         habit_participation.to_gain,
+        habit_participation.notifications_reminder_enabled,
+        habit_participation.reminder_time,
+        habit_participation.timezone,
         habit_participation.id
     )
     .execute(conn)
@@ -105,9 +113,12 @@ pub async fn create_habit_participation(
             habit_id,
             color,
             to_gain,
-            created_at
+            created_at,
+            notifications_reminder_enabled,
+            reminder_time,
+            timezone
         )
-        VALUES ( $1, $2, $3, $4, $5, $6 )
+        VALUES ( $1, $2, $3, $4, $5, $6, $7, $8, $9 )
         "#,
         habit_participation.id,
         habit_participation.user_id,
@@ -115,6 +126,9 @@ pub async fn create_habit_participation(
         habit_participation.color,
         habit_participation.to_gain,
         habit_participation.created_at,
+        habit_participation.notifications_reminder_enabled,
+        habit_participation.reminder_time,
+        habit_participation.timezone,
     )
     .execute(conn)
     .await

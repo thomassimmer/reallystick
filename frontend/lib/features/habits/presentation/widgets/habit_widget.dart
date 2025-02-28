@@ -58,8 +58,12 @@ class HabitWidget extends StatelessWidget {
                 pathParameters: {'habitId': habit.id},
               );
             },
+            borderRadius: BorderRadius.circular(10.0),
             child: Card(
               elevation: 2,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
               margin: const EdgeInsets.all(8),
               child: Padding(
                 padding: const EdgeInsets.all(16.0),

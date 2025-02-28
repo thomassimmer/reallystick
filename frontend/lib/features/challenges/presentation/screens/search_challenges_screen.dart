@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
+import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/challenges/domain/entities/challenge.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_bloc.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_states.dart';
@@ -54,7 +55,12 @@ class SearchChallengesScreenState extends State<SearchChallengesScreen> {
 
       return Scaffold(
         appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.addNewChallenge),
+          title: Text(
+            AppLocalizations.of(context)!.addNewChallenge,
+            style: context.typographies.headingSmall,
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+          ),
         ),
         body: Column(
           children: [

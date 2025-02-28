@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct UserUpdateRequest {
     pub locale: String,
     pub theme: String,
@@ -18,6 +18,13 @@ pub struct UserUpdateRequest {
     pub relationship_status: Option<String>,
     pub level_of_education: Option<String>,
     pub has_children: Option<bool>,
+    
+    pub notifications_enabled: bool,
+    pub notifications_for_private_messages_enabled: bool,
+    pub notifications_for_public_message_liked_enabled: bool,
+    pub notifications_for_public_message_replies_enabled: bool,
+    pub notifications_user_joined_your_challenge_enabled: bool,
+    pub notifications_user_duplicated_your_challenge_enabled: bool,
 }
 
 #[derive(Debug, Deserialize)]
@@ -48,4 +55,9 @@ pub struct DeleteDeviceParams {
 #[derive(Deserialize, Serialize)]
 pub struct GetUserPublicDataRequest {
     pub user_ids: Vec<Uuid>,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct SetFcmTokenRequest {
+    pub fcm_token: Option<String>,
 }

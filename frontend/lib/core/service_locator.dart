@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:http_interceptor/http_interceptor.dart';
 import 'package:reallystick/core/network/auth_interceptor.dart';
 import 'package:reallystick/core/network/expired_token_retry_policy.dart';
+import 'package:reallystick/core/router.dart';
 import 'package:reallystick/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:reallystick/features/auth/data/services/auth_service.dart';
 import 'package:reallystick/features/auth/data/sources/remote_data_sources.dart';
@@ -25,6 +26,9 @@ import 'package:reallystick/features/auth/domain/usecases/save_recovery_code_use
 import 'package:reallystick/features/auth/domain/usecases/signup_usecase.dart';
 import 'package:reallystick/features/auth/domain/usecases/validate_one_time_password_use_case.dart';
 import 'package:reallystick/features/auth/domain/usecases/verify_one_time_password_use_case.dart';
+import 'package:reallystick/features/auth/presentation/blocs/auth/auth_bloc.dart';
+import 'package:reallystick/features/auth/presentation/blocs/auth/auth_events.dart';
+import 'package:reallystick/features/auth/presentation/blocs/auth_login/auth_login_bloc.dart';
 import 'package:reallystick/features/challenges/data/repositories/challenge_daily_tracking_repository_impl.dart';
 import 'package:reallystick/features/challenges/data/repositories/challenge_participation_repository_impl.dart';
 import 'package:reallystick/features/challenges/data/repositories/challenge_repository_impl.dart';
@@ -50,6 +54,11 @@ import 'package:reallystick/features/challenges/domain/usecases/get_challenges_u
 import 'package:reallystick/features/challenges/domain/usecases/update_challenge_daily_tracking_usecase.dart';
 import 'package:reallystick/features/challenges/domain/usecases/update_challenge_participation_usecase.dart';
 import 'package:reallystick/features/challenges/domain/usecases/update_challenge_usecase.dart';
+import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_bloc.dart';
+import 'package:reallystick/features/challenges/presentation/blocs/challenge_creation/challenge_creation_bloc.dart';
+import 'package:reallystick/features/challenges/presentation/blocs/challenge_daily_tracking_creation/challenge_daily_tracking_creation_bloc.dart';
+import 'package:reallystick/features/challenges/presentation/blocs/challenge_daily_tracking_update/challenge_daily_tracking_update_bloc.dart';
+import 'package:reallystick/features/challenges/presentation/blocs/challenge_update/challenge_update_bloc.dart';
 import 'package:reallystick/features/habits/data/repositories/habit_category_repository_impl.dart';
 import 'package:reallystick/features/habits/data/repositories/habit_daily_tracking_repository_impl.dart';
 import 'package:reallystick/features/habits/data/repositories/habit_participation_repository_impl.dart';
@@ -80,6 +89,21 @@ import 'package:reallystick/features/habits/domain/usecases/update_habit_daily_t
 import 'package:reallystick/features/habits/domain/usecases/update_habit_participation_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/update_habit_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/update_unit_usecase.dart';
+import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.dart';
+import 'package:reallystick/features/habits/presentation/blocs/habit_creation/habit_creation_bloc.dart';
+import 'package:reallystick/features/habits/presentation/blocs/habit_daily_tracking_creation/habit_daily_tracking_creation_bloc.dart';
+import 'package:reallystick/features/habits/presentation/blocs/habit_daily_tracking_update/habit_daily_tracking_update_bloc.dart';
+import 'package:reallystick/features/habits/presentation/blocs/habit_merge/habit_merge_bloc.dart';
+import 'package:reallystick/features/habits/presentation/blocs/habit_review/habit_review_bloc.dart';
+import 'package:reallystick/features/notifications/data/repositories/notification_repository_impl.dart';
+import 'package:reallystick/features/notifications/data/sources/remote_data_sources.dart';
+import 'package:reallystick/features/notifications/domain/repositories/notification_repository.dart';
+import 'package:reallystick/features/notifications/domain/usecases/delete_all_notifications_usecase.dart';
+import 'package:reallystick/features/notifications/domain/usecases/delete_notification_usecase.dart';
+import 'package:reallystick/features/notifications/domain/usecases/get_notifications_usecase.dart';
+import 'package:reallystick/features/notifications/domain/usecases/mark_notification_as_seen_usecase.dart';
+import 'package:reallystick/features/notifications/domain/usecases/save_fcm_token_usecase.dart';
+import 'package:reallystick/features/notifications/presentation/blocs/notifications/notifications_bloc.dart';
 import 'package:reallystick/features/private_messages/data/repositories/private_discussion_participation_repository_impl.dart';
 import 'package:reallystick/features/private_messages/data/repositories/private_discussion_repository_impl.dart';
 import 'package:reallystick/features/private_messages/data/repositories/private_message_repository_impl.dart';
@@ -99,6 +123,11 @@ import 'package:reallystick/features/private_messages/domain/usecases/get_privat
 import 'package:reallystick/features/private_messages/domain/usecases/mark_private_message_as_seen_usecase.dart';
 import 'package:reallystick/features/private_messages/domain/usecases/update_private_discussion_participation_usecase.dart';
 import 'package:reallystick/features/private_messages/domain/usecases/update_private_message_usecase.dart';
+import 'package:reallystick/features/private_messages/presentation/blocs/private_discussion/private_discussion_bloc.dart';
+import 'package:reallystick/features/private_messages/presentation/blocs/private_message/private_message_bloc.dart';
+import 'package:reallystick/features/private_messages/presentation/blocs/private_message_creation/private_message_creation_bloc.dart';
+import 'package:reallystick/features/private_messages/presentation/blocs/private_message_update/private_message_update_bloc.dart';
+import 'package:reallystick/features/notifications/presentation/helpers/websocket_service.dart';
 import 'package:reallystick/features/profile/data/repositories/profile_repository_impl.dart';
 import 'package:reallystick/features/profile/data/sources/local_data_sources.dart';
 import 'package:reallystick/features/profile/data/sources/remote_data_sources.dart';
@@ -111,6 +140,9 @@ import 'package:reallystick/features/profile/domain/usecases/load_countries.dart
 import 'package:reallystick/features/profile/domain/usecases/post_profile_usecase.dart';
 import 'package:reallystick/features/profile/domain/usecases/set_password_use_case.dart';
 import 'package:reallystick/features/profile/domain/usecases/update_password_use_case.dart';
+import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
+import 'package:reallystick/features/profile/presentation/blocs/set_password/set_password_bloc.dart';
+import 'package:reallystick/features/profile/presentation/blocs/update_password/update_password_bloc.dart';
 import 'package:reallystick/features/public_messages/data/repositories/public_message_like_repository_impl.dart';
 import 'package:reallystick/features/public_messages/data/repositories/public_message_report_repository_impl.dart';
 import 'package:reallystick/features/public_messages/data/repositories/public_message_repository_impl.dart';
@@ -133,14 +165,21 @@ import 'package:reallystick/features/public_messages/domain/usecases/get_replies
 import 'package:reallystick/features/public_messages/domain/usecases/get_user_message_reports_usecase.dart';
 import 'package:reallystick/features/public_messages/domain/usecases/get_written_messages_usecase.dart';
 import 'package:reallystick/features/public_messages/domain/usecases/update_public_message_usecase.dart';
+import 'package:reallystick/features/public_messages/presentation/blocs/public_message/public_message_bloc.dart';
+import 'package:reallystick/features/public_messages/presentation/blocs/public_message_creation/public_message_creation_bloc.dart';
+import 'package:reallystick/features/public_messages/presentation/blocs/public_message_report_creation/public_message_report_creation_bloc.dart';
+import 'package:reallystick/features/public_messages/presentation/blocs/public_message_update/public_message_update_bloc.dart';
+import 'package:reallystick/features/public_messages/presentation/blocs/reply/reply_bloc.dart';
+import 'package:reallystick/features/public_messages/presentation/blocs/thread/thread_bloc.dart';
 import 'package:reallystick/features/users/data/repositories/user_public_data_repository_impl.dart';
 import 'package:reallystick/features/users/data/sources/remote_data_sources.dart';
 import 'package:reallystick/features/users/domain/repositories/user_public_data_repository.dart';
 import 'package:reallystick/features/users/domain/usecases/get_users_public_data_usecase.dart';
+import 'package:reallystick/features/users/presentation/blocs/user/user_bloc.dart';
 
 final sl = GetIt.instance;
 
-void setupServiceLocator() {
+Future<void> setupServiceLocator() async {
   final baseUrl = '${dotenv.env['API_BASE_URL']}/api';
   final tokenStorage = TokenStorage();
   final authService = AuthService(baseUrl: baseUrl, tokenStorage: tokenStorage);
@@ -152,6 +191,9 @@ void setupServiceLocator() {
     requestTimeout: Duration(seconds: 15),
     retryPolicy: ExpiredTokenRetryPolicy(authService: authService),
   );
+
+  // Router
+  sl.registerSingleton<AppRouter>(AppRouter());
 
   // Remote Data Sources
   sl.registerSingleton<AuthRemoteDataSource>(
@@ -169,6 +211,8 @@ void setupServiceLocator() {
       UserPublicDataRemoteDataSource(apiClient: apiClient, baseUrl: baseUrl));
   sl.registerSingleton<PrivateMessageRemoteDataSource>(
       PrivateMessageRemoteDataSource(apiClient: apiClient, baseUrl: baseUrl));
+  sl.registerSingleton<NotificationRemoteDataSource>(
+      NotificationRemoteDataSource(apiClient: apiClient, baseUrl: baseUrl));
 
   // Repositories
   sl.registerSingleton<AuthRepository>(
@@ -219,6 +263,8 @@ void setupServiceLocator() {
           remoteDataSource: sl<PrivateMessageRemoteDataSource>()));
   sl.registerSingleton<PrivateMessageRepository>(PrivateMessageRepositoryImpl(
       remoteDataSource: sl<PrivateMessageRemoteDataSource>()));
+  sl.registerSingleton<NotificationRepository>(NotificationRepositoryImpl(
+      remoteDataSource: sl<NotificationRemoteDataSource>()));
 
   // Use cases
   sl.registerSingleton<LoginUseCase>(LoginUseCase(sl<AuthRepository>()));
@@ -404,4 +450,58 @@ void setupServiceLocator() {
   sl.registerSingleton<UpdatePrivateDiscussionParticipationUsecase>(
       UpdatePrivateDiscussionParticipationUsecase(
           sl<PrivateDiscussionParticipationRepository>()));
+  sl.registerSingleton<GetNotificationsUsecase>(
+      GetNotificationsUsecase(sl<NotificationRepository>()));
+  sl.registerSingleton<MarkNotificationAsSeenUsecase>(
+      MarkNotificationAsSeenUsecase(sl<NotificationRepository>()));
+  sl.registerSingleton<DeleteNotificationUsecase>(
+      DeleteNotificationUsecase(sl<NotificationRepository>()));
+  sl.registerSingleton<DeleteAllNotificationsUsecase>(
+      DeleteAllNotificationsUsecase(sl<NotificationRepository>()));
+  sl.registerSingleton<SaveFcmTokenUsecase>(
+      SaveFcmTokenUsecase(sl<NotificationRepository>()));
+
+  // WebSocketService
+  sl.registerSingleton<WebSocketService>(WebSocketService());
+
+  // Blocs
+  sl.registerSingleton<AuthBloc>(AuthBloc()..add(AuthInitializeEvent()));
+  sl.registerSingleton<AuthSignupFormBloc>(AuthSignupFormBloc());
+  sl.registerSingleton<ProfileBloc>(ProfileBloc());
+  sl.registerSingleton<ProfileSetPasswordFormBloc>(
+      ProfileSetPasswordFormBloc());
+  sl.registerSingleton<ProfileUpdatePasswordFormBloc>(
+      ProfileUpdatePasswordFormBloc());
+  sl.registerSingleton<HabitBloc>(HabitBloc());
+  sl.registerSingleton<HabitCreationFormBloc>(HabitCreationFormBloc());
+  sl.registerSingleton<HabitReviewFormBloc>(HabitReviewFormBloc());
+  sl.registerSingleton<HabitMergeFormBloc>(HabitMergeFormBloc());
+  sl.registerSingleton<HabitDailyTrackingCreationFormBloc>(
+      HabitDailyTrackingCreationFormBloc());
+  sl.registerSingleton<HabitDailyTrackingUpdateFormBloc>(
+      HabitDailyTrackingUpdateFormBloc());
+  sl.registerSingleton<ChallengeBloc>(ChallengeBloc());
+  sl.registerSingleton<ChallengeCreationFormBloc>(ChallengeCreationFormBloc());
+  sl.registerSingleton<ChallengeUpdateFormBloc>(ChallengeUpdateFormBloc());
+  sl.registerSingleton<ChallengeDailyTrackingCreationFormBloc>(
+      ChallengeDailyTrackingCreationFormBloc());
+  sl.registerSingleton<ChallengeDailyTrackingUpdateFormBloc>(
+      ChallengeDailyTrackingUpdateFormBloc());
+  sl.registerSingleton<UserBloc>(UserBloc());
+  sl.registerSingleton<PublicMessageCreationFormBloc>(
+      PublicMessageCreationFormBloc());
+  sl.registerSingleton<PublicMessageUpdateFormBloc>(
+      PublicMessageUpdateFormBloc());
+  sl.registerSingleton<PublicMessageReportCreationFormBloc>(
+      PublicMessageReportCreationFormBloc());
+  sl.registerSingleton<ThreadBloc>(ThreadBloc());
+  sl.registerSingleton<ReplyBloc>(ReplyBloc());
+  sl.registerSingleton<PublicMessageBloc>(PublicMessageBloc());
+  sl.registerSingleton<PrivateMessageBloc>(PrivateMessageBloc());
+  sl.registerSingleton<NotificationBloc>(NotificationBloc());
+  sl.registerSingleton<PrivateDiscussionBloc>(PrivateDiscussionBloc());
+  sl.registerSingleton<PrivateMessageCreationFormBloc>(
+      PrivateMessageCreationFormBloc());
+  sl.registerSingleton<PrivateMessageUpdateFormBloc>(
+      PrivateMessageUpdateFormBloc());
 }

@@ -1,5 +1,6 @@
 pub mod configuration;
 pub mod startup;
+pub mod startup_notifications;
 
 pub mod core {
 
@@ -14,9 +15,11 @@ pub mod core {
     pub mod helpers {
         pub mod mock_now;
         pub mod startup;
+        pub mod translation;
     }
 
     pub mod structs {
+        pub mod redis_messages;
         pub mod responses;
     }
 
@@ -67,6 +70,7 @@ pub mod features {
             pub mod get_users_data;
             pub mod is_otp_enabled;
             pub mod post_profile_information;
+            pub mod set_fcm_token;
             pub mod set_password;
             pub mod update_password;
         }
@@ -248,9 +252,11 @@ pub mod features {
 
         pub mod structs {
             pub mod models {
+                pub mod channels_data;
                 pub mod private_discussion;
                 pub mod private_discussion_participation;
                 pub mod private_message;
+                pub mod users_data;
             }
 
             pub mod requests {
@@ -277,5 +283,33 @@ pub mod features {
             pub mod update_private_message;
             pub mod websocket;
         }
+    }
+
+    pub mod notifications {
+        pub mod helpers {
+            pub mod notification;
+            pub mod redis_handler;
+        }
+
+        pub mod routes {
+            pub mod delete_all_notifications;
+            pub mod delete_notification;
+            pub mod get_notifications;
+            pub mod mark_notification_as_seen;
+        }
+
+        pub mod structs {
+            pub mod models;
+            pub mod requests;
+            pub mod responses;
+        }
+    }
+
+    pub mod oauth_fcm {
+        // Copied from here with custom changes to the payload
+        // https://github.com/ywegel/oauth_fcm/tree/master
+        pub mod error;
+        pub mod fcm;
+        pub mod token_manager;
     }
 }

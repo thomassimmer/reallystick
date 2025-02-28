@@ -32,10 +32,10 @@ import 'package:reallystick/features/users/presentation/blocs/user/user_bloc.dar
 import 'package:reallystick/features/users/presentation/blocs/user/user_events.dart';
 
 class PublicMessageBloc extends Bloc<PublicMessageEvent, PublicMessageState> {
-  final AuthBloc authBloc;
-  final UserBloc userBloc;
-  final ThreadBloc threadBloc;
-  final ReplyBloc replyBloc;
+  final AuthBloc authBloc = GetIt.instance<AuthBloc>();
+  final UserBloc userBloc = GetIt.instance<UserBloc>();
+  final ThreadBloc threadBloc = GetIt.instance<ThreadBloc>();
+  final ReplyBloc replyBloc = GetIt.instance<ReplyBloc>();
 
   late StreamSubscription authBlocSubscription;
 
@@ -68,12 +68,8 @@ class PublicMessageBloc extends Bloc<PublicMessageEvent, PublicMessageState> {
   final UpdatePublicMessageUsecase updatePublicMessageUsecase =
       GetIt.instance<UpdatePublicMessageUsecase>();
 
-  PublicMessageBloc({
-    required this.authBloc,
-    required this.userBloc,
-    required this.threadBloc,
-    required this.replyBloc,
-  }) : super(PublicMessagesLoaded(
+  PublicMessageBloc()
+      : super(PublicMessagesLoaded(
           challengeId: null,
           habitId: null,
           threads: [],
@@ -99,8 +95,10 @@ class PublicMessageBloc extends Bloc<PublicMessageEvent, PublicMessageState> {
     on<GetWrittenMessagesEvent>(getWrittenMessages);
   }
 
-  Future<void> initialize(PublicMessageInitializeEvent event,
-      Emitter<PublicMessageState> emit) async {
+  Future<void> initialize(
+    PublicMessageInitializeEvent event,
+    Emitter<PublicMessageState> emit,
+  ) async {
     final currentState = state as PublicMessagesLoaded;
     emit(PublicMessagesLoading());
 

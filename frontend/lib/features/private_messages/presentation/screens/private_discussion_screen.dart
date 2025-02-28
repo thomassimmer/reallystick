@@ -12,10 +12,8 @@ import 'package:reallystick/features/private_messages/domain/entities/private_di
 import 'package:reallystick/features/private_messages/domain/entities/private_message.dart';
 import 'package:reallystick/features/private_messages/presentation/blocs/private_discussion/private_discussion_bloc.dart';
 import 'package:reallystick/features/private_messages/presentation/blocs/private_discussion/private_discussion_events.dart';
-import 'package:reallystick/features/private_messages/presentation/blocs/private_discussion/private_discussion_states.dart';
 import 'package:reallystick/features/private_messages/presentation/blocs/private_message/private_message_bloc.dart';
 import 'package:reallystick/features/private_messages/presentation/blocs/private_message/private_message_events.dart';
-import 'package:reallystick/features/private_messages/presentation/blocs/private_message/private_message_states.dart';
 import 'package:reallystick/features/private_messages/presentation/blocs/private_message_creation/private_message_creation_bloc.dart';
 import 'package:reallystick/features/private_messages/presentation/blocs/private_message_creation/private_message_creation_events.dart';
 import 'package:reallystick/features/private_messages/presentation/blocs/private_message_update/private_message_update_bloc.dart';
@@ -68,13 +66,8 @@ class PrivateDiscussionScreenState extends State<PrivateDiscussionScreen> {
         BlocProvider.of<ProfileBloc>(context, listen: false).state;
     final privateDiscussionState =
         BlocProvider.of<PrivateDiscussionBloc>(context, listen: false).state;
-    final privateMessageState =
-        BlocProvider.of<PrivateMessageBloc>(context, listen: false).state;
 
-    if (userState is UsersLoaded &&
-        privateDiscussionState is PrivateDiscussionLoaded &&
-        profileState is ProfileAuthenticated &&
-        privateMessageState is PrivateMessagesLoaded) {
+    if (userState is UsersLoaded && profileState is ProfileAuthenticated) {
       final discussion =
           privateDiscussionState.discussions[widget.discussionId]!;
       final recipient = userState.users[discussion.recipientId]!;
@@ -202,25 +195,12 @@ class PrivateDiscussionScreenState extends State<PrivateDiscussionScreen> {
     final userState = context.watch<UserBloc>().state;
     final profileState = context.watch<ProfileBloc>().state;
     final privateDiscussionState = context.watch<PrivateDiscussionBloc>().state;
-    final privateMessageState = context.watch<PrivateMessageBloc>().state;
 
-    if (userState is UsersLoaded &&
-        privateDiscussionState is PrivateDiscussionLoaded &&
-        profileState is ProfileAuthenticated &&
-        privateMessageState is PrivateMessagesLoaded) {
+    if (userState is UsersLoaded && profileState is ProfileAuthenticated) {
       final existingDiscussion =
           privateDiscussionState.discussions[widget.discussionId];
 
       if (existingDiscussion == null) {
-        Future.microtask(
-          () {
-            GlobalSnackBar.show(
-              context,
-              ErrorMessage("recipientMissingPublicKey"),
-            );
-            context.pop();
-          },
-        );
         return;
       }
 
@@ -242,8 +222,8 @@ class PrivateDiscussionScreenState extends State<PrivateDiscussionScreen> {
         Future.microtask(
           () {
             GlobalSnackBar.show(
-              context,
-              ErrorMessage("recipientMissingPublicKey"),
+              context: context,
+              message: ErrorMessage("recipientMissingPublicKey"),
             );
             context.pop();
           },
@@ -254,8 +234,8 @@ class PrivateDiscussionScreenState extends State<PrivateDiscussionScreen> {
         Future.microtask(
           () {
             GlobalSnackBar.show(
-              context,
-              ErrorMessage("creatorMissingPublicKey"),
+              context: context,
+              message: ErrorMessage("creatorMissingPublicKey"),
             );
             context.pop();
           },
@@ -271,10 +251,7 @@ class PrivateDiscussionScreenState extends State<PrivateDiscussionScreen> {
     final privateDiscussionState = context.watch<PrivateDiscussionBloc>().state;
     final privateMessageState = context.watch<PrivateMessageBloc>().state;
 
-    if (userState is UsersLoaded &&
-        privateDiscussionState is PrivateDiscussionLoaded &&
-        profileState is ProfileAuthenticated &&
-        privateMessageState is PrivateMessagesLoaded) {
+    if (userState is UsersLoaded && profileState is ProfileAuthenticated) {
       if (privateMessageState.discussionId != widget.discussionId) {
         BlocProvider.of<PrivateMessageBloc>(context).add(
           InitializePrivateMessagesEvent(
@@ -304,7 +281,12 @@ class PrivateDiscussionScreenState extends State<PrivateDiscussionScreen> {
 
       return Scaffold(
         appBar: AppBar(
-          title: Text(recipient.username),
+          title: Text(
+            recipient.username,
+            style: context.typographies.headingSmall,
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+          ),
           actions: [
             PopupMenuButton<String>(
               color: context.colors.backgroundDark,
@@ -331,7 +313,7 @@ class PrivateDiscussionScreenState extends State<PrivateDiscussionScreen> {
           ],
         ),
         body: Padding(
-          padding: EdgeInsets.all(16),
+          padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
           child: Center(
             child: Container(
               constraints: BoxConstraints(
@@ -414,10 +396,12 @@ class PrivateDiscussionScreenState extends State<PrivateDiscussionScreen> {
                                   }
                                 },
                                 child: PrivateMessageWidget(
+                                  discussionId: widget.discussionId,
                                   message: message,
                                   color: AppColorExtension.fromString(
                                           discussion.color)
                                       .color,
+                                  userId: profileState.profile.id,
                                 ),
                               ),
                               SizedBox(height: 10),
@@ -426,14 +410,14 @@ class PrivateDiscussionScreenState extends State<PrivateDiscussionScreen> {
                         },
                       ),
                     ),
+                    CustomMessageInput(
+                      contentController: _contentController,
+                      recipientUsername: recipient.username,
+                      onSendMessage: _sendMessage,
+                      isEditing: _messageBeingEdited != null,
+                      onEditMessage: _editMessage,
+                    )
                   ],
-                  CustomMessageInput(
-                    contentController: _contentController,
-                    recipientUsername: recipient.username,
-                    onSendMessage: _sendMessage,
-                    isEditing: _messageBeingEdited != null,
-                    onEditMessage: _editMessage,
-                  )
                 ],
               ),
             ),

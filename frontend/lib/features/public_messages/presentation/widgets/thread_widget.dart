@@ -61,7 +61,7 @@ class ThreadWidget extends StatelessWidget {
             border: Border.all(color: color.withAlpha(100)),
             boxShadow: [
               BoxShadow(
-                color: color.withOpacity(0.2),
+                color: color.withValues(alpha: 0.2),
                 blurRadius: 10,
               ),
             ],

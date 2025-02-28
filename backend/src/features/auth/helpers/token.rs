@@ -24,14 +24,15 @@ pub async fn generate_tokens(
     secret_key: &[u8],
     user_id: Uuid,
     is_admin: bool,
+    username: String,
     parsed_device_info: ParsedDeviceInfo,
     transaction: &mut PgConnection,
 ) -> Result<(String, String), Error> {
     let jti = Uuid::new_v4();
 
-    let (access_token, _) = generate_access_token(secret_key, jti, user_id, is_admin);
+    let (access_token, _) = generate_access_token(secret_key, jti, user_id, is_admin, username.clone());
     let (refresh_token, refresh_token_expires_at) =
-        generate_refresh_token(secret_key, jti, user_id, is_admin);
+        generate_refresh_token(secret_key, jti, user_id, is_admin, username);
 
     save_tokens(
         user_id,
@@ -51,6 +52,7 @@ pub fn generate_access_token(
     jti: Uuid,
     user_id: Uuid,
     is_admin: bool,
+    username: String,
 ) -> (String, DateTime<Utc>) {
     let access_token_expires_at = now()
         .checked_add_signed(chrono::Duration::minutes(15)) // Access token expires in 15 minutes
@@ -61,6 +63,7 @@ pub fn generate_access_token(
         jti,
         user_id,
         is_admin,
+        username,
     };
 
     let access_token = encode(
@@ -78,6 +81,7 @@ pub fn generate_refresh_token(
     jti: Uuid,
     user_id: Uuid,
     is_admin: bool,
+    username: String,
 ) -> (String, DateTime<Utc>) {
     let refresh_token_expires_at = now()
         .checked_add_signed(chrono::Duration::days(7)) // Refresh token expires in 7 days
@@ -88,6 +92,7 @@ pub fn generate_refresh_token(
         jti,
         user_id,
         is_admin,
+        username,
     };
 
     let refresh_token = encode(
@@ -117,6 +122,7 @@ pub async fn save_tokens(
         browser: parsed_device_info.browser,
         app_version: parsed_device_info.app_version,
         model: parsed_device_info.model,
+        fcm_token: None,
     };
 
     // Insert the new user token into the database
@@ -227,5 +233,20 @@ pub async fn get_user_tokens(
         user_id
     )
     .fetch_all(transaction)
+    .await
+}
+
+pub async fn update_token(
+    token: UserToken,
+    transaction: &mut PgConnection,
+) -> Result<PgQueryResult, Error> {
+    sqlx::query!(
+        r#"
+        UPDATE user_tokens SET fcm_token = $1 WHERE id = $2
+        "#,
+        token.fcm_token,
+        token.id
+    )
+    .execute(transaction)
     .await
 }

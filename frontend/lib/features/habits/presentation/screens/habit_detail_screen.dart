@@ -167,7 +167,7 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
           return Scaffold(
             appBar: AppBar(
               title: Row(
-                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(right: 16.0),
@@ -177,9 +177,15 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
                       color: habitColor,
                     ),
                   ),
-                  SelectableText(
-                    isLargeScreen ? longName : shortName,
-                    style: TextStyle(color: habitColor),
+                  Flexible(
+                    child: Text(
+                      isLargeScreen ? longName : shortName,
+                      style: context.typographies.heading.copyWith(
+                        color: habitColor,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
                   ),
                 ],
               ),

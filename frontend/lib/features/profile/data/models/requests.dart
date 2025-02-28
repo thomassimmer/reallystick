@@ -14,6 +14,13 @@ class UpdateProfileRequestModel {
   final String? levelOfEducation;
   final bool? hasChildren;
 
+  final bool notificationsEnabled;
+  final bool notificationsForPrivateMessagesEnabled;
+  final bool notificationsForPublicMessageLikedEnabled;
+  final bool notificationsForPublicMessageRepliesEnabled;
+  final bool notificationsUserJoinedYourChallengeEnabled;
+  final bool notificationsUserDuplicatedYourChallengeEnabled;
+
   const UpdateProfileRequestModel({
     required this.locale,
     required this.theme,
@@ -29,6 +36,12 @@ class UpdateProfileRequestModel {
     this.relationshipStatus,
     this.levelOfEducation,
     this.hasChildren,
+    required this.notificationsEnabled,
+    required this.notificationsForPrivateMessagesEnabled,
+    required this.notificationsForPublicMessageLikedEnabled,
+    required this.notificationsForPublicMessageRepliesEnabled,
+    required this.notificationsUserJoinedYourChallengeEnabled,
+    required this.notificationsUserDuplicatedYourChallengeEnabled,
   });
 
   Map<String, dynamic> toJson() {
@@ -46,7 +59,18 @@ class UpdateProfileRequestModel {
       'lives_in_urban_area': livesInUrbanArea,
       'relationship_status': relationshipStatus,
       'level_of_education': levelOfEducation,
-      'has_children': hasChildren
+      'has_children': hasChildren,
+      'notifications_enabled': notificationsEnabled,
+      'notifications_for_private_messages_enabled':
+          notificationsForPrivateMessagesEnabled,
+      'notifications_for_public_message_liked_enabled':
+          notificationsForPublicMessageLikedEnabled,
+      'notifications_for_public_message_replies_enabled':
+          notificationsForPublicMessageRepliesEnabled,
+      'notifications_user_joined_your_challenge_enabled':
+          notificationsUserJoinedYourChallengeEnabled,
+      'notifications_user_duplicated_your_challenge_enabled':
+          notificationsUserDuplicatedYourChallengeEnabled,
     };
   }
 }

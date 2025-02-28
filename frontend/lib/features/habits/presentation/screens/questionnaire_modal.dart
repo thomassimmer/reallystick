@@ -99,7 +99,8 @@ class QuestionnaireModalState extends State<QuestionnaireModal> {
         } else {
           Navigator.of(context).pop();
 
-          GlobalSnackBar.show(context, SuccessMessage('questionsAnswered'));
+          GlobalSnackBar.show(
+              context: context, message: SuccessMessage('questionsAnswered'));
         }
       });
     }

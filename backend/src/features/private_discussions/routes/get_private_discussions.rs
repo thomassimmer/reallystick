@@ -87,6 +87,20 @@ pub async fn get_private_discussions(
         }
     };
 
+    let unseen_messages = match private_message::get_unseen_messages_for_discussions(
+        &mut transaction,
+        discussions.iter().map(|d| d.id).collect(),
+        request_claims.user_id,
+    )
+    .await
+    {
+        Ok(r) => r,
+        Err(e) => {
+            eprintln!("Error: {}", e);
+            return HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response());
+        }
+    };
+
     if let Err(e) = transaction.commit().await {
         eprintln!("Error: {}", e);
         return HttpResponse::InternalServerError()
@@ -110,12 +124,18 @@ pub async fn get_private_discussions(
                     .next();
 
                 let recipient = recipients.iter().filter(|p| p.discussion_id == d.id).next();
+                let unseen_message_for_this_discussion = unseen_messages
+                    .iter()
+                    .filter(|p| p.0 == d.id)
+                    .map(|p| p.1)
+                    .next();
 
                 d.to_private_discussion_data(
                     participation.and_then(|p| Some(p.color.clone())),
                     participation.and_then(|p| Some(p.has_blocked)),
                     last_message.and_then(|m| Some(m.to_private_message_data())),
                     recipient.and_then(|r| Some(r.user_id)),
+                    unseen_message_for_this_discussion.unwrap_or_default(),
                 )
             })
             .collect(),

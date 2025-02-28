@@ -20,6 +20,8 @@ String getTranslatedMessage(BuildContext context, Message message) {
         return localizations.forbiddenError;
       case 'unauthorizedError':
         return localizations.unauthorizedError;
+      case 'disconnected':
+        return localizations.disconnected;
 
       // Auth
       case 'invalidUsernameOrCodeOrRecoveryCodeError':
@@ -124,6 +126,10 @@ String getTranslatedMessage(BuildContext context, Message message) {
     }
   } else if (message is SuccessMessage) {
     switch (message.messageKey) {
+      // Generic 
+      case 'connected':
+        return localizations.connected;
+
       // Auth
       case 'loginSuccessful':
         return localizations.loginSuccessful;

@@ -237,7 +237,7 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
           return Scaffold(
             appBar: AppBar(
               title: Row(
-                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(right: 16.0),
@@ -247,9 +247,15 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
                       color: challengeColor,
                     ),
                   ),
-                  SelectableText(
-                    name,
-                    style: TextStyle(color: challengeColor),
+                  Flexible(
+                    child: Text(
+                      name,
+                      style: context.typographies.headingSmall.copyWith(
+                        color: challengeColor,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
                   ),
                 ],
               ),

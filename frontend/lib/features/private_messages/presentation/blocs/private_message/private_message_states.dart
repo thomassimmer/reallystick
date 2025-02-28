@@ -1,46 +1,26 @@
 import 'package:equatable/equatable.dart';
 import 'package:reallystick/core/messages/message.dart';
 import 'package:reallystick/features/private_messages/domain/entities/private_message.dart';
+import 'package:reallystick/features/private_messages/presentation/blocs/private_message/private_message_events.dart';
 
-abstract class PrivateMessageState extends Equatable {
+class PrivateMessageState extends Equatable {
   final Message? message;
+  final String discussionId;
+  final Map<String, Map<String, PrivateMessage>> messagesByDiscussion;
+  final PrivateMessageReceivedEvent? lastPrivateMessageReceivedEvent;
 
   const PrivateMessageState({
     this.message,
-  });
-
-  @override
-  List<Object?> get props => [message];
-}
-
-class PrivateMessagesLoading extends PrivateMessageState {
-  const PrivateMessagesLoading({
-    super.message,
-  });
-}
-
-class PrivateMessagesFailed extends PrivateMessageState {
-  const PrivateMessagesFailed({
-    super.message,
-  });
-}
-
-class PrivateMessagesLoaded extends PrivateMessageState {
-  final String discussionId;
-  final Map<String, Map<String, PrivateMessage>> messagesByDiscussion;
-  final PrivateMessage? lastMessageReceived;
-
-  const PrivateMessagesLoaded({
-    super.message,
     required this.discussionId,
     required this.messagesByDiscussion,
-    required this.lastMessageReceived,
+    required this.lastPrivateMessageReceivedEvent,
   });
 
   @override
   List<Object?> get props => [
         message,
+        discussionId,
         messagesByDiscussion,
-        lastMessageReceived,
+        lastPrivateMessageReceivedEvent,
       ];
 }

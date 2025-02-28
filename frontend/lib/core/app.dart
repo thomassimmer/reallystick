@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:get_it/get_it.dart';
 import 'package:reallystick/core/router.dart';
 import 'package:reallystick/core/ui/themes/dark.dart';
 import 'package:reallystick/core/ui/themes/light.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_bloc.dart';
-import 'package:reallystick/features/auth/presentation/blocs/auth/auth_events.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth_login/auth_login_bloc.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_bloc.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge_creation/challenge_creation_bloc.dart';
@@ -18,11 +18,11 @@ import 'package:reallystick/features/habits/presentation/blocs/habit_daily_track
 import 'package:reallystick/features/habits/presentation/blocs/habit_daily_tracking_update/habit_daily_tracking_update_bloc.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit_merge/habit_merge_bloc.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit_review/habit_review_bloc.dart';
+import 'package:reallystick/features/notifications/presentation/blocs/notifications/notifications_bloc.dart';
 import 'package:reallystick/features/private_messages/presentation/blocs/private_discussion/private_discussion_bloc.dart';
 import 'package:reallystick/features/private_messages/presentation/blocs/private_message/private_message_bloc.dart';
 import 'package:reallystick/features/private_messages/presentation/blocs/private_message_creation/private_message_creation_bloc.dart';
 import 'package:reallystick/features/private_messages/presentation/blocs/private_message_update/private_message_update_bloc.dart';
-import 'package:reallystick/features/private_messages/presentation/helpers/websocket_service.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
 import 'package:reallystick/features/profile/presentation/blocs/set_password/set_password_bloc.dart';
@@ -36,13 +36,26 @@ import 'package:reallystick/features/public_messages/presentation/blocs/thread/t
 import 'package:reallystick/features/users/presentation/blocs/user/user_bloc.dart';
 import 'package:universal_io/io.dart';
 
-class ReallyStickApp extends StatelessWidget {
-  const ReallyStickApp({super.key});
+class ReallyStickApp extends StatefulWidget {
+  ReallyStickApp({Key? key}) : super(key: key);
+
+  @override
+  State<ReallyStickApp> createState() => ReallyStickAppState();
+}
+
+class ReallyStickAppState extends State<ReallyStickApp> {
+  late List<BlocProvider> providers;
+
+  @override
+  void initState() {
+    super.initState();
+    providers = _createBlocProviders();
+  }
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-        providers: _createBlocProviders(),
+        providers: providers,
         child:
             BlocBuilder<ProfileBloc, ProfileState>(builder: (context, state) {
           Locale locale =
@@ -63,7 +76,7 @@ class ReallyStickApp extends StatelessWidget {
 
           return MaterialApp.router(
             debugShowCheckedModeBanner: false,
-            routerConfig: router,
+            routerConfig: GetIt.instance<AppRouter>().router,
             locale: locale,
             theme: themeData,
             localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -73,144 +86,90 @@ class ReallyStickApp extends StatelessWidget {
   }
 
   List<BlocProvider> _createBlocProviders() {
-    final webSocketService = WebSocketService();
-
-    final authBloc = AuthBloc();
-    final authSignupFormBloc = AuthSignupFormBloc();
-    final profileBloc = ProfileBloc(authBloc: authBloc);
-    final profileSetPasswordFormBloc = ProfileSetPasswordFormBloc();
-    final profileUpdatePasswordFormBloc = ProfileUpdatePasswordFormBloc();
-    final habitBloc = HabitBloc(
-      authBloc: authBloc,
-      profileBloc: profileBloc,
-    );
-    final habitCreationFormBloc = HabitCreationFormBloc();
-    final habitReviewFormBloc = HabitReviewFormBloc();
-    final habitMergeFormBloc = HabitMergeFormBloc();
-    final habitDailyTrackingCreationFormBloc =
-        HabitDailyTrackingCreationFormBloc();
-    final habitDailyTrackingUpdateFormBloc = HabitDailyTrackingUpdateFormBloc();
-    final challengeBloc = ChallengeBloc(
-      authBloc: authBloc,
-      profileBloc: profileBloc,
-    );
-    final challengeCreationFormBloc = ChallengeCreationFormBloc();
-    final challengeUpdateFormBloc = ChallengeUpdateFormBloc();
-    final challengeDailyTrackingCreationFormBloc =
-        ChallengeDailyTrackingCreationFormBloc();
-    final challengeDailyTrackingUpdateFormBloc =
-        ChallengeDailyTrackingUpdateFormBloc();
-    final userBloc = UserBloc(authBloc: authBloc);
-    final publicMessageCreationFormBloc = PublicMessageCreationFormBloc();
-    final publicMessageUpdateFormBloc = PublicMessageUpdateFormBloc();
-    final publicMessageReportCreationFormBloc =
-        PublicMessageReportCreationFormBloc();
-    final threadBloc = ThreadBloc(authBloc: authBloc, userBloc: userBloc);
-    final replyBloc = ReplyBloc(authBloc: authBloc, userBloc: userBloc);
-    final publicMessageBloc = PublicMessageBloc(
-      authBloc: authBloc,
-      userBloc: userBloc,
-      threadBloc: threadBloc,
-      replyBloc: replyBloc,
-    );
-    final privateMessageBloc = PrivateMessageBloc(
-      authBloc: authBloc,
-      profileBloc: profileBloc,
-      userBloc: userBloc,
-    );
-    final privateDiscussionBloc = PrivateDiscussionBloc(
-      authBloc: authBloc,
-      userBloc: userBloc,
-      profileBloc: profileBloc,
-      privateMessageBloc: privateMessageBloc,
-      webSocketService: webSocketService,
-    );
-    final privateMessageCreationFormBloc = PrivateMessageCreationFormBloc();
-    final privateMessageUpdateFormBloc = PrivateMessageUpdateFormBloc();
-
-    authBloc.add(AuthInitializeEvent());
-
     return [
-      BlocProvider<AuthSignupFormBloc>(
-        create: (context) => authSignupFormBloc,
+      BlocProvider<AuthSignupFormBloc>.value(
+        value: GetIt.instance<AuthSignupFormBloc>(),
       ),
-      BlocProvider<AuthBloc>(
-        create: (context) => authBloc,
+      BlocProvider<AuthBloc>.value(
+        value: GetIt.instance<AuthBloc>(),
       ),
-      BlocProvider<ProfileBloc>(
-        create: (context) => profileBloc,
+      BlocProvider<NotificationBloc>.value(
+        value: GetIt.instance<NotificationBloc>(),
       ),
-      BlocProvider<ProfileSetPasswordFormBloc>(
-        create: (context) => profileSetPasswordFormBloc,
+      BlocProvider<ProfileBloc>.value(
+        value: GetIt.instance<ProfileBloc>(),
       ),
-      BlocProvider<ProfileUpdatePasswordFormBloc>(
-        create: (context) => profileUpdatePasswordFormBloc,
+      BlocProvider<ProfileSetPasswordFormBloc>.value(
+        value: GetIt.instance<ProfileSetPasswordFormBloc>(),
       ),
-      BlocProvider<HabitBloc>(
-        create: (context) => habitBloc,
+      BlocProvider<ProfileUpdatePasswordFormBloc>.value(
+        value: GetIt.instance<ProfileUpdatePasswordFormBloc>(),
       ),
-      BlocProvider<HabitCreationFormBloc>(
-        create: (context) => habitCreationFormBloc,
+      BlocProvider<HabitBloc>.value(
+        value: GetIt.instance<HabitBloc>(),
       ),
-      BlocProvider<HabitReviewFormBloc>(
-        create: (context) => habitReviewFormBloc,
+      BlocProvider<HabitCreationFormBloc>.value(
+        value: GetIt.instance<HabitCreationFormBloc>(),
       ),
-      BlocProvider<HabitMergeFormBloc>(
-        create: (context) => habitMergeFormBloc,
+      BlocProvider<HabitReviewFormBloc>.value(
+        value: GetIt.instance<HabitReviewFormBloc>(),
       ),
-      BlocProvider<HabitDailyTrackingCreationFormBloc>(
-        create: (context) => habitDailyTrackingCreationFormBloc,
+      BlocProvider<HabitMergeFormBloc>.value(
+        value: GetIt.instance<HabitMergeFormBloc>(),
       ),
-      BlocProvider<HabitDailyTrackingUpdateFormBloc>(
-        create: (context) => habitDailyTrackingUpdateFormBloc,
+      BlocProvider<HabitDailyTrackingCreationFormBloc>.value(
+        value: GetIt.instance<HabitDailyTrackingCreationFormBloc>(),
       ),
-      BlocProvider<ChallengeBloc>(
-        create: (context) => challengeBloc,
+      BlocProvider<HabitDailyTrackingUpdateFormBloc>.value(
+        value: GetIt.instance<HabitDailyTrackingUpdateFormBloc>(),
       ),
-      BlocProvider<ChallengeCreationFormBloc>(
-        create: (context) => challengeCreationFormBloc,
+      BlocProvider<ChallengeBloc>.value(
+        value: GetIt.instance<ChallengeBloc>(),
       ),
-      BlocProvider<ChallengeUpdateFormBloc>(
-        create: (context) => challengeUpdateFormBloc,
+      BlocProvider<ChallengeCreationFormBloc>.value(
+        value: GetIt.instance<ChallengeCreationFormBloc>(),
       ),
-      BlocProvider<ChallengeDailyTrackingCreationFormBloc>(
-        create: (context) => challengeDailyTrackingCreationFormBloc,
+      BlocProvider<ChallengeUpdateFormBloc>.value(
+        value: GetIt.instance<ChallengeUpdateFormBloc>(),
       ),
-      BlocProvider<ChallengeDailyTrackingUpdateFormBloc>(
-        create: (context) => challengeDailyTrackingUpdateFormBloc,
+      BlocProvider<ChallengeDailyTrackingCreationFormBloc>.value(
+        value: GetIt.instance<ChallengeDailyTrackingCreationFormBloc>(),
       ),
-      BlocProvider<UserBloc>(
-        create: (context) => userBloc,
+      BlocProvider<ChallengeDailyTrackingUpdateFormBloc>.value(
+        value: GetIt.instance<ChallengeDailyTrackingUpdateFormBloc>(),
       ),
-      BlocProvider<PublicMessageBloc>(
-        create: (context) => publicMessageBloc,
+      BlocProvider<UserBloc>.value(
+        value: GetIt.instance<UserBloc>(),
       ),
-      BlocProvider<PublicMessageCreationFormBloc>(
-        create: (context) => publicMessageCreationFormBloc,
+      BlocProvider<PublicMessageBloc>.value(
+        value: GetIt.instance<PublicMessageBloc>(),
       ),
-      BlocProvider<PublicMessageUpdateFormBloc>(
-        create: (context) => publicMessageUpdateFormBloc,
+      BlocProvider<PublicMessageCreationFormBloc>.value(
+        value: GetIt.instance<PublicMessageCreationFormBloc>(),
       ),
-      BlocProvider<PublicMessageReportCreationFormBloc>(
-        create: (context) => publicMessageReportCreationFormBloc,
+      BlocProvider<PublicMessageUpdateFormBloc>.value(
+        value: GetIt.instance<PublicMessageUpdateFormBloc>(),
       ),
-      BlocProvider<ThreadBloc>(
-        create: (context) => threadBloc,
+      BlocProvider<PublicMessageReportCreationFormBloc>.value(
+        value: GetIt.instance<PublicMessageReportCreationFormBloc>(),
       ),
-      BlocProvider<ReplyBloc>(
-        create: (context) => replyBloc,
+      BlocProvider<ThreadBloc>.value(
+        value: GetIt.instance<ThreadBloc>(),
       ),
-      BlocProvider<PrivateMessageBloc>(
-        create: (context) => privateMessageBloc,
+      BlocProvider<ReplyBloc>.value(
+        value: GetIt.instance<ReplyBloc>(),
       ),
-      BlocProvider<PrivateDiscussionBloc>(
-        create: (context) => privateDiscussionBloc,
+      BlocProvider<PrivateMessageBloc>.value(
+        value: GetIt.instance<PrivateMessageBloc>(),
       ),
-      BlocProvider<PrivateMessageCreationFormBloc>(
-        create: (context) => privateMessageCreationFormBloc,
+      BlocProvider<PrivateDiscussionBloc>.value(
+        value: GetIt.instance<PrivateDiscussionBloc>(),
       ),
-      BlocProvider<PrivateMessageUpdateFormBloc>(
-        create: (context) => privateMessageUpdateFormBloc,
+      BlocProvider<PrivateMessageCreationFormBloc>.value(
+        value: GetIt.instance<PrivateMessageCreationFormBloc>(),
+      ),
+      BlocProvider<PrivateMessageUpdateFormBloc>.value(
+        value: GetIt.instance<PrivateMessageUpdateFormBloc>(),
       ),
     ];
   }

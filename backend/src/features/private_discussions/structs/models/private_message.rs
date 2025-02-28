@@ -1,9 +1,6 @@
-use std::{collections::HashMap, sync::Arc};
-
-use actix_ws::Session;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
-use tokio::sync::RwLock;
+
 use uuid::Uuid;
 
 pub const PRIVATE_MESSAGE_CONTENT_MAX_LENGTH: usize = 10_000;
@@ -50,24 +47,5 @@ impl PrivateMessage {
             deleted: self.deleted,
             seen: self.seen,
         }
-    }
-}
-
-#[derive(Default, Clone)]
-pub struct ChannelsData {
-    data: Arc<RwLock<HashMap<Uuid, Session>>>,
-}
-
-impl ChannelsData {
-    pub async fn insert(&self, key: Uuid, value: Session) {
-        self.data.write().await.insert(key, value);
-    }
-
-    pub async fn remove_key(&self, key: Uuid) {
-        self.data.write().await.remove(&key);
-    }
-
-    pub async fn get_value_for_key(&self, key: Uuid) -> Option<Session> {
-        self.data.read().await.get(&key).cloned()
     }
 }

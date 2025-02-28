@@ -19,9 +19,11 @@ class InitializePrivateMessagesEvent extends PrivateMessageEvent {
 
 class PrivateMessageReceivedEvent extends PrivateMessageEvent {
   final PrivateMessage message;
+  final String type;
 
   const PrivateMessageReceivedEvent({
     required this.message,
+    required this.type,
   });
 }
 
@@ -58,16 +60,6 @@ class DeleteMessageEvent extends PrivateMessageEvent {
   final String messageId;
 
   const DeleteMessageEvent({
-    required this.discussionId,
-    required this.messageId,
-  });
-}
-
-class MarkPrivateMessageAsSeenEvent extends PrivateMessageEvent {
-  final String discussionId;
-  final String messageId;
-
-  const MarkPrivateMessageAsSeenEvent({
     required this.discussionId,
     required this.messageId,
   });

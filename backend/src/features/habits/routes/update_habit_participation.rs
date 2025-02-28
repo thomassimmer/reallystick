@@ -51,6 +51,9 @@ pub async fn update_habit_participation(
 
     habit_participation.color = body.color.clone();
     habit_participation.to_gain = body.to_gain;
+    habit_participation.notifications_reminder_enabled = body.notifications_reminder_enabled;
+    habit_participation.reminder_time = body.reminder_time;
+    habit_participation.timezone = body.timezone.clone();
 
     let update_habit_participation_result =
         habit_participation::update_habit_participation(&mut transaction, &habit_participation)

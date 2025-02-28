@@ -11,18 +11,29 @@ import 'package:reallystick/features/auth/presentation/blocs/auth/auth_bloc.dart
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_states.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_states.dart';
+import 'package:reallystick/features/notifications/presentation/blocs/notifications/notifications_bloc.dart';
+import 'package:reallystick/features/notifications/presentation/blocs/notifications/notifications_events.dart';
+import 'package:reallystick/features/notifications/presentation/blocs/notifications/notifications_states.dart';
+import 'package:reallystick/features/notifications/presentation/screens/notifications_screen.dart';
+import 'package:reallystick/features/notifications/presentation/widgets/notification_button_widget.dart';
 import 'package:reallystick/features/private_messages/presentation/blocs/private_discussion/private_discussion_bloc.dart';
 import 'package:reallystick/features/private_messages/presentation/blocs/private_discussion/private_discussion_states.dart';
+import 'package:reallystick/features/private_messages/presentation/widgets/private_message_icon.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
 import 'package:reallystick/features/public_messages/presentation/blocs/public_message/public_message_bloc.dart';
 import 'package:reallystick/features/public_messages/presentation/blocs/public_message/public_message_states.dart';
 
-class RootScreen extends StatelessWidget {
+class RootScreen extends StatefulWidget {
   final Widget child;
 
   const RootScreen({required this.child});
 
+  @override
+  RootScreenState createState() => RootScreenState();
+}
+
+class RootScreenState extends State<RootScreen> {
   int _calculateSelectedIndex(BuildContext context) {
     final String location = GoRouterState.of(context).uri.path;
     if (location.startsWith('/habits')) {
@@ -45,6 +56,10 @@ class RootScreen extends StatelessWidget {
     final bool isLargeScreen = checkIfLargeScreen(context);
 
     void onItemTapped(int index) {
+      BlocProvider.of<NotificationBloc>(context).add(
+        ChangeNotificationScreenVisibilityEvent(show: false),
+      );
+
       switch (index) {
         case 0:
           context.goNamed('habits');
@@ -60,31 +75,38 @@ class RootScreen extends StatelessWidget {
     return MultiBlocListener(
       listeners: [
         BlocListener<AuthBloc, AuthState>(listener: (context, state) {
-          GlobalSnackBar.show(context, state.message);
+          GlobalSnackBar.show(context: context, message: state.message);
 
           if (state is AuthUnauthenticatedState) {
             context.goNamed('home');
           }
         }),
         BlocListener<ProfileBloc, ProfileState>(listener: (context, state) {
-          GlobalSnackBar.show(context, state.message);
+          GlobalSnackBar.show(context: context, message: state.message);
         }),
         BlocListener<HabitBloc, HabitState>(listener: (context, state) {
-          GlobalSnackBar.show(context, state.message);
+          GlobalSnackBar.show(context: context, message: state.message);
         }),
         BlocListener<PublicMessageBloc, PublicMessageState>(
             listener: (context, state) {
-          GlobalSnackBar.show(context, state.message);
+          GlobalSnackBar.show(context: context, message: state.message);
         }),
         BlocListener<PrivateDiscussionBloc, PrivateDiscussionState>(
             listener: (context, state) {
-          GlobalSnackBar.show(context, state.message);
+          GlobalSnackBar.show(context: context, message: state.message);
         }),
+        BlocListener<NotificationBloc, NotificationState>(
+            listener: (context, state) {
+          GlobalSnackBar.show(
+              context: context, message: state.message, hideCurrent: true);
+        })
       ],
-      child: BlocBuilder<ProfileBloc, ProfileState>(
-        builder: (context, state) {
-          final shouldBeWarning =
-              state is ProfileAuthenticated && state.profile.passwordIsExpired;
+      child: Builder(
+        builder: (context) {
+          final profileState = context.watch<ProfileBloc>().state;
+          final shouldBeWarning = profileState is ProfileAuthenticated &&
+              profileState.profile.passwordIsExpired;
+          final notificationState = context.watch<NotificationBloc>().state;
 
           return Scaffold(
             backgroundColor: context.colors.primary,
@@ -106,7 +128,7 @@ class RootScreen extends StatelessWidget {
                         Text(
                           'Stick',
                           style: context.typographies.headingSmall
-                              .copyWith(color: context.colors.hint),
+                              .copyWith(color: context.colors.text),
                         ),
                       ],
                     ),
@@ -115,18 +137,14 @@ class RootScreen extends StatelessWidget {
               ),
               backgroundColor: context.colors.primary,
               actions: [
-                if (state.profile != null)
-                  TextButton(
-                    onPressed: () {
-                      context.goNamed('profile');
-                    },
-                    child: Text(
-                      AppLocalizations.of(context)!
-                          .hello(state.profile!.username),
-                      style: context.typographies.body
-                          .copyWith(color: context.colors.textOnPrimary),
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6.0,
                     ),
-                  )
+                    child: NotificationButtonWidget(),
+                  ),
+                ),
               ],
             ),
             body: Row(
@@ -180,8 +198,12 @@ class RootScreen extends StatelessWidget {
                           ),
                         ),
                         NavigationRailDestination(
-                          icon: Icon(Icons.message_outlined),
-                          selectedIcon: Icon(Icons.message),
+                          icon: PrivateMessageIcon(
+                            iconData: Icons.message_outlined,
+                          ),
+                          selectedIcon: PrivateMessageIcon(
+                            iconData: Icons.message,
+                          ),
                           label: Text(
                             AppLocalizations.of(context)!.messages,
                           ),
@@ -215,7 +237,9 @@ class RootScreen extends StatelessWidget {
                             color: context.colors.background,
                           ),
                           clipBehavior: Clip.antiAlias,
-                          child: child,
+                          child: notificationState.notificationScreenIsVisible
+                              ? NotificationsScreen()
+                              : widget.child,
                         ),
                       )
                     : Expanded(
@@ -223,7 +247,9 @@ class RootScreen extends StatelessWidget {
                           decoration: BoxDecoration(
                             color: context.colors.background,
                           ),
-                          child: child,
+                          child: notificationState.notificationScreenIsVisible
+                              ? NotificationsScreen()
+                              : widget.child,
                         ),
                       ),
               ],
@@ -291,8 +317,12 @@ class RootScreen extends StatelessWidget {
                                 label: AppLocalizations.of(context)!.challenges,
                               ),
                               NavigationDestination(
-                                icon: Icon(Icons.message_outlined),
-                                selectedIcon: Icon(Icons.message),
+                                icon: PrivateMessageIcon(
+                                  iconData: Icons.message_outlined,
+                                ),
+                                selectedIcon: PrivateMessageIcon(
+                                  iconData: Icons.message,
+                                ),
                                 label: AppLocalizations.of(context)!.messages,
                               ),
                               NavigationDestination(

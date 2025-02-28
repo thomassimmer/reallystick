@@ -6,7 +6,7 @@ import 'package:reallystick/core/ui/extensions.dart';
 class GlobalSnackBar {
   static Color _getBackgroundColor(BuildContext context, Message message) {
     if (message is SuccessMessage) {
-      return context.colors.accent;
+      return context.colors.success;
     } else if (message is InfoMessage) {
       return context.colors.information;
     } else {
@@ -14,10 +14,11 @@ class GlobalSnackBar {
     }
   }
 
-  static show(
-    BuildContext context,
-    Message? message,
-  ) {
+  static show({
+    required BuildContext context,
+    required Message? message,
+    bool hideCurrent = false,
+  }) {
     if (message == null) {
       return null;
     }
@@ -25,7 +26,14 @@ class GlobalSnackBar {
     final messageTranslated = getTranslatedMessage(context, message);
     final backgroundColor = _getBackgroundColor(context, message);
 
-    return (ScaffoldMessenger.of(context).showSnackBar(
+    final messenger = ScaffoldMessenger.of(context);
+
+    // Hide any existing SnackBar before showing a new one
+    if (hideCurrent == true) {
+      messenger.hideCurrentSnackBar();
+    }
+
+    return messenger.showSnackBar(
       SnackBar(
         content: Text(messageTranslated),
         backgroundColor: backgroundColor,
@@ -35,8 +43,8 @@ class GlobalSnackBar {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5.0),
         ),
-        closeIconColor: context.colors.text,
+        closeIconColor: context.colors.backgroundDark,
       ),
-    ));
+    );
   }
 }

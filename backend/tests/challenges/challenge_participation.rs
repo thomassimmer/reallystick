@@ -10,6 +10,7 @@ use actix_web::{
 use chrono::{Datelike, Utc};
 use reallystick::features::challenges::structs::{
     models::challenge_participation::ChallengeParticipationData,
+    requests::challenge_participation::ChallengeParticipationUpdateRequest,
     responses::challenge_participation::{
         ChallengeParticipationResponse, ChallengeParticipationsResponse,
     },
@@ -62,10 +63,13 @@ pub async fn user_updates_a_challenge_participation(
         ))
         .insert_header((header::AUTHORIZATION, format!("Bearer {}", access_token)))
         .insert_header(ContentType::json())
-        .set_json(&serde_json::json!({
-            "color": "yellow",
-            "start_date": Utc::now() + Duration::new(24 * 3600 * 2,0),
-        }))
+        .set_json(ChallengeParticipationUpdateRequest {
+            color: "yellow".to_string(),
+            start_date: Utc::now() + Duration::new(24 * 3600 * 2, 0),
+            notifications_reminder_enabled: false,
+            reminder_time: None,
+            timezone: None,
+        })
         .to_request();
     let response = test::call_service(&app, req).await;
 

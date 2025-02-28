@@ -66,6 +66,7 @@ pub async fn create_private_discussion(
                                     Some(participation.has_blocked),
                                     None,
                                     Some(body.recipient),
+                                    0,
                                 )),
                             })
                         }
@@ -160,6 +161,7 @@ pub async fn create_private_discussion(
             Some(false),
             None,
             Some(body.recipient),
+            0,
         )),
     })
 }

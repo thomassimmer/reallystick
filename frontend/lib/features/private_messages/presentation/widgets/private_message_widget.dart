@@ -4,20 +4,47 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/private_messages/domain/entities/private_message.dart';
+import 'package:reallystick/features/private_messages/presentation/blocs/private_discussion/private_discussion_bloc.dart';
+import 'package:reallystick/features/private_messages/presentation/blocs/private_discussion/private_discussion_events.dart';
+import 'package:reallystick/features/private_messages/presentation/widgets/status_widget.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
 import 'package:reallystick/features/users/presentation/blocs/user/user_bloc.dart';
 import 'package:reallystick/features/users/presentation/blocs/user/user_states.dart';
 
-class PrivateMessageWidget extends StatelessWidget {
+class PrivateMessageWidget extends StatefulWidget {
+  final String discussionId;
   final PrivateMessage message;
   final Color color;
+  final String userId;
 
   const PrivateMessageWidget({
-    Key? key,
+    required this.discussionId,
     required this.message,
     required this.color,
-  }) : super(key: key);
+    required this.userId,
+  });
+
+  @override
+  PrivateMessageWidgetState createState() => PrivateMessageWidgetState();
+}
+
+class PrivateMessageWidgetState extends State<PrivateMessageWidget> {
+  void markMessageAsSeen() {
+    BlocProvider.of<PrivateDiscussionBloc>(context).add(
+      MarkPrivateMessageAsSeenInDiscussionEvent(
+        message: widget.message,
+      ),
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if (!widget.message.seen && widget.message.creator != widget.userId) {
+      markMessageAsSeen();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,16 +53,18 @@ class PrivateMessageWidget extends StatelessWidget {
 
     if (userState is UsersLoaded && profileState is ProfileAuthenticated) {
       final userLocale = profileState.profile.locale;
-      final userIsCreator = message.creator == profileState.profile.id;
+      final userIsCreator = widget.message.creator == profileState.profile.id;
 
       return Align(
         alignment: userIsCreator ? Alignment.centerRight : Alignment.centerLeft,
         child: Container(
           decoration: BoxDecoration(
-            border: Border.all(color: color.withAlpha(100)),
+            border: Border.all(color: widget.color.withAlpha(100)),
             boxShadow: [
               BoxShadow(
-                color: color.withOpacity(0.2),
+                color: userIsCreator
+                    ? widget.color.withValues(alpha: 0.3)
+                    : widget.color.withValues(alpha: 0.1),
               ),
             ],
             borderRadius: BorderRadius.circular(16),
@@ -52,25 +81,31 @@ class PrivateMessageWidget extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Text(
-                          message.content,
+                          widget.message.deleted
+                              ? AppLocalizations.of(context)!
+                                  .messageDeletedError
+                              : widget.message.content,
                         ),
                         const SizedBox(width: 40),
                       ],
                     ),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Text(
-                          message.updateAt == null
-                              ? DateFormat.Hm().format(message.createdAt)
+                          widget.message.updateAt == null
+                              ? DateFormat.Hm().format(widget.message.createdAt)
                               : AppLocalizations.of(context)!.editedAt(
                                   DateFormat.yMEd(userLocale)
                                       .add_Hm()
-                                      .format(message.updateAt!)),
+                                      .format(widget.message.updateAt!)),
                           style: TextStyle(
                             color: context.colors.hint,
                             fontSize: 12,
                           ),
-                        )
+                        ),
+                        if (widget.message.creator == profileState.profile.id)
+                          StatusWidget(isSeen: widget.message.seen)
                       ],
                     ),
                   ],

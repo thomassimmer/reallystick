@@ -1,0 +1,10 @@
+user-joined-your-challenge-title = A user joined your challenge.
+user-joined-your-challenge-body = Amazing ! { $username } just joined your challenge.
+user-duplicated-your-challenge-title = A user copied your challenge.
+user-duplicated-your-challenge-body = You are inspiring ! { $username } just made a copy of your challenge.
+message-created-title = New message
+message-created-body = { $username } just sent you a message.
+user-liked-your-message-title = New like
+user-liked-your-message-body = { $username } just liked your message.
+user-replied-to-your-message-title = New reply
+user-replied-to-your-message-body = { $username } just replied to your message.

@@ -8,6 +8,10 @@ default-run = "reallystick"
 path = "src/bin/main.rs"
 name = "reallystick"
 
+[[bin]]
+path = "src/bin/notifications.rs"
+name = "notifications"
+
 [[test]]
 name = "tests"
 path = "tests/mod.rs"
@@ -25,11 +29,14 @@ clap = { version = "4.5.21", features = ["derive"] }
 config = "0.14.0"
 dotenv = "0.15.0"
 env_logger = "0.11.5"
+fluent = "0.16.1"
+fluent-bundle = "0.15.3"
 futures = "0.3.31"
 futures-util = "0.3.30"
 jsonwebtoken = "=9.3.0"
 lazy_static = "1.5.0"
 rand = "0.8.5"
+redis = { version = "0.28.2", features = ["tokio-comp"] }
 regex = "1.10.6"
 reqwest = { version = "0.12.7", default-features = false, features = ["json", "rustls-tls", "cookies"] }
 secrecy = { version = "0.8", features = ["serde"] }
@@ -42,4 +49,7 @@ thiserror = "=1.0.63"
 tokio = { version = "1.39.3", features = ["full"] }
 tokio-postgres = "0.7.11"
 totp-rs = "5.6.0"
+tracing = "0.1"
+tracing-subscriber = "0.3.19"
+unic-langid = "0.9.5"
 uuid = { version = "1.10.0", features = ["v4", "serde"] }

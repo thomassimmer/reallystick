@@ -59,7 +59,10 @@ class SignupScreenState extends State<SignupScreen>
                                 _isAuthenticated = true;
                               });
                             } else {
-                              GlobalSnackBar.show(context, state.message);
+                              GlobalSnackBar.show(
+                                context: context,
+                                message: state.message,
+                              );
                             }
                           }, builder: (context, state) {
                             if (state is AuthLoadingState) {
@@ -79,7 +82,7 @@ class SignupScreenState extends State<SignupScreen>
       SuccessfulLoginAnimation(
         isVisible: _isAuthenticated,
         onAnimationComplete: () {
-          GlobalSnackBar.show(context, authMessage);
+          GlobalSnackBar.show(context: context, message: authMessage);
           context.goNamed('recovery-code');
         },
       ),

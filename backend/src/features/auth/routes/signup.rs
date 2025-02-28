@@ -114,6 +114,12 @@ pub async fn register_user(
         salt_used_to_derive_key_from_password: Some(
             body.salt_used_to_derive_key_from_password.clone(),
         ),
+        notifications_enabled: true,
+        notifications_for_private_messages_enabled: true,
+        notifications_for_public_message_liked_enabled: true,
+        notifications_for_public_message_replies_enabled: true,
+        notifications_user_joined_your_challenge_enabled: true,
+        notifications_user_duplicated_your_challenge_enabled: true,
     };
 
     let insert_result = create_user(&mut transaction, new_user.clone()).await;
@@ -132,6 +138,7 @@ pub async fn register_user(
         secret.as_bytes(),
         new_user.id,
         new_user.is_admin,
+        new_user.username,
         parsed_device_info,
         &mut transaction,
     )

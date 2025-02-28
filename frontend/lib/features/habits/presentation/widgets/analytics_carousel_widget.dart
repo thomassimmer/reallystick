@@ -169,7 +169,7 @@ class AnalyticsCarouselWidget extends StatelessWidget {
                 child: Icon(
                   Icons.info_outline,
                   size: 25,
-                  color: habitColor.withOpacity(0.8),
+                  color: habitColor.withValues(alpha: 0.8),
                 ),
               ),
             ],

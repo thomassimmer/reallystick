@@ -70,7 +70,7 @@ class _AnalyticsCardWidgetState extends State<AnalyticsCardWidget> {
         ),
         boxShadow: [
           BoxShadow(
-            color: widget.color.withOpacity(0.2),
+            color: widget.color.withValues(alpha: 0.2),
             blurRadius: 10,
           ),
         ],
@@ -119,7 +119,7 @@ class _AnalyticsCardWidgetState extends State<AnalyticsCardWidget> {
                         ? AppLocalizations.of(context)!.tapToSeeLess
                         : AppLocalizations.of(context)!.tapForMoreDetails,
                     style: TextStyle(
-                      color: Colors.white.withOpacity(0.7),
+                      color: Colors.white.withValues(alpha: 0.7),
                       fontSize: 12,
                     ),
                   ),

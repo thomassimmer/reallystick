@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:reallystick/core/presentation/screens/loading_screen.dart';
 import 'package:reallystick/core/ui/colors.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_bloc.dart';
@@ -176,17 +175,11 @@ class ThreadScreenState extends State<ThreadScreen> {
               .firstOrNull;
 
           return Scaffold(
-            appBar: AppBar(
-              title: Text(
-                AppLocalizations.of(context)!.discussion,
-                style: TextStyle(color: color),
-              ),
-            ),
+            appBar: AppBar(),
             body: RefreshIndicator(
               onRefresh: _pullRefresh,
               child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                 child: Column(
                   children: [
                     Expanded(

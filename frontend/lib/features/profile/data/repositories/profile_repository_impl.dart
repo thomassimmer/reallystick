@@ -76,6 +76,17 @@ class ProfileRepositoryImpl implements ProfileRepository {
           relationshipStatus: profile.relationshipStatus,
           levelOfEducation: profile.levelOfEducation,
           hasChildren: profile.hasChildren,
+          notificationsEnabled: profile.notificationsEnabled,
+          notificationsForPrivateMessagesEnabled:
+              profile.notificationsForPrivateMessagesEnabled,
+          notificationsForPublicMessageLikedEnabled:
+              profile.notificationsForPublicMessageLikedEnabled,
+          notificationsForPublicMessageRepliesEnabled:
+              profile.notificationsForPublicMessageRepliesEnabled,
+          notificationsUserDuplicatedYourChallengeEnabled:
+              profile.notificationsUserDuplicatedYourChallengeEnabled,
+          notificationsUserJoinedYourChallengeEnabled:
+              profile.notificationsUserJoinedYourChallengeEnabled,
         ),
       );
 

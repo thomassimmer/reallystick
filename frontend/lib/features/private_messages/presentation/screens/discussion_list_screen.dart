@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/private_messages/presentation/blocs/private_discussion/private_discussion_bloc.dart';
 import 'package:reallystick/features/private_messages/presentation/blocs/private_discussion/private_discussion_events.dart';
-import 'package:reallystick/features/private_messages/presentation/blocs/private_discussion/private_discussion_states.dart';
 import 'package:reallystick/features/private_messages/presentation/widgets/discussion_widget.dart';
 
 class DiscussionListScreen extends StatefulWidget {
@@ -23,83 +23,67 @@ class DiscussionListScreenState extends State<DiscussionListScreen> {
   Widget build(BuildContext context) {
     final privateDiscussionState = context.watch<PrivateDiscussionBloc>().state;
 
-    if (privateDiscussionState is PrivateDiscussionLoaded) {
-      final discussions = privateDiscussionState.discussions.values.toList();
+    final discussions = privateDiscussionState.discussions.values.toList();
 
-      discussions.sort((a, b) {
-        if (a.hasBlocked || b.hasBlocked) {
-          return -1;
-        }
+    discussions.sort((a, b) {
+      if (a.hasBlocked || b.hasBlocked) {
+        return -1;
+      }
 
-        if (a.lastMessage != null && b.lastMessage != null) {
-          return b.lastMessage!.createdAt.compareTo(a.lastMessage!.createdAt);
-        }
+      if (a.lastMessage != null && b.lastMessage != null) {
+        return b.lastMessage!.createdAt.compareTo(a.lastMessage!.createdAt);
+      }
 
-        return b.createdAt.compareTo(a.createdAt);
-      });
+      return b.createdAt.compareTo(a.createdAt);
+    });
 
-      return Scaffold(
-        appBar: AppBar(
-          centerTitle: false,
-          title: Text(
-            AppLocalizations.of(context)!.messages,
-            textAlign: TextAlign.left,
-          ),
-          leading: Icon(
-            Icons.message,
-            size: 20,
-          ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          AppLocalizations.of(context)!.messages,
+          style: context.typographies.heading,
         ),
-        body: RefreshIndicator(
-          onRefresh: _pullRefresh,
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              children: [
-                if (discussions.isNotEmpty) ...[
-                  for (final (idx, discussion) in discussions.indexed) ...[
-                    DiscussionWidget(
-                      discussion: discussion,
+        centerTitle: false,
+      ),
+      body: RefreshIndicator(
+        onRefresh: _pullRefresh,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: discussions.isNotEmpty
+              ? CustomScrollView(
+                  slivers: [
+                    SliverList(
+                      delegate: SliverChildBuilderDelegate((context, index) {
+                        return Stack(
+                          children: [
+                            DiscussionWidget(
+                              discussion: discussions[index],
+                            ),
+                            if (index != 0) Divider(),
+                          ],
+                        );
+                      }, childCount: discussions.length),
                     ),
-                    if (idx != discussions.length - 1) Divider(),
                   ],
-                ] else ...[
-                  Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 8),
-                    // decoration: BoxDecoration(
-                    //   boxShadow: [
-                    //     BoxShadow(
-                    //         // color: widget.color.withOpacity(0.2),
-                    //         // blurRadius: 10,
-                    //         ),
-                    //   ],
-                    //   borderRadius: BorderRadius.circular(16),
-                    // ),
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(16),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Center(
-                          child: Text(
-                            AppLocalizations.of(context)!
-                                .noDiscussionsForHabitYet,
-                            // style: TextStyle(color: context.colors.text),
-                            textAlign: TextAlign.center,
-                          ),
+                )
+              : Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 8),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(16),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Center(
+                        child: Text(
+                          AppLocalizations.of(context)!
+                              .noDiscussionsForHabitYet,
+                          textAlign: TextAlign.center,
                         ),
                       ),
                     ),
                   ),
-                ]
-              ],
-            ),
-          ),
+                ),
         ),
-      );
-    } else {
-      return Center(
-        child: CircularProgressIndicator(),
-      );
-    }
+      ),
+    );
   }
 }

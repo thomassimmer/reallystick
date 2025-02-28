@@ -28,6 +28,12 @@ pub async fn get_profile_information(
 
     let user = get_user_by_id(&mut transaction, request_claims.user_id).await;
 
+    if let Err(e) = transaction.commit().await {
+        eprintln!("Error: {}", e);
+        return HttpResponse::InternalServerError()
+            .json(AppError::DatabaseTransaction.to_response());
+    }
+
     match user {
         Ok(existing_user) => match existing_user {
             Some(user) => HttpResponse::Ok().json(UserResponse {

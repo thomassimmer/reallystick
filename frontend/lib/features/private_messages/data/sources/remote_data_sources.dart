@@ -166,7 +166,6 @@ class PrivateMessageRemoteDataSource {
                 (discussion) => PrivateDiscussionDataModel.fromJson(discussion))
             .toList();
       } catch (e) {
-        print(e);
         throw ParsingError();
       }
     }

@@ -25,6 +25,12 @@ pub async fn is_otp_enabled(
     // Check if user already exists
     let existing_user = get_user_by_username(&mut transaction, body.username.clone()).await;
 
+    if let Err(e) = transaction.commit().await {
+        eprintln!("Error: {}", e);
+        return HttpResponse::InternalServerError()
+            .json(AppError::DatabaseTransaction.to_response());
+    }
+
     match existing_user {
         Ok(existing_user) => match existing_user {
             Some(existing_user) => HttpResponse::Ok().json(IsOtpEnabledResponse {

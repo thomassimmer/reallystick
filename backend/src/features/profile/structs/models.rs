@@ -2,12 +2,14 @@ use actix_http::Payload;
 use actix_web::{FromRequest, HttpMessage, HttpRequest};
 use futures_util::future::{err, ok, Ready};
 use serde::{Deserialize, Serialize};
-use sqlx::prelude::FromRow;
+use sqlx::{prelude::FromRow, PgConnection};
 use std::{collections::HashMap, sync::Arc};
 use tokio::sync::RwLock;
 use uuid::Uuid;
 
-#[derive(Debug, Deserialize, Serialize, Clone, FromRow)]
+use crate::features::profile::helpers::profile::get_user_by_id;
+
+#[derive(Debug, Default, Deserialize, Serialize, Clone, FromRow)]
 pub struct User {
     pub id: uuid::Uuid,
     pub username: String, // lowercase
@@ -41,6 +43,13 @@ pub struct User {
     pub relationship_status: Option<String>,
     pub level_of_education: Option<String>,
     pub has_children: Option<bool>,
+
+    pub notifications_enabled: bool,
+    pub notifications_for_private_messages_enabled: bool,
+    pub notifications_for_public_message_liked_enabled: bool,
+    pub notifications_for_public_message_replies_enabled: bool,
+    pub notifications_user_joined_your_challenge_enabled: bool,
+    pub notifications_user_duplicated_your_challenge_enabled: bool,
 }
 
 impl User {
@@ -72,6 +81,17 @@ impl User {
             relationship_status: self.relationship_status.to_owned(),
             level_of_education: self.level_of_education.to_owned(),
             has_children: self.has_children,
+            notifications_enabled: self.notifications_enabled,
+            notifications_for_private_messages_enabled: self
+                .notifications_for_private_messages_enabled,
+            notifications_for_public_message_liked_enabled: self
+                .notifications_for_public_message_liked_enabled,
+            notifications_for_public_message_replies_enabled: self
+                .notifications_for_public_message_replies_enabled,
+            notifications_user_joined_your_challenge_enabled: self
+                .notifications_user_joined_your_challenge_enabled,
+            notifications_user_duplicated_your_challenge_enabled: self
+                .notifications_user_duplicated_your_challenge_enabled,
         }
     }
 
@@ -80,6 +100,7 @@ impl User {
             id: self.id,
             username: self.username.to_owned(),
             public_key: self.public_key.to_owned(),
+            locale: self.locale.to_owned(),
         }
     }
 }
@@ -126,6 +147,13 @@ pub struct UserData {
     pub relationship_status: Option<String>,
     pub level_of_education: Option<String>,
     pub has_children: Option<bool>,
+
+    pub notifications_enabled: bool,
+    pub notifications_for_private_messages_enabled: bool,
+    pub notifications_for_public_message_liked_enabled: bool,
+    pub notifications_for_public_message_replies_enabled: bool,
+    pub notifications_user_joined_your_challenge_enabled: bool,
+    pub notifications_user_duplicated_your_challenge_enabled: bool,
 }
 
 #[derive(Serialize, Debug, Deserialize, Clone)]
@@ -133,6 +161,7 @@ pub struct UserPublicData {
     pub id: Uuid,
     pub username: String,
     pub public_key: Option<String>,
+    pub locale: String,
 }
 
 #[derive(Default, Clone)]
@@ -160,6 +189,27 @@ impl UserPublicDataCache {
 
     pub async fn get_value_for_key(&self, key: &Uuid) -> Option<UserPublicData> {
         self.data.read().await.get(key).cloned()
+    }
+
+    pub async fn get_value_for_key_or_insert_it(
+        &self,
+        key: &Uuid,
+        conn: &mut PgConnection,
+    ) -> Option<UserPublicData> {
+        match self.data.read().await.get(key).cloned() {
+            Some(r) => Some(r),
+            None => match get_user_by_id(conn, *key).await {
+                Ok(Some(u)) => {
+                    let user_public_data = u.to_user_public_data();
+
+                    self.update_or_insert_key(*key, user_public_data.clone())
+                        .await;
+
+                    Some(user_public_data)
+                }
+                _ => None,
+            },
+        }
     }
 }
 

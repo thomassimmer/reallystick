@@ -26,7 +26,8 @@ pub async fn get_challenges(pool: Data<PgPool>, request_claims: ReqData<Claims>)
     let get_challenges_result = if request_claims.is_admin {
         challenge::get_challenges(&mut transaction).await
     } else {
-        challenge::get_created_and_joined_challenges(&mut transaction, request_claims.user_id).await
+        challenge::get_challenges(&mut transaction).await
+        // challenge::get_created_and_joined_challenges(&mut transaction, request_claims.user_id).await
     };
 
     if let Err(e) = transaction.commit().await {

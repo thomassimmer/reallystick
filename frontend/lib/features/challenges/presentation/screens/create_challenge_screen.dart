@@ -166,7 +166,12 @@ class CreateChallengeScreenState extends State<CreateChallengeScreen> {
 
             return Scaffold(
               appBar: AppBar(
-                title: Text(AppLocalizations.of(context)!.addNewChallenge),
+                title: Text(
+                  AppLocalizations.of(context)!.addNewChallenge,
+                  style: context.typographies.headingSmall,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                ),
               ),
               body: SingleChildScrollView(
                 child: Padding(
@@ -372,7 +377,12 @@ class CreateChallengeScreenState extends State<CreateChallengeScreen> {
           } else {
             return Scaffold(
               appBar: AppBar(
-                title: Text(AppLocalizations.of(context)!.addNewChallenge),
+                title: Text(
+                  AppLocalizations.of(context)!.addNewChallenge,
+                  style: context.typographies.headingSmall,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                ),
               ),
               body: Center(
                 child: CircularProgressIndicator(),

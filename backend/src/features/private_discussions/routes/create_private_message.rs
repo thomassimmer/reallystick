@@ -1,5 +1,11 @@
+use std::sync::Arc;
+
 use crate::{
-    core::{constants::errors::AppError, helpers::mock_now::now},
+    core::{
+        constants::errors::AppError,
+        helpers::{mock_now::now, translation::Translator},
+        structs::redis_messages::NotificationEvent,
+    },
     features::{
         auth::structs::models::Claims,
         private_discussions::{
@@ -8,13 +14,12 @@ use crate::{
                 private_message,
             },
             structs::{
-                models::private_message::{
-                    ChannelsData, PrivateMessage, PRIVATE_MESSAGE_CONTENT_MAX_LENGTH,
-                },
+                models::private_message::{PrivateMessage, PRIVATE_MESSAGE_CONTENT_MAX_LENGTH},
                 requests::private_message::PrivateMessageCreateRequest,
                 responses::private_message::PrivateMessageResponse,
             },
         },
+        profile::structs::models::UserPublicDataCache,
     },
 };
 use actix_web::{
@@ -22,6 +27,8 @@ use actix_web::{
     web::{Data, Json, ReqData},
     HttpResponse, Responder,
 };
+use fluent::FluentArgs;
+use redis::{AsyncCommands, Client};
 use serde_json::json;
 use sqlx::PgPool;
 use uuid::Uuid;
@@ -30,7 +37,9 @@ use uuid::Uuid;
 pub async fn create_private_message(
     pool: Data<PgPool>,
     body: Json<PrivateMessageCreateRequest>,
-    channels_data: Data<ChannelsData>,
+    redis_client: Data<Client>,
+    translator: Data<Arc<Translator>>,
+    user_public_data_cache: Data<UserPublicDataCache>,
     request_claims: ReqData<Claims>,
 ) -> impl Responder {
     let mut transaction = match pool.begin().await {
@@ -100,21 +109,72 @@ pub async fn create_private_message(
         }
     };
 
-    if let Some(recipient) = recipients.iter().next() {
-        if let Some(mut session) = channels_data.get_value_for_key(recipient.user_id).await {
-            let _ = session
-                .text(json!(private_message.to_private_message_data()).to_string())
+    match redis_client.get_multiplexed_async_connection().await {
+        Ok(mut con) => {
+            let result: Result<(), redis::RedisError> = con
+                .publish(
+                    "private_message_created",
+                    json!(NotificationEvent {
+                        data: json!(private_message.to_private_message_data()).to_string(),
+                        recipient: request_claims.user_id,
+                        title: None,
+                        body: None,
+                        url: None,
+                    })
+                    .to_string(),
+                )
                 .await;
-        }
-    }
+            if let Err(e) = result {
+                eprintln!("Error: {}", e);
+            }
 
-    if let Some(mut session) = channels_data
-        .get_value_for_key(request_claims.user_id)
-        .await
-    {
-        let _ = session
-            .text(json!(private_message.to_private_message_data()).to_string())
-            .await;
+            if let Some(recipient_participation) = recipients.iter().next() {
+                if let (Some(recipient), Some(creator)) = (
+                    user_public_data_cache
+                        .get_value_for_key_or_insert_it(
+                            &recipient_participation.user_id,
+                            &mut transaction,
+                        )
+                        .await,
+                    user_public_data_cache
+                        .get_value_for_key_or_insert_it(&request_claims.user_id, &mut transaction)
+                        .await,
+                ) {
+                    let mut args = FluentArgs::new();
+                    args.set("username", creator.username);
+
+                    let url = format!("/messages/{}", private_message.discussion_id);
+
+                    let result: Result<(), redis::RedisError> = con
+                        .publish(
+                            "private_message_created",
+                            json!(NotificationEvent {
+                                data: json!(private_message.to_private_message_data()).to_string(),
+                                recipient: recipient_participation.user_id,
+                                title: Some(translator.translate(
+                                    &recipient.locale,
+                                    "message-created-title",
+                                    None,
+                                )),
+                                body: Some(translator.translate(
+                                    &recipient.locale,
+                                    "message-created-body",
+                                    Some(&args),
+                                )),
+                                url: Some(url),
+                            })
+                            .to_string(),
+                        )
+                        .await;
+                    if let Err(e) = result {
+                        eprintln!("Error: {}", e);
+                    }
+                }
+            }
+        }
+        Err(e) => {
+            eprintln!("Error: {}", e);
+        }
     }
 
     if let Err(e) = transaction.commit().await {

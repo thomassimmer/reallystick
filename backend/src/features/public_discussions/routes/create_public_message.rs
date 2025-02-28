@@ -1,9 +1,16 @@
+use std::sync::Arc;
+
 use crate::{
-    core::{constants::errors::AppError, helpers::mock_now::now},
+    core::{
+        constants::errors::AppError,
+        helpers::{mock_now::now, translation::Translator},
+    },
     features::{
         auth::structs::models::Claims,
         challenges::helpers::challenge::get_challenge_by_id,
         habits::helpers::habit::get_habit_by_id,
+        notifications::helpers::notification::generate_notification,
+        profile::structs::models::UserPublicDataCache,
         public_discussions::{
             helpers::public_message::{
                 self, get_public_message_by_id, update_public_message_reply_count,
@@ -21,6 +28,8 @@ use actix_web::{
     web::{Data, Json, ReqData},
     HttpResponse, Responder,
 };
+use fluent::FluentArgs;
+use redis::Client;
 use sqlx::PgPool;
 use uuid::Uuid;
 
@@ -28,6 +37,9 @@ use uuid::Uuid;
 pub async fn create_public_message(
     pool: Data<PgPool>,
     body: Json<PublicMessageCreateRequest>,
+    redis_client: Data<Client>,
+    translator: Data<Arc<Translator>>,
+    user_public_data_cache: Data<UserPublicDataCache>,
     request_claims: ReqData<Claims>,
 ) -> impl Responder {
     let mut transaction = match pool.begin().await {
@@ -152,6 +164,40 @@ pub async fn create_public_message(
             eprintln!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::PublicMessageUpdate.to_response());
+        }
+
+        // If user is not the message's creator
+        if request_claims.user_id != message.creator {
+            if let (Some(person_who_liked), Some(creator)) = (
+                user_public_data_cache
+                    .get_value_for_key_or_insert_it(&request_claims.user_id, &mut transaction)
+                    .await,
+                user_public_data_cache
+                    .get_value_for_key_or_insert_it(&message.creator, &mut transaction)
+                    .await,
+            ) {
+                let mut args = FluentArgs::new();
+                args.set("username", person_who_liked.username);
+
+                generate_notification(
+                    &mut transaction,
+                    message.creator,
+                    &translator.translate(
+                        &creator.locale,
+                        "user-replied-to-your-message-title",
+                        None,
+                    ),
+                    &translator.translate(
+                        &creator.locale,
+                        "user-replied-to-your-message-body",
+                        Some(&args),
+                    ),
+                    redis_client,
+                    "public_message_replied",
+                    None,
+                )
+                .await;
+            }
         }
     }
 

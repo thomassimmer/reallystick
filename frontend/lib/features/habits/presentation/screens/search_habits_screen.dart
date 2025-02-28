@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
+import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/habits/domain/entities/habit.dart';
 import 'package:reallystick/features/habits/domain/entities/habit_category.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.dart';
@@ -58,7 +59,12 @@ class SearchHabitsScreenState extends State<SearchHabitsScreen> {
 
       return Scaffold(
         appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.addNewHabit),
+          title: Text(
+            AppLocalizations.of(context)!.addNewHabit,
+            style: context.typographies.headingSmall,
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+          ),
         ),
         body: Column(
           children: [

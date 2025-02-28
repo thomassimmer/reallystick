@@ -59,6 +59,41 @@ pub async fn get_last_messages_for_discussions(
     .await
 }
 
+pub async fn get_unseen_messages_for_discussions(
+    conn: &mut PgConnection,
+    discussion_ids: Vec<Uuid>,
+    user_id: Uuid,
+) -> Result<Vec<(Uuid, i64)>, sqlx::Error> {
+    let results = sqlx::query!(
+        r#"
+        SELECT pm.discussion_id, COUNT(*) AS unseen_count
+        FROM private_messages pm
+        WHERE 
+            pm.discussion_id = ANY($1)
+            AND pm.creator != $2
+            AND pm.seen = false
+        GROUP BY pm.discussion_id;
+        "#,
+        &discussion_ids,
+        user_id,
+    )
+    .fetch_all(conn)
+    .await;
+
+    let mut discussions: Vec<(Uuid, i64)> = Vec::new();
+
+    match results {
+        Ok(results) => {
+            for row in results {
+                discussions.push((row.discussion_id, row.unseen_count.unwrap_or_default()));
+            }
+        }
+        Err(e) => return Err(e),
+    };
+
+    return Ok(discussions);
+}
+
 pub async fn delete_message_by_id(
     conn: &mut PgConnection,
     message_id: Uuid,

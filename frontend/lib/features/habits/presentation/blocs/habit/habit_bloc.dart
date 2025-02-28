@@ -28,8 +28,8 @@ import 'package:reallystick/features/profile/presentation/blocs/profile/profile_
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
 
 class HabitBloc extends Bloc<HabitEvent, HabitState> {
-  final AuthBloc authBloc;
-  final ProfileBloc profileBloc;
+  final AuthBloc authBloc = GetIt.instance<AuthBloc>();
+  final ProfileBloc profileBloc = GetIt.instance<ProfileBloc>();
   late StreamSubscription profileBlocSubscription;
 
   final GetHabitParticipationsUsecase getHabitParticipationsUsecase =
@@ -61,10 +61,7 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
   final DeleteHabitParticipationUsecase deleteHabitParticipationUsecase =
       GetIt.instance<DeleteHabitParticipationUsecase>();
 
-  HabitBloc({
-    required this.authBloc,
-    required this.profileBloc,
-  }) : super(HabitsLoading()) {
+  HabitBloc() : super(HabitsLoading()) {
     profileBlocSubscription = profileBloc.stream.listen((profileState) {
       if (profileState is ProfileAuthenticated) {
         add(HabitInitializeEvent());

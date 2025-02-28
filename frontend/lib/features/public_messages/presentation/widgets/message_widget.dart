@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/private_messages/domain/entities/private_discussion.dart';
 import 'package:reallystick/features/private_messages/presentation/blocs/private_discussion/private_discussion_bloc.dart';
-import 'package:reallystick/features/private_messages/presentation/blocs/private_discussion/private_discussion_states.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
 import 'package:reallystick/features/public_messages/domain/entities/public_message.dart';
@@ -141,8 +140,7 @@ class MessageWidget extends StatelessWidget {
         publicMessageState is PublicMessagesLoaded &&
         profileState is ProfileAuthenticated &&
         threadState is ThreadLoaded &&
-        replyState is ReplyLoaded &&
-        privateDiscussionState is PrivateDiscussionLoaded) {
+        replyState is ReplyLoaded) {
       final userLocale = profileState.profile.locale;
 
       PublicMessage? message = publicMessageState.threads

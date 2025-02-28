@@ -4,9 +4,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reallystick/core/messages/message.dart';
 import 'package:reallystick/core/presentation/widgets/global_snack_bar.dart';
+import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/private_messages/presentation/blocs/private_discussion/private_discussion_bloc.dart';
 import 'package:reallystick/features/private_messages/presentation/blocs/private_discussion/private_discussion_events.dart';
-import 'package:reallystick/features/private_messages/presentation/blocs/private_discussion/private_discussion_states.dart';
 import 'package:reallystick/features/private_messages/presentation/blocs/private_message_creation/private_message_creation_bloc.dart';
 import 'package:reallystick/features/private_messages/presentation/blocs/private_message_creation/private_message_creation_events.dart';
 import 'package:reallystick/features/private_messages/presentation/widgets/custom_message_input.dart';
@@ -94,9 +94,7 @@ class NewPrivateDiscussionScreenState
     final profileState = context.watch<ProfileBloc>().state;
     final privateDiscussionState = context.watch<PrivateDiscussionBloc>().state;
 
-    if (userState is UsersLoaded &&
-        privateDiscussionState is PrivateDiscussionLoaded &&
-        profileState is ProfileAuthenticated) {
+    if (userState is UsersLoaded && profileState is ProfileAuthenticated) {
       final recipient = userState.users[widget.recipientId];
 
       if (recipient == null) {
@@ -129,8 +127,8 @@ class NewPrivateDiscussionScreenState
         Future.microtask(
           () {
             GlobalSnackBar.show(
-              context,
-              ErrorMessage("recipientMissingPublicKey"),
+              context: context,
+              message: ErrorMessage("recipientMissingPublicKey"),
             );
             context.pop();
           },
@@ -141,8 +139,8 @@ class NewPrivateDiscussionScreenState
         Future.microtask(
           () {
             GlobalSnackBar.show(
-              context,
-              ErrorMessage("creatorMissingPublicKey"),
+              context: context,
+              message: ErrorMessage("creatorMissingPublicKey"),
             );
             context.pop();
           },
@@ -164,6 +162,7 @@ class NewPrivateDiscussionScreenState
           title: Text(
             AppLocalizations.of(context)!.newDiscussion,
             textAlign: TextAlign.left,
+            style: context.typographies.headingSmall,
           ),
         ),
         body: Padding(
@@ -175,6 +174,7 @@ class NewPrivateDiscussionScreenState
                 child: Center(
                   child: Text(
                     AppLocalizations.of(context)!.noMessagesYet,
+                    textAlign: TextAlign.center,
                   ),
                 ),
               ),

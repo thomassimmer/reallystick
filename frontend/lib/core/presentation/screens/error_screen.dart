@@ -31,7 +31,7 @@ class ErrorScreen extends StatelessWidget {
                     Text(
                       'Stick',
                       style: context.typographies.headingSmall
-                          .copyWith(color: context.colors.hint),
+                          .copyWith(color: context.colors.text),
                     ),
                   ])),
               Spacer(),

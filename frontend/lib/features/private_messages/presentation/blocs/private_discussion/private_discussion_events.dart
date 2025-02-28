@@ -36,10 +36,40 @@ class UpdateDiscussionParticipationEvent extends PrivateDiscussionEvent {
   });
 }
 
-class UpdateDiscussionLastMessage extends PrivateDiscussionEvent {
+class MessageCreatedReceivedEvent extends PrivateDiscussionEvent {
   final PrivateMessage message;
 
-  const UpdateDiscussionLastMessage({
+  const MessageCreatedReceivedEvent({
     required this.message,
   });
+}
+
+class MessageUpdatedReceivedEvent extends PrivateDiscussionEvent {
+  final PrivateMessage message;
+
+  const MessageUpdatedReceivedEvent({
+    required this.message,
+  });
+}
+
+class MessageDeletedReceivedEvent extends PrivateDiscussionEvent {
+  final PrivateMessage message;
+
+  const MessageDeletedReceivedEvent({
+    required this.message,
+  });
+}
+
+class MessageMarkedAsSeenReceivedEvent extends PrivateDiscussionEvent {
+  final PrivateMessage message;
+
+  const MessageMarkedAsSeenReceivedEvent({
+    required this.message,
+  });
+}
+
+class MarkPrivateMessageAsSeenInDiscussionEvent extends PrivateDiscussionEvent {
+  final PrivateMessage message;
+
+  const MarkPrivateMessageAsSeenInDiscussionEvent({required this.message});
 }

@@ -50,4 +50,8 @@ pub mod private_discussions {
     pub mod private_message;
 }
 
+pub mod notifications {
+    pub mod notifications;
+}
+
 pub mod helpers;

@@ -9,6 +9,7 @@ class PrivateDiscussionDataModel extends Equatable {
   final DateTime createdAt;
   final PrivateMessageDataModel? lastMessage;
   final String recipientId;
+  final int unseenMessages;
 
   const PrivateDiscussionDataModel({
     required this.id,
@@ -17,6 +18,7 @@ class PrivateDiscussionDataModel extends Equatable {
     required this.createdAt,
     required this.lastMessage,
     required this.recipientId,
+    required this.unseenMessages,
   });
 
   factory PrivateDiscussionDataModel.fromJson(Map<String, dynamic> jsonObject) {
@@ -29,6 +31,7 @@ class PrivateDiscussionDataModel extends Equatable {
           ? PrivateMessageDataModel.fromJson(jsonObject['last_message'])
           : null,
       recipientId: jsonObject['recipient_id'] as String,
+      unseenMessages: jsonObject['unseen_messages'] as int,
     );
   }
 
@@ -39,6 +42,7 @@ class PrivateDiscussionDataModel extends Equatable {
         createdAt: createdAt,
         lastMessage: lastMessage?.toDomain(),
         recipientId: recipientId,
+        unseenMessages: unseenMessages,
       );
 
   @override
@@ -49,5 +53,6 @@ class PrivateDiscussionDataModel extends Equatable {
         createdAt,
         lastMessage,
         recipientId,
+        unseenMessages,
       ];
 }

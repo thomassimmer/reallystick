@@ -8,9 +8,12 @@ use actix_web::{
 use chrono::Utc;
 use reallystick::{
     core::helpers::mock_now::override_now,
-    features::habits::structs::{
-        models::{habit::HabitData, habit_statistics::HabitStatistics},
-        responses::habit::{HabitResponse, HabitStatisticsResponse, HabitsResponse},
+    features::{
+        habits::structs::{
+            models::{habit::HabitData, habit_statistics::HabitStatistics},
+            responses::habit::{HabitResponse, HabitStatisticsResponse, HabitsResponse},
+        },
+        profile::structs::requests::UserUpdateRequest,
     },
 };
 use serde_json::json;
@@ -484,22 +487,28 @@ pub async fn user_can_get_habit_statistics() {
         .uri("/api/users/me")
         .insert_header((header::AUTHORIZATION, format!("Bearer {}", access_token)))
         .insert_header(ContentType::json())
-        .set_json(&serde_json::json!({
-            "locale": "fr",
-            "theme": "light",
-            "has_seen_questions": true,
-            "age_category": "20-25",
-            "gender": "male",
-            "continent": "europe",
-            "country": "france",
-            "region": None::<String>,
-            "activity": None::<String>,
-            "financial_situation": "poor",
-            "lives_in_urban_area": true,
-            "relationship_status": "single",
-            "level_of_education": "1",
-            "has_children": false,
-        }))
+        .set_json(UserUpdateRequest {
+            locale: "fr".to_string(),
+            theme: "light".to_string(),
+            has_seen_questions: true,
+            age_category: Some("20-25".to_string()),
+            gender: Some("male".to_string()),
+            continent: Some("europe".to_string()),
+            country: Some("france".to_string()),
+            region: None::<String>,
+            activity: None::<String>,
+            financial_situation: Some("poor".to_string()),
+            lives_in_urban_area: Some(true),
+            relationship_status: Some("single".to_string()),
+            level_of_education: Some("1".to_string()),
+            has_children: Some(false),
+            notifications_enabled: true,
+            notifications_for_private_messages_enabled: true,
+            notifications_for_public_message_liked_enabled: true,
+            notifications_for_public_message_replies_enabled: true,
+            notifications_user_joined_your_challenge_enabled: true,
+            notifications_user_duplicated_your_challenge_enabled: true,
+        })
         .to_request();
     let response = test::call_service(&app, req).await;
     assert_eq!(200, response.status().as_u16());
@@ -579,22 +588,28 @@ pub async fn user_can_get_habit_statistics() {
         .uri("/api/users/me")
         .insert_header((header::AUTHORIZATION, format!("Bearer {}", access_token)))
         .insert_header(ContentType::json())
-        .set_json(&serde_json::json!({
-            "locale": "fr",
-            "theme": "light",
-            "has_seen_questions": true,
-            "age_category": "25-30",
-            "gender": "female",
-            "continent": "europe",
-            "country": "england",
-            "region": None::<String>,
-            "activity": "worker",
-            "financial_situation": "poor",
-            "lives_in_urban_area": true,
-            "relationship_status": "couple",
-            "level_of_education": "2",
-            "has_children": true,
-        }))
+        .set_json(UserUpdateRequest {
+            locale: "fr".to_string(),
+            theme: "light".to_string(),
+            has_seen_questions: true,
+            age_category: Some("25-30".to_string()),
+            gender: Some("female".to_string()),
+            continent: Some("europe".to_string()),
+            country: Some("england".to_string()),
+            region: None::<String>,
+            activity: Some("worker".to_string()),
+            financial_situation: Some("poor".to_string()),
+            lives_in_urban_area: Some(true),
+            relationship_status: Some("couple".to_string()),
+            level_of_education: Some("2".to_string()),
+            has_children: Some(true),
+            notifications_enabled: true,
+            notifications_for_private_messages_enabled: true,
+            notifications_for_public_message_liked_enabled: true,
+            notifications_for_public_message_replies_enabled: true,
+            notifications_user_joined_your_challenge_enabled: true,
+            notifications_user_duplicated_your_challenge_enabled: true,
+        })
         .to_request();
     let response = test::call_service(&app, req).await;
     assert_eq!(200, response.status().as_u16());

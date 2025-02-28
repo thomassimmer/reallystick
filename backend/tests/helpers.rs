@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use actix_http::Request;
 use actix_web::{
     body::MessageBody,
@@ -10,6 +12,7 @@ use argon2::{password_hash::SaltString, Argon2};
 use rand::rngs::OsRng;
 use reallystick::{
     configuration::{get_configuration, DatabaseSettings},
+    core::helpers::translation::Translator,
     features::profile::{helpers::profile::create_user, structs::models::User},
     startup::create_app,
 };
@@ -19,7 +22,6 @@ use reallystick::{
         auth::structs::models::TokenCache,
         challenges::structs::models::challenge_statistics::ChallengeStatisticsCache,
         habits::structs::models::habit_statistics::HabitStatisticsCache,
-        private_discussions::structs::models::private_message::ChannelsData,
         profile::structs::models::UserPublicDataCache,
     },
 };
@@ -42,7 +44,8 @@ pub async fn spawn_app(
     let challenge_statistics_cache = ChallengeStatisticsCache::default();
     let token_cache = TokenCache::default();
     let user_public_data_cache = UserPublicDataCache::default();
-    let channels_data = ChannelsData::default();
+    let redis_client = redis::Client::open("redis://redis:6379").unwrap();
+    let translator = Arc::new(Translator::new());
 
     let connection_pool = configure_database(&configuration.database).await;
     let secret = configuration.application.secret;
@@ -50,11 +53,12 @@ pub async fn spawn_app(
     init_service(create_app(
         connection_pool.clone(),
         secret.clone(),
-        habit_statistics_cache.clone(),
-        challenge_statistics_cache.clone(),
-        token_cache.clone(),
-        user_public_data_cache.clone(),
-        channels_data.clone(),
+        habit_statistics_cache,
+        challenge_statistics_cache,
+        token_cache,
+        user_public_data_cache,
+        redis_client,
+        translator,
     ))
     .await
 }
@@ -114,6 +118,12 @@ async fn configure_database(config: &DatabaseSettings) -> Pool<Postgres> {
         relationship_status: None,
         level_of_education: None,
         has_children: None,
+        notifications_enabled: false,
+        notifications_for_private_messages_enabled: false,
+        notifications_for_public_message_liked_enabled: false,
+        notifications_for_public_message_replies_enabled: false,
+        notifications_user_duplicated_your_challenge_enabled: false,
+        notifications_user_joined_your_challenge_enabled: true,
     };
 
     let mut connection = PgConnection::connect_with(&config.with_db())

@@ -1,5 +1,5 @@
 use crate::{
-    core::constants::errors::AppError,
+    core::{constants::errors::AppError, structs::redis_messages::UserUpdatedEvent},
     features::{
         auth::structs::models::Claims,
         profile::{
@@ -13,12 +13,15 @@ use actix_web::{
     web::{Data, Json, ReqData},
     HttpResponse, Responder,
 };
+use redis::{AsyncCommands, Client};
+use serde_json::json;
 use sqlx::PgPool;
 
 #[post("/me")]
 pub async fn post_profile_information(
     body: Json<UserUpdateRequest>,
     pool: Data<PgPool>,
+    redis_client: Data<Client>,
     request_claims: ReqData<Claims>,
 ) -> impl Responder {
     let mut transaction = match pool.begin().await {
@@ -55,8 +58,24 @@ pub async fn post_profile_information(
     request_user.level_of_education = body.level_of_education.clone();
     request_user.has_children = body.has_children;
     request_user.has_seen_questions = body.has_seen_questions;
+    request_user.notifications_enabled = body.notifications_enabled;
+    request_user.notifications_for_private_messages_enabled =
+        body.notifications_for_private_messages_enabled;
+    request_user.notifications_for_public_message_liked_enabled =
+        body.notifications_for_public_message_liked_enabled;
+    request_user.notifications_for_public_message_replies_enabled =
+        body.notifications_for_public_message_replies_enabled;
+    request_user.notifications_user_duplicated_your_challenge_enabled =
+        body.notifications_user_duplicated_your_challenge_enabled;
+    request_user.notifications_user_joined_your_challenge_enabled =
+        body.notifications_user_joined_your_challenge_enabled;
 
     let updated_user_result = update_user(&mut transaction, &request_user).await;
+
+    if let Err(e) = updated_user_result {
+        eprintln!("Error: {}", e);
+        return HttpResponse::InternalServerError().json(AppError::UserUpdate.to_response());
+    }
 
     if let Err(e) = transaction.commit().await {
         eprintln!("Error: {}", e);
@@ -64,14 +83,28 @@ pub async fn post_profile_information(
             .json(AppError::DatabaseTransaction.to_response());
     }
 
-    match updated_user_result {
-        Ok(_) => HttpResponse::Ok().json(UserResponse {
-            code: "PROFILE_UPDATED".to_string(),
-            user: request_user.to_user_data(),
-        }),
+    match redis_client.get_multiplexed_async_connection().await {
+        Ok(mut con) => {
+            let result: Result<(), redis::RedisError> = con
+                .publish(
+                    "user_updated",
+                    json!(UserUpdatedEvent {
+                        user: request_user.clone()
+                    })
+                    .to_string(),
+                )
+                .await;
+            if let Err(e) = result {
+                eprintln!("Error: {}", e);
+            }
+        }
         Err(e) => {
             eprintln!("Error: {}", e);
-            HttpResponse::InternalServerError().json(AppError::UserUpdate.to_response())
         }
     }
+
+    HttpResponse::Ok().json(UserResponse {
+        code: "PROFILE_UPDATED".to_string(),
+        user: request_user.to_user_data(),
+    })
 }

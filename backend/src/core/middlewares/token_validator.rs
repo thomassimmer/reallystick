@@ -94,9 +94,18 @@ where
                                 }
                             };
 
-                            // Check if token still exists (it could have been revoked)
+                            // Check if token still exists, it could have been revoked
                             let existing_token =
                                 get_user_token(claims.user_id, claims.jti, &mut transaction).await;
+
+                            if let Err(e) = transaction.commit().await {
+                                eprintln!("Error: {}", e);
+                                return Ok(req.into_response(
+                                    HttpResponse::InternalServerError()
+                                        .json(AppError::DatabaseTransaction.to_response())
+                                        .map_into_right_body(),
+                                ));
+                            }
 
                             match existing_token {
                                 Ok(r) => {

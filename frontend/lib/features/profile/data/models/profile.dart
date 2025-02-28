@@ -15,6 +15,13 @@ class ProfileDataModel extends Equatable {
   final String? privateKeyEncrypted;
   final String? saltUsedToDerivateKeyFromPassword;
 
+  final bool notificationsEnabled;
+  final bool notificationsForPrivateMessagesEnabled;
+  final bool notificationsForPublicMessageLikedEnabled;
+  final bool notificationsForPublicMessageRepliesEnabled;
+  final bool notificationsUserJoinedYourChallengeEnabled;
+  final bool notificationsUserDuplicatedYourChallengeEnabled;
+
   final bool hasSeenQuestions;
   final String? ageCategory;
   final String? gender;
@@ -42,6 +49,12 @@ class ProfileDataModel extends Equatable {
     required this.publicKey,
     required this.privateKeyEncrypted,
     required this.saltUsedToDerivateKeyFromPassword,
+    required this.notificationsEnabled,
+    required this.notificationsForPrivateMessagesEnabled,
+    required this.notificationsForPublicMessageLikedEnabled,
+    required this.notificationsForPublicMessageRepliesEnabled,
+    required this.notificationsUserJoinedYourChallengeEnabled,
+    required this.notificationsUserDuplicatedYourChallengeEnabled,
     this.ageCategory,
     this.gender,
     this.continent,
@@ -70,6 +83,18 @@ class ProfileDataModel extends Equatable {
         privateKeyEncrypted: json['private_key_encrypted'] as String?,
         saltUsedToDerivateKeyFromPassword:
             json['salt_used_to_derive_key_from_password'] as String?,
+        notificationsEnabled: json['notifications_enabled'] as bool,
+        notificationsForPrivateMessagesEnabled:
+            json['notifications_for_private_messages_enabled'] as bool,
+        notificationsForPublicMessageLikedEnabled:
+            json['notifications_for_public_message_liked_enabled'] as bool,
+        notificationsForPublicMessageRepliesEnabled:
+            json['notifications_for_public_message_replies_enabled'] as bool,
+        notificationsUserJoinedYourChallengeEnabled:
+            json['notifications_user_joined_your_challenge_enabled'] as bool,
+        notificationsUserDuplicatedYourChallengeEnabled:
+            json['notifications_user_duplicated_your_challenge_enabled']
+                as bool,
         hasSeenQuestions: json['has_seen_questions'] as bool,
         ageCategory: json['age_category'] as String?,
         gender: json['gender'] as String?,
@@ -97,6 +122,17 @@ class ProfileDataModel extends Equatable {
         publicKey: publicKey,
         privateKeyEncrypted: privateKeyEncrypted,
         saltUsedToDerivateKeyFromPassword: saltUsedToDerivateKeyFromPassword,
+        notificationsEnabled: notificationsEnabled,
+        notificationsForPrivateMessagesEnabled:
+            notificationsForPrivateMessagesEnabled,
+        notificationsForPublicMessageLikedEnabled:
+            notificationsForPublicMessageLikedEnabled,
+        notificationsForPublicMessageRepliesEnabled:
+            notificationsForPublicMessageRepliesEnabled,
+        notificationsUserJoinedYourChallengeEnabled:
+            notificationsUserJoinedYourChallengeEnabled,
+        notificationsUserDuplicatedYourChallengeEnabled:
+            notificationsUserDuplicatedYourChallengeEnabled,
         ageCategory: ageCategory,
         gender: gender,
         continent: continent,
@@ -124,6 +160,12 @@ class ProfileDataModel extends Equatable {
         publicKey,
         privateKeyEncrypted,
         saltUsedToDerivateKeyFromPassword,
+        notificationsEnabled,
+        notificationsForPrivateMessagesEnabled,
+        notificationsForPublicMessageLikedEnabled,
+        notificationsForPublicMessageRepliesEnabled,
+        notificationsUserJoinedYourChallengeEnabled,
+        notificationsUserDuplicatedYourChallengeEnabled,
         hasSeenQuestions,
         ageCategory,
         gender,
