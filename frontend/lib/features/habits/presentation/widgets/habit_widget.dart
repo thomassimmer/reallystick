@@ -11,6 +11,7 @@ import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_states.dart';
 import 'package:reallystick/features/habits/presentation/helpers/translations.dart';
 import 'package:reallystick/features/habits/presentation/widgets/daily_tracking_carousel_widget.dart';
+import 'package:reallystick/features/habits/presentation/widgets/last_activity_widget.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 
 class HabitWidget extends StatelessWidget {
@@ -45,10 +46,6 @@ class HabitWidget extends StatelessWidget {
             userLocale,
           );
 
-          // Calculate streak (for simplicity, using a hardcoded value)
-          const streak = 100;
-
-          // Define screen size breakpoint
           final bool isLargeScreen = checkIfLargeScreen(context);
 
           final habitColor =
@@ -95,14 +92,11 @@ class HabitWidget extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 8),
-
-                    // TODO: Day streak + Timer since stop
-                    Text(
-                      "Day streak: $streak",
-                      style: const TextStyle(fontSize: 16),
+                    LastActivityWidget(
+                      habitDailyTrackings: habitDailyTrackings,
+                      userLocale: userLocale,
                     ),
                     const SizedBox(height: 16),
-
                     DailyTrackingCarouselWidget(
                       habitId: habit.id,
                       habitDailyTrackings: habitDailyTrackings,

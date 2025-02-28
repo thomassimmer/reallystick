@@ -93,6 +93,61 @@
   "invalidUsernameOrRecoveryCodeError": "Nom d'utilisateur ou code de récupération invalide. Veuillez réessayer.",
   "keepRecoveryCodesSafe": "Merci de garder ces codes de récupération bien à l'abri.\nIls seront nécessaires si vous perdez votre mot de passe ou l'acès à votre application d'authentification.",
   "language": "Langue",
+  "lastActivity": "Dernière activité :",
+  "lastActivitySeconds": "{count,plural, =0 {À l'instant} one {il y a {count} seconde} other {il y a {count} secondes}}",
+  "@lastActivitySeconds": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "The number of seconds elapsed since the last activity."
+      }
+    }
+  },
+  "lastActivityMinutes": "{count,plural, one {il y a {count} minute} other {il y a {count} minutes}}",
+  "@lastActivityMinutes": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "The number of minutes elapsed since the last activity."
+      }
+    }
+  },
+  "lastActivityHours": "{count,plural, one {il y a {count} heure} other {il y a {count} heures}}",
+  "@lastActivityHours": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "The number of hours elapsed since the last activity."
+      }
+    }
+  },
+  "lastActivityDays": "{count,plural, one {il y a {count} jour} other {il y a {count} jours}}",
+  "@lastActivityDays": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "The number of days elapsed since the last activity."
+      }
+    }
+  },
+  "lastActivityMonths": "{count,plural, one {il y a {count} mois} other {il y a {count} mois}}",
+  "@lastActivityMonths": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "The number of months elapsed since the last activity."
+      }
+    }
+  },
+  "lastActivityYears": "{count,plural, one {il y a {count} an} other {il y a {count} ans}}",
+  "@lastActivityYears": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "The number of years elapsed since the last activity."
+      }
+    }
+  },
   "levelOfEducation": "Niveau d'éducation",
   "light": "Clair",
   "livesInUrbanArea": "Je vis en zone urbaine",
@@ -110,6 +165,7 @@
   "next": "Suivant",
   "no": "Non",
   "noAccountCreateOne": "Pas de compte ? Créez-le ici.",
+  "noActivityRecordedYet": "Pas encore d'activité enregistrée.",
   "noAnswer": "Je préfère ne pas répondre",
   "noContent": "Aucun contenu à afficher",
   "noHabitsYet": "Vous n'avez pas encore d'habitude.",

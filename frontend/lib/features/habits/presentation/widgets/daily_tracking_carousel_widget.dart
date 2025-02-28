@@ -10,6 +10,7 @@ import 'package:reallystick/features/habits/domain/entities/habit_daily_tracking
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_states.dart';
 import 'package:reallystick/features/habits/presentation/screens/list_daily_trackings_modal.dart';
+import 'package:reallystick/features/habits/presentation/widgets/last_activity_widget.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 
 class DailyTrackingCarouselWidget extends StatefulWidget {
@@ -135,6 +136,16 @@ class DailyTrackingCarouselWidgetState
                       fontWeight: FontWeight.bold,
                     ),
                   ),
+                  SizedBox(width: 30),
+                  Column(
+                    children: [
+                      SizedBox(height: 5),
+                      LastActivityWidget(
+                        habitDailyTrackings: widget.habitDailyTrackings,
+                        userLocale: userLocale
+                      ),
+                    ],
+                  )
                 ],
               ),
             ),

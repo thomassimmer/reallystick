@@ -93,6 +93,61 @@
   "invalidUsernameOrRecoveryCodeError": "Invalid username or recovery code. Please try again.",
   "keepRecoveryCodesSafe": "Please keep these recovery codes safe.\nThey are necessary if you lose your password or access to your 2FA application.",
   "language": "Language",
+  "lastActivity": "Last activity:",
+  "lastActivitySeconds": "{count,plural, =0 {Just now} one {{count} second ago} other {{count} seconds ago}}",
+  "@lastActivitySeconds": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "The number of seconds elapsed since the last activity."
+      }
+    }
+  },
+  "lastActivityMinutes": "{count,plural, one {{count} minute ago} other {{count} minutes ago}}",
+  "@lastActivityMinutes": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "The number of minutes elapsed since the last activity."
+      }
+    }
+  },
+  "lastActivityHours": "{count,plural, one {{count} hour ago} other {{count} hours ago}}",
+  "@lastActivityHours": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "The number of hours elapsed since the last activity."
+      }
+    }
+  },
+  "lastActivityDays": "{count,plural, one {{count} day ago} other {{count} days ago}}",
+  "@lastActivityDays": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "The number of days elapsed since the last activity."
+      }
+    }
+  },
+  "lastActivityMonths": "{count,plural, one {{count} month ago} other {{count} months ago}}",
+  "@lastActivityMonths": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "The number of months elapsed since the last activity."
+      }
+    }
+  },
+  "lastActivityYears": "{count,plural, one {{count} year ago} other {{count} years ago}}",
+  "@lastActivityYears": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "The number of years elapsed since the last activity."
+      }
+    }
+  },
   "levelOfEducation": "Level of education",
   "light": "Light",
   "livesInUrbanArea": "Living in urban area",
@@ -110,6 +165,7 @@
   "next": "Next",
   "no": "No",
   "noAccountCreateOne": "No account? Create one here.",
+  "noActivityRecordedYet": "No activity recorded yet.",
   "noAnswer": "I prefer to not answer",
   "noContent": "No content to display",
   "noHabitsYet": "You do not have habit yet.",
