@@ -3,17 +3,17 @@
 import 'dart:async';
 
 import 'package:dartz/dartz.dart';
+import 'package:logger/web.dart';
 import 'package:reallystick/core/messages/errors/data_error.dart';
 import 'package:reallystick/core/messages/errors/domain_error.dart';
 import 'package:reallystick/features/auth/data/errors/data_error.dart';
 import 'package:reallystick/features/auth/data/models/otp_request_model.dart';
 import 'package:reallystick/features/auth/data/models/user_token_request_model.dart';
 import 'package:reallystick/features/auth/data/sources/remote_data_sources.dart';
-import 'package:reallystick/features/auth/domain/entities/otp_generation.dart';
+import 'package:reallystick/features/auth/domain/entities/two_factor_authentication_config.dart';
 import 'package:reallystick/features/auth/domain/entities/user_token.dart';
 import 'package:reallystick/features/auth/domain/errors/domain_error.dart';
 import 'package:reallystick/features/auth/domain/repositories/auth_repository.dart';
-import 'package:logger/web.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource remoteDataSource;
@@ -28,17 +28,14 @@ class AuthRepositoryImpl implements AuthRepository {
       required String locale,
       required String theme}) async {
     try {
-      final userTokenModel = await remoteDataSource.signup(
+      final userTokenDataModel = await remoteDataSource.signup(
           RegisterUserRequestModel(
               username: username,
               password: password,
               locale: locale,
               theme: theme));
 
-      return Right(UserToken(
-          accessToken: userTokenModel.accessToken,
-          refreshToken: userTokenModel.refreshToken,
-          recoveryCodes: userTokenModel.recoveryCodes));
+      return Right(userTokenDataModel.toDomain());
     } on ParsingError {
       logger.e('ParsingError occurred.');
       return Left(InvalidResponseDomainError());
@@ -76,10 +73,7 @@ class AuthRepositoryImpl implements AuthRepository {
           .login(LoginUserRequestModel(username: username, password: password));
 
       return result.fold(
-          (userTokenModel) => Right(Left(UserToken(
-                accessToken: userTokenModel.accessToken,
-                refreshToken: userTokenModel.refreshToken,
-              ))),
+          (userTokenDataModel) => Right(Left(userTokenDataModel.toDomain())),
           (string) => Right(Right(string)));
     } on ParsingError {
       logger.e('ParsingError occurred.');
@@ -109,12 +103,10 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<Either<DomainError, TwoFactorAuthenticationConfig>>
       generateTwoFactorAuthenticationConfig() async {
     try {
-      final twoFactorAuthenticationConfig =
+      final twoFactorAuthenticationConfigDataModel =
           await remoteDataSource.generateTwoFactorAuthenticationConfig();
 
-      return Right(TwoFactorAuthenticationConfig(
-          otpBase32: twoFactorAuthenticationConfig.otpBase32,
-          otpAuthUrl: twoFactorAuthenticationConfig.otpAuthUrl));
+      return Right(twoFactorAuthenticationConfigDataModel.toDomain());
     } on ParsingError {
       logger.e('ParsingError occurred.');
       return Left(InvalidResponseDomainError());
@@ -180,13 +172,10 @@ class AuthRepositoryImpl implements AuthRepository {
     required String code,
   }) async {
     try {
-      final userTokenModel = await remoteDataSource.validateOneTimePassword(
+      final userTokenDataModel = await remoteDataSource.validateOneTimePassword(
           ValidateOneTimePasswordRequestModel(userId: userId, code: code));
 
-      return Right(UserToken(
-        accessToken: userTokenModel.accessToken,
-        refreshToken: userTokenModel.refreshToken,
-      ));
+      return Right(userTokenDataModel.toDomain());
     } on ParsingError {
       logger.e('ParsingError occurred.');
       return Left(InvalidResponseDomainError());
@@ -267,17 +256,14 @@ class AuthRepositoryImpl implements AuthRepository {
     required String recoveryCode,
   }) async {
     try {
-      final userTokenModel = await remoteDataSource
+      final userTokenDataModel = await remoteDataSource
           .recoverAccountWithTwoFactorAuthenticationAndPassword(
               RecoverAccountWithRecoveryCodeAndPasswordRequestModel(
                   password: password,
                   username: username,
                   recoveryCode: recoveryCode));
 
-      return Right(UserToken(
-        accessToken: userTokenModel.accessToken,
-        refreshToken: userTokenModel.refreshToken,
-      ));
+      return Right(userTokenDataModel.toDomain());
     } on ParsingError {
       logger.e('ParsingError occurred.');
       return Left(InvalidResponseDomainError());
@@ -307,15 +293,12 @@ class AuthRepositoryImpl implements AuthRepository {
     required String recoveryCode,
   }) async {
     try {
-      final userTokenModel = await remoteDataSource
+      final userTokenDataModel = await remoteDataSource
           .recoverAccountWithTwoFactorAuthenticationAndOneTimePassword(
               RecoverAccountWithRecoveryCodeAndOneTimePasswordRequestModel(
                   code: code, username: username, recoveryCode: recoveryCode));
 
-      return Right(UserToken(
-        accessToken: userTokenModel.accessToken,
-        refreshToken: userTokenModel.refreshToken,
-      ));
+      return Right(userTokenDataModel.toDomain());
     } on ParsingError {
       logger.e('ParsingError occurred.');
       return Left(InvalidResponseDomainError());
@@ -344,15 +327,12 @@ class AuthRepositoryImpl implements AuthRepository {
     required String recoveryCode,
   }) async {
     try {
-      final userTokenModel = await remoteDataSource
+      final userTokenDataModel = await remoteDataSource
           .recoverAccountWithoutTwoFactorAuthenticationEnabled(
               RecoverAccountWithRecoveryCodeRequestModel(
                   username: username, recoveryCode: recoveryCode));
 
-      return Right(UserToken(
-        accessToken: userTokenModel.accessToken,
-        refreshToken: userTokenModel.refreshToken,
-      ));
+      return Right(userTokenDataModel.toDomain());
     } on ParsingError {
       logger.e('ParsingError occurred.');
       return Left(InvalidResponseDomainError());

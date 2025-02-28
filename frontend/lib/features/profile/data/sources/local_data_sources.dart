@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
-import 'package:reallystick/features/profile/data/models/country_model.dart';
+import 'package:reallystick/features/profile/data/models/country.dart';
 
 class ProfileLocalDataSource {
   ProfileLocalDataSource();

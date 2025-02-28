@@ -9,8 +9,8 @@ import 'package:reallystick/core/messages/errors/domain_error.dart';
 import 'package:reallystick/features/auth/data/errors/data_error.dart';
 import 'package:reallystick/features/auth/domain/errors/domain_error.dart';
 import 'package:reallystick/features/profile/data/errors/data_error.dart';
-import 'package:reallystick/features/profile/data/models/country_model.dart';
-import 'package:reallystick/features/profile/data/models/profile_request_model.dart';
+import 'package:reallystick/features/profile/data/models/country.dart';
+import 'package:reallystick/features/profile/data/models/requests.dart';
 import 'package:reallystick/features/profile/data/sources/local_data_sources.dart';
 import 'package:reallystick/features/profile/data/sources/remote_data_sources.dart';
 import 'package:reallystick/features/profile/domain/entities/profile.dart';
@@ -28,28 +28,9 @@ class ProfileRepositoryImpl implements ProfileRepository {
   @override
   Future<Either<DomainError, Profile>> getProfileInformation() async {
     try {
-      final profileModel = await remoteDataSource.getProfileInformation();
+      final profileDataModel = await remoteDataSource.getProfileInformation();
 
-      return Right(Profile(
-          username: profileModel.username,
-          locale: profileModel.locale,
-          theme: profileModel.theme,
-          otpBase32: profileModel.otpBase32,
-          otpAuthUrl: profileModel.otpAuthUrl,
-          otpVerified: profileModel.otpVerified,
-          passwordIsExpired: profileModel.passwordIsExpired,
-          ageCategory: profileModel.ageCategory,
-          gender: profileModel.gender,
-          continent: profileModel.continent,
-          country: profileModel.country,
-          region: profileModel.region,
-          activity: profileModel.activity,
-          financialSituation: profileModel.financialSituation,
-          livesInUrbanArea: profileModel.livesInUrbanArea,
-          relationshipStatus: profileModel.relationshipStatus,
-          levelOfEducation: profileModel.levelOfEducation,
-          hasChildren: profileModel.hasChildren,
-          hasSeenQuestions: profileModel.hasSeenQuestions));
+      return Right(profileDataModel.toDomain());
     } on ParsingError {
       logger.e('ParsingError occurred.');
       return Left(InvalidResponseDomainError());
@@ -78,7 +59,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
   Future<Either<DomainError, Profile>> postProfileInformation(
       Profile profile) async {
     try {
-      final profileModel = await remoteDataSource.postProfileInformation(
+      final profileDataModel = await remoteDataSource.postProfileInformation(
           UpdateProfileRequestModel(
               username: profile.username,
               locale: profile.locale,
@@ -96,26 +77,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
               levelOfEducation: profile.levelOfEducation,
               hasChildren: profile.hasChildren));
 
-      return Right(Profile(
-          username: profileModel.username,
-          locale: profileModel.locale,
-          theme: profileModel.theme,
-          otpBase32: profileModel.otpBase32,
-          otpAuthUrl: profileModel.otpAuthUrl,
-          otpVerified: profileModel.otpVerified,
-          passwordIsExpired: profileModel.passwordIsExpired,
-          ageCategory: profileModel.ageCategory,
-          gender: profileModel.gender,
-          continent: profileModel.continent,
-          country: profileModel.country,
-          region: profileModel.region,
-          activity: profileModel.activity,
-          financialSituation: profileModel.financialSituation,
-          livesInUrbanArea: profileModel.livesInUrbanArea,
-          relationshipStatus: profileModel.relationshipStatus,
-          levelOfEducation: profileModel.levelOfEducation,
-          hasChildren: profileModel.hasChildren,
-          hasSeenQuestions: profileModel.hasSeenQuestions));
+      return Right(profileDataModel.toDomain());
     } on ParsingError {
       logger.e('ParsingError occurred.');
       return Left(InvalidResponseDomainError());
@@ -143,18 +105,10 @@ class ProfileRepositoryImpl implements ProfileRepository {
   @override
   Future<Either<DomainError, Profile>> setPassword(String newPassword) async {
     try {
-      final profileModel = await remoteDataSource
+      final profileDataModel = await remoteDataSource
           .setPassword(SetPasswordRequestModel(newPassword: newPassword));
 
-      return Right(Profile(
-          username: profileModel.username,
-          locale: profileModel.locale,
-          theme: profileModel.theme,
-          otpBase32: profileModel.otpBase32,
-          otpAuthUrl: profileModel.otpAuthUrl,
-          otpVerified: profileModel.otpVerified,
-          passwordIsExpired: profileModel.passwordIsExpired,
-          hasSeenQuestions: profileModel.hasSeenQuestions));
+      return Right(profileDataModel.toDomain());
     } on ParsingError {
       logger.e('ParsingError occurred.');
       return Left(InvalidResponseDomainError());
@@ -192,19 +146,11 @@ class ProfileRepositoryImpl implements ProfileRepository {
   Future<Either<DomainError, Profile>> updatePassword(
       String currentPassword, String newPassword) async {
     try {
-      final profileModel = await remoteDataSource.updatePassword(
+      final profileDataModel = await remoteDataSource.updatePassword(
           UpdatePasswordRequestModel(
               currentPassword: currentPassword, newPassword: newPassword));
 
-      return Right(Profile(
-          username: profileModel.username,
-          locale: profileModel.locale,
-          theme: profileModel.theme,
-          otpBase32: profileModel.otpBase32,
-          otpAuthUrl: profileModel.otpAuthUrl,
-          otpVerified: profileModel.otpVerified,
-          passwordIsExpired: profileModel.passwordIsExpired,
-          hasSeenQuestions: profileModel.hasSeenQuestions));
+      return Right(profileDataModel.toDomain());
     } on ParsingError {
       logger.e('ParsingError occurred.');
       return Left(InvalidResponseDomainError());

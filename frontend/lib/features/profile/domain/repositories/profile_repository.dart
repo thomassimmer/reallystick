@@ -4,7 +4,7 @@ import 'dart:async';
 
 import 'package:dartz/dartz.dart';
 import 'package:reallystick/core/messages/errors/domain_error.dart';
-import 'package:reallystick/features/profile/data/models/country_model.dart';
+import 'package:reallystick/features/profile/data/models/country.dart';
 import 'package:reallystick/features/profile/domain/entities/profile.dart';
 
 abstract class ProfileRepository {

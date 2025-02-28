@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
+import 'package:reallystick/features/profile/domain/entities/profile.dart';
 
-class ProfileModel extends Equatable {
+class ProfileDataModel extends Equatable {
   final String username;
   final String locale;
   final String theme;
@@ -22,7 +23,7 @@ class ProfileModel extends Equatable {
   final String? levelOfEducation;
   final bool? hasChildren;
 
-  const ProfileModel(
+  const ProfileDataModel(
       {required this.username,
       required this.locale,
       required this.theme,
@@ -43,9 +44,8 @@ class ProfileModel extends Equatable {
       this.levelOfEducation,
       this.hasChildren});
 
-  // Factory constructor to create a ProfileModel from JSON data
-  factory ProfileModel.fromJson(Map<String, dynamic> json) {
-    return ProfileModel(
+  factory ProfileDataModel.fromJson(Map<String, dynamic> json) {
+    return ProfileDataModel(
         username: json['username'] as String,
         locale: json['locale'] as String,
         theme: json['theme'] as String,
@@ -66,6 +66,27 @@ class ProfileModel extends Equatable {
         levelOfEducation: json['level_of_education'] as String?,
         hasChildren: json['has_children'] as bool?);
   }
+
+  Profile toDomain() => Profile(
+      username: username,
+      locale: locale,
+      theme: theme,
+      otpBase32: otpBase32,
+      otpAuthUrl: otpAuthUrl,
+      otpVerified: otpVerified,
+      passwordIsExpired: passwordIsExpired,
+      ageCategory: ageCategory,
+      gender: gender,
+      continent: continent,
+      country: country,
+      region: region,
+      activity: activity,
+      financialSituation: financialSituation,
+      livesInUrbanArea: livesInUrbanArea,
+      relationshipStatus: relationshipStatus,
+      levelOfEducation: levelOfEducation,
+      hasChildren: hasChildren,
+      hasSeenQuestions: hasSeenQuestions);
 
   @override
   List<Object?> get props => [

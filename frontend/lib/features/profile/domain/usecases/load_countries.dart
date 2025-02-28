@@ -1,4 +1,4 @@
-import 'package:reallystick/features/profile/data/models/country_model.dart';
+import 'package:reallystick/features/profile/data/models/country.dart';
 import 'package:reallystick/features/profile/domain/repositories/profile_repository.dart';
 
 class LoadCountriesUseCase {

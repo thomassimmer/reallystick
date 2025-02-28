@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:reallystick/core/messages/errors/domain_error.dart';
-import 'package:reallystick/features/auth/domain/entities/otp_generation.dart';
+import 'package:reallystick/features/auth/domain/entities/two_factor_authentication_config.dart';
 import 'package:reallystick/features/auth/domain/repositories/auth_repository.dart';
 
 class GenerateTwoFactorAuthenticationConfigUseCase {

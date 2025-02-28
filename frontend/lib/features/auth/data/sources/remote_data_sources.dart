@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:dartz/dartz.dart';
 import 'package:reallystick/core/messages/errors/data_error.dart';
 import 'package:reallystick/features/auth/data/errors/data_error.dart';
-import 'package:reallystick/features/auth/data/models/otp_model.dart';
+import 'package:reallystick/features/auth/data/models/two_factor_authentication_config.dart';
 import 'package:reallystick/features/auth/data/models/otp_request_model.dart';
 import 'package:reallystick/features/auth/data/models/user_token_model.dart';
 import 'package:reallystick/features/auth/data/models/user_token_request_model.dart';
@@ -16,7 +16,7 @@ class AuthRemoteDataSource {
 
   AuthRemoteDataSource({required this.apiClient, required this.baseUrl});
 
-  Future<UserTokenModel> signup(
+  Future<UserTokenDataModel> signup(
       RegisterUserRequestModel registerUserRequestModel) async {
     final url = Uri.parse('$baseUrl/auth/signup');
     final response = await apiClient.post(
@@ -30,7 +30,7 @@ class AuthRemoteDataSource {
 
     if (response.statusCode == 201) {
       try {
-        return UserTokenModel.fromJson(jsonBody);
+        return UserTokenDataModel.fromJson(jsonBody);
       } catch (e) {
         throw ParsingError();
       }
@@ -64,7 +64,7 @@ class AuthRemoteDataSource {
     throw UnknownError();
   }
 
-  Future<Either<UserTokenModel, String>> login(
+  Future<Either<UserTokenDataModel, String>> login(
       LoginUserRequestModel loginUserRequestModel) async {
     final url = Uri.parse('$baseUrl/auth/login');
     final response = await apiClient.post(
@@ -79,7 +79,7 @@ class AuthRemoteDataSource {
     if (response.statusCode == 200) {
       try {
         if (responseCode == 'USER_LOGGED_IN_WITHOUT_OTP') {
-          return Left(UserTokenModel.fromJson(jsonBody));
+          return Left(UserTokenDataModel.fromJson(jsonBody));
         }
 
         if (responseCode == 'USER_LOGS_IN_WITH_OTP_ENABLED') {
@@ -115,7 +115,7 @@ class AuthRemoteDataSource {
     throw UnknownError();
   }
 
-  Future<TwoFactorAuthenticationConfigModel>
+  Future<TwoFactorAuthenticationConfigDataModel>
       generateTwoFactorAuthenticationConfig() async {
     final url = Uri.parse('$baseUrl/auth/otp/generate');
     final response = await apiClient.get(
@@ -126,7 +126,7 @@ class AuthRemoteDataSource {
 
     if (response.statusCode == 200) {
       try {
-        return TwoFactorAuthenticationConfigModel.fromJson(jsonBody);
+        return TwoFactorAuthenticationConfigDataModel.fromJson(jsonBody);
       } catch (e) {
         throw ParsingError();
       }
@@ -181,7 +181,7 @@ class AuthRemoteDataSource {
     throw UnknownError();
   }
 
-  Future<UserTokenModel> validateOneTimePassword(
+  Future<UserTokenDataModel> validateOneTimePassword(
       ValidateOneTimePasswordRequestModel
           validateOneTimePasswordRequestModel) async {
     final url = Uri.parse('$baseUrl/auth/otp/validate');
@@ -198,7 +198,7 @@ class AuthRemoteDataSource {
 
     if (response.statusCode == 200) {
       try {
-        return UserTokenModel.fromJson(jsonBody);
+        return UserTokenDataModel.fromJson(jsonBody);
       } catch (e) {
         throw ParsingError();
       }
@@ -280,9 +280,10 @@ class AuthRemoteDataSource {
     throw UnknownError();
   }
 
-  Future<UserTokenModel> recoverAccountWithTwoFactorAuthenticationAndPassword(
-      RecoverAccountWithRecoveryCodeAndPasswordRequestModel
-          recoverAccountWithRecoveryCodeAndPasswordRequestModel) async {
+  Future<UserTokenDataModel>
+      recoverAccountWithTwoFactorAuthenticationAndPassword(
+          RecoverAccountWithRecoveryCodeAndPasswordRequestModel
+              recoverAccountWithRecoveryCodeAndPasswordRequestModel) async {
     final url = Uri.parse('$baseUrl/auth/recover-using-password');
     final response = await apiClient.post(
       url,
@@ -298,7 +299,7 @@ class AuthRemoteDataSource {
 
     if (response.statusCode == 200) {
       try {
-        return UserTokenModel.fromJson(jsonBody);
+        return UserTokenDataModel.fromJson(jsonBody);
       } catch (e) {
         throw ParsingError();
       }
@@ -325,7 +326,7 @@ class AuthRemoteDataSource {
     throw UnknownError();
   }
 
-  Future<UserTokenModel>
+  Future<UserTokenDataModel>
       recoverAccountWithTwoFactorAuthenticationAndOneTimePassword(
           RecoverAccountWithRecoveryCodeAndOneTimePasswordRequestModel
               recoverAccountWithRecoveryCodeAndOneTimePasswordRequestModel) async {
@@ -345,7 +346,7 @@ class AuthRemoteDataSource {
 
     if (response.statusCode == 200) {
       try {
-        return UserTokenModel.fromJson(jsonBody);
+        return UserTokenDataModel.fromJson(jsonBody);
       } catch (e) {
         throw ParsingError();
       }
@@ -372,9 +373,10 @@ class AuthRemoteDataSource {
     throw UnknownError();
   }
 
-  Future<UserTokenModel> recoverAccountWithoutTwoFactorAuthenticationEnabled(
-      RecoverAccountWithRecoveryCodeRequestModel
-          recoverAccountWithRecoveryCodeRequestModel) async {
+  Future<UserTokenDataModel>
+      recoverAccountWithoutTwoFactorAuthenticationEnabled(
+          RecoverAccountWithRecoveryCodeRequestModel
+              recoverAccountWithRecoveryCodeRequestModel) async {
     final url = Uri.parse('$baseUrl/auth/recover');
     final response = await apiClient.post(
       url,
@@ -389,7 +391,7 @@ class AuthRemoteDataSource {
 
     if (response.statusCode == 200) {
       try {
-        return UserTokenModel.fromJson(jsonBody);
+        return UserTokenDataModel.fromJson(jsonBody);
       } catch (e) {
         throw ParsingError();
       }
