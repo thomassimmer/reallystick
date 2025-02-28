@@ -575,4 +575,53 @@ class HabitRemoteDataSource {
 
     throw UnknownError();
   }
+
+  Future<HabitDataModel> mergeHabits(
+    String habitToDeleteId,
+    String habitToMergeOnId,
+    HabitUpdateRequestModel habitUpdateRequestModel,
+  ) async {
+    final url =
+        Uri.parse('$baseUrl/habits/merge/$habitToDeleteId/$habitToMergeOnId');
+    final response = await apiClient.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: json.encode(habitUpdateRequestModel.toJson()),
+    );
+
+    final jsonBody = customJsonDecode(response.body);
+    final responseCode = jsonBody['code'] as String;
+
+    if (response.statusCode == 200) {
+      try {
+        return HabitDataModel.fromJson(jsonBody['habit']);
+      } catch (e) {
+        throw ParsingError();
+      }
+    }
+
+    if (response.statusCode == 401) {
+      throw UnauthorizedError();
+    }
+
+    if (response.statusCode == 404) {
+      if (responseCode == 'HABIT_CATEGORY_NOT_FOUND') {
+        throw HabitCategoryNotFoundError();
+      }
+      if (responseCode == 'HABIT_NOT_FOUND') {
+        throw HabitNotFoundError();
+      }
+    }
+
+    if (response.statusCode == 500) {
+      if (responseCode == 'HABITS_NOT_MERGED') {
+        throw HabitsNotMergedError();
+      }
+      throw InternalServerError();
+    }
+
+    throw UnknownError();
+  }
 }

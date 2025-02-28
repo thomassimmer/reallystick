@@ -15,6 +15,7 @@ import 'package:reallystick/features/habits/presentation/blocs/habit/habit_event
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_states.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit_creation/habit_creation_bloc.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit_creation/habit_creation_events.dart';
+import 'package:reallystick/features/habits/presentation/helpers/translations.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
 
@@ -46,11 +47,9 @@ class CreateHabitScreenState extends State<CreateHabitScreen> {
       );
     }
 
-    if (icon != null) {
-      setState(() {
-        _icon = icon.data;
-      });
-    }
+    setState(() {
+      _icon = icon?.data;
+    });
   }
 
   void _createHabit(String locale) {
@@ -185,8 +184,10 @@ class CreateHabitScreenState extends State<CreateHabitScreen> {
                               (entry) => DropdownMenuItem(
                                 value: entry.key,
                                 child: Text(
-                                  entry.value.name[userLocale] ??
-                                      entry.value.name['en']!,
+                                  getRightTranslationFromJson(
+                                    entry.value.name,
+                                    userLocale,
+                                  ),
                                 ),
                               ),
                             )

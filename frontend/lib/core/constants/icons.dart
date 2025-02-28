@@ -6,7 +6,7 @@ IconData getIconData({
   final codePoint = int.tryParse(iconDataString);
 
   if (codePoint != null) {
-    return IconData(codePoint);
+    return IconData(codePoint, fontFamily: 'MaterialIcons');
   }
 
   return Icons.not_accessible;

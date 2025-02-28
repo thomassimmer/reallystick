@@ -25,10 +25,16 @@ class CustomElevatedButtonFormField extends StatelessWidget {
       children: [
         ElevatedButton.icon(
           onPressed: onPressed,
-          icon: Icon(iconData),
-          label: Text(label),
+          icon: Icon(
+            iconData,
+            color: context.colors.text,
+          ),
+          label: Text(
+            label,
+            style: TextStyle(color: context.colors.text),
+          ),
           style: ElevatedButton.styleFrom(
-            backgroundColor: buttonColor ?? context.colors.background,
+            backgroundColor: buttonColor ?? context.colors.backgroundDark,
             padding:
                 const EdgeInsets.symmetric(vertical: 12.0, horizontal: 12.0),
             shape: RoundedRectangleBorder(

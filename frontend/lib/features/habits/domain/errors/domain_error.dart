@@ -39,3 +39,8 @@ class HabitIconNotFoundError implements DomainError {
   @override
   final String messageKey = 'habitIconNotFoundError';
 }
+
+class HabitsNotMergedDomainError implements DomainError {
+  @override
+  final String messageKey = 'habitsNotMergedDomainError';
+}

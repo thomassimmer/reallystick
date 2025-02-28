@@ -192,4 +192,63 @@ class HabitRepositoryImpl implements HabitRepository {
       return Left(UnknownDomainError());
     }
   }
+
+  @override
+  Future<Either<DomainError, Habit>> mergeHabits({
+    required String habitToDeleteId,
+    required String habitToMergeOnId,
+    required Map<String, String> shortName,
+    required Map<String, String> longName,
+    required Map<String, String> description,
+    required String categoryId,
+    required String icon,
+    required bool reviewed,
+  }) async {
+    try {
+      final habitDataModel = await remoteDataSource.mergeHabits(
+        habitToDeleteId,
+        habitToMergeOnId,
+        HabitUpdateRequestModel(
+          shortName: shortName,
+          longName: longName,
+          description: description,
+          categoryId: categoryId,
+          icon: icon,
+          reviewed: reviewed,
+        ),
+      );
+
+      return Right(habitDataModel.toDomain());
+    } on ParsingError {
+      logger.e('ParsingError occurred.');
+      return Left(InvalidResponseDomainError());
+    } on UnauthorizedError {
+      logger.e('UnauthorizedError occurred.');
+      return Left(UnauthorizedDomainError());
+    } on InvalidRefreshTokenError {
+      logger.e('InvalidRefreshTokenError occured.');
+      return Left(InvalidRefreshTokenDomainError());
+    } on RefreshTokenNotFoundError {
+      logger.e('RefreshTokenNotFoundError occured.');
+      return Left(RefreshTokenNotFoundDomainError());
+    } on RefreshTokenExpiredError {
+      logger.e('RefreshTokenExpiredError occured.');
+      return Left(RefreshTokenExpiredDomainError());
+    } on InternalServerError {
+      logger.e('InternalServerError occured.');
+      return Left(InternalServerDomainError());
+    } on HabitCategoryNotFoundError {
+      logger.e('HabitCategoryNotFoundError occurred.');
+      return Left(HabitCategoryNotFoundDomainError());
+    } on HabitNotFoundError {
+      logger.e('HabitNotFoundError occurred.');
+      return Left(HabitNotFoundDomainError());
+    } on HabitsNotMergedError {
+      logger.e('HabitsNotMergedError occurred.');
+      return Left(HabitsNotMergedDomainError());
+    } catch (e) {
+      logger.e('Data error occurred: ${e.toString()}');
+      return Left(UnknownDomainError());
+    }
+  }
 }

@@ -8,3 +8,4 @@ class HabitCategoryNotFoundError extends DataError {}
 
 class HabitDailyTrackingNotFoundError extends DataError {}
 
+class HabitsNotMergedError extends DataError {}

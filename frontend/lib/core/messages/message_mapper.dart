@@ -88,7 +88,9 @@ String getTranslatedMessage(BuildContext context, Message message) {
 
       // Habits
       case 'habitCreated':
-      return localizations.habitCreated;
+        return localizations.habitCreated;
+      case 'habitUpdated':
+        return localizations.habitUpdated;
 
       // Profile
       case 'passwordUpdateSuccessful':

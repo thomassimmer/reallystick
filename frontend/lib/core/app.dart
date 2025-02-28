@@ -9,6 +9,8 @@ import 'package:reallystick/features/auth/presentation/blocs/auth/auth_events.da
 import 'package:reallystick/features/auth/presentation/blocs/auth_login/auth_login_bloc.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit_creation/habit_creation_bloc.dart';
+import 'package:reallystick/features/habits/presentation/blocs/habit_merge/habit_merge_bloc.dart';
+import 'package:reallystick/features/habits/presentation/blocs/habit_review/habit_review_bloc.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
 import 'package:reallystick/features/profile/presentation/blocs/set_password/set_password_bloc.dart';
@@ -59,6 +61,8 @@ class ReallyStickApp extends StatelessWidget {
     final profileUpdatePasswordFormBloc = ProfileUpdatePasswordFormBloc();
     final habitBloc = HabitBloc(authBloc: authBloc);
     final habitCreationFormBloc = HabitCreationFormBloc();
+    final habitReviewFormBloc = HabitReviewFormBloc();
+    final habitMergeFormBloc = HabitMergeFormBloc();
 
     authBloc.add(AuthInitializeEvent());
 
@@ -83,6 +87,12 @@ class ReallyStickApp extends StatelessWidget {
       ),
       BlocProvider<HabitCreationFormBloc>(
         create: (context) => habitCreationFormBloc,
+      ),
+      BlocProvider<HabitReviewFormBloc>(
+        create: (context) => habitReviewFormBloc,
+      ),
+      BlocProvider<HabitMergeFormBloc>(
+        create: (context) => habitMergeFormBloc,
       ),
     ];
   }

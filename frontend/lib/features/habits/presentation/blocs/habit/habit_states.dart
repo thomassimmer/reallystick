@@ -34,6 +34,7 @@ class HabitsLoaded extends HabitState {
   final List<HabitDailyTracking> habitDailyTrackings;
   final Map<String, HabitCategory> habitCategories;
   final Habit? newlyCreatedHabit;
+  final Habit? newlyUpdatedHabit;
 
   const HabitsLoaded({
     super.message,
@@ -42,6 +43,7 @@ class HabitsLoaded extends HabitState {
     required this.habitDailyTrackings,
     required this.habitCategories,
     this.newlyCreatedHabit,
+    this.newlyUpdatedHabit,
   });
 
   @override
@@ -52,5 +54,6 @@ class HabitsLoaded extends HabitState {
         habitParticipations,
         habits,
         newlyCreatedHabit,
+        newlyUpdatedHabit,
       ];
 }

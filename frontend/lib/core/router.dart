@@ -10,11 +10,15 @@ import 'package:reallystick/features/auth/presentation/screens/recovery_codes_sc
 import 'package:reallystick/features/auth/presentation/screens/signup_screen.dart';
 import 'package:reallystick/features/auth/presentation/screens/unauthenticated_home_screen.dart';
 import 'package:reallystick/features/challenges/presentation/challenges_screen.dart';
+import 'package:reallystick/features/habits/presentation/screens/all_habits_screen.dart';
 import 'package:reallystick/features/habits/presentation/screens/create_habit_screen.dart';
 import 'package:reallystick/features/habits/presentation/screens/habit_detail_screen.dart';
 import 'package:reallystick/features/habits/presentation/screens/habits_screen.dart';
+import 'package:reallystick/features/habits/presentation/screens/review_habit_screen.dart';
 import 'package:reallystick/features/habits/presentation/screens/search_habits_screen.dart';
 import 'package:reallystick/features/messages/presentation/messages_screen.dart';
+import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
+import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
 import 'package:reallystick/features/profile/presentation/screens/about_screen.dart';
 import 'package:reallystick/features/profile/presentation/screens/language_selection_screen.dart';
 import 'package:reallystick/features/profile/presentation/screens/password_screen.dart';
@@ -62,6 +66,40 @@ final router = GoRouter(
               path: 'create',
               name: 'createHabit',
               builder: (context, state) => CreateHabitScreen(),
+            ),
+            GoRoute(
+              path: 'all',
+              name: 'allHabits',
+              builder: (context, state) => AllHabitsScreen(),
+              redirect: (context, state) {
+                final profileState = context.read<ProfileBloc>().state;
+
+                if (profileState is ProfileAuthenticated &&
+                    !profileState.profile.isAdmin) {
+                  return '/habits'; // Redirect non admin users to main page of habits
+                }
+
+                return null;
+              },
+            ),
+            GoRoute(
+              path: 'review/:habitId',
+              name: 'reviewHabit',
+              builder: (context, state) {
+                final habitId = state.pathParameters['habitId']!;
+
+                return ReviewHabitScreen(habitId: habitId);
+              },
+              redirect: (context, state) {
+                final profileState = context.read<ProfileBloc>().state;
+
+                if (profileState is ProfileAuthenticated &&
+                    !profileState.profile.isAdmin) {
+                  return '/habits'; // Redirect non admin users to main page of habits
+                }
+
+                return null;
+              },
             ),
             GoRoute(
               path: ':habitId',

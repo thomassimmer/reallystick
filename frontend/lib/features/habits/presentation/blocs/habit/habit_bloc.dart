@@ -14,6 +14,8 @@ import 'package:reallystick/features/habits/domain/usecases/get_habit_categories
 import 'package:reallystick/features/habits/domain/usecases/get_habit_participations_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/get_habits_daily_tracking_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/get_habits_usecase.dart';
+import 'package:reallystick/features/habits/domain/usecases/merge_habits_usecase.dart';
+import 'package:reallystick/features/habits/domain/usecases/update_habit_usecase.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_events.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_states.dart';
 
@@ -31,6 +33,10 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
       GetIt.instance<CreateHabitUsecase>();
   final CreateHabitParticipationUsecase createHabitParticipationUsecase =
       GetIt.instance<CreateHabitParticipationUsecase>();
+  final MergeHabitsUsecase mergeHabitsUsecase =
+      GetIt.instance<MergeHabitsUsecase>();
+  final UpdateHabitUsecase updateHabitUsecase =
+      GetIt.instance<UpdateHabitUsecase>();
 
   HabitBloc({required this.authBloc}) : super(HabitsLoading()) {
     authBlocSubscription = authBloc.stream.listen((authState) {
@@ -41,6 +47,8 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
 
     on<HabitInitializeEvent>(_initialize);
     on<CreateHabitEvent>(createHabit);
+    on<UpdateHabitEvent>(updateHabit);
+    on<MergeHabitsEvent>(mergeHabits);
   }
 
   Future<void> _initialize(
@@ -120,6 +128,9 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
 
   Future<void> createHabit(
       CreateHabitEvent event, Emitter<HabitState> emit) async {
+    final currentState = state as HabitsLoaded;
+    emit(HabitsLoading());
+
     final resultCreateHabitUsecase = await createHabitUsecase.call(
       categoryId: event.categoryId,
       shortName: Map.from({event.locale: event.shortName}),
@@ -127,9 +138,6 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
       description: Map.from({event.locale: event.description}),
       icon: "material::${event.icon.toString()}",
     );
-
-    final currentState = state as HabitsLoaded;
-    emit(HabitsLoading());
 
     await resultCreateHabitUsecase.fold(
       (error) {
@@ -187,6 +195,115 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
               ),
             );
           },
+        );
+      },
+    );
+  }
+
+  Future<void> updateHabit(
+      UpdateHabitEvent event, Emitter<HabitState> emit) async {
+    final currentState = state as HabitsLoaded;
+    emit(HabitsLoading());
+
+    final resultUpdateHabitUsecase = await updateHabitUsecase.call(
+      habitId: event.habitId,
+      categoryId: event.categoryId,
+      shortName: event.shortName,
+      longName: event.longName,
+      description: event.description,
+      icon: "material::${event.icon.toString()}",
+      reviewed: true,
+    );
+
+    await resultUpdateHabitUsecase.fold(
+      (error) {
+        if (error is ShouldLogoutError) {
+          authBloc
+              .add(AuthLogoutEvent(message: ErrorMessage(error.messageKey)));
+        } else {
+          emit(
+            HabitsLoaded(
+              habitCategories: currentState.habitCategories,
+              habitDailyTrackings: currentState.habitDailyTrackings,
+              habitParticipations: currentState.habitParticipations,
+              habits: currentState.habits,
+              message: ErrorMessage(error.messageKey),
+            ),
+          );
+        }
+      },
+      (habit) async {
+        currentState.habits[habit.id] = habit;
+        emit(
+          HabitsLoaded(
+            habitCategories: currentState.habitCategories,
+            habitDailyTrackings: currentState.habitDailyTrackings,
+            habitParticipations: currentState.habitParticipations,
+            habits: currentState.habits,
+            message: SuccessMessage("habitUpdated"),
+            newlyUpdatedHabit: habit,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> mergeHabits(
+      MergeHabitsEvent event, Emitter<HabitState> emit) async {
+    final currentState = state as HabitsLoaded;
+    emit(HabitsLoading());
+
+    final resultMergeHabitsUseCase = await mergeHabitsUsecase.call(
+      habitToDeleteId: event.habitToDeleteId,
+      habitToMergeOnId: event.habitToMergeOnId,
+      categoryId: event.categoryId,
+      shortName: event.shortName,
+      longName: event.longName,
+      description: event.description,
+      icon: "material::${event.icon.toString()}",
+      reviewed: true,
+    );
+
+    await resultMergeHabitsUseCase.fold(
+      (error) {
+        if (error is ShouldLogoutError) {
+          authBloc
+              .add(AuthLogoutEvent(message: ErrorMessage(error.messageKey)));
+        } else {
+          emit(
+            HabitsLoaded(
+              habitCategories: currentState.habitCategories,
+              habitDailyTrackings: currentState.habitDailyTrackings,
+              habitParticipations: currentState.habitParticipations,
+              habits: currentState.habits,
+              message: ErrorMessage(error.messageKey),
+            ),
+          );
+        }
+      },
+      (habit) async {
+        for (var habitParticipation in currentState.habitParticipations) {
+          if (habitParticipation.habitId == event.habitToDeleteId) {
+            habitParticipation.habitId = event.habitToMergeOnId;
+          }
+        }
+        for (var habitDailyTracking in currentState.habitDailyTrackings) {
+          if (habitDailyTracking.habitId == event.habitToDeleteId) {
+            habitDailyTracking.habitId = event.habitToMergeOnId;
+          }
+        }
+        currentState.habits.remove(event.habitToDeleteId);
+        currentState.habits[habit.id] = habit;
+
+        emit(
+          HabitsLoaded(
+            habitCategories: currentState.habitCategories,
+            habitDailyTrackings: currentState.habitDailyTrackings,
+            habitParticipations: currentState.habitParticipations,
+            habits: currentState.habits,
+            message: SuccessMessage("habitUpdated"),
+            newlyUpdatedHabit: habit,
+          ),
         );
       },
     );

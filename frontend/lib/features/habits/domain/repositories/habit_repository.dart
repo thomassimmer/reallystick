@@ -28,4 +28,15 @@ abstract class HabitRepository {
   Future<Either<DomainError, void>> deleteHabit({
     required String habitId,
   });
+
+  Future<Either<DomainError, Habit>> mergeHabits({
+    required String habitToDeleteId,
+    required String habitToMergeOnId,
+    required Map<String, String> shortName,
+    required Map<String, String> longName,
+    required Map<String, String> description,
+    required String categoryId,
+    required String icon,
+    required bool reviewed,
+  });
 }
