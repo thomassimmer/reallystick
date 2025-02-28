@@ -1,11 +1,14 @@
 use crate::{
     core::constants::errors::AppError,
-    features::habits::{
-        helpers::unit::{self, get_unit_by_id},
-        structs::{
-            requests::unit::{UnitUpdateRequest, UpdateUnitParams},
-            responses::unit::UnitResponse,
+    features::{
+        habits::{
+            helpers::unit::{self, get_unit_by_id},
+            structs::{
+                requests::unit::{UnitUpdateRequest, UpdateUnitParams},
+                responses::unit::UnitResponse,
+            },
         },
+        profile::structs::models::User,
     },
 };
 use actix_web::{
@@ -21,7 +24,12 @@ pub async fn update_unit(
     pool: Data<PgPool>,
     params: Path<UpdateUnitParams>,
     body: Json<UnitUpdateRequest>,
+    request_user: User,
 ) -> impl Responder {
+    if !request_user.is_admin {
+        return HttpResponse::Forbidden().body("Access denied");
+    }
+
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
         Err(e) => {

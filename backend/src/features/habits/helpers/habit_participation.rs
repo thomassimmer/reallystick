@@ -37,11 +37,11 @@ pub async fn get_habit_participations_for_user(
     .await
 }
 
-pub async fn get_habit_participations_for_user_and_habit(
+pub async fn get_habit_participation_for_user_and_habit(
     conn: &mut PgConnection,
     user_id: Uuid,
     habit_id: Uuid,
-) -> Result<Vec<HabitParticipation>, sqlx::Error> {
+) -> Result<Option<HabitParticipation>, sqlx::Error> {
     sqlx::query_as!(
         HabitParticipation,
         r#"
@@ -50,6 +50,23 @@ pub async fn get_habit_participations_for_user_and_habit(
         WHERE user_id = $1 AND habit_id = $2
         "#,
         user_id,
+        habit_id
+    )
+    .fetch_optional(conn)
+    .await
+}
+
+pub async fn get_habit_participations_for_habit(
+    conn: &mut PgConnection,
+    habit_id: Uuid,
+) -> Result<Vec<HabitParticipation>, sqlx::Error> {
+    sqlx::query_as!(
+        HabitParticipation,
+        r#"
+        SELECT *
+        from habit_participations
+        WHERE habit_id = $1
+        "#,
         habit_id
     )
     .fetch_all(conn)

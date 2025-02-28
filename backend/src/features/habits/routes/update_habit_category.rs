@@ -1,11 +1,14 @@
 use crate::{
     core::constants::errors::AppError,
-    features::habits::{
-        helpers::habit_category::{self, get_habit_category_by_id},
-        structs::{
-            requests::habit_category::{HabitCategoryUpdateRequest, UpdateHabitCategoryParams},
-            responses::habit_category::HabitCategoryResponse,
+    features::{
+        habits::{
+            helpers::habit_category::{self, get_habit_category_by_id},
+            structs::{
+                requests::habit_category::{HabitCategoryUpdateRequest, UpdateHabitCategoryParams},
+                responses::habit_category::HabitCategoryResponse,
+            },
         },
+        profile::structs::models::User,
     },
 };
 use actix_web::{
@@ -21,7 +24,12 @@ pub async fn update_habit_category(
     pool: Data<PgPool>,
     params: Path<UpdateHabitCategoryParams>,
     body: Json<HabitCategoryUpdateRequest>,
+    request_user: User,
 ) -> impl Responder {
+    if !request_user.is_admin {
+        return HttpResponse::Forbidden().body("Access denied");
+    }
+
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
         Err(e) => {

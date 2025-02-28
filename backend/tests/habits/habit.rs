@@ -205,13 +205,14 @@ pub async fn user_create_two_habits_to_merge(
 #[tokio::test]
 pub async fn user_can_create_a_habit() {
     let app = spawn_app().await;
-    let (access_token, _, _) = user_signs_up(&app).await;
+    let (access_token, _) = user_logs_in(&app, "thomas", "").await;
     let category_id = user_creates_a_habit_category(&app, &access_token).await;
+    let unit_id = user_creates_a_unit(&app, &access_token).await;
+
+    let (access_token, _, _) = user_signs_up(&app).await;
 
     let habits = user_gets_habits(&app, &access_token).await;
     assert!(habits.is_empty());
-
-    let unit_id = user_creates_a_unit(&app, &access_token).await;
 
     user_creates_a_habit(&app, &access_token, category_id, HashSet::from([unit_id])).await;
 
@@ -220,9 +221,9 @@ pub async fn user_can_create_a_habit() {
 }
 
 #[tokio::test]
-pub async fn user_can_update_a_habit() {
+pub async fn admin_user_can_update_a_habit() {
     let app = spawn_app().await;
-    let (access_token, _, _) = user_signs_up(&app).await;
+    let (access_token, _) = user_logs_in(&app, "thomas", "").await;
     let habit_category_id = user_creates_a_habit_category(&app, &access_token).await;
     let unit_id = user_creates_a_unit(&app, &access_token).await;
 
@@ -244,9 +245,9 @@ pub async fn user_can_update_a_habit() {
 }
 
 #[tokio::test]
-pub async fn user_can_delete_a_habit() {
+pub async fn admin_user_can_delete_a_habit() {
     let app = spawn_app().await;
-    let (access_token, _, _) = user_signs_up(&app).await;
+    let (access_token, _) = user_logs_in(&app, "thomas", "").await;
     let habit_category_id = user_creates_a_habit_category(&app, &access_token).await;
 
     let habit_categories = user_gets_habits(&app, &access_token).await;
@@ -274,10 +275,11 @@ pub async fn user_can_delete_a_habit() {
 #[tokio::test]
 pub async fn normal_user_can_not_merge_two_habits() {
     let app = spawn_app().await;
-    let (access_token, _, _) = user_signs_up(&app).await;
+    let (access_token, _) = user_logs_in(&app, "thomas", "").await;
     let habit_category_id = user_creates_a_habit_category(&app, &access_token).await;
     let unit_id = user_creates_a_unit(&app, &access_token).await;
 
+    let (access_token, _, _) = user_signs_up(&app).await;
     let (first_habit_id, second_habit_id) =
         user_create_two_habits_to_merge(&app, &access_token, habit_category_id, vec![unit_id])
             .await;
@@ -326,12 +328,14 @@ pub async fn admin_user_can_merge_two_habits() {
     // We create a habit daily tracking with the second habit to check that it will use the first habit after merging
     user_creates_a_habit_daily_tracking(&app, &access_token, second_habit_id, unit_id).await;
     let habit_daily_trackings = user_gets_habit_daily_trackings(&app, &access_token).await;
+    assert_eq!(habit_daily_trackings.len(), 1);
     assert_eq!(habit_daily_trackings[0].habit_id, second_habit_id);
 
     // Same for habit participation
     user_creates_a_habit_participation(&app, &access_token, first_habit_id).await; // to ensure unique constraint is considered
     user_creates_a_habit_participation(&app, &access_token, second_habit_id).await;
     let habit_participations = user_gets_habit_participations(&app, &access_token).await;
+    assert_eq!(habit_participations.len(), 2);
     assert_eq!(habit_participations[0].habit_id, first_habit_id);
     assert_eq!(habit_participations[1].habit_id, second_habit_id);
 
@@ -390,8 +394,10 @@ pub async fn admin_user_can_merge_two_habits() {
     );
 
     let habit_daily_trackings = user_gets_habit_daily_trackings(&app, &access_token).await;
+    assert_eq!(habit_daily_trackings.len(), 1);
     assert_eq!(habit_daily_trackings[0].habit_id, first_habit_id);
 
     let habit_participations = user_gets_habit_participations(&app, &access_token).await;
+    assert_eq!(habit_participations.len(), 1);
     assert_eq!(habit_participations[0].habit_id, first_habit_id);
 }

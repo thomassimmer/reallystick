@@ -14,7 +14,7 @@ use reallystick::features::habits::structs::{
 use serde_json::json;
 use uuid::Uuid;
 
-use crate::{auth::signup::user_signs_up, helpers::spawn_app};
+use crate::{auth::login::user_logs_in, helpers::spawn_app};
 
 pub async fn user_creates_a_habit_category(
     app: impl Service<Request, Response = ServiceResponse<impl MessageBody>, Error = Error>,
@@ -115,9 +115,9 @@ pub async fn user_gets_habit_categories(
 }
 
 #[tokio::test]
-pub async fn user_can_create_a_habit_category() {
+pub async fn admin_user_can_create_a_habit_category() {
     let app = spawn_app().await;
-    let (access_token, _, _) = user_signs_up(&app).await;
+    let (access_token, _) = user_logs_in(&app, "thomas", "").await;
 
     let habit_categories = user_gets_habit_categories(&app, &access_token).await;
     assert!(habit_categories.is_empty());
@@ -129,18 +129,18 @@ pub async fn user_can_create_a_habit_category() {
 }
 
 #[tokio::test]
-pub async fn user_can_update_a_habit_category() {
+pub async fn admin_user_can_update_a_habit_category() {
     let app = spawn_app().await;
-    let (access_token, _, _) = user_signs_up(&app).await;
+    let (access_token, _) = user_logs_in(&app, "thomas", "").await;
 
     let habit_category_id = user_creates_a_habit_category(&app, &access_token).await;
     user_updates_a_habit_category(app, &access_token, habit_category_id).await;
 }
 
 #[tokio::test]
-pub async fn user_can_delete_a_habit_category() {
+pub async fn admin_user_can_delete_a_habit_category() {
     let app = spawn_app().await;
-    let (access_token, _, _) = user_signs_up(&app).await;
+    let (access_token, _) = user_logs_in(&app, "thomas", "").await;
 
     let habit_categories = user_gets_habit_categories(&app, &access_token).await;
     assert!(habit_categories.is_empty());

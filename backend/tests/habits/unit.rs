@@ -14,7 +14,7 @@ use reallystick::features::habits::structs::{
 use serde_json::json;
 use uuid::Uuid;
 
-use crate::{auth::signup::user_signs_up, helpers::spawn_app};
+use crate::{auth::login::user_logs_in, helpers::spawn_app};
 
 pub async fn user_creates_a_unit(
     app: impl Service<Request, Response = ServiceResponse<impl MessageBody>, Error = Error>,
@@ -91,9 +91,9 @@ pub async fn user_gets_units(
 }
 
 #[tokio::test]
-pub async fn user_can_create_a_unit() {
+pub async fn admin_user_can_create_a_unit() {
     let app = spawn_app().await;
-    let (access_token, _, _) = user_signs_up(&app).await;
+    let (access_token, _) = user_logs_in(&app, "thomas", "").await;
 
     let units = user_gets_units(&app, &access_token).await;
     assert!(units.is_empty());
@@ -105,9 +105,9 @@ pub async fn user_can_create_a_unit() {
 }
 
 #[tokio::test]
-pub async fn user_can_update_a_unit() {
+pub async fn admin_user_can_update_a_unit() {
     let app = spawn_app().await;
-    let (access_token, _, _) = user_signs_up(&app).await;
+    let (access_token, _) = user_logs_in(&app, "thomas", "").await;
 
     let unit_id = user_creates_a_unit(&app, &access_token).await;
     user_updates_a_unit(app, &access_token, unit_id).await;

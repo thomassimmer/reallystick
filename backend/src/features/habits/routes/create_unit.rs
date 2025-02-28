@@ -1,10 +1,14 @@
 use crate::{
     core::constants::errors::AppError,
-    features::habits::{
-        helpers::unit,
-        structs::{
-            models::unit::Unit, requests::unit::UnitCreateRequest, responses::unit::UnitResponse,
+    features::{
+        habits::{
+            helpers::unit,
+            structs::{
+                models::unit::Unit, requests::unit::UnitCreateRequest,
+                responses::unit::UnitResponse,
+            },
         },
+        profile::structs::models::User,
     },
 };
 use actix_web::{
@@ -18,7 +22,15 @@ use sqlx::PgPool;
 use uuid::Uuid;
 
 #[post("/")]
-pub async fn create_unit(pool: Data<PgPool>, body: Json<UnitCreateRequest>) -> impl Responder {
+pub async fn create_unit(
+    pool: Data<PgPool>,
+    body: Json<UnitCreateRequest>,
+    request_user: User,
+) -> impl Responder {
+    if !request_user.is_admin {
+        return HttpResponse::Forbidden().body("Access denied");
+    }
+
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
         Err(e) => {

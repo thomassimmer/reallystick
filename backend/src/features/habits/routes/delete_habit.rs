@@ -1,8 +1,11 @@
 use crate::{
     core::constants::errors::AppError,
-    features::habits::{
-        helpers::habit::delete_habit_by_id,
-        structs::{requests::habit::GetHabitParams, responses::habit::HabitResponse},
+    features::{
+        habits::{
+            helpers::habit::delete_habit_by_id,
+            structs::{requests::habit::GetHabitParams, responses::habit::HabitResponse},
+        },
+        profile::structs::models::User,
     },
 };
 use actix_web::{
@@ -13,7 +16,15 @@ use actix_web::{
 use sqlx::PgPool;
 
 #[delete("/{habit_id}")]
-pub async fn delete_habit(pool: Data<PgPool>, params: Path<GetHabitParams>) -> impl Responder {
+pub async fn delete_habit(
+    pool: Data<PgPool>,
+    params: Path<GetHabitParams>,
+    request_user: User,
+) -> impl Responder {
+    if !request_user.is_admin {
+        return HttpResponse::Forbidden().body("Access denied");
+    }
+
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
         Err(e) => {
