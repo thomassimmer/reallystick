@@ -25,109 +25,123 @@ class AnalyticsCarouselWidget extends StatelessWidget {
 
     if (habitState is HabitsLoaded && profileState is ProfileAuthenticated) {
       final userLocale = profileState.profile.locale;
-      final habitStatistic = habitState.habitStatistics[habitId]!;
+      final habitStatistic = habitState.habitStatistics[habitId];
 
       List<AnalyticsCardInfo> analyticsCards = [];
 
-      final topAgesText = computeTopAgesText(context, habitStatistic);
-      final topCountriesText = computeTopCountriesText(context, habitStatistic);
-      final topRegionsText = computeTopRegionsText(context, habitStatistic);
-      final topHasChildrenText =
-          computeTopHasChildrenText(context, habitStatistic);
-      final topLivesInUrbanAreaText =
-          computeTopLivesInUrbanAreaText(context, habitStatistic);
-      final topGenderText = computeTopGenderText(context, habitStatistic);
-      final topActivitiesText =
-          computeTopActivitiesText(context, habitStatistic);
-      final topFinancialSituationsText =
-          computeTopFinancialSituationsText(context, habitStatistic);
-      final topRelationshipStatusesText =
-          computeTopRelationshipStatusesText(context, habitStatistic);
-      final topLevelsOfEducationText =
-          computeTopLevelsOfEducationText(context, habitStatistic);
+      if (habitStatistic != null) {
+        final topAgesText = computeTopAgesText(context, habitStatistic);
+        final topCountriesText =
+            computeTopCountriesText(context, habitStatistic);
+        final topRegionsText = computeTopRegionsText(context, habitStatistic);
+        final topHasChildrenText =
+            computeTopHasChildrenText(context, habitStatistic);
+        final topLivesInUrbanAreaText =
+            computeTopLivesInUrbanAreaText(context, habitStatistic);
+        final topGenderText = computeTopGenderText(context, habitStatistic);
+        final topActivitiesText =
+            computeTopActivitiesText(context, habitStatistic);
+        final topFinancialSituationsText =
+            computeTopFinancialSituationsText(context, habitStatistic);
+        final topRelationshipStatusesText =
+            computeTopRelationshipStatusesText(context, habitStatistic);
+        final topLevelsOfEducationText =
+            computeTopLevelsOfEducationText(context, habitStatistic);
 
-      analyticsCards.add(
-        AnalyticsCardInfo(
-          title: AppLocalizations.of(context)!.topAgesCardTitle,
-          icon: Icons.cake,
-          text: topAgesText,
-        ),
-      );
-      analyticsCards.add(
-        AnalyticsCardInfo(
-          title: AppLocalizations.of(context)!.topCountriesCardTitle,
-          icon: Icons.flag,
-          text: topCountriesText,
-        ),
-      );
-      analyticsCards.add(
-        AnalyticsCardInfo(
-          title: AppLocalizations.of(context)!.topRegionsCardTitle,
-          icon: Icons.public,
-          text: topRegionsText,
-        ),
-      );
-      analyticsCards.add(
-        AnalyticsCardInfo(
-          title: AppLocalizations.of(context)!.topHasChildrenCardTitle,
-          icon: Icons.escalator_warning,
-          text: topHasChildrenText,
-        ),
-      );
-      analyticsCards.add(
-        AnalyticsCardInfo(
-          title: AppLocalizations.of(context)!.topLivesInUrbanAreaCardTitle,
-          icon: Icons.location_city,
-          text: topLivesInUrbanAreaText,
-        ),
-      );
-      analyticsCards.add(
-        AnalyticsCardInfo(
-          title: AppLocalizations.of(context)!.topGenderCardTitle,
-          icon: Icons.wc,
-          text: topGenderText,
-        ),
-      );
-      analyticsCards.add(
-        AnalyticsCardInfo(
-          title: AppLocalizations.of(context)!.topActivityCardTitle,
-          icon: Icons.work,
-          text: topActivitiesText,
-        ),
-      );
-      analyticsCards.add(
-        AnalyticsCardInfo(
-          title: AppLocalizations.of(context)!.topFinancialSituationsCardTitle,
-          icon: Icons.account_balance_wallet,
-          text: topFinancialSituationsText,
-        ),
-      );
-      analyticsCards.add(
-        AnalyticsCardInfo(
-          title: AppLocalizations.of(context)!.topRelationshipStatusesCardTitle,
-          icon: Icons.favorite,
-          text: topRelationshipStatusesText,
-        ),
-      );
-      analyticsCards.add(
-        AnalyticsCardInfo(
-          title: AppLocalizations.of(context)!.topLevelsOfEducationCardTitle,
-          icon: Icons.school,
-          text: topLevelsOfEducationText,
-        ),
-      );
+        analyticsCards.add(
+          AnalyticsCardInfo(
+            title: AppLocalizations.of(context)!.topAgesCardTitle,
+            icon: Icons.cake,
+            text: topAgesText,
+          ),
+        );
+        analyticsCards.add(
+          AnalyticsCardInfo(
+            title: AppLocalizations.of(context)!.topCountriesCardTitle,
+            icon: Icons.flag,
+            text: topCountriesText,
+          ),
+        );
+        analyticsCards.add(
+          AnalyticsCardInfo(
+            title: AppLocalizations.of(context)!.topRegionsCardTitle,
+            icon: Icons.public,
+            text: topRegionsText,
+          ),
+        );
+        analyticsCards.add(
+          AnalyticsCardInfo(
+            title: AppLocalizations.of(context)!.topHasChildrenCardTitle,
+            icon: Icons.escalator_warning,
+            text: topHasChildrenText,
+          ),
+        );
+        analyticsCards.add(
+          AnalyticsCardInfo(
+            title: AppLocalizations.of(context)!.topLivesInUrbanAreaCardTitle,
+            icon: Icons.location_city,
+            text: topLivesInUrbanAreaText,
+          ),
+        );
+        analyticsCards.add(
+          AnalyticsCardInfo(
+            title: AppLocalizations.of(context)!.topGenderCardTitle,
+            icon: Icons.wc,
+            text: topGenderText,
+          ),
+        );
+        analyticsCards.add(
+          AnalyticsCardInfo(
+            title: AppLocalizations.of(context)!.topActivityCardTitle,
+            icon: Icons.work,
+            text: topActivitiesText,
+          ),
+        );
+        analyticsCards.add(
+          AnalyticsCardInfo(
+            title:
+                AppLocalizations.of(context)!.topFinancialSituationsCardTitle,
+            icon: Icons.account_balance_wallet,
+            text: topFinancialSituationsText,
+          ),
+        );
+        analyticsCards.add(
+          AnalyticsCardInfo(
+            title:
+                AppLocalizations.of(context)!.topRelationshipStatusesCardTitle,
+            icon: Icons.favorite,
+            text: topRelationshipStatusesText,
+          ),
+        );
+        analyticsCards.add(
+          AnalyticsCardInfo(
+            title: AppLocalizations.of(context)!.topLevelsOfEducationCardTitle,
+            icon: Icons.school,
+            text: topLevelsOfEducationText,
+          ),
+        );
 
-      analyticsCards.shuffle();
+        analyticsCards.shuffle();
 
-      analyticsCards.insert(
-        0,
-        AnalyticsCardInfo(
-          title: AppLocalizations.of(context)!.numberOfParticipantsInHabitTitle,
-          icon: Icons.people,
-          text: AppLocalizations.of(context)!
-              .numberOfParticipantsInHabit(habitStatistic.participantsCount),
-        ),
-      );
+        analyticsCards.insert(
+          0,
+          AnalyticsCardInfo(
+            title:
+                AppLocalizations.of(context)!.numberOfParticipantsInHabitTitle,
+            icon: Icons.people,
+            text: AppLocalizations.of(context)!
+                .numberOfParticipantsInHabit(habitStatistic.participantsCount),
+          ),
+        );
+      } else {
+        analyticsCards.add(
+          AnalyticsCardInfo(
+            title: AppLocalizations.of(context)!.comingSoon,
+            icon: Icons.info,
+            text: "",
+          ),
+        );
+      }
 
       return Column(
         mainAxisSize: MainAxisSize.min,
