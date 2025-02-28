@@ -72,6 +72,18 @@ String getTranslatedMessage(BuildContext context, Message message) {
         return localizations.habitsNotMergedError;
       case 'unitNotFoundError':
         return localizations.unitNotFoundError;
+      case 'quantityOfSetIsNullError':
+        return localizations.quantityOfSetIsNullError;
+      case 'quantityPerSetIsNullError':
+        return localizations.quantityPerSetIsNullError;
+      case 'quantityOfSetIsNegativeError':
+        return localizations.quantityOfSetIsNegativeError;
+      case 'quantityPerSetIsNegativeError':
+        return localizations.quantityPerSetIsNegativeError;
+      case 'dateTimeIsInTheFutureError':
+        return localizations.dateTimeIsInTheFutureError;
+      case 'missingDateTimeError':
+        return localizations.missingDateTimeError;
 
       // Profile
       case 'passwordNotExpiredError':
@@ -95,6 +107,8 @@ String getTranslatedMessage(BuildContext context, Message message) {
         return localizations.habitCreated;
       case 'habitUpdated':
         return localizations.habitUpdated;
+      case 'habitDailyTrackingCreated':
+        return localizations.habitDailyTrackingCreated;
 
       // Profile
       case 'passwordUpdateSuccessful':

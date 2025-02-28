@@ -6,6 +6,8 @@ import 'package:reallystick/core/ui/colors.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_states.dart';
 import 'package:reallystick/features/habits/presentation/helpers/translations.dart';
+import 'package:reallystick/features/habits/presentation/screens/add_daily_tracking_modal.dart';
+import 'package:reallystick/features/habits/presentation/widgets/add_activity_button.dart';
 import 'package:reallystick/features/habits/presentation/widgets/analytics_carousel_widget.dart';
 import 'package:reallystick/features/habits/presentation/widgets/challenges_carousel_widget.dart';
 import 'package:reallystick/features/habits/presentation/widgets/daily_tracking_carousel_widget.dart';
@@ -23,6 +25,31 @@ class HabitDetailsScreen extends StatefulWidget {
 }
 
 class HabitDetailsScreenState extends State<HabitDetailsScreen> {
+  void _showAddDailyTrackingBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      isDismissible: true,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
+      ),
+      builder: (BuildContext context) {
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom:
+                MediaQuery.of(context).viewInsets.bottom, // Adjust for keyboard
+            left: 16.0,
+            right: 16.0,
+            top: 16.0,
+          ),
+          child: Wrap(
+            children: [AddDailyTrackingModal(habitId: widget.habitId)],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Builder(
@@ -81,6 +108,15 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
                   ),
                 ],
               ),
+              actions: [
+                Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: AddActivityButton(
+                    action: _showAddDailyTrackingBottomSheet,
+                    color: habitColor,
+                  ),
+                )
+              ],
             ),
             body: SingleChildScrollView(
               child: Padding(

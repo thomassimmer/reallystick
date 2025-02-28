@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 
 class CustomTextField extends StatelessWidget {
-  final TextEditingController controller;
+  final TextEditingController? controller;
   final String label;
   final TextInputType keyboardType;
   final String? Function(String?)? validator;
@@ -14,7 +14,7 @@ class CustomTextField extends StatelessWidget {
   final void Function(String)? onFieldSubmitted;
 
   CustomTextField({
-    required this.controller,
+    this.controller,
     required this.label,
     this.keyboardType = TextInputType.text,
     this.validator,

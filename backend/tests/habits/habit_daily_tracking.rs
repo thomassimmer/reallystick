@@ -41,10 +41,9 @@ pub async fn user_creates_a_habit_daily_tracking(
         .to_request();
     let response = test::call_service(&app, req).await;
 
-    // assert_eq!(200, response.status().as_u16());
+    assert_eq!(200, response.status().as_u16());
 
     let body = test::read_body(response).await;
-    println!("{:?}", body);
     let response: HabitDailyTrackingResponse = serde_json::from_slice(&body).unwrap();
 
     assert_eq!(response.code, "HABIT_DAILY_TRACKING_CREATED");

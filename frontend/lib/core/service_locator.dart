@@ -29,6 +29,7 @@ import 'package:reallystick/features/habits/domain/repositories/habit_daily_trac
 import 'package:reallystick/features/habits/domain/repositories/habit_participation_repository.dart';
 import 'package:reallystick/features/habits/domain/repositories/habit_repository.dart';
 import 'package:reallystick/features/habits/domain/repositories/unit_repository.dart';
+import 'package:reallystick/features/habits/domain/usecases/create_habit_daily_tracking_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/create_habit_participation_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/create_habit_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/create_unit_usecase.dart';
@@ -38,6 +39,7 @@ import 'package:reallystick/features/habits/domain/usecases/get_habits_daily_tra
 import 'package:reallystick/features/habits/domain/usecases/get_habits_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/get_units_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/merge_habits_usecase.dart';
+import 'package:reallystick/features/habits/domain/usecases/update_habit_daily_tracking_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/update_habit_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/update_unit_usecase.dart';
 import 'package:reallystick/features/profile/data/repositories/profile_repository_impl.dart';
@@ -144,10 +146,14 @@ void setupServiceLocator() {
       CreateHabitParticipationUsecase(sl<HabitParticipationRepository>()));
   sl.registerSingleton<CreateUnitUsecase>(
       CreateUnitUsecase(sl<UnitRepository>()));
+  sl.registerSingleton<CreateHabitDailyTrackingUsecase>(
+      CreateHabitDailyTrackingUsecase(sl<HabitDailyTrackingRepository>()));
   sl.registerSingleton<MergeHabitsUsecase>(
       MergeHabitsUsecase(sl<HabitRepository>()));
   sl.registerSingleton<UpdateHabitUsecase>(
       UpdateHabitUsecase(sl<HabitRepository>()));
   sl.registerSingleton<UpdateUnitUsecase>(
       UpdateUnitUsecase(sl<UnitRepository>()));
+  sl.registerSingleton<UpdateHabitDailyTrackingUsecase>(
+      UpdateHabitDailyTrackingUsecase(sl<HabitDailyTrackingRepository>()));
 }

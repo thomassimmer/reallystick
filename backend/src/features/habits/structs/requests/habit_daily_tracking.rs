@@ -23,7 +23,7 @@ pub struct HabitDailyTrackingUpdateRequest {
 
 #[derive(Deserialize)]
 pub struct HabitDailyTrackingCreateRequest {
-    pub habit_id: uuid::Uuid,
+    pub habit_id: Uuid,
     pub datetime: DateTime<Utc>,
     pub quantity_per_set: i32,
     pub quantity_of_set: i32,

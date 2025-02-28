@@ -106,3 +106,53 @@ class MergeHabitsEvent extends HabitEvent {
         unitIds,
       ];
 }
+
+class CreateHabitDailyTrackingEvent extends HabitEvent {
+  final String habitId;
+  final DateTime datetime;
+  final int quantityPerSet;
+  final int quantityOfSet;
+  final String unitId;
+
+  const CreateHabitDailyTrackingEvent({
+    required this.habitId,
+    required this.datetime,
+    required this.quantityPerSet,
+    required this.quantityOfSet,
+    required this.unitId,
+  });
+
+  @override
+  List<Object?> get props => [
+        habitId,
+        datetime,
+        quantityOfSet,
+        quantityPerSet,
+        unitId,
+      ];
+}
+
+class UpdateHabitDailyTrackingEvent extends HabitEvent {
+  final String habitDailyTrackingId;
+  final DateTime datetime;
+  final int quantityPerSet;
+  final int quantityOfSet;
+  final String unitId;
+
+  const UpdateHabitDailyTrackingEvent({
+    required this.habitDailyTrackingId,
+    required this.datetime,
+    required this.quantityPerSet,
+    required this.quantityOfSet,
+    required this.unitId,
+  });
+
+  @override
+  List<Object?> get props => [
+        habitDailyTrackingId,
+        datetime,
+        quantityOfSet,
+        quantityPerSet,
+        unitId,
+      ];
+}

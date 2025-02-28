@@ -49,3 +49,33 @@ class UnitNotFoundDomainError implements DomainError {
   @override
   final String messageKey = 'unitNotFoundError';
 }
+
+class QuantityOfSetIsNullError implements DomainError {
+  @override
+  final String messageKey = 'quantityOfSetIsNullError';
+}
+
+class QuantityPerSetIsNullError implements DomainError {
+  @override
+  final String messageKey = 'quantityPerSetIsNullError';
+}
+
+class QuantityOfSetIsNegativeError implements DomainError {
+  @override
+  final String messageKey = 'quantityOfSetIsNegativeError';
+}
+
+class QuantityPerSetIsNegativeError implements DomainError {
+  @override
+  final String messageKey = 'quantityPerSetIsNegativeError';
+}
+
+class DateTimeIsInTheFutureError implements DomainError {
+  @override
+  final String messageKey = 'dateTimeIsInTheFutureError';
+}
+
+class MissingDateTimeError implements DomainError {
+  @override
+  final String messageKey = 'missingDateTimeError';
+}

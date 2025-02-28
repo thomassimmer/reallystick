@@ -7,7 +7,9 @@ import 'package:reallystick/features/habits/domain/entities/habit_category.dart'
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_events.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_states.dart';
+import 'package:reallystick/features/habits/presentation/screens/add_daily_tracking_modal.dart';
 import 'package:reallystick/features/habits/presentation/screens/questionnaire_modal.dart';
+import 'package:reallystick/features/habits/presentation/widgets/add_activity_button.dart';
 import 'package:reallystick/features/habits/presentation/widgets/habit_category_widget.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_events.dart';
@@ -56,6 +58,31 @@ class HabitsScreenState extends State<HabitsScreen> {
     });
   }
 
+  void _showAddDailyTrackingBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      isDismissible: true,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
+      ),
+      builder: (BuildContext context) {
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom:
+                MediaQuery.of(context).viewInsets.bottom, // Adjust for keyboard
+            left: 16.0,
+            right: 16.0,
+            top: 16.0,
+          ),
+          child: Wrap(
+            children: [AddDailyTrackingModal()],
+          ),
+        );
+      },
+    );
+  }
+
   void onRetry() {
     BlocProvider.of<HabitBloc>(context).add(HabitInitializeEvent());
   }
@@ -79,65 +106,73 @@ class HabitsScreenState extends State<HabitsScreen> {
               habitState is HabitsLoaded) {
             final categories = getCategoriesOrderedByLatestTracking(habitState);
 
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0,
-                      vertical: 16.0,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          AppLocalizations.of(context)!.myHabits,
-                          style: context.typographies.heading,
-                        ),
-                        InkWell(
-                          onTap: () {
-                            context.goNamed('habitSearch');
-                          },
-                          child: Icon(
-                            Icons.add_circle_outline,
-                            size: 30,
+            return Scaffold(
+              body: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0,
+                        vertical: 16.0,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            AppLocalizations.of(context)!.myHabits,
+                            style: context.typographies.heading,
                           ),
-                        )
-                      ],
-                    )),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: categories.length,
-                    itemBuilder: (context, index) {
-                      final habitCategory = categories[index];
+                          InkWell(
+                            onTap: () {
+                              context.goNamed('habitSearch');
+                            },
+                            child: Icon(
+                              Icons.add_circle_outline,
+                              size: 30,
+                            ),
+                          )
+                        ],
+                      )),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: categories.length,
+                      itemBuilder: (context, index) {
+                        final habitCategory = categories[index];
 
-                      final habitParticipations = habitState.habitParticipations
-                          .where((habitParticipation) =>
-                              habitState.habits[habitParticipation.habitId] !=
-                                  null &&
-                              habitState.habits[habitParticipation.habitId]!
-                                      .categoryId ==
-                                  habitCategory.id)
-                          .toList();
+                        final habitParticipations = habitState
+                            .habitParticipations
+                            .where((habitParticipation) =>
+                                habitState.habits[habitParticipation.habitId] !=
+                                    null &&
+                                habitState.habits[habitParticipation.habitId]!
+                                        .categoryId ==
+                                    habitCategory.id)
+                            .toList();
 
-                      final habitDailyTrackings = habitState.habitDailyTrackings
-                          .where((habitDailyTracking) =>
-                              habitState.habits[habitDailyTracking.habitId] !=
-                                  null &&
-                              habitState.habits[habitDailyTracking.habitId]!
-                                      .categoryId ==
-                                  habitCategory.id)
-                          .toList();
+                        final habitDailyTrackings = habitState
+                            .habitDailyTrackings
+                            .where((habitDailyTracking) =>
+                                habitState.habits[habitDailyTracking.habitId] !=
+                                    null &&
+                                habitState.habits[habitDailyTracking.habitId]!
+                                        .categoryId ==
+                                    habitCategory.id)
+                            .toList();
 
-                      return HabitCategoryWidget(
-                          habits: habitState.habits,
-                          category: habitCategory,
-                          habitParticipations: habitParticipations,
-                          habitDailyTrackings: habitDailyTrackings);
-                    },
+                        return HabitCategoryWidget(
+                            habits: habitState.habits,
+                            category: habitCategory,
+                            habitParticipations: habitParticipations,
+                            habitDailyTrackings: habitDailyTrackings);
+                      },
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
+              floatingActionButton:
+                  AddActivityButton(action: _showAddDailyTrackingBottomSheet),
+              floatingActionButtonLocation:
+                  FloatingActionButtonLocation.centerFloat,
             );
           } else if (habitState is HabitsFailed) {
             return Center(

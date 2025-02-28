@@ -13,7 +13,7 @@ class HabitDailyTrackingUpdateRequestModel {
 
   Map<String, dynamic> toJson() {
     return {
-      'datetime': datetime.toIso8601String(),
+      'datetime': datetime.toUtc().toIso8601String(),
       'quantity_per_set': quantityPerSet,
       'quantity_of_set': quantityOfSet,
       'unit_id': unitId,
@@ -39,7 +39,7 @@ class HabitDailyTrackingCreateRequestModel {
   Map<String, dynamic> toJson() {
     return {
       'habit_id': habitId,
-      'datetime': datetime.toIso8601String(),
+      'datetime': datetime.toUtc().toIso8601String(),
       'quantity_per_set': quantityPerSet,
       'quantity_of_set': quantityOfSet,
       'unit_id': unitId,

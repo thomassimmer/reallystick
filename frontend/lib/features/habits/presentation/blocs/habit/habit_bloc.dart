@@ -8,6 +8,7 @@ import 'package:reallystick/features/auth/domain/errors/domain_error.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_bloc.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_events.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_states.dart';
+import 'package:reallystick/features/habits/domain/usecases/create_habit_daily_tracking_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/create_habit_participation_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/create_habit_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/get_habit_categories_usecase.dart';
@@ -16,6 +17,7 @@ import 'package:reallystick/features/habits/domain/usecases/get_habits_daily_tra
 import 'package:reallystick/features/habits/domain/usecases/get_habits_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/get_units_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/merge_habits_usecase.dart';
+import 'package:reallystick/features/habits/domain/usecases/update_habit_daily_tracking_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/update_habit_usecase.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_events.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_states.dart';
@@ -35,10 +37,14 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
       GetIt.instance<CreateHabitUsecase>();
   final CreateHabitParticipationUsecase createHabitParticipationUsecase =
       GetIt.instance<CreateHabitParticipationUsecase>();
+  final CreateHabitDailyTrackingUsecase createHabitDailyTrackingUsecase =
+      GetIt.instance<CreateHabitDailyTrackingUsecase>();
   final MergeHabitsUsecase mergeHabitsUsecase =
       GetIt.instance<MergeHabitsUsecase>();
   final UpdateHabitUsecase updateHabitUsecase =
       GetIt.instance<UpdateHabitUsecase>();
+  final UpdateHabitDailyTrackingUsecase updateHabitDailyTrackingUsecase =
+      GetIt.instance<UpdateHabitDailyTrackingUsecase>();
 
   HabitBloc({required this.authBloc}) : super(HabitsLoading()) {
     authBlocSubscription = authBloc.stream.listen((authState) {
@@ -51,6 +57,7 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
     on<CreateHabitEvent>(createHabit);
     on<UpdateHabitEvent>(updateHabit);
     on<MergeHabitsEvent>(mergeHabits);
+    on<CreateHabitDailyTrackingEvent>(createHabitDailyTracking);
   }
 
   Future<void> _initialize(
@@ -332,6 +339,105 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
             units: currentState.units,
             message: SuccessMessage("habitUpdated"),
             newlyUpdatedHabit: habit,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> createHabitDailyTracking(
+      CreateHabitDailyTrackingEvent event, Emitter<HabitState> emit) async {
+    final currentState = state as HabitsLoaded;
+    emit(HabitsLoading());
+
+    final resultCreateHabitDailyTrackingUsecase =
+        await createHabitDailyTrackingUsecase.call(
+      datetime: event.datetime,
+      habitId: event.habitId,
+      quantityOfSet: event.quantityOfSet,
+      quantityPerSet: event.quantityPerSet,
+      unitId: event.unitId,
+    );
+
+    resultCreateHabitDailyTrackingUsecase.fold(
+      (error) {
+        if (error is ShouldLogoutError) {
+          authBloc
+              .add(AuthLogoutEvent(message: ErrorMessage(error.messageKey)));
+        } else {
+          emit(
+            HabitsLoaded(
+              habitCategories: currentState.habitCategories,
+              habitDailyTrackings: currentState.habitDailyTrackings,
+              habitParticipations: currentState.habitParticipations,
+              habits: currentState.habits,
+              units: currentState.units,
+              message: ErrorMessage(error.messageKey),
+            ),
+          );
+        }
+      },
+      (habitDailyTracking) {
+        currentState.habitDailyTrackings.add(habitDailyTracking);
+        emit(
+          HabitsLoaded(
+            habitCategories: currentState.habitCategories,
+            habitDailyTrackings: currentState.habitDailyTrackings,
+            habitParticipations: currentState.habitParticipations,
+            habits: currentState.habits,
+            units: currentState.units,
+            message: SuccessMessage("habitDailyTrackingCreated"),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> updateHabitDailyTracking(
+      UpdateHabitDailyTrackingEvent event, Emitter<HabitState> emit) async {
+    final currentState = state as HabitsLoaded;
+    emit(HabitsLoading());
+
+    final resultUpdateHabitDailyTrackingUsecase =
+        await updateHabitDailyTrackingUsecase.call(
+      habitDailyTrackingId: event.habitDailyTrackingId,
+      datetime: event.datetime,
+      quantityOfSet: event.quantityOfSet,
+      quantityPerSet: event.quantityPerSet,
+      unitId: event.unitId,
+    );
+
+    resultUpdateHabitDailyTrackingUsecase.fold(
+      (error) {
+        if (error is ShouldLogoutError) {
+          authBloc
+              .add(AuthLogoutEvent(message: ErrorMessage(error.messageKey)));
+        } else {
+          emit(
+            HabitsLoaded(
+              habitCategories: currentState.habitCategories,
+              habitDailyTrackings: currentState.habitDailyTrackings,
+              habitParticipations: currentState.habitParticipations,
+              habits: currentState.habits,
+              units: currentState.units,
+              message: ErrorMessage(error.messageKey),
+            ),
+          );
+        }
+      },
+      (habitDailyTracking) {
+        final newHabitDailyTrackings = currentState.habitDailyTrackings
+            .where((hdt) => hdt.id != habitDailyTracking.id)
+            .toList();
+        newHabitDailyTrackings.add(habitDailyTracking);
+        emit(
+          HabitsLoaded(
+            habitCategories: currentState.habitCategories,
+            habitDailyTrackings: newHabitDailyTrackings,
+            habitParticipations: currentState.habitParticipations,
+            habits: currentState.habits,
+            units: currentState.units,
+            message: SuccessMessage("habitDailyTrackingCreated"),
           ),
         );
       },
