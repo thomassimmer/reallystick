@@ -22,6 +22,7 @@ use actix_web::{
     web::{Data, Json, ReqData},
     HttpResponse, Responder,
 };
+use serde_json::json;
 use sqlx::PgPool;
 use uuid::Uuid;
 
@@ -100,16 +101,20 @@ pub async fn create_private_message(
     };
 
     if let Some(recipient) = recipients.iter().next() {
-        if let Some(tx) = channels_data.get_value_for_key(recipient.user_id).await {
-            let _ = tx.send(private_message.to_private_message_data());
+        if let Some(mut session) = channels_data.get_value_for_key(recipient.user_id).await {
+            let _ = session
+                .text(json!(private_message.to_private_message_data()).to_string())
+                .await;
         }
     }
 
-    if let Some(tx) = channels_data
+    if let Some(mut session) = channels_data
         .get_value_for_key(request_claims.user_id)
         .await
     {
-        let _ = tx.send(private_message.to_private_message_data());
+        let _ = session
+            .text(json!(private_message.to_private_message_data()).to_string())
+            .await;
     }
 
     if let Err(e) = transaction.commit().await {

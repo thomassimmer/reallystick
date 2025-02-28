@@ -1,8 +1,9 @@
 use std::{collections::HashMap, sync::Arc};
 
+use actix_ws::Session;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
-use tokio::sync::{mpsc::UnboundedSender, RwLock};
+use tokio::sync::RwLock;
 use uuid::Uuid;
 
 pub const PRIVATE_MESSAGE_CONTENT_MAX_LENGTH: usize = 10_000;
@@ -54,11 +55,11 @@ impl PrivateMessage {
 
 #[derive(Default, Clone)]
 pub struct ChannelsData {
-    data: Arc<RwLock<HashMap<Uuid, UnboundedSender<PrivateMessageData>>>>,
+    data: Arc<RwLock<HashMap<Uuid, Session>>>,
 }
 
 impl ChannelsData {
-    pub async fn insert(&self, key: Uuid, value: UnboundedSender<PrivateMessageData>) {
+    pub async fn insert(&self, key: Uuid, value: Session) {
         self.data.write().await.insert(key, value);
     }
 
@@ -66,10 +67,7 @@ impl ChannelsData {
         self.data.write().await.remove(&key);
     }
 
-    pub async fn get_value_for_key(
-        &self,
-        key: Uuid,
-    ) -> Option<UnboundedSender<PrivateMessageData>> {
+    pub async fn get_value_for_key(&self, key: Uuid) -> Option<Session> {
         self.data.read().await.get(&key).cloned()
     }
 }

@@ -2,10 +2,8 @@ use actix_web::get;
 use actix_web::web::{Data, Query};
 use actix_web::{rt, web, HttpRequest, HttpResponse, Responder};
 use actix_ws::{self};
+use futures::TryStreamExt;
 use jsonwebtoken::{decode, DecodingKey, Validation};
-use serde_json::json;
-use tokio::select;
-use tokio::sync::mpsc;
 
 use crate::core::constants::errors::AppError;
 use crate::features::auth::structs::models::Claims;
@@ -34,7 +32,7 @@ async fn broadcast_ws(
         }
     };
 
-    let (res, session, _) = match actix_ws::handle(&req, stream) {
+    let (res, session, mut msg_stream) = match actix_ws::handle(&req, stream) {
         Ok(r) => r,
         Err(e) => {
             eprintln!("Error: {}", e);
@@ -43,38 +41,20 @@ async fn broadcast_ws(
         }
     };
 
-    let (tx, mut rx) = mpsc::unbounded_channel();
-
-    channels_data.insert(request_claims.user_id, tx).await;
-
-    let mut session = session.clone();
+    channels_data
+        .insert(request_claims.user_id, session.clone())
+        .await;
 
     // spawn websocket handler (and don't await it) so that the response is returned immediately
     rt::spawn(async move {
-        let reason = loop {
-            select! {
-                broadcast_msg = rx.recv() => {
-
-                    let msg = match broadcast_msg {
-                        Some(msg) => msg,
-                        None => continue,
-                    };
-
-
-                    let res = session.text(json!(msg).to_string()).await;
-
-                    if let Err(e) = res {
-                        eprintln!("Error: {}", e);
-                        break None;
-                    }
-                }
+        while let Ok(Some(msg)) = msg_stream.try_next().await {
+            match msg {
+                _ => break,
             }
-        };
+        }
 
         channels_data.remove_key(request_claims.user_id).await;
-
-        // attempt to close connection gracefully
-        let _ = session.close(reason).await;
+        let _ = session.close(None).await;
     });
 
     res
