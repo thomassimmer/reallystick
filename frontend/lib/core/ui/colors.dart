@@ -151,7 +151,7 @@ extension AppColorExtension on AppColor {
         orElse: () => throw ArgumentError("No AppColor matches '$colorName'"),
       );
     } catch (e) {
-      return getRandomColor();
+      return AppColor.blue;
     }
   }
 

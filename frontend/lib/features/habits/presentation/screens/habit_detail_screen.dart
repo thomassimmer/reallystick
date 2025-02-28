@@ -216,7 +216,7 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
                     SizedBox(height: 16),
                     AnalyticsCarouselWidget(habitColor: habitColor),
                     SizedBox(height: 16),
-                    if (habitDailyTrackings.isNotEmpty) ...[
+                    if (habitParticipation != null) ...[
                       DailyTrackingCarouselWidget(
                         habitDailyTrackings: habitDailyTrackings,
                         habitColor: habitColor,
