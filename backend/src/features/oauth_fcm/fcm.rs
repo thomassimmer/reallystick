@@ -5,10 +5,10 @@ use tracing::error;
 use tracing::info;
 use tracing::instrument;
 
-use super::error::NetworkError;
-use super::error::ResultMapError;
-use super::error::FcmError;
-use super::token_manager::SharedTokenManager;
+use crate::features::oauth_fcm::error::FcmError;
+use crate::features::oauth_fcm::error::NetworkError;
+use crate::features::oauth_fcm::error::ResultMapError;
+use crate::features::oauth_fcm::token_manager::SharedTokenManager;
 
 /// A wrapper for Firebase Cloud Messaging (FCM) notifications.
 pub struct FcmNotification {
@@ -36,31 +36,6 @@ pub struct FcmNotification {
 /// # Errors
 ///
 /// This function will return an error if the FCM message could not be sent.
-///
-/// # Example
-///
-/// ```rust no_run
-/// use std::fs::File;
-///
-/// use oauth_fcm::{create_shared_token_manager, send_fcm_message, SharedTokenManager};
-///
-/// # tokio_test::block_on(async {
-/// let device_token = "device_token";
-/// let data = serde_json::json!({
-///    "key": "value"
-/// });
-/// let notification = oauth_fcm::FcmNotification {
-///    title: "Test Title".to_string(),
-///   body: "Test Body".to_string(),
-/// };
-/// let token_manager = create_shared_token_manager(File::open("path_to_google_credentials.json").expect("Failed to open file")).expect("Failed to create SharedTokenManager");
-/// let project_id = "project_id";
-/// send_fcm_message(device_token, Some(notification), Some(data), &token_manager, project_id)
-///     .await
-///     .expect("Error while sending FCM message");
-///
-/// # });
-/// ```
 #[instrument(level = "info", skip(data_payload, notification, token_manager))]
 pub async fn send_fcm_message<T: Serialize>(
     device_token: &str,

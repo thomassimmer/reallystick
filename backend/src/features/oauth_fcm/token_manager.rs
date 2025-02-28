@@ -14,9 +14,9 @@ use tracing::debug;
 use tracing::info;
 use tracing::instrument;
 
-use super::error::FcmError;
-use super::error::NetworkError;
-use super::error::ResultMapError;
+use crate::features::oauth_fcm::error::FcmError;
+use crate::features::oauth_fcm::error::NetworkError;
+use crate::features::oauth_fcm::error::ResultMapError;
 
 /// A thread-safe, shared reference to a `TokenManager`.
 ///
@@ -31,19 +31,6 @@ pub type SharedTokenManager = std::sync::Arc<tokio::sync::Mutex<TokenManager>>;
 /// token. Every time you get the token, it checks if it is expired and creates
 /// a new one if necessary. Each token is valid for one hour (the maximum
 /// provided by Google).
-///
-/// # Example
-///
-/// ```rust no_run
-/// use std::fs::File;
-///
-/// use oauth_fcm::TokenManager;
-///
-/// # tokio_test::block_on(async {
-/// let mut token_manager = TokenManager::new(File::open("./tests/mock_credentials.json").expect("Failed to open file")).expect("Failed to create TokenManager");
-/// let token = token_manager.get_token().await.expect("Failed to get token");
-/// # });
-/// ```
 pub struct TokenManager {
     token: Option<String>,
     expires_at: Option<Instant>,
