@@ -18,9 +18,10 @@ pub async fn create_user(
             created_at,
             updated_at,
             recovery_codes,
-            password_is_expired
+            password_is_expired,
+            is_admin
         )
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
         "#,
         user.id,
         user.username,
@@ -31,7 +32,8 @@ pub async fn create_user(
         user.created_at,
         user.updated_at,
         user.recovery_codes,
-        user.password_is_expired
+        user.password_is_expired,
+        user.is_admin
     )
     .execute(conn)
     .await

@@ -29,6 +29,7 @@ use crate::features::habits::routes::get_habit_categories::get_habit_categories;
 use crate::features::habits::routes::get_habit_daily_trackings::get_habit_daily_tracking;
 use crate::features::habits::routes::get_habit_participations::get_habit_participations;
 use crate::features::habits::routes::get_habits::get_habits;
+use crate::features::habits::routes::merge_habits::merge_habits;
 use crate::features::habits::routes::update_habit::update_habit;
 use crate::features::habits::routes::update_habit_category::update_habit_category;
 use crate::features::habits::routes::update_habit_daily_tracking::update_habit_daily_tracking;
@@ -71,9 +72,9 @@ pub fn create_app(
     let secret = &configuration.application.secret;
 
     let cors = Cors::default()
-        .allow_any_origin()
-        // .allowed_origin("localhost:3000")
-        .allowed_methods(vec!["GET", "POST"])
+        .allowed_origin_fn(|origin, _req_head| origin.as_bytes().starts_with(b"http://localhost:"))
+        .allowed_origin("https://reallystick.com")
+        .allowed_methods(vec!["GET", "POST", "PUT", "DELETE", "OPTIONS"])
         .allowed_headers(vec![
             header::CONTENT_TYPE,
             header::AUTHORIZATION,
@@ -138,7 +139,8 @@ pub fn create_app(
                             .service(get_habits)
                             .service(update_habit)
                             .service(create_habit)
-                            .service(delete_habit),
+                            .service(delete_habit)
+                            .service(merge_habits),
                     ),
                 )
                 .service(

@@ -21,6 +21,7 @@ pub enum AppError {
     HabitDailyTrackingNotFound,
     HabitDailyTrackingUpdate,
     HabitDelete,
+    HabitMerge,
     HabitNotFound,
     HabitParticipationCreation,
     HabitParticipationDelete,
@@ -120,6 +121,10 @@ impl AppError {
             AppError::HabitDelete => GenericResponse {
                 code: "HABIT_NOT_DELETED".to_string(),
                 message: "Failed to delete this habit".to_string(),
+            },
+            AppError::HabitMerge => GenericResponse {
+                code: "HABITS_NOT_MERGED".to_string(),
+                message: "Failed to merge these two habits".to_string(),
             },
             AppError::HabitNotFound => GenericResponse {
                 code: "HABIT_NOT_FOUND".to_string(),

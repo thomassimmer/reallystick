@@ -100,3 +100,22 @@ pub async fn delete_habit_participation_by_id(
     .execute(conn)
     .await
 }
+
+pub async fn replace_participation_habit(
+    conn: &mut PgConnection,
+    old_habit_id: Uuid,
+    new_habit_id: Uuid,
+) -> Result<PgQueryResult, sqlx::Error> {
+    sqlx::query_as!(
+        HabitParticipation,
+        r#"
+        UPDATE habit_participations
+        SET habit_id = $2
+        WHERE habit_id = $1
+        "#,
+        old_habit_id,
+        new_habit_id,
+    )
+    .execute(conn)
+    .await
+}

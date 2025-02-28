@@ -42,6 +42,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
         password: password_hash,
         locale: "fr".to_string(),
         theme: "light".to_string(),
+        is_admin: true,
         otp_verified: false,
         otp_base32: None,
         otp_auth_url: None,

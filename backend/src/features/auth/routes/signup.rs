@@ -112,6 +112,7 @@ pub async fn register_user(
         password: password_hash,
         locale: body.locale,
         theme: body.theme,
+        is_admin: false,
         otp_verified: false,
         otp_base32: None,
         otp_auth_url: None,
