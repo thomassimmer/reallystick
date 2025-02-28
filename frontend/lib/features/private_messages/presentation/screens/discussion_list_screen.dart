@@ -75,7 +75,7 @@ class DiscussionListScreenState extends State<DiscussionListScreen> {
                       child: Center(
                         child: Text(
                           AppLocalizations.of(context)!
-                              .noDiscussionsForHabitYet,
+                              .noPrivateDiscussionsYet,
                           textAlign: TextAlign.center,
                         ),
                       ),

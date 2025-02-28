@@ -80,7 +80,8 @@ class ChallengesScreenState extends State<ChallengesScreen> {
                     const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
                 child: CustomScrollView(
                   slivers: [
-                    if (challenges.isNotEmpty) ...[
+                    if (createdChallenges.isNotEmpty ||
+                        participatedChallenges.isNotEmpty) ...[
                       if (createdChallenges.isNotEmpty) ...[
                         SliverAppBar(
                           title: Row(

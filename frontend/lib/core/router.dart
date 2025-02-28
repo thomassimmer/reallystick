@@ -6,7 +6,7 @@ import 'package:reallystick/features/auth/presentation/blocs/auth/auth_bloc.dart
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_states.dart';
 import 'package:reallystick/features/auth/presentation/screens/login_screen.dart';
 import 'package:reallystick/features/auth/presentation/screens/recover_account_screen.dart';
-import 'package:reallystick/features/auth/presentation/screens/recovery_codes_screen.dart';
+import 'package:reallystick/features/auth/presentation/screens/recovery_code_screen.dart';
 import 'package:reallystick/features/auth/presentation/screens/signup_screen.dart';
 import 'package:reallystick/features/auth/presentation/screens/unauthenticated_home_screen.dart';
 import 'package:reallystick/features/challenges/presentation/screens/challenge_detail_screen.dart';
@@ -36,6 +36,7 @@ import 'package:reallystick/features/profile/presentation/screens/profile_inform
 import 'package:reallystick/features/profile/presentation/screens/profile_screen.dart';
 import 'package:reallystick/features/profile/presentation/screens/theme_selection_screen.dart';
 import 'package:reallystick/features/profile/presentation/screens/two_factor_authentication_screen.dart';
+import 'package:reallystick/features/profile/presentation/screens/update_recovery_code_screen.dart';
 import 'package:reallystick/features/profile/presentation/screens/user_reported_messages_screen.dart';
 import 'package:reallystick/features/profile/presentation/screens/written_messages_screen.dart';
 import 'package:reallystick/features/public_messages/presentation/screens/reply_screen.dart';
@@ -289,6 +290,11 @@ class AppRouter {
                 path: 'password',
                 name: 'password',
                 builder: (context, state) => PasswordScreen(),
+              ),
+              GoRoute(
+                path: 'recovery-code',
+                name: 'update-recovery-code',
+                builder: (context, state) => UpdateRecoveryCodeScreen(),
               ),
               GoRoute(
                 path: 'about',

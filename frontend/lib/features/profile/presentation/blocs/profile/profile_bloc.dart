@@ -92,6 +92,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState>
     on<DeleteAccountEvent>(_deleteAccount);
     on<DeleteDeviceEvent>(_deleteDevice);
     on<GenerateNewRecoveryCodeEvent>(_generateNewRecoveryCode);
+    
 
     WidgetsBinding.instance.addObserver(this);
   }

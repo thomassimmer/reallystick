@@ -98,6 +98,13 @@ class ProfileScreen extends StatelessWidget {
                 },
               ),
               ListTile(
+                title: Text(AppLocalizations.of(context)!.changeRecoveryCode),
+                trailing: Icon(Icons.chevron_right),
+                onTap: () {
+                  context.goNamed('update-recovery-code');
+                },
+              ),
+              ListTile(
                 title: Text(AppLocalizations.of(context)!.profileInformation),
                 trailing: Icon(Icons.chevron_right),
                 onTap: () {
