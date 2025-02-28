@@ -70,7 +70,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
         HabitCategory {
             id: Uuid::new_v4(),
             name: json!(HashMap::from([("en", "Health"), ("fr", "Santé")])).to_string(),
-            icon: "material::health_and_safety".to_string(),
+            icon: "material::58117".to_string(),
             created_at: Utc::now(),
         },
         HabitCategory {
@@ -80,25 +80,25 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
                 ("fr", "Apprentissage des langues")
             ]))
             .to_string(),
-            icon: "material::language".to_string(),
+            icon: "material::58214".to_string(),
             created_at: Utc::now(),
         },
         HabitCategory {
             id: Uuid::new_v4(),
             name: json!(HashMap::from([("en", "Lifestyle"), ("fr", "Style de vie")])).to_string(),
-            icon: "material::self_improvement".to_string(),
+            icon: "material::58735".to_string(),
             created_at: Utc::now(),
         },
         HabitCategory {
             id: Uuid::new_v4(),
             name: json!(HashMap::from([("en", "Sport"), ("fr", "Sport")])).to_string(),
-            icon: "material::fitness_center".to_string(),
+            icon: "material::57997".to_string(),
             created_at: Utc::now(),
         },
         HabitCategory {
             id: Uuid::new_v4(),
             name: json!(HashMap::from([("en", "Finance"), ("fr", "Finance")])).to_string(),
-            icon: "material::paid".to_string(),
+            icon: "material::57522".to_string(),
             created_at: Utc::now(),
         },
     ];
@@ -124,7 +124,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
             .to_string(),
             reviewed: true,
             created_at: Utc::now(),
-            icon: "material::smoke_free".to_string(),
+            icon: "material::58823".to_string(),
         },
         Habit {
             id: Uuid::new_v4(),
@@ -197,7 +197,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
             .to_string(),
             reviewed: true,
             created_at: Utc::now(),
-            icon: "material::sports_esports".to_string(),
+            icon: "material::58856".to_string(),
         },
         Habit {
             id: Uuid::new_v4(),
@@ -218,7 +218,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
             .to_string(),
             reviewed: true,
             created_at: Utc::now(),
-            icon: "material::monitor_weight".to_string(),
+            icon: "material::58364".to_string(),
         },
         Habit {
             id: Uuid::new_v4(),
@@ -243,7 +243,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
             .to_string(),
             reviewed: true,
             created_at: Utc::now(),
-            icon: "material::fitness_center".to_string(),
+            icon: "material::57997".to_string(),
         },
         Habit {
             id: Uuid::new_v4(),
@@ -271,7 +271,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
             .to_string(),
             reviewed: true,
             created_at: Utc::now(),
-            icon: "material::savings".to_string(),
+            icon: "material::58707".to_string(),
         },
     ];
 
