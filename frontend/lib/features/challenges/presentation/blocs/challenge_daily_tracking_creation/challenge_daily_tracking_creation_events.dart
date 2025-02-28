@@ -90,3 +90,13 @@ class ChallengeDailyTrackingCreationFormRepeatChangedEvent
   @override
   List<Object?> get props => [repeat];
 }
+
+class ChallengeDailyTrackingCreationFormNoteChangedEvent
+    extends ChallengeDailyTrackingCreationEvent {
+  final String? note;
+
+  const ChallengeDailyTrackingCreationFormNoteChangedEvent(this.note);
+
+  @override
+  List<Object?> get props => [note];
+}

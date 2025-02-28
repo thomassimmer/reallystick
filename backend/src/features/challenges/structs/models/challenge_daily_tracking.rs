@@ -15,6 +15,8 @@ pub struct ChallengeDailyTracking {
     pub unit_id: Uuid,
     pub weight: i32,
     pub weight_unit_id: Uuid,
+
+    pub note: Option<String>,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -29,6 +31,8 @@ pub struct ChallengeDailyTrackingData {
     pub unit_id: Uuid,
     pub weight: i32,
     pub weight_unit_id: Uuid,
+
+    pub note: Option<String>,
 }
 
 impl ChallengeDailyTracking {
@@ -43,6 +47,7 @@ impl ChallengeDailyTracking {
             unit_id: self.unit_id,
             weight: self.weight,
             weight_unit_id: self.weight_unit_id,
+            note: self.note.clone(),
         }
     }
 }

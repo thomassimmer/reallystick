@@ -39,6 +39,7 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
   int _quantityOfSet = 1;
   int _weight = 0;
   String? _selectedWeightUnitId;
+  String? _note;
 
   @override
   void didChangeDependencies() {
@@ -69,6 +70,7 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
         _quantityPerSet = widget.challengeDailyTracking.quantityPerSet;
         _weight = widget.challengeDailyTracking.weight;
         _selectedWeightUnitId = newSelectedWeightUnitId;
+        _note = widget.challengeDailyTracking.note;
       });
     }
   }
@@ -91,12 +93,10 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
     challengeDailyTrackingFormBloc.add(
       ChallengeDailyTrackingUpdateFormHabitChangedEvent(_selectedHabitId),
     );
-
     challengeDailyTrackingFormBloc.add(
       ChallengeDailyTrackingUpdateFormDayOfProgramChangedEvent(
           _selectedDayOfProgram),
     );
-
     challengeDailyTrackingFormBloc.add(
       ChallengeDailyTrackingUpdateFormQuantityOfSetChangedEvent(_quantityOfSet),
     );
@@ -113,6 +113,9 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
     challengeDailyTrackingFormBloc.add(
       ChallengeDailyTrackingUpdateFormWeightUnitIdChangedEvent(
           _selectedWeightUnitId ?? ""),
+    );
+    challengeDailyTrackingFormBloc.add(
+      ChallengeDailyTrackingUpdateFormNoteChangedEvent(_note),
     );
 
     // Allow time for the validation states to update
@@ -131,6 +134,7 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
             unitId: _selectedUnitId!,
             weight: _weight,
             weightUnitId: _selectedWeightUnitId!,
+            note: _note,
           );
           if (mounted) {
             context.read<ChallengeBloc>().add(newChallengeDailyTrackingEvent);
@@ -215,6 +219,15 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
       final displayWeightUnitErrorMessage = context.select(
         (ChallengeDailyTrackingUpdateFormBloc bloc) {
           final error = bloc.state.weightUnitId.displayError;
+          return error != null
+              ? getTranslatedMessage(context, ErrorMessage(error.messageKey))
+              : null;
+        },
+      );
+
+      final displayNoteErrorMessage = context.select(
+        (ChallengeDailyTrackingUpdateFormBloc bloc) {
+          final error = bloc.state.note.displayError;
           return error != null
               ? getTranslatedMessage(context, ErrorMessage(error.messageKey))
               : null;
@@ -528,6 +541,27 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
               ],
             ),
           ],
+
+          const SizedBox(height: 16),
+
+          CustomTextField(
+            initialValue: _note,
+            maxLines: null,
+            minLines: 3,
+            enabled: canEdit,
+            keyboardType: TextInputType.multiline,
+            label: AppLocalizations.of(context)!.note,
+            onChanged: (value) {
+              setState(() {
+                _note = value;
+              });
+              BlocProvider.of<ChallengeDailyTrackingUpdateFormBloc>(context)
+                  .add(
+                ChallengeDailyTrackingUpdateFormNoteChangedEvent(_note),
+              );
+            },
+            errorText: displayNoteErrorMessage,
+          ),
 
           const SizedBox(height: 16),
 

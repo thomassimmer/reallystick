@@ -34,3 +34,8 @@ class RepetitionNumberIsNegativeError implements DomainError {
   @override
   final String messageKey = 'repetitionNumberIsNegativeError';
 }
+
+class ChallengeDailyTrackingNoteTooLong implements DomainError {
+  @override
+  final String messageKey = 'challengeDailyTrackingNoteTooLong';
+}

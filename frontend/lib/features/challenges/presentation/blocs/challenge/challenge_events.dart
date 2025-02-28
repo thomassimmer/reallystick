@@ -66,6 +66,7 @@ class CreateChallengeDailyTrackingEvent extends ChallengeEvent {
   final int weight;
   final String weightUnitId;
   final int repeat;
+  final String? note;
 
   const CreateChallengeDailyTrackingEvent({
     required this.challengeId,
@@ -77,6 +78,7 @@ class CreateChallengeDailyTrackingEvent extends ChallengeEvent {
     required this.weight,
     required this.weightUnitId,
     required this.repeat,
+    required this.note,
   });
 
   @override
@@ -90,6 +92,7 @@ class CreateChallengeDailyTrackingEvent extends ChallengeEvent {
         weight,
         weightUnitId,
         repeat,
+        note,
       ];
 }
 
@@ -103,6 +106,7 @@ class UpdateChallengeDailyTrackingEvent extends ChallengeEvent {
   final String unitId;
   final int weight;
   final String weightUnitId;
+  final String? note;
 
   const UpdateChallengeDailyTrackingEvent({
     required this.challengeDailyTrackingId,
@@ -114,6 +118,7 @@ class UpdateChallengeDailyTrackingEvent extends ChallengeEvent {
     required this.unitId,
     required this.weight,
     required this.weightUnitId,
+    required this.note,
   });
 
   @override
@@ -126,6 +131,7 @@ class UpdateChallengeDailyTrackingEvent extends ChallengeEvent {
         unitId,
         weight,
         weightUnitId,
+        note,
       ];
 }
 

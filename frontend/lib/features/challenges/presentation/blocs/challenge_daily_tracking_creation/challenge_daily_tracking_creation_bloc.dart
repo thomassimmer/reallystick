@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:reallystick/core/validators/challenge_daily_tracking_datetime.dart';
+import 'package:reallystick/core/validators/challenge_daily_tracking_note.dart';
 import 'package:reallystick/core/validators/habit.dart';
 import 'package:reallystick/core/validators/quantity_of_set.dart';
 import 'package:reallystick/core/validators/quantity_per_set.dart';
@@ -27,6 +28,7 @@ class ChallengeDailyTrackingCreationFormBloc extends Bloc<
     on<ChallengeDailyTrackingCreationFormWeightUnitIdChangedEvent>(
         _weightUnitChanged);
     on<ChallengeDailyTrackingCreationFormRepeatChangedEvent>(_repeatChanged);
+    on<ChallengeDailyTrackingCreationFormNoteChangedEvent>(_noteChanged);
   }
 
   Future<void> _habitChanged(
@@ -46,6 +48,7 @@ class ChallengeDailyTrackingCreationFormBloc extends Bloc<
           state.weight,
           state.weightUnitId,
           state.repeat,
+          state.note,
         ]),
       ),
     );
@@ -68,6 +71,7 @@ class ChallengeDailyTrackingCreationFormBloc extends Bloc<
           state.weight,
           state.weightUnitId,
           state.repeat,
+          state.note,
         ]),
       ),
     );
@@ -90,6 +94,7 @@ class ChallengeDailyTrackingCreationFormBloc extends Bloc<
           state.weight,
           state.weightUnitId,
           state.repeat,
+          state.note,
         ]),
       ),
     );
@@ -112,6 +117,7 @@ class ChallengeDailyTrackingCreationFormBloc extends Bloc<
           state.weight,
           state.weightUnitId,
           state.repeat,
+          state.note,
         ]),
       ),
     );
@@ -135,6 +141,7 @@ class ChallengeDailyTrackingCreationFormBloc extends Bloc<
           state.weight,
           state.weightUnitId,
           state.repeat,
+          state.note,
         ]),
       ),
     );
@@ -157,6 +164,7 @@ class ChallengeDailyTrackingCreationFormBloc extends Bloc<
           state.unitId,
           state.weightUnitId,
           state.repeat,
+          state.note,
         ]),
       ),
     );
@@ -179,6 +187,7 @@ class ChallengeDailyTrackingCreationFormBloc extends Bloc<
           state.quantityPerSet,
           state.unitId,
           state.repeat,
+          state.note,
         ]),
       ),
     );
@@ -201,6 +210,30 @@ class ChallengeDailyTrackingCreationFormBloc extends Bloc<
           state.quantityPerSet,
           state.unitId,
           state.weightUnitId,
+          state.note,
+        ]),
+      ),
+    );
+  }
+
+  Future<void> _noteChanged(
+      ChallengeDailyTrackingCreationFormNoteChangedEvent event,
+      Emitter emit) async {
+    final note = ChallengeDailyTrackingNoteValidator.dirty(event.note);
+
+    emit(
+      state.copyWith(
+        note: note,
+        isValid: Formz.validate([
+          note,
+          state.habitId,
+          state.weight,
+          state.dayOfProgram,
+          state.quantityOfSet,
+          state.quantityPerSet,
+          state.unitId,
+          state.weightUnitId,
+          state.repeat,
         ]),
       ),
     );

@@ -11,6 +11,7 @@ class ChallengeDailyTrackingDataModel extends Equatable {
   final String unitId;
   final int weight;
   final String weightUnitId;
+  final String? note;
 
   const ChallengeDailyTrackingDataModel({
     required this.id,
@@ -22,6 +23,7 @@ class ChallengeDailyTrackingDataModel extends Equatable {
     required this.unitId,
     required this.weight,
     required this.weightUnitId,
+    required this.note,
   });
 
   factory ChallengeDailyTrackingDataModel.fromJson(Map<String, dynamic> json) {
@@ -35,6 +37,7 @@ class ChallengeDailyTrackingDataModel extends Equatable {
       unitId: json['unit_id'] as String,
       weight: json['weight'] as int,
       weightUnitId: json['weight_unit_id'] as String,
+      note: json['note'] as String?,
     );
   }
 
@@ -48,6 +51,7 @@ class ChallengeDailyTrackingDataModel extends Equatable {
         unitId: unitId,
         weight: weight,
         weightUnitId: weightUnitId,
+        note: note,
       );
 
   @override
@@ -60,6 +64,7 @@ class ChallengeDailyTrackingDataModel extends Equatable {
         quantityOfSet,
         unitId,
         weight,
-        weightUnitId
+        weightUnitId,
+        note,
       ];
 }

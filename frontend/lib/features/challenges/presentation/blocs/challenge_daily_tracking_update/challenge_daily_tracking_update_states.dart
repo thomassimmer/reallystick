@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:reallystick/core/validators/challenge_daily_tracking_datetime.dart';
+import 'package:reallystick/core/validators/challenge_daily_tracking_note.dart';
 import 'package:reallystick/core/validators/habit.dart';
 import 'package:reallystick/core/validators/quantity_of_set.dart';
 import 'package:reallystick/core/validators/quantity_per_set.dart';
@@ -14,6 +15,7 @@ final class ChallengeDailyTrackingUpdateFormState extends Equatable {
   final ChallengeDailyTrackingDatetime dayOfProgram;
   final WeightValidator weight;
   final UnitValidator weightUnitId;
+  final ChallengeDailyTrackingNoteValidator note;
   final bool isValid;
   final String? errorMessage;
 
@@ -25,6 +27,7 @@ final class ChallengeDailyTrackingUpdateFormState extends Equatable {
     this.dayOfProgram = const ChallengeDailyTrackingDatetime.pure(),
     this.weight = const WeightValidator.pure(),
     this.weightUnitId = const UnitValidator.pure(),
+    this.note = const ChallengeDailyTrackingNoteValidator.pure(),
     this.isValid = true,
     this.errorMessage,
   });
@@ -38,6 +41,7 @@ final class ChallengeDailyTrackingUpdateFormState extends Equatable {
         dayOfProgram,
         weight,
         weightUnitId,
+        note,
         isValid,
         errorMessage,
       ];
@@ -50,6 +54,7 @@ final class ChallengeDailyTrackingUpdateFormState extends Equatable {
     ChallengeDailyTrackingDatetime? dayOfProgram,
     WeightValidator? weight,
     UnitValidator? weightUnitId,
+    ChallengeDailyTrackingNoteValidator? note,
     bool? isValid,
     String? errorMessage,
   }) {
@@ -61,6 +66,7 @@ final class ChallengeDailyTrackingUpdateFormState extends Equatable {
       dayOfProgram: dayOfProgram ?? this.dayOfProgram,
       weight: weight ?? this.weight,
       weightUnitId: weightUnitId ?? this.weightUnitId,
+      note: note ?? this.note,
       isValid: isValid ?? this.isValid,
       errorMessage: errorMessage ?? this.errorMessage,
     );

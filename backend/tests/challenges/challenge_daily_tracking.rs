@@ -50,6 +50,7 @@ pub async fn user_creates_a_challenge_daily_tracking(
             weight: 0,
             weight_unit_id: unit_id,
             repeat: 1,
+            note: None,
         })
         .to_request();
     let response = test::call_service(&app, req).await;
@@ -87,6 +88,7 @@ pub async fn user_updates_a_challenge_daily_tracking(
             unit_id,
             weight: 0,
             weight_unit_id: unit_id,
+            note: None,
         })
         .to_request();
     let response = test::call_service(&app, req).await;

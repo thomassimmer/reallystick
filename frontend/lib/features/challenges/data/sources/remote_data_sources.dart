@@ -327,6 +327,12 @@ class ChallengeRemoteDataSource {
       if (responseCode == 'HABIT_NOT_FOUND') {
         throw HabitNotFoundError();
       }
+      if (responseCode == 'UNIT_NOT_FOUND') {
+        throw UnitNotFoundError();
+      }
+      if (responseCode == 'CHALLENGE_DAILY_TRACKING_NOTE_TOO_LONG') {
+        throw ChallengeDailyTrackingNoteTooLongError();
+      }
     }
 
     if (response.statusCode == 500) {
@@ -367,6 +373,9 @@ class ChallengeRemoteDataSource {
     if (response.statusCode == 404) {
       if (responseCode == 'CHALLENGE_NOT_FOUND') {
         throw ChallengeNotFoundError();
+      }
+      if (responseCode == 'UNIT_NOT_FOUND') {
+        throw UnitNotFoundError();
       }
     }
 

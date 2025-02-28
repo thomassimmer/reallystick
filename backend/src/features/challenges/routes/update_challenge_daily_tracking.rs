@@ -112,6 +112,13 @@ pub async fn update_challenge_daily_tracking(
         }
     }
 
+    if let Some(note) = &body.note {
+        if note.len() > 1000 {
+            return HttpResponse::InternalServerError()
+                .json(AppError::ChallengeDailyTrackingNoteTooLong.to_response());
+        }
+    }
+
     challenge_daily_tracking.habit_id = body.habit_id;
     challenge_daily_tracking.day_of_program = body.day_of_program;
     challenge_daily_tracking.quantity_per_set = body.quantity_per_set;
@@ -119,6 +126,7 @@ pub async fn update_challenge_daily_tracking(
     challenge_daily_tracking.unit_id = body.unit_id;
     challenge_daily_tracking.weight = body.weight;
     challenge_daily_tracking.weight_unit_id = body.weight_unit_id;
+    challenge_daily_tracking.note = body.note.to_owned();
 
     let update_challenge_daily_tracking_result =
         challenge_daily_tracking::update_challenge_daily_tracking(

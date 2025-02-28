@@ -24,6 +24,7 @@ abstract class ChallengeDailyTrackingRepository {
     required int weight,
     required String weightUnitId,
     required int repeat,
+    required String? note,
   });
   Future<Either<DomainError, ChallengeDailyTracking>>
       updateChallengeDailyTracking({
@@ -35,6 +36,7 @@ abstract class ChallengeDailyTrackingRepository {
     required String unitId,
     required int weight,
     required String weightUnitId,
+    required String? note,
   });
   Future<Either<DomainError, void>> deleteChallengeDailyTracking({
     required String challengeDailyTrackingId,

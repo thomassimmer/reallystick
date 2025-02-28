@@ -105,6 +105,7 @@ pub async fn create_challenge_daily_tracking(
             unit_id: body.unit_id,
             weight: body.weight,
             weight_unit_id: body.weight_unit_id,
+            note: body.note.to_owned()
         });
     }
 

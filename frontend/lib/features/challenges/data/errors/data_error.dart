@@ -10,4 +10,4 @@ class ChallengeDailyTrackingNotFoundError extends DataError {}
 
 class ChallengesNotMergedError extends DataError {}
 
-class UnitNotFoundError extends DataError {}
+class ChallengeDailyTrackingNoteTooLongError extends DataError {}

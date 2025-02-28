@@ -11,6 +11,7 @@ class CustomTextField extends StatefulWidget {
   final bool obscureText;
   final int? maxLength;
   final int? maxLines;
+  final int? minLines;
   final String? errorText;
   final bool? enabled;
   final void Function(String)? onChanged;
@@ -26,6 +27,7 @@ class CustomTextField extends StatefulWidget {
     this.obscureText = false,
     this.maxLength,
     this.maxLines = 1,
+    this.minLines = 1,
     this.errorText,
     this.onChanged,
     this.onFieldSubmitted,
@@ -65,6 +67,7 @@ class CustomTextFieldState extends State<CustomTextField> {
         obscureText: _isObscured,
         maxLength: widget.maxLength,
         maxLines: widget.maxLines,
+        minLines: widget.minLines,
         onChanged: widget.onChanged,
         onFieldSubmitted: widget.onFieldSubmitted,
         decoration: InputDecoration(

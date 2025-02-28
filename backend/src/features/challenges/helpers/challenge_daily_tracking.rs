@@ -68,8 +68,9 @@ pub async fn update_challenge_daily_tracking(
             quantity_of_set = $3,
             unit_id = $4,
             weight = $5,
-            weight_unit_id = $6
-        WHERE id = $7
+            weight_unit_id = $6,
+            note = $7
+        WHERE id = $8
         "#,
         challenge_daily_tracking.day_of_program,
         challenge_daily_tracking.quantity_per_set,
@@ -77,6 +78,7 @@ pub async fn update_challenge_daily_tracking(
         challenge_daily_tracking.unit_id,
         challenge_daily_tracking.weight,
         challenge_daily_tracking.weight_unit_id,
+        challenge_daily_tracking.note,
         challenge_daily_tracking.id
     )
     .execute(conn)
@@ -100,9 +102,10 @@ pub async fn create_challenge_daily_trackings(
                 quantity_of_set,
                 unit_id,
                 weight,
-                weight_unit_id
+                weight_unit_id,
+                note
             )
-            VALUES ( $1, $2, $3, $4, $5, $6, $7, $8, $9, $10 )
+            VALUES ( $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11 )
             "#,
             tracking.id,
             tracking.habit_id,
@@ -113,7 +116,8 @@ pub async fn create_challenge_daily_trackings(
             tracking.quantity_of_set,
             tracking.unit_id,
             tracking.weight,
-            tracking.weight_unit_id
+            tracking.weight_unit_id,
+            tracking.note
         )
         .execute(&mut *conn)
         .await?;

@@ -39,6 +39,7 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
   String? _selectedWeightUnitId;
   int _selectedRepeat = 1;
   bool _isRepeatEnabled = false;
+  String? _note;
 
   @override
   void didChangeDependencies() {
@@ -93,6 +94,9 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
     challengeDailyTrackingFormBloc.add(
       ChallengeDailyTrackingCreationFormRepeatChangedEvent(_selectedRepeat),
     );
+    challengeDailyTrackingFormBloc.add(
+      ChallengeDailyTrackingCreationFormNoteChangedEvent(_note),
+    );
 
     // Allow time for the validation states to update
     Future.delayed(
@@ -110,6 +114,7 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
             weight: _weight,
             weightUnitId: _selectedWeightUnitId!,
             repeat: _selectedRepeat,
+            note: _note,
           );
           if (mounted) {
             context.read<ChallengeBloc>().add(newChallengeDailyTrackingEvent);
@@ -182,6 +187,15 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
       final displayRepeatErrorMessage = context.select(
         (ChallengeDailyTrackingCreationFormBloc bloc) {
           final error = bloc.state.repeat.displayError;
+          return error != null
+              ? getTranslatedMessage(context, ErrorMessage(error.messageKey))
+              : null;
+        },
+      );
+
+      final displayNoteErrorMessage = context.select(
+        (ChallengeDailyTrackingCreationFormBloc bloc) {
+          final error = bloc.state.note.displayError;
           return error != null
               ? getTranslatedMessage(context, ErrorMessage(error.messageKey))
               : null;
@@ -531,6 +545,26 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
               errorText: displayRepeatErrorMessage,
             ),
           ],
+
+          const SizedBox(height: 16),
+
+          CustomTextField(
+            initialValue: _note,
+            maxLines: null,
+            minLines: 3,
+            keyboardType: TextInputType.multiline,
+            label: AppLocalizations.of(context)!.note,
+            onChanged: (value) {
+              setState(() {
+                _note = value;
+              });
+              BlocProvider.of<ChallengeDailyTrackingCreationFormBloc>(context)
+                  .add(
+                ChallengeDailyTrackingCreationFormNoteChangedEvent(_note),
+              );
+            },
+            errorText: displayNoteErrorMessage,
+          ),
 
           const SizedBox(height: 16),
 

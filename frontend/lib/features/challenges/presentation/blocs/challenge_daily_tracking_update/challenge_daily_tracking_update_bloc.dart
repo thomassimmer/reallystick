@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:reallystick/core/validators/challenge_daily_tracking_datetime.dart';
+import 'package:reallystick/core/validators/challenge_daily_tracking_note.dart';
 import 'package:reallystick/core/validators/habit.dart';
 import 'package:reallystick/core/validators/quantity_of_set.dart';
 import 'package:reallystick/core/validators/quantity_per_set.dart';
@@ -24,6 +25,7 @@ class ChallengeDailyTrackingUpdateFormBloc extends Bloc<
     on<ChallengeDailyTrackingUpdateFormWeightChangedEvent>(_weightChanged);
     on<ChallengeDailyTrackingUpdateFormWeightUnitIdChangedEvent>(
         _weightUnitChanged);
+    on<ChallengeDailyTrackingUpdateFormNoteChangedEvent>(_noteChanged);
   }
 
   Future<void> _habitChanged(
@@ -42,6 +44,7 @@ class ChallengeDailyTrackingUpdateFormBloc extends Bloc<
           state.dayOfProgram,
           state.weight,
           state.weightUnitId,
+          state.note,
         ]),
       ),
     );
@@ -63,6 +66,7 @@ class ChallengeDailyTrackingUpdateFormBloc extends Bloc<
           state.dayOfProgram,
           state.weight,
           state.weightUnitId,
+          state.note,
         ]),
       ),
     );
@@ -84,6 +88,7 @@ class ChallengeDailyTrackingUpdateFormBloc extends Bloc<
           state.dayOfProgram,
           state.weight,
           state.weightUnitId,
+          state.note,
         ]),
       ),
     );
@@ -105,6 +110,7 @@ class ChallengeDailyTrackingUpdateFormBloc extends Bloc<
           state.dayOfProgram,
           state.weight,
           state.weightUnitId,
+          state.note,
         ]),
       ),
     );
@@ -127,6 +133,7 @@ class ChallengeDailyTrackingUpdateFormBloc extends Bloc<
           state.unitId,
           state.weight,
           state.weightUnitId,
+          state.note,
         ]),
       ),
     );
@@ -148,6 +155,7 @@ class ChallengeDailyTrackingUpdateFormBloc extends Bloc<
           state.quantityPerSet,
           state.unitId,
           state.weightUnitId,
+          state.note,
         ]),
       ),
     );
@@ -169,6 +177,29 @@ class ChallengeDailyTrackingUpdateFormBloc extends Bloc<
           state.quantityOfSet,
           state.quantityPerSet,
           state.unitId,
+          state.note,
+        ]),
+      ),
+    );
+  }
+
+  Future<void> _noteChanged(
+      ChallengeDailyTrackingUpdateFormNoteChangedEvent event,
+      Emitter emit) async {
+    final note = ChallengeDailyTrackingNoteValidator.dirty(event.note);
+
+    emit(
+      state.copyWith(
+        note: note,
+        isValid: Formz.validate([
+          note,
+          state.habitId,
+          state.weight,
+          state.dayOfProgram,
+          state.quantityOfSet,
+          state.quantityPerSet,
+          state.unitId,
+          state.weightUnitId,
         ]),
       ),
     );

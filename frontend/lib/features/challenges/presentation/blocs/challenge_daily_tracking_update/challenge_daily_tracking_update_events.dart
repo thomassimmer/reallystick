@@ -80,3 +80,13 @@ class ChallengeDailyTrackingUpdateFormWeightUnitIdChangedEvent
   @override
   List<Object?> get props => [weightUnitId];
 }
+
+class ChallengeDailyTrackingUpdateFormNoteChangedEvent
+    extends ChallengeDailyTrackingUpdateEvent {
+  final String? note;
+
+  const ChallengeDailyTrackingUpdateFormNoteChangedEvent(this.note);
+
+  @override
+  List<Object?> get props => [note];
+}

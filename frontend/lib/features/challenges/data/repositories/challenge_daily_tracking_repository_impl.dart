@@ -109,6 +109,7 @@ class ChallengeDailyTrackingRepositoryImpl
     required int weight,
     required String weightUnitId,
     required int repeat,
+    required String? note,
   }) async {
     try {
       final challengeDailyTrackingDataModels =
@@ -123,6 +124,7 @@ class ChallengeDailyTrackingRepositoryImpl
           weight: weight,
           weightUnitId: weightUnitId,
           repeat: repeat,
+          note: note,
         ),
       );
 
@@ -156,6 +158,12 @@ class ChallengeDailyTrackingRepositoryImpl
     } on HabitNotFoundError {
       logger.e('HabitNotFoundError occurred.');
       return Left(HabitNotFoundDomainError());
+    } on UnitNotFoundError {
+      logger.e('UnitNotFoundError occured.');
+      return Left(UnitNotFoundDomainError());
+    } on ChallengeDailyTrackingNoteTooLongError {
+      logger.e('ChallengeDailyTrackingNoteTooLongError occured');
+      return Left(ChallengeDailyTrackingNoteTooLong());
     } catch (e) {
       logger.e('Data error occurred: ${e.toString()}');
       return Left(UnknownDomainError());
@@ -173,6 +181,7 @@ class ChallengeDailyTrackingRepositoryImpl
     required String unitId,
     required int weight,
     required String weightUnitId,
+    required String? note,
   }) async {
     try {
       final challengeDailyTrackingDataModel =
@@ -186,6 +195,7 @@ class ChallengeDailyTrackingRepositoryImpl
           unitId: unitId,
           weight: weight,
           weightUnitId: weightUnitId,
+          note: note,
         ),
       );
 
@@ -214,6 +224,9 @@ class ChallengeDailyTrackingRepositoryImpl
     } on HabitNotFoundError {
       logger.e('HabitNotFoundError occurred.');
       return Left(HabitNotFoundDomainError());
+    } on UnitNotFoundError {
+      logger.e('UnitNotFoundError occured.');
+      return Left(UnitNotFoundDomainError());
     } catch (e) {
       logger.e('Data error occurred: ${e.toString()}');
       return Left(UnknownDomainError());

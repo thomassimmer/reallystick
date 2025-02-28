@@ -106,6 +106,8 @@ String getTranslatedMessage(BuildContext context, Message message) {
         return localizations.repetitionNumberIsNullError;
       case 'repetitionNumberIsNegativeError':
         return localizations.repetitionNumberIsNegativeError;
+      case 'challengeDailyTrackingNoteTooLong':
+        return localizations.challengeDailyTrackingNoteTooLong;
 
       // Profile
       case 'passwordNotExpiredError':

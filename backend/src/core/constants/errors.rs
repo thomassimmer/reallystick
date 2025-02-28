@@ -5,6 +5,7 @@ pub enum AppError {
     ChallengeCreation,
     ChallengeDailyTrackingCreation,
     ChallengeDailyTrackingDelete,
+    ChallengeDailyTrackingNoteTooLong,
     ChallengeDailyTrackingNotFound,
     ChallengeDailyTrackingUpdate,
     ChallengeDelete,
@@ -75,6 +76,10 @@ impl AppError {
             AppError::ChallengeDailyTrackingDelete => GenericResponse {
                 code: "CHALLENGE_DAILY_TRACKING_NOT_DELETED".to_string(),
                 message: "Failed to delete this challenge daily tracking".to_string(),
+            },
+            AppError::ChallengeDailyTrackingNoteTooLong => GenericResponse {
+                code: "CHALLENGE_DAILY_TRACKING_NOTE_TOO_LONG".to_string(),
+                message: "The note is too long. It has to be no more than 1000 characters.".to_string(),
             },
             AppError::ChallengeDailyTrackingNotFound => GenericResponse {
                 code: "CHALLENGE_DAILY_TRACKING_NOT_FOUND".to_string(),
