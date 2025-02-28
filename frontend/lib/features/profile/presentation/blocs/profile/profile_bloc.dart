@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:reallystick/core/messages/message.dart';
@@ -99,8 +98,6 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (kIsWeb) return;
-
     if (state == AppLifecycleState.resumed) {
       add(ProfileInitializeEvent());
     }

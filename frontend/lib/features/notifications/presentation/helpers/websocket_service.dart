@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:reallystick/features/auth/data/storage/token_storage.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class WebSocketService {
@@ -22,12 +22,11 @@ class WebSocketService {
   StreamSubscription? _webSocketSubscription;
 
   /// Connect to WebSocket
-  void connect(String token) {
+  void connect() async {
     if (_isConnected || _channel != null) {
       return; // Prevent opening multiple connections
     }
 
-    _token = token;
     _shouldReconnect = true;
     _initializeWebSocket();
   }
@@ -36,6 +35,15 @@ class WebSocketService {
   Future<void> _initializeWebSocket() async {
     if (_channel != null) {
       return; // Ensure only one socket is open
+    }
+
+    final token = await TokenStorage().getAccessToken();
+
+    if (token != null) {
+      _token = token;
+    } else {
+      print("No token found. Retrying.");
+      _handleReconnect();
     }
 
     try {
@@ -91,8 +99,6 @@ class WebSocketService {
 
   /// Disconnect WebSocket
   Future<void> disconnect() async {
-    if (kIsWeb) return; // No explicit disconnect needed on web
-
     _shouldReconnect = false;
     _isReconnecting = false;
 

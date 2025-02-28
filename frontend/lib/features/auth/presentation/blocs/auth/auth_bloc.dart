@@ -350,14 +350,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       event.code,
     );
 
-    result.fold(
-      (error) => emit(
-        AuthValidateOneTimePasswordState(
-          message: ErrorMessage(error.messageKey),
-          password: currentState.password,
-          userId: event.userId,
-        ),
-      ),
+    await result.fold(
+      (error) {
+        emit(
+          AuthValidateOneTimePasswordState(
+            message: ErrorMessage(error.messageKey),
+            password: currentState.password,
+            userId: event.userId,
+          ),
+        );
+      },
       (userToken) async {
         await saveOrGenerateKeys(
           privateKeyEncrypted: userToken.privateKeyEncrypted,

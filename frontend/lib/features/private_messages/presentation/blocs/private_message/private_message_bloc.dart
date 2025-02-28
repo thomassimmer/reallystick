@@ -3,7 +3,6 @@ import 'dart:convert';
 
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:cryptography/cryptography.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -61,7 +60,7 @@ class PrivateMessageBloc extends Bloc<PrivateMessageEvent, PrivateMessageState>
 
   PrivateMessageBloc()
       : super(PrivateMessageState(
-          discussionId: "",
+          discussionId: null,
           messagesByDiscussion: {},
           lastPrivateMessageReceivedEvent: null,
         )) {
@@ -85,12 +84,14 @@ class PrivateMessageBloc extends Bloc<PrivateMessageEvent, PrivateMessageState>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (kIsWeb) return;
-
     if (state == AppLifecycleState.resumed) {
-      add(
-        InitializePrivateMessagesEvent(discussionId: this.state.discussionId),
-      );
+      if (this.state.discussionId != null) {
+        add(
+          InitializePrivateMessagesEvent(
+            discussionId: this.state.discussionId!,
+          ),
+        );
+      }
     }
   }
 

@@ -5,7 +5,7 @@ import 'package:reallystick/features/private_messages/presentation/blocs/private
 
 class PrivateMessageState extends Equatable {
   final Message? message;
-  final String discussionId;
+  final String? discussionId;
   final Map<String, Map<String, PrivateMessage>> messagesByDiscussion;
   final PrivateMessageReceivedEvent? lastPrivateMessageReceivedEvent;
 

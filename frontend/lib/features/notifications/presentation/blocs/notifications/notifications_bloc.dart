@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:reallystick/core/messages/message.dart';
-import 'package:reallystick/features/auth/data/storage/token_storage.dart';
 import 'package:reallystick/features/auth/domain/errors/domain_error.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_bloc.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_events.dart';
@@ -62,6 +61,8 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState>
       (profileState) async {
         if (profileState is ProfileAuthenticated) {
           add(InitializeNotificationsEvent());
+        } else {
+          webSocketService.disconnect();
         }
       },
     );
@@ -81,8 +82,6 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (kIsWeb) return;
-
     if (state == AppLifecycleState.paused ||
         state == AppLifecycleState.inactive ||
         state == AppLifecycleState.detached) {
@@ -181,11 +180,7 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState>
       },
     );
 
-    final token = await TokenStorage().getAccessToken();
-
-    if (token != null) {
-      webSocketService.connect(token);
-    }
+    webSocketService.connect();
   }
 
   Future<void> initialize(

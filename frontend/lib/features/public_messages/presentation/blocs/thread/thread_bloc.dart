@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -39,8 +38,6 @@ class ThreadBloc extends Bloc<ThreadEvent, ThreadState>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (kIsWeb) return;
-
     if (state == AppLifecycleState.resumed) {
       if (this.state is ThreadLoaded) {
         final currentState = this.state as ThreadLoaded;
