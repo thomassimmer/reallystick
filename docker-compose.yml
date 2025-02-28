@@ -1,0 +1,60 @@
+services:
+  frontend:
+    container_name: flutteractixapp_frontend
+    image: flutteractixapp_frontend
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "10"
+    build:
+      context: ./frontend
+    env_file:
+      - ./frontend/.env
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+    networks:
+      - app-network
+    environment:
+      - FLUTTER_WEB_PORT=3000
+
+  backend:
+    container_name: flutteractixapp_backend
+    image: flutteractixapp_backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    env_file:
+      - ./backend/.env.docker
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    networks:
+      - app-network
+
+  db:
+    image: flutteractixapp_db
+    build:
+      context: ./db
+      dockerfile: Dockerfile
+    env_file:
+      - ./db/.env
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    expose:
+      - "5432"
+    command: -p 5432
+    networks:
+      - app-network
+
+volumes:
+  postgres_data:
+
+networks:
+  app-network:
+    driver: bridge
