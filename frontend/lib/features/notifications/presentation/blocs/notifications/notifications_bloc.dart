@@ -415,9 +415,7 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState>
 
     emit(
       NotificationState(
-        message: event.isConnected
-            ? SuccessMessage('connected')
-            : ErrorMessage('disconnected'),
+        message: currentState.message,
         notifications: currentState.notifications,
         notification: currentState.notification,
         notificationScreenIsVisible: currentState.notificationScreenIsVisible,

@@ -54,7 +54,7 @@
   "confirmDeletionQuestion": "Confirmez-vous la suppression de la session sur cet appareil ?",
   "confirmDuplicateChallenge": "Voulez-vous créer une copie de ce défi avec les objectifs journaliers associés ?",
   "confirmMessageDeletion": "En cliquant sur \"Confirmer\", votre message et toutes les réponses attachées seront supprimés définitivement.",
-  "connected": "Vous êtes à nouveau en ligne.",
+  "connected": "Connecté",
   "continent": "Continent",
   "country": "Pays",
   "create": "Créer",
@@ -113,7 +113,7 @@
     }
   },
   "deviceDeleteSuccessful": "Vous avez arrêté la session sur cet appareil avec succès.",
-  "disconnected": "Votre connection s'est interrompue.",
+  "disconnected": "Déconnecté.",
   "disableTwoFA": "Désactiver",
   "discussion": "Discussion",
   "discussions": "Discussions",
