@@ -6,6 +6,7 @@ pub struct UserUpdateRequest {
     pub locale: String,
     pub theme: String,
 
+    pub has_seen_questions: bool,
     pub age_category: Option<String>,
     pub gender: Option<String>,
     pub continent: Option<String>,

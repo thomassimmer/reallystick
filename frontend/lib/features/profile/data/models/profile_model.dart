@@ -9,6 +9,7 @@ class ProfileModel extends Equatable {
   final bool otpVerified;
   final bool passwordIsExpired;
 
+  final bool hasSeenQuestions;
   final String? ageCategory;
   final String? gender;
   final String? continent;
@@ -29,6 +30,7 @@ class ProfileModel extends Equatable {
       required this.otpAuthUrl,
       required this.otpVerified,
       required this.passwordIsExpired,
+      required this.hasSeenQuestions,
       this.ageCategory,
       this.gender,
       this.continent,
@@ -51,6 +53,7 @@ class ProfileModel extends Equatable {
         otpAuthUrl: json['otp_auth_url'] as String?,
         otpVerified: json['otp_verified'] as bool,
         passwordIsExpired: json['password_is_expired'] as bool,
+        hasSeenQuestions: json['has_seen_questions'] as bool,
         ageCategory: json['age_category'] as String?,
         gender: json['gender'] as String?,
         continent: json['continent'] as String?,
@@ -73,6 +76,7 @@ class ProfileModel extends Equatable {
         otpAuthUrl,
         otpVerified,
         passwordIsExpired,
+        hasSeenQuestions,
         ageCategory,
         gender,
         continent,

@@ -100,7 +100,9 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     },
         (profile) => emit(ProfileAuthenticated(
             profile: profile,
-            message: SuccessMessage('profileUpdateSuccessful'))));
+            message: event.displayNotification
+                ? SuccessMessage('profileUpdateSuccessful')
+                : null)));
   }
 
   Future<void> _generateTwoFactorAuthenticationConfig(

@@ -122,6 +122,7 @@ pub async fn register_user(
         updated_at: now(),
         recovery_codes: hashed_recovery_codes.join(";"),
         password_is_expired: false,
+        has_seen_questions: false,
         age_category: None,
         gender: None,
         continent: None,

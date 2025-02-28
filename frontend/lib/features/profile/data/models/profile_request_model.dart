@@ -2,6 +2,7 @@ class UpdateProfileRequestModel {
   final String username;
   final String locale;
   final String theme;
+  final bool hasSeenQuestions;
   final String? ageCategory;
   final String? gender;
   final String? continent;
@@ -18,6 +19,7 @@ class UpdateProfileRequestModel {
       {required this.username,
       required this.locale,
       required this.theme,
+      required this.hasSeenQuestions,
       this.ageCategory,
       this.gender,
       this.continent,
@@ -35,6 +37,7 @@ class UpdateProfileRequestModel {
       'username': username,
       'locale': locale,
       'theme': theme,
+      'has_seen_questions': hasSeenQuestions,
       'age_category': ageCategory,
       'gender': gender,
       'continent': continent,

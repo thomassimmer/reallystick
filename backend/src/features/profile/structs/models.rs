@@ -23,6 +23,7 @@ pub struct UserData {
 
     pub password_is_expired: bool,
 
+    pub has_seen_questions: bool,
     pub age_category: Option<String>,
     pub gender: Option<String>,
     pub continent: Option<String>,
@@ -55,6 +56,7 @@ pub struct User {
     pub recovery_codes: String, // case sensitive
     pub password_is_expired: bool,
 
+    pub has_seen_questions: bool,
     pub age_category: Option<String>,
     pub gender: Option<String>,
     pub continent: Option<String>,
@@ -81,6 +83,7 @@ impl User {
             createdAt: self.created_at,
             updatedAt: self.updated_at,
             password_is_expired: self.password_is_expired,
+            has_seen_questions: self.has_seen_questions,
             age_category: self.age_category.to_owned(),
             gender: self.gender.to_owned(),
             continent: self.continent.to_owned(),

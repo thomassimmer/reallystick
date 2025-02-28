@@ -48,7 +48,8 @@ class ProfileRepositoryImpl implements ProfileRepository {
           livesInUrbanArea: profileModel.livesInUrbanArea,
           relationshipStatus: profileModel.relationshipStatus,
           levelOfEducation: profileModel.levelOfEducation,
-          hasChildren: profileModel.hasChildren));
+          hasChildren: profileModel.hasChildren,
+          hasSeenQuestions: profileModel.hasSeenQuestions));
     } on ParsingError {
       logger.e('ParsingError occurred.');
       return Left(InvalidResponseDomainError());
@@ -82,6 +83,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
               username: profile.username,
               locale: profile.locale,
               theme: profile.theme,
+              hasSeenQuestions: profile.hasSeenQuestions,
               ageCategory: profile.ageCategory,
               gender: profile.gender,
               continent: profile.continent,
@@ -112,7 +114,8 @@ class ProfileRepositoryImpl implements ProfileRepository {
           livesInUrbanArea: profileModel.livesInUrbanArea,
           relationshipStatus: profileModel.relationshipStatus,
           levelOfEducation: profileModel.levelOfEducation,
-          hasChildren: profileModel.hasChildren));
+          hasChildren: profileModel.hasChildren,
+          hasSeenQuestions: profileModel.hasSeenQuestions));
     } on ParsingError {
       logger.e('ParsingError occurred.');
       return Left(InvalidResponseDomainError());
@@ -150,7 +153,8 @@ class ProfileRepositoryImpl implements ProfileRepository {
           otpBase32: profileModel.otpBase32,
           otpAuthUrl: profileModel.otpAuthUrl,
           otpVerified: profileModel.otpVerified,
-          passwordIsExpired: profileModel.passwordIsExpired));
+          passwordIsExpired: profileModel.passwordIsExpired,
+          hasSeenQuestions: profileModel.hasSeenQuestions));
     } on ParsingError {
       logger.e('ParsingError occurred.');
       return Left(InvalidResponseDomainError());
@@ -199,7 +203,8 @@ class ProfileRepositoryImpl implements ProfileRepository {
           otpBase32: profileModel.otpBase32,
           otpAuthUrl: profileModel.otpAuthUrl,
           otpVerified: profileModel.otpVerified,
-          passwordIsExpired: profileModel.passwordIsExpired));
+          passwordIsExpired: profileModel.passwordIsExpired,
+          hasSeenQuestions: profileModel.hasSeenQuestions));
     } on ParsingError {
       logger.e('ParsingError occurred.');
       return Left(InvalidResponseDomainError());

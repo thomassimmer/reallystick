@@ -8,8 +8,8 @@ class LightAppTheme extends AppTheme {
           name: 'light',
           brightness: Brightness.light,
           colors: const AppThemeColors(
-            primarySwatch: Colors.blue,
-            primary: Colors.blueAccent,
+            primarySwatch: Colors.purple,
+            primary: Colors.deepPurple,
             secondary: Colors.indigo,
             accent: Color(0xFF27C754),
             background: Color(0xFFFFFFFF),

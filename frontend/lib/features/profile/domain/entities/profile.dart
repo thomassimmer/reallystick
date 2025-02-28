@@ -7,6 +7,7 @@ class Profile {
   bool otpVerified;
   bool passwordIsExpired;
 
+  bool hasSeenQuestions;
   String? ageCategory;
   String? gender;
   String? continent;
@@ -27,6 +28,7 @@ class Profile {
       required this.otpAuthUrl,
       required this.otpVerified,
       required this.passwordIsExpired,
+      required this.hasSeenQuestions,
       this.ageCategory,
       this.gender,
       this.continent,

@@ -35,6 +35,7 @@ pub async fn post_profile_information(
     request_user.relationship_status = body.relationship_status.clone();
     request_user.level_of_education = body.level_of_education.clone();
     request_user.has_children = body.has_children.clone();
+    request_user.has_seen_questions = body.has_seen_questions.clone();
 
     let updated_user_result = sqlx::query!(
         r#"
@@ -53,8 +54,9 @@ pub async fn post_profile_information(
             lives_in_urban_area = $11,
             relationship_status = $12,
             level_of_education = $13,
-            has_children = $14
-        WHERE id = $15
+            has_children = $14,
+            has_seen_questions = $15
+        WHERE id = $16
         "#,
         request_user.username,
         request_user.locale,
@@ -70,6 +72,7 @@ pub async fn post_profile_information(
         request_user.relationship_status,
         request_user.level_of_education,
         request_user.has_children,
+        request_user.has_seen_questions,
         request_user.id,
     )
     .execute(&mut *transaction)

@@ -14,11 +14,13 @@ class ProfileLogoutEvent extends ProfileEvent {}
 
 class ProfileUpdateEvent extends ProfileEvent {
   final Profile newProfile;
+  final bool displayNotification;
 
-  const ProfileUpdateEvent({required this.newProfile});
+  ProfileUpdateEvent(
+      {required this.newProfile, this.displayNotification = true});
 
   @override
-  List<Object?> get props => [newProfile];
+  List<Object?> get props => [newProfile, displayNotification];
 }
 
 class ProfileGenerateTwoFactorAuthenticationConfigEvent extends ProfileEvent {}

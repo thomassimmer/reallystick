@@ -50,6 +50,7 @@ pub async fn user_can_update_profile() {
             "username": "testusername",
             "locale": "fr",
             "theme": "light",
+            "has_seen_questions": false
         }))
         .to_request();
     let response = test::call_service(&app, req).await;
