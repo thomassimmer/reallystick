@@ -185,7 +185,13 @@ class ProfileRepositoryImpl implements ProfileRepository {
   }
 
   @override
-  Future<List<Country>> loadCountries() async {
-    return await localDataSource.loadCountries();
+  Future<Either<DomainError, List<Country>>> loadCountries() async {
+    try {
+      final countries = await localDataSource.loadCountries();
+      return Right(countries);
+    } catch (e) {
+      logger.e('Data error occurred: ${e.toString()}');
+      return Left(UnknownDomainError());
+    }
   }
 }

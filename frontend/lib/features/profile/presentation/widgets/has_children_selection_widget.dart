@@ -15,7 +15,7 @@ class HasChildrenSelectionWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return DropdownWidget.show(context,
         label: AppLocalizations.of(context)!.hasChildren,
-        value: profile.hasChildren.toString(),
+        value: profile.hasChildren?.toString(),
         items: [
           DropdownMenuItem(
             value: true.toString(),

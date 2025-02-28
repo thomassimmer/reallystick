@@ -13,23 +13,26 @@ class LivingInUrbanAreaSelectionWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DropdownWidget.show(context,
-        label: AppLocalizations.of(context)!.livesInUrbanArea,
-        value: profile.livesInUrbanArea.toString(),
-        items: [
-          DropdownMenuItem(
-            value: true.toString(),
-            child: Text(AppLocalizations.of(context)!.yes),
-          ),
-          DropdownMenuItem(
-            value: false.toString(),
-            child: Text(AppLocalizations.of(context)!.no),
-          )
-        ], onChanged: (value) {
-      final newProfile = profile;
-      newProfile.livesInUrbanArea =
-          value == null ? null : value == AppLocalizations.of(context)!.yes;
-      updateProfile(context, newProfile);
-    });
+    return DropdownWidget.show(
+      context,
+      label: AppLocalizations.of(context)!.livesInUrbanArea,
+      value: profile.livesInUrbanArea?.toString(),
+      items: [
+        DropdownMenuItem(
+          value: true.toString(),
+          child: Text(AppLocalizations.of(context)!.yes),
+        ),
+        DropdownMenuItem(
+          value: false.toString(),
+          child: Text(AppLocalizations.of(context)!.no),
+        )
+      ],
+      onChanged: (value) {
+        final newProfile = profile;
+        newProfile.livesInUrbanArea =
+            value == null ? null : value == AppLocalizations.of(context)!.yes;
+        updateProfile(context, newProfile);
+      },
+    );
   }
 }

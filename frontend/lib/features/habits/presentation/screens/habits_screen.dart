@@ -88,6 +88,24 @@ class HabitsScreenState extends State<HabitsScreen> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    final profileState = context.watch<ProfileBloc>().state;
+
+    if (profileState is ProfileAuthenticated &&
+        !profileState.profile.hasSeenQuestions &&
+        !_isModalShown) {
+      // Delay modal presentation to avoid lifecycle conflicts
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          _showQuestionnaireBottomSheet(profileState);
+        }
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocListener<ProfileBloc, ProfileState>(
       listener: (context, state) {

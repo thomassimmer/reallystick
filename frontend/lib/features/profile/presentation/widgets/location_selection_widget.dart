@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:reallystick/core/messages/message.dart';
+import 'package:reallystick/core/presentation/widgets/global_snack_bar.dart';
 import 'package:reallystick/features/profile/data/models/country.dart';
 import 'package:reallystick/features/profile/domain/entities/profile.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
@@ -27,20 +29,29 @@ class LocationSelectionState extends State<LocationSelectionWidget> {
   @override
   void initState() {
     super.initState();
-    initializeRegions();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      initializeRegions();
+    });
   }
 
   Future<void> initializeRegions() async {
-    final List<Country> newCountries =
+    final result =
         await BlocProvider.of<ProfileBloc>(context).loadCountriesUseCase.call();
 
-    final newRegions =
-        newCountries.map((country) => country.region).toSet().toList();
+    result.fold(
+      (error) {
+        GlobalSnackBar.show(context, ErrorMessage(error.messageKey));
+      },
+      (newCountries) {
+        List<String> newRegions =
+            newCountries.map((country) => country.region).toSet().toList();
 
-    setState(() {
-      countries = newCountries;
-      regions = newRegions;
-    });
+        setState(() {
+          countries = newCountries;
+          regions = newRegions;
+        });
+      },
+    );
   }
 
   @override
@@ -54,7 +65,9 @@ class LocationSelectionState extends State<LocationSelectionWidget> {
         DropdownWidget.show(
           context,
           label: AppLocalizations.of(context)!.region,
-          value: widget.profile.region,
+          value: regions.contains(widget.profile.region)
+              ? widget.profile.region
+              : null,
           items: [
             ...regions.map((region) {
               return DropdownMenuItem<String>(
