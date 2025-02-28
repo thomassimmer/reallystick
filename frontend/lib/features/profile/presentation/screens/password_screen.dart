@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutteractixapp/core/messages/errors/domain_error.dart';
-import 'package:flutteractixapp/core/messages/message.dart';
-import 'package:flutteractixapp/core/messages/message_mapper.dart';
-import 'package:flutteractixapp/core/ui/extensions.dart';
-import 'package:flutteractixapp/core/widgets/custom_container.dart';
-import 'package:flutteractixapp/core/widgets/custom_text_field.dart';
-import 'package:flutteractixapp/features/profile/presentation/blocs/profile/profile_bloc.dart';
-import 'package:flutteractixapp/features/profile/presentation/blocs/profile/profile_events.dart';
-import 'package:flutteractixapp/features/profile/presentation/blocs/profile/profile_states.dart';
-import 'package:flutteractixapp/features/profile/presentation/blocs/set_password/set_password_bloc.dart';
-import 'package:flutteractixapp/features/profile/presentation/blocs/set_password/set_password_events.dart';
-import 'package:flutteractixapp/features/profile/presentation/blocs/update_password/update_password_bloc.dart';
-import 'package:flutteractixapp/features/profile/presentation/blocs/update_password/update_password_events.dart';
+import 'package:reallystick/core/messages/errors/domain_error.dart';
+import 'package:reallystick/core/messages/message.dart';
+import 'package:reallystick/core/messages/message_mapper.dart';
+import 'package:reallystick/core/ui/extensions.dart';
+import 'package:reallystick/core/widgets/custom_container.dart';
+import 'package:reallystick/core/widgets/custom_text_field.dart';
+import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
+import 'package:reallystick/features/profile/presentation/blocs/profile/profile_events.dart';
+import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
+import 'package:reallystick/features/profile/presentation/blocs/set_password/set_password_bloc.dart';
+import 'package:reallystick/features/profile/presentation/blocs/set_password/set_password_events.dart';
+import 'package:reallystick/features/profile/presentation/blocs/update_password/update_password_bloc.dart';
+import 'package:reallystick/features/profile/presentation/blocs/update_password/update_password_events.dart';
 
 class PasswordScreen extends StatelessWidget {
   final TextEditingController _currentPasswordController =

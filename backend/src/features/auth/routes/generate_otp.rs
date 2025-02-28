@@ -34,7 +34,7 @@ pub async fn generate(pool: web::Data<PgPool>, mut request_user: User) -> impl R
 
     let otp_base32 = totp.get_secret_base32();
     let username = request_user.username.to_owned();
-    let issuer = "Flutter Actix App";
+    let issuer = "ReallyStick";
 
     // Format should be:
     // let otp_auth_url = format!("otpauth://totp/<issuer>:<account_name>?secret=<secret>&issuer=<issuer>");

@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
-import 'package:flutteractixapp/core/messages/errors/domain_error.dart';
-import 'package:flutteractixapp/features/auth/domain/entities/otp_generation.dart';
-import 'package:flutteractixapp/features/auth/domain/entities/user_token.dart';
+import 'package:reallystick/core/messages/errors/domain_error.dart';
+import 'package:reallystick/features/auth/domain/entities/otp_generation.dart';
+import 'package:reallystick/features/auth/domain/entities/user_token.dart';
 
 abstract class AuthRepository {
   Future<Either<DomainError, UserToken>> signup(

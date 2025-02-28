@@ -3,12 +3,12 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:flutteractixapp/core/messages/errors/data_error.dart';
-import 'package:flutteractixapp/features/auth/data/errors/data_error.dart';
-import 'package:flutteractixapp/features/auth/domain/errors/domain_error.dart';
-import 'package:flutteractixapp/features/profile/data/errors/data_error.dart';
-import 'package:flutteractixapp/features/profile/data/models/profile_model.dart';
-import 'package:flutteractixapp/features/profile/data/models/profile_request_model.dart';
+import 'package:reallystick/core/messages/errors/data_error.dart';
+import 'package:reallystick/features/auth/data/errors/data_error.dart';
+import 'package:reallystick/features/auth/domain/errors/domain_error.dart';
+import 'package:reallystick/features/profile/data/errors/data_error.dart';
+import 'package:reallystick/features/profile/data/models/profile_model.dart';
+import 'package:reallystick/features/profile/data/models/profile_request_model.dart';
 import 'package:http_interceptor/http_interceptor.dart';
 
 class ProfileRemoteDataSource {

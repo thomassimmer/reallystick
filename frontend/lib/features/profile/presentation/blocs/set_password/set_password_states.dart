@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutteractixapp/core/validators/password.dart';
+import 'package:reallystick/core/validators/password.dart';
 
 final class SetPasswordFormState extends Equatable {
   const SetPasswordFormState({

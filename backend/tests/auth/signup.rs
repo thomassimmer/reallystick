@@ -5,7 +5,7 @@ use actix_web::{
     http::header::ContentType,
     test, Error,
 };
-use flutteractixapp::{
+use reallystick::{
     core::structs::responses::GenericResponse,
     features::auth::structs::responses::UserSignupResponse,
 };

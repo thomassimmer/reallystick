@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutteractixapp/core/ui/extensions.dart';
+import 'package:reallystick/core/ui/extensions.dart';
 
 class CustomTextField extends StatelessWidget {
   final TextEditingController controller;

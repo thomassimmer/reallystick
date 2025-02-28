@@ -1,19 +1,19 @@
 import 'package:bloc/bloc.dart';
-import 'package:flutteractixapp/core/messages/errors/domain_error.dart';
-import 'package:flutteractixapp/core/messages/message.dart';
-import 'package:flutteractixapp/features/auth/data/storage/token_storage.dart';
-import 'package:flutteractixapp/features/auth/domain/errors/domain_error.dart';
-import 'package:flutteractixapp/features/auth/domain/usecases/check_if_account_has_two_factor_authentication_enabled_use_case.dart';
-import 'package:flutteractixapp/features/auth/domain/usecases/generate_two_factor_authentication_config_use_case.dart';
-import 'package:flutteractixapp/features/auth/domain/usecases/login_usecase.dart';
-import 'package:flutteractixapp/features/auth/domain/usecases/recover_account_with_two_factor_authentication_and_one_time_password_use_case.dart';
-import 'package:flutteractixapp/features/auth/domain/usecases/recover_account_with_two_factor_authentication_and_password_use_case.dart';
-import 'package:flutteractixapp/features/auth/domain/usecases/recover_account_without_two_factor_authentication_enabled_use_case.dart';
-import 'package:flutteractixapp/features/auth/domain/usecases/signup_usecase.dart';
-import 'package:flutteractixapp/features/auth/domain/usecases/validate_one_time_password_use_case.dart';
-import 'package:flutteractixapp/features/auth/domain/usecases/verify_one_time_password_use_case.dart';
-import 'package:flutteractixapp/features/auth/presentation/blocs/auth/auth_events.dart';
-import 'package:flutteractixapp/features/auth/presentation/blocs/auth/auth_states.dart';
+import 'package:reallystick/core/messages/errors/domain_error.dart';
+import 'package:reallystick/core/messages/message.dart';
+import 'package:reallystick/features/auth/data/storage/token_storage.dart';
+import 'package:reallystick/features/auth/domain/errors/domain_error.dart';
+import 'package:reallystick/features/auth/domain/usecases/check_if_account_has_two_factor_authentication_enabled_use_case.dart';
+import 'package:reallystick/features/auth/domain/usecases/generate_two_factor_authentication_config_use_case.dart';
+import 'package:reallystick/features/auth/domain/usecases/login_usecase.dart';
+import 'package:reallystick/features/auth/domain/usecases/recover_account_with_two_factor_authentication_and_one_time_password_use_case.dart';
+import 'package:reallystick/features/auth/domain/usecases/recover_account_with_two_factor_authentication_and_password_use_case.dart';
+import 'package:reallystick/features/auth/domain/usecases/recover_account_without_two_factor_authentication_enabled_use_case.dart';
+import 'package:reallystick/features/auth/domain/usecases/signup_usecase.dart';
+import 'package:reallystick/features/auth/domain/usecases/validate_one_time_password_use_case.dart';
+import 'package:reallystick/features/auth/domain/usecases/verify_one_time_password_use_case.dart';
+import 'package:reallystick/features/auth/presentation/blocs/auth/auth_events.dart';
+import 'package:reallystick/features/auth/presentation/blocs/auth/auth_states.dart';
 import 'package:get_it/get_it.dart';
 import 'package:universal_io/io.dart';
 
@@ -39,7 +39,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       GetIt.instance<
           RecoverAccountWithTwoFactorAuthenticationAndOneTimePasswordUseCase>();
   final RecoverAccountWithoutTwoFactorAuthenticationEnabledUseCase
-      recoverAccountWithoutTwoFactorAuthenticationEnabledUseCase = GetIt.instance<
+      recoverAccountWithoutTwoFactorAuthenticationEnabledUseCase =
+      GetIt.instance<
           RecoverAccountWithoutTwoFactorAuthenticationEnabledUseCase>();
 
   AuthBloc() : super(AuthLoadingState()) {
@@ -201,7 +202,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         (error) => emit(AuthRecoverAccountUsernameStepState(
             username: event.username,
             passwordForgotten: event.passwordForgotten,
-            message: ErrorMessage(error.messageKey))), (isTwoFactorAuthenticationEnabled) async {
+            message: ErrorMessage(error.messageKey))),
+        (isTwoFactorAuthenticationEnabled) async {
       if (currentState is AuthRecoverAccountUsernameStepState) {
         if (isTwoFactorAuthenticationEnabled) {
           if (currentState.passwordForgotten) {
@@ -271,8 +273,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       Emitter<AuthState> emit) async {
     emit(AuthLoadingState());
 
-    final result = await recoverAccountWithoutTwoFactorAuthenticationEnabledUseCase.call(
-        username: event.username, recoveryCode: event.recoveryCode);
+    final result =
+        await recoverAccountWithoutTwoFactorAuthenticationEnabledUseCase.call(
+            username: event.username, recoveryCode: event.recoveryCode);
 
     result.fold(
         (error) => emit(

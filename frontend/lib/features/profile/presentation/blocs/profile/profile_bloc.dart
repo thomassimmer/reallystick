@@ -1,21 +1,21 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:flutteractixapp/core/messages/message.dart';
-import 'package:flutteractixapp/features/auth/domain/errors/domain_error.dart';
-import 'package:flutteractixapp/features/auth/domain/usecases/disable_two_factor_authentication_use_case.dart';
-import 'package:flutteractixapp/features/auth/domain/usecases/generate_two_factor_authentication_config_use_case.dart';
-import 'package:flutteractixapp/features/auth/domain/usecases/verify_one_time_password_use_case.dart';
-import 'package:flutteractixapp/features/auth/presentation/blocs/auth/auth_bloc.dart';
-import 'package:flutteractixapp/features/auth/presentation/blocs/auth/auth_events.dart';
-import 'package:flutteractixapp/features/auth/presentation/blocs/auth/auth_states.dart';
-import 'package:flutteractixapp/features/profile/domain/entities/profile.dart';
-import 'package:flutteractixapp/features/profile/domain/usecases/get_profile_usecase.dart';
-import 'package:flutteractixapp/features/profile/domain/usecases/post_profile_usecase.dart';
-import 'package:flutteractixapp/features/profile/domain/usecases/set_password_use_case.dart';
-import 'package:flutteractixapp/features/profile/domain/usecases/update_password_use_case.dart';
-import 'package:flutteractixapp/features/profile/presentation/blocs/profile/profile_events.dart';
-import 'package:flutteractixapp/features/profile/presentation/blocs/profile/profile_states.dart';
+import 'package:reallystick/core/messages/message.dart';
+import 'package:reallystick/features/auth/domain/errors/domain_error.dart';
+import 'package:reallystick/features/auth/domain/usecases/disable_two_factor_authentication_use_case.dart';
+import 'package:reallystick/features/auth/domain/usecases/generate_two_factor_authentication_config_use_case.dart';
+import 'package:reallystick/features/auth/domain/usecases/verify_one_time_password_use_case.dart';
+import 'package:reallystick/features/auth/presentation/blocs/auth/auth_bloc.dart';
+import 'package:reallystick/features/auth/presentation/blocs/auth/auth_events.dart';
+import 'package:reallystick/features/auth/presentation/blocs/auth/auth_states.dart';
+import 'package:reallystick/features/profile/domain/entities/profile.dart';
+import 'package:reallystick/features/profile/domain/usecases/get_profile_usecase.dart';
+import 'package:reallystick/features/profile/domain/usecases/post_profile_usecase.dart';
+import 'package:reallystick/features/profile/domain/usecases/set_password_use_case.dart';
+import 'package:reallystick/features/profile/domain/usecases/update_password_use_case.dart';
+import 'package:reallystick/features/profile/presentation/blocs/profile/profile_events.dart';
+import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
 import 'package:get_it/get_it.dart';
 
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {

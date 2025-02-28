@@ -1,4 +1,4 @@
-import 'package:flutteractixapp/features/auth/data/storage/token_storage.dart';
+import 'package:reallystick/features/auth/data/storage/token_storage.dart';
 import 'package:http_interceptor/http_interceptor.dart';
 
 class AuthInterceptor extends InterceptorContract {

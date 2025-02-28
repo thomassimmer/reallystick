@@ -1,4 +1,4 @@
-import 'package:flutteractixapp/core/messages/errors/data_error.dart';
+import 'package:reallystick/core/messages/errors/data_error.dart';
 
 class UnauthorizedError extends DataError {}
 

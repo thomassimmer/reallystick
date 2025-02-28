@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutteractixapp/core/messages/message.dart';
+import 'package:reallystick/core/messages/message.dart';
 
 abstract class AuthState extends Equatable {
   final Message? message;

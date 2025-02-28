@@ -1,11 +1,11 @@
 [package]
-name = "flutteractixapp"
+name = "reallystick"
 version = "0.1.0"
 edition = "2021"
 
 [[bin]]
 path = "src/main.rs"
-name = "flutteractixapp"
+name = "reallystick"
 
 [[test]]
 name = "tests"

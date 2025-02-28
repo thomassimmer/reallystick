@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutteractixapp/core/router.dart';
-import 'package:flutteractixapp/core/ui/themes/dark.dart';
-import 'package:flutteractixapp/core/ui/themes/light.dart';
-import 'package:flutteractixapp/features/auth/presentation/blocs/auth/auth_bloc.dart';
-import 'package:flutteractixapp/features/auth/presentation/blocs/auth/auth_events.dart';
-import 'package:flutteractixapp/features/auth/presentation/blocs/auth_login/auth_login_bloc.dart';
-import 'package:flutteractixapp/features/profile/presentation/blocs/profile/profile_bloc.dart';
-import 'package:flutteractixapp/features/profile/presentation/blocs/profile/profile_states.dart';
-import 'package:flutteractixapp/features/profile/presentation/blocs/set_password/set_password_bloc.dart';
-import 'package:flutteractixapp/features/profile/presentation/blocs/update_password/update_password_bloc.dart';
+import 'package:reallystick/core/router.dart';
+import 'package:reallystick/core/ui/themes/dark.dart';
+import 'package:reallystick/core/ui/themes/light.dart';
+import 'package:reallystick/features/auth/presentation/blocs/auth/auth_bloc.dart';
+import 'package:reallystick/features/auth/presentation/blocs/auth/auth_events.dart';
+import 'package:reallystick/features/auth/presentation/blocs/auth_login/auth_login_bloc.dart';
+import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
+import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
+import 'package:reallystick/features/profile/presentation/blocs/set_password/set_password_bloc.dart';
+import 'package:reallystick/features/profile/presentation/blocs/update_password/update_password_bloc.dart';
 import 'package:universal_io/io.dart';
 
-class FlutterActixApp extends StatelessWidget {
-  const FlutterActixApp({super.key});
+class ReallyStickApp extends StatelessWidget {
+  const ReallyStickApp({super.key});
 
   @override
   Widget build(BuildContext context) {

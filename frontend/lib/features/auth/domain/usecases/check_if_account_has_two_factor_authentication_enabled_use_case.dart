@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
-import 'package:flutteractixapp/core/messages/errors/domain_error.dart';
-import 'package:flutteractixapp/features/auth/domain/repositories/auth_repository.dart';
+import 'package:reallystick/core/messages/errors/domain_error.dart';
+import 'package:reallystick/features/auth/domain/repositories/auth_repository.dart';
 
 class CheckIfAccountHasTwoFactorAuthenticationEnabledUseCase {
   final AuthRepository authRepository;

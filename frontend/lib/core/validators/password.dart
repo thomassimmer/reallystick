@@ -1,4 +1,4 @@
-import 'package:flutteractixapp/features/auth/domain/errors/domain_error.dart';
+import 'package:reallystick/features/auth/domain/errors/domain_error.dart';
 import 'package:formz/formz.dart';
 
 class Password extends FormzInput<String, Exception> {

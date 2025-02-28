@@ -3,8 +3,8 @@
 import 'dart:async';
 
 import 'package:dartz/dartz.dart';
-import 'package:flutteractixapp/core/messages/errors/domain_error.dart';
-import 'package:flutteractixapp/features/profile/domain/entities/profile.dart';
+import 'package:reallystick/core/messages/errors/domain_error.dart';
+import 'package:reallystick/features/profile/domain/entities/profile.dart';
 
 abstract class ProfileRepository {
   Future<Either<DomainError, Profile>> getProfileInformation();

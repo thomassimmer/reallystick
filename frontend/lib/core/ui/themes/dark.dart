@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutteractixapp/core/ui/colors.dart';
-import 'package:flutteractixapp/core/ui/styles.dart';
-import 'package:flutteractixapp/core/ui/theme.dart';
+import 'package:reallystick/core/ui/colors.dart';
+import 'package:reallystick/core/ui/styles.dart';
+import 'package:reallystick/core/ui/theme.dart';
 
 class DarkAppTheme extends AppTheme {
   const DarkAppTheme()

@@ -1,4 +1,4 @@
-import 'package:flutteractixapp/core/messages/errors/domain_error.dart';
+import 'package:reallystick/core/messages/errors/domain_error.dart';
 
 class PasswordNotExpiredDomainError implements DomainError {
   @override

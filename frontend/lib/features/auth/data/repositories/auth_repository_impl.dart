@@ -3,16 +3,16 @@
 import 'dart:async';
 
 import 'package:dartz/dartz.dart';
-import 'package:flutteractixapp/core/messages/errors/data_error.dart';
-import 'package:flutteractixapp/core/messages/errors/domain_error.dart';
-import 'package:flutteractixapp/features/auth/data/errors/data_error.dart';
-import 'package:flutteractixapp/features/auth/data/models/otp_request_model.dart';
-import 'package:flutteractixapp/features/auth/data/models/user_token_request_model.dart';
-import 'package:flutteractixapp/features/auth/data/sources/remote_data_sources.dart';
-import 'package:flutteractixapp/features/auth/domain/entities/otp_generation.dart';
-import 'package:flutteractixapp/features/auth/domain/entities/user_token.dart';
-import 'package:flutteractixapp/features/auth/domain/errors/domain_error.dart';
-import 'package:flutteractixapp/features/auth/domain/repositories/auth_repository.dart';
+import 'package:reallystick/core/messages/errors/data_error.dart';
+import 'package:reallystick/core/messages/errors/domain_error.dart';
+import 'package:reallystick/features/auth/data/errors/data_error.dart';
+import 'package:reallystick/features/auth/data/models/otp_request_model.dart';
+import 'package:reallystick/features/auth/data/models/user_token_request_model.dart';
+import 'package:reallystick/features/auth/data/sources/remote_data_sources.dart';
+import 'package:reallystick/features/auth/domain/entities/otp_generation.dart';
+import 'package:reallystick/features/auth/domain/entities/user_token.dart';
+import 'package:reallystick/features/auth/domain/errors/domain_error.dart';
+import 'package:reallystick/features/auth/domain/repositories/auth_repository.dart';
 import 'package:logger/web.dart';
 
 class AuthRepositoryImpl implements AuthRepository {

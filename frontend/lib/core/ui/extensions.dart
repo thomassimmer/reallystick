@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutteractixapp/core/ui/colors.dart';
-import 'package:flutteractixapp/core/ui/styles.dart';
-import 'package:flutteractixapp/core/ui/theme.dart';
-import 'package:flutteractixapp/core/ui/themes/light.dart';
-import 'package:flutteractixapp/core/ui/typography.dart';
+import 'package:reallystick/core/ui/colors.dart';
+import 'package:reallystick/core/ui/styles.dart';
+import 'package:reallystick/core/ui/theme.dart';
+import 'package:reallystick/core/ui/themes/light.dart';
+import 'package:reallystick/core/ui/typography.dart';
 
 extension AppThemeExtension on BuildContext {
   AppTheme get appTheme =>

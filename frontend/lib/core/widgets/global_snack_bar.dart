@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutteractixapp/core/messages/message.dart';
-import 'package:flutteractixapp/core/messages/message_mapper.dart';
-import 'package:flutteractixapp/core/ui/extensions.dart';
+import 'package:reallystick/core/messages/message.dart';
+import 'package:reallystick/core/messages/message_mapper.dart';
+import 'package:reallystick/core/ui/extensions.dart';
 
 class GlobalSnackBar {
   static Color _getBackgroundColor(BuildContext context, Message message) {

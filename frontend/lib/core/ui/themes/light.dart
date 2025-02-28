@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutteractixapp/core/ui/colors.dart';
-import 'package:flutteractixapp/core/ui/theme.dart';
+import 'package:reallystick/core/ui/colors.dart';
+import 'package:reallystick/core/ui/theme.dart';
 
 class LightAppTheme extends AppTheme {
   const LightAppTheme()

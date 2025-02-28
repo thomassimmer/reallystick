@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutteractixapp/core/validators/password.dart';
-import 'package:flutteractixapp/core/validators/username.dart';
+import 'package:reallystick/core/validators/password.dart';
+import 'package:reallystick/core/validators/username.dart';
 
 final class SignupFormState extends Equatable {
   const SignupFormState({

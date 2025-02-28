@@ -1,13 +1,13 @@
 import 'dart:convert';
 
 import 'package:dartz/dartz.dart';
-import 'package:flutteractixapp/core/messages/errors/data_error.dart';
-import 'package:flutteractixapp/features/auth/data/errors/data_error.dart';
-import 'package:flutteractixapp/features/auth/data/models/otp_model.dart';
-import 'package:flutteractixapp/features/auth/data/models/otp_request_model.dart';
-import 'package:flutteractixapp/features/auth/data/models/user_token_model.dart';
-import 'package:flutteractixapp/features/auth/data/models/user_token_request_model.dart';
-import 'package:flutteractixapp/features/auth/domain/errors/domain_error.dart';
+import 'package:reallystick/core/messages/errors/data_error.dart';
+import 'package:reallystick/features/auth/data/errors/data_error.dart';
+import 'package:reallystick/features/auth/data/models/otp_model.dart';
+import 'package:reallystick/features/auth/data/models/otp_request_model.dart';
+import 'package:reallystick/features/auth/data/models/user_token_model.dart';
+import 'package:reallystick/features/auth/data/models/user_token_request_model.dart';
+import 'package:reallystick/features/auth/domain/errors/domain_error.dart';
 import 'package:http_interceptor/http_interceptor.dart';
 
 class AuthRemoteDataSource {
@@ -144,7 +144,8 @@ class AuthRemoteDataSource {
   }
 
   Future<bool> verifyOneTimePassword(
-      VerifyOneTimePasswordRequestModel verifyOneTimePasswordRequestModel) async {
+      VerifyOneTimePasswordRequestModel
+          verifyOneTimePasswordRequestModel) async {
     final url = Uri.parse('$baseUrl/auth/otp/verify');
     final response = await apiClient.post(
       url,
@@ -181,7 +182,8 @@ class AuthRemoteDataSource {
   }
 
   Future<UserTokenModel> validateOneTimePassword(
-      ValidateOneTimePasswordRequestModel validateOneTimePasswordRequestModel) async {
+      ValidateOneTimePasswordRequestModel
+          validateOneTimePasswordRequestModel) async {
     final url = Uri.parse('$baseUrl/auth/otp/validate');
     final response = await apiClient.post(
       url,
@@ -257,7 +259,9 @@ class AuthRemoteDataSource {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: json.encode(checkIfAccountHasTwoFactorAuthenticationEnabledRequestModel.toJson()));
+        body: json.encode(
+            checkIfAccountHasTwoFactorAuthenticationEnabledRequestModel
+                .toJson()));
 
     final jsonBody = json.decode(response.body);
 
@@ -331,8 +335,9 @@ class AuthRemoteDataSource {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: json
-          .encode(recoverAccountWithRecoveryCodeAndOneTimePasswordRequestModel.toJson()),
+      body: json.encode(
+          recoverAccountWithRecoveryCodeAndOneTimePasswordRequestModel
+              .toJson()),
     );
 
     final jsonBody = json.decode(response.body);

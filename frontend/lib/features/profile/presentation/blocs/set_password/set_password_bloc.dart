@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
-import 'package:flutteractixapp/core/validators/password.dart';
-import 'package:flutteractixapp/features/profile/presentation/blocs/set_password/set_password_events.dart';
-import 'package:flutteractixapp/features/profile/presentation/blocs/set_password/set_password_states.dart';
+import 'package:reallystick/core/validators/password.dart';
+import 'package:reallystick/features/profile/presentation/blocs/set_password/set_password_events.dart';
+import 'package:reallystick/features/profile/presentation/blocs/set_password/set_password_states.dart';
 import 'package:formz/formz.dart';
 
 class ProfileSetPasswordFormBloc

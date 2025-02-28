@@ -5,7 +5,9 @@ use actix_web::{
     http::header::ContentType,
     test, Error,
 };
-use flutteractixapp::{core::structs::responses::GenericResponse, features::profile::structs::responses::UserResponse};
+use reallystick::{
+    core::structs::responses::GenericResponse, features::profile::structs::responses::UserResponse,
+};
 
 use crate::{
     auth::{

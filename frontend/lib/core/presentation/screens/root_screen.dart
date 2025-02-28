@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutteractixapp/core/ui/extensions.dart';
-import 'package:flutteractixapp/core/widgets/global_snack_bar.dart';
-import 'package:flutteractixapp/core/widgets/icon_with_warning.dart';
-import 'package:flutteractixapp/features/auth/presentation/blocs/auth/auth_bloc.dart';
-import 'package:flutteractixapp/features/auth/presentation/blocs/auth/auth_states.dart';
-import 'package:flutteractixapp/features/profile/presentation/blocs/profile/profile_bloc.dart';
-import 'package:flutteractixapp/features/profile/presentation/blocs/profile/profile_states.dart';
+import 'package:reallystick/core/ui/extensions.dart';
+import 'package:reallystick/core/widgets/global_snack_bar.dart';
+import 'package:reallystick/core/widgets/icon_with_warning.dart';
+import 'package:reallystick/features/auth/presentation/blocs/auth/auth_bloc.dart';
+import 'package:reallystick/features/auth/presentation/blocs/auth/auth_states.dart';
+import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
+import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
 import 'package:go_router/go_router.dart';
 
 class RootScreen extends StatelessWidget {

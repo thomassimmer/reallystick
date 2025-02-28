@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutteractixapp/core/messages/message.dart';
-import 'package:flutteractixapp/features/profile/domain/entities/profile.dart';
+import 'package:reallystick/core/messages/message.dart';
+import 'package:reallystick/features/profile/domain/entities/profile.dart';
 
 abstract class ProfileState extends Equatable {
   final Message? message;

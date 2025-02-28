@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutteractixapp/core/messages/message.dart';
+import 'package:reallystick/core/messages/message.dart';
 
 String getTranslatedMessage(BuildContext context, Message message) {
   final localizations = AppLocalizations.of(context)!;

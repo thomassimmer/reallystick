@@ -3,16 +3,16 @@
 import 'dart:async';
 
 import 'package:dartz/dartz.dart';
-import 'package:flutteractixapp/core/messages/errors/data_error.dart';
-import 'package:flutteractixapp/core/messages/errors/domain_error.dart';
-import 'package:flutteractixapp/features/auth/data/errors/data_error.dart';
-import 'package:flutteractixapp/features/auth/domain/errors/domain_error.dart';
-import 'package:flutteractixapp/features/profile/data/errors/data_error.dart';
-import 'package:flutteractixapp/features/profile/data/models/profile_request_model.dart';
-import 'package:flutteractixapp/features/profile/data/sources/remote_data_sources.dart';
-import 'package:flutteractixapp/features/profile/domain/entities/profile.dart';
-import 'package:flutteractixapp/features/profile/domain/errors/domain_error.dart';
-import 'package:flutteractixapp/features/profile/domain/repositories/profile_repository.dart';
+import 'package:reallystick/core/messages/errors/data_error.dart';
+import 'package:reallystick/core/messages/errors/domain_error.dart';
+import 'package:reallystick/features/auth/data/errors/data_error.dart';
+import 'package:reallystick/features/auth/domain/errors/domain_error.dart';
+import 'package:reallystick/features/profile/data/errors/data_error.dart';
+import 'package:reallystick/features/profile/data/models/profile_request_model.dart';
+import 'package:reallystick/features/profile/data/sources/remote_data_sources.dart';
+import 'package:reallystick/features/profile/domain/entities/profile.dart';
+import 'package:reallystick/features/profile/domain/errors/domain_error.dart';
+import 'package:reallystick/features/profile/domain/repositories/profile_repository.dart';
 import 'package:logger/web.dart';
 
 class ProfileRepositoryImpl implements ProfileRepository {

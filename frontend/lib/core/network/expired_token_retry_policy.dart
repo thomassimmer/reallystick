@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:flutteractixapp/features/auth/data/services/auth_service.dart';
+import 'package:reallystick/features/auth/data/services/auth_service.dart';
 import 'package:http_interceptor/http_interceptor.dart';
 
 class ExpiredTokenRetryPolicy implements RetryPolicy {

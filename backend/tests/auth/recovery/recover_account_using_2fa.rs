@@ -3,8 +3,8 @@ use actix_web::body::MessageBody;
 use actix_web::dev::{Service, ServiceResponse};
 use actix_web::http::header::ContentType;
 use actix_web::{test, Error};
-use flutteractixapp::core::structs::responses::GenericResponse;
-use flutteractixapp::features::auth::structs::responses::UserLoginResponse;
+use reallystick::core::structs::responses::GenericResponse;
+use reallystick::features::auth::structs::responses::UserLoginResponse;
 use totp_rs::{Algorithm, Secret, TOTP};
 
 use crate::auth::otp::{user_generates_otp, user_verifies_otp};

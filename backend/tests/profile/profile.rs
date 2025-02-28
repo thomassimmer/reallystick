@@ -5,7 +5,7 @@ use actix_web::{
     http::header::ContentType,
     test, Error,
 };
-use flutteractixapp::features::profile::structs::responses::{IsOtpEnabledResponse, UserResponse};
+use reallystick::features::profile::structs::responses::{IsOtpEnabledResponse, UserResponse};
 
 use crate::{
     auth::{
