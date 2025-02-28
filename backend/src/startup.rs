@@ -8,14 +8,16 @@ use crate::core::routes::health_check::health_check;
 use crate::features::auth::routes::disable_otp::disable;
 use crate::features::auth::routes::generate_otp::generate;
 use crate::features::auth::routes::log_user_in::log_user_in;
+use crate::features::auth::routes::log_user_out::log_user_out;
 use crate::features::auth::routes::recover_account_using_2fa::recover_account_using_2fa;
 use crate::features::auth::routes::recover_account_using_password::recover_account_using_password;
 use crate::features::auth::routes::recover_account_without_2fa_enabled::recover_account_without_2fa_enabled;
 use crate::features::auth::routes::validate_otp::validate;
 use crate::features::auth::routes::verify_otp::verify;
 
+use crate::features::auth::routes::refresh_token::refresh_token;
 use crate::features::auth::routes::signup::register_user;
-use crate::features::auth::routes::token::refresh_token;
+use crate::features::auth::structs::models::TokenCache;
 use crate::features::challenges::routes::create_challenge::create_challenge;
 use crate::features::challenges::routes::create_challenge_daily_tracking::create_challenge_daily_tracking;
 use crate::features::challenges::routes::create_challenge_participation::create_challenge_participation;
@@ -57,6 +59,8 @@ use crate::features::habits::routes::update_habit_participation::update_habit_pa
 use crate::features::habits::routes::update_unit::update_unit;
 use crate::features::habits::structs::models::habit_statistics::HabitStatisticsCache;
 use crate::features::profile::routes::delete_account::delete_account;
+use crate::features::profile::routes::delete_device::delete_device;
+use crate::features::profile::routes::get_devices::get_devices;
 use crate::features::profile::routes::get_profile_information::get_profile_information;
 use crate::features::profile::routes::is_otp_enabled::is_otp_enabled;
 use crate::features::profile::routes::post_profile_information::post_profile_information;
@@ -64,6 +68,7 @@ use crate::features::profile::routes::post_profile_information::post_profile_inf
 use crate::features::profile::routes::set_password::set_password;
 use crate::features::profile::routes::update_password::update_password;
 use actix_cors::Cors;
+use actix_http::header::HeaderName;
 use actix_web::body::MessageBody;
 use actix_web::dev::{Server, ServiceFactory, ServiceRequest, ServiceResponse};
 use actix_web::http::header;
@@ -102,11 +107,13 @@ pub fn create_app(
             header::CONTENT_TYPE,
             header::AUTHORIZATION,
             header::ACCEPT,
+            HeaderName::from_static("x-user-agent"),
         ])
         .supports_credentials();
 
     let habit_cache = HabitStatisticsCache::new();
     let challenge_cache = ChallengeStatisticsCache::new();
+    let cached_tokens = TokenCache::default();
 
     App::new()
         .service(
@@ -121,16 +128,18 @@ pub fn create_app(
                         .service(recover_account_using_2fa)
                         .service(refresh_token)
                         .service(
+                            web::scope("/logout")
+                                .wrap(TokenValidator {})
+                                .service(log_user_out),
+                        )
+                        .service(
                             web::scope("/otp")
                                 // Scope without middleware applied to routes that don't need it
                                 .service(validate)
                                 // Nested scope with middleware for protected routes
                                 .service(
                                     web::scope("")
-                                        .wrap(TokenValidator::new(
-                                            secret.to_string(),
-                                            connection_pool.clone(),
-                                        ))
+                                        .wrap(TokenValidator {})
                                         .service(generate)
                                         .service(verify)
                                         .service(disable),
@@ -140,10 +149,7 @@ pub fn create_app(
                 .service(
                     web::scope("/users").service(is_otp_enabled).service(
                         web::scope("")
-                            .wrap(TokenValidator::new(
-                                secret.to_string(),
-                                connection_pool.clone(),
-                            ))
+                            .wrap(TokenValidator {})
                             .service(get_profile_information)
                             .service(post_profile_information)
                             .service(set_password)
@@ -152,12 +158,15 @@ pub fn create_app(
                     ),
                 )
                 .service(
+                    web::scope("/devices")
+                        .wrap(TokenValidator {})
+                        .service(get_devices)
+                        .service(delete_device),
+                )
+                .service(
                     web::scope("/habits").service(
                         web::scope("")
-                            .wrap(TokenValidator::new(
-                                secret.to_string(),
-                                connection_pool.clone(),
-                            ))
+                            .wrap(TokenValidator {})
                             .service(get_habit)
                             .service(get_habits)
                             .service(update_habit)
@@ -169,20 +178,14 @@ pub fn create_app(
                 .service(
                     web::scope("/habit-statistics").service(
                         web::scope("")
-                            .wrap(TokenValidator::new(
-                                secret.to_string(),
-                                connection_pool.clone(),
-                            ))
+                            .wrap(TokenValidator {})
                             .service(get_habit_statistics),
                     ),
                 )
                 .service(
                     web::scope("/habit-categories").service(
                         web::scope("")
-                            .wrap(TokenValidator::new(
-                                secret.to_string(),
-                                connection_pool.clone(),
-                            ))
+                            .wrap(TokenValidator {})
                             .service(get_habit_categories)
                             .service(update_habit_category)
                             .service(create_habit_category)
@@ -192,10 +195,7 @@ pub fn create_app(
                 .service(
                     web::scope("/habit-daily-trackings").service(
                         web::scope("")
-                            .wrap(TokenValidator::new(
-                                secret.to_string(),
-                                connection_pool.clone(),
-                            ))
+                            .wrap(TokenValidator {})
                             .service(get_habit_daily_trackings)
                             .service(update_habit_daily_tracking)
                             .service(create_habit_daily_tracking)
@@ -205,10 +205,7 @@ pub fn create_app(
                 .service(
                     web::scope("/habit-participations").service(
                         web::scope("")
-                            .wrap(TokenValidator::new(
-                                secret.to_string(),
-                                connection_pool.clone(),
-                            ))
+                            .wrap(TokenValidator {})
                             .service(get_habit_participations)
                             .service(update_habit_participation)
                             .service(create_habit_participation)
@@ -218,10 +215,7 @@ pub fn create_app(
                 .service(
                     web::scope("/units").service(
                         web::scope("")
-                            .wrap(TokenValidator::new(
-                                secret.to_string(),
-                                connection_pool.clone(),
-                            ))
+                            .wrap(TokenValidator {})
                             .service(get_units)
                             .service(update_unit)
                             .service(create_unit),
@@ -230,10 +224,7 @@ pub fn create_app(
                 .service(
                     web::scope("/challenges").service(
                         web::scope("")
-                            .wrap(TokenValidator::new(
-                                secret.to_string(),
-                                connection_pool.clone(),
-                            ))
+                            .wrap(TokenValidator {})
                             .service(get_challenges)
                             .service(get_challenge)
                             .service(update_challenge)
@@ -245,20 +236,14 @@ pub fn create_app(
                 .service(
                     web::scope("/challenge-statistics").service(
                         web::scope("")
-                            .wrap(TokenValidator::new(
-                                secret.to_string(),
-                                connection_pool.clone(),
-                            ))
+                            .wrap(TokenValidator {})
                             .service(get_challenge_statistics),
                     ),
                 )
                 .service(
                     web::scope("/challenge-daily-trackings").service(
                         web::scope("")
-                            .wrap(TokenValidator::new(
-                                secret.to_string(),
-                                connection_pool.clone(),
-                            ))
+                            .wrap(TokenValidator {})
                             .service(get_challenge_daily_trackings)
                             .service(get_challenges_daily_trackings)
                             .service(update_challenge_daily_tracking)
@@ -269,10 +254,7 @@ pub fn create_app(
                 .service(
                     web::scope("/challenge-participations").service(
                         web::scope("")
-                            .wrap(TokenValidator::new(
-                                secret.to_string(),
-                                connection_pool.clone(),
-                            ))
+                            .wrap(TokenValidator {})
                             .service(get_challenge_participations)
                             .service(update_challenge_participation)
                             .service(create_challenge_participation)
@@ -286,6 +268,7 @@ pub fn create_app(
         .app_data(web::Data::new(secret.clone()))
         .app_data(web::Data::new(habit_cache))
         .app_data(web::Data::new(challenge_cache))
+        .app_data(web::Data::new(cached_tokens))
 }
 
 pub struct Application {

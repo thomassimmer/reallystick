@@ -1,15 +1,19 @@
 use crate::{
     core::constants::errors::AppError,
     features::{
+        auth::structs::models::Claims,
         challenges::{helpers::challenge, structs::responses::challenge::ChallengesResponse},
-        profile::structs::models::User,
     },
 };
-use actix_web::{get, web::Data, HttpResponse, Responder};
+use actix_web::{
+    get,
+    web::{Data, ReqData},
+    HttpResponse, Responder,
+};
 use sqlx::PgPool;
 
 #[get("/")]
-pub async fn get_challenges(pool: Data<PgPool>, request_user: User) -> impl Responder {
+pub async fn get_challenges(pool: Data<PgPool>, request_claims: ReqData<Claims>) -> impl Responder {
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
         Err(e) => {
@@ -19,10 +23,10 @@ pub async fn get_challenges(pool: Data<PgPool>, request_user: User) -> impl Resp
         }
     };
 
-    let get_challenges_result = if request_user.is_admin {
+    let get_challenges_result = if request_claims.is_admin {
         challenge::get_challenges(&mut transaction).await
     } else {
-        challenge::get_created_and_joined_challenges(&mut transaction, request_user.id).await
+        challenge::get_created_and_joined_challenges(&mut transaction, request_claims.user_id).await
     };
 
     if let Err(e) = transaction.commit().await {

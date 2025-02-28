@@ -1,6 +1,7 @@
 use crate::{
     core::constants::errors::AppError,
     features::{
+        auth::structs::models::Claims,
         habits::{
             helpers::{habit::get_habit_by_id, habit_participation},
             structs::{
@@ -9,12 +10,11 @@ use crate::{
                 responses::habit_participation::HabitParticipationResponse,
             },
         },
-        profile::structs::models::User,
     },
 };
 use actix_web::{
     post,
-    web::{Data, Json},
+    web::{Data, Json, ReqData},
     HttpResponse, Responder,
 };
 use chrono::Utc;
@@ -25,7 +25,7 @@ use uuid::Uuid;
 pub async fn create_habit_participation(
     pool: Data<PgPool>,
     body: Json<HabitParticipationCreateRequest>,
-    request_user: User,
+    request_claims: ReqData<Claims>,
 ) -> impl Responder {
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
@@ -49,7 +49,7 @@ pub async fn create_habit_participation(
 
     let habit_participation = HabitParticipation {
         id: Uuid::new_v4(),
-        user_id: request_user.id,
+        user_id: request_claims.user_id,
         habit_id: body.habit_id,
         color: body.color.clone(),
         to_gain: body.to_gain,

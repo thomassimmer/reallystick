@@ -1,6 +1,7 @@
 use crate::{
     core::constants::errors::AppError,
     features::{
+        auth::structs::models::Claims,
         challenges::{
             helpers::{
                 challenge::get_challenge_by_id,
@@ -14,12 +15,11 @@ use crate::{
             },
         },
         habits::helpers::{habit::get_habit_by_id, unit::get_unit_by_id},
-        profile::structs::models::User,
     },
 };
 use actix_web::{
     put,
-    web::{Data, Json, Path},
+    web::{Data, Json, Path, ReqData},
     HttpResponse, Responder,
 };
 use sqlx::PgPool;
@@ -29,7 +29,7 @@ pub async fn update_challenge_daily_tracking(
     pool: Data<PgPool>,
     params: Path<UpdateChallengeDailyTrackingParams>,
     body: Json<ChallengeDailyTrackingUpdateRequest>,
-    request_user: User,
+    request_claims: ReqData<Claims>,
 ) -> impl Responder {
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
@@ -61,7 +61,7 @@ pub async fn update_challenge_daily_tracking(
     match get_challenge_by_id(&mut transaction, challenge_daily_tracking.challenge_id).await {
         Ok(r) => match r {
             Some(challenge) => {
-                if !request_user.is_admin && challenge.creator != request_user.id {
+                if !request_claims.is_admin && challenge.creator != request_claims.user_id {
                     return HttpResponse::Forbidden()
                         .json(AppError::InvalidChallengeCreator.to_response());
                 }

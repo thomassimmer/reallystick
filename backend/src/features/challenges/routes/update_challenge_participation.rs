@@ -1,6 +1,7 @@
 use crate::{
     core::constants::errors::AppError,
     features::{
+        auth::structs::models::Claims,
         challenges::{
             helpers::challenge_participation::{self, get_challenge_participation_by_id},
             structs::{
@@ -10,12 +11,11 @@ use crate::{
                 responses::challenge_participation::ChallengeParticipationResponse,
             },
         },
-        profile::structs::models::User,
     },
 };
 use actix_web::{
     put,
-    web::{Data, Json, Path},
+    web::{Data, Json, Path, ReqData},
     HttpResponse, Responder,
 };
 use sqlx::PgPool;
@@ -25,7 +25,7 @@ pub async fn update_challenge_participation(
     pool: Data<PgPool>,
     params: Path<UpdateChallengeParticipationParams>,
     body: Json<ChallengeParticipationUpdateRequest>,
-    request_user: User,
+    request_claims: ReqData<Claims>,
 ) -> impl Responder {
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
@@ -43,7 +43,9 @@ pub async fn update_challenge_participation(
     let mut challenge_participation = match get_challenge_participation_result {
         Ok(r) => match r {
             Some(challenge_participation) => {
-                if !request_user.is_admin && challenge_participation.user_id != request_user.id {
+                if !request_claims.is_admin
+                    && challenge_participation.user_id != request_claims.user_id
+                {
                     return HttpResponse::Forbidden()
                         .json(AppError::InvalidChallengeParticipationUser.to_response());
                 }

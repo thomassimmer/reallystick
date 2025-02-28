@@ -416,4 +416,25 @@ class AuthRemoteDataSource {
 
     throw UnknownError();
   }
+
+  Future<void> logout() async {
+    final url = Uri.parse('$baseUrl/auth/logout');
+    final response = await apiClient.get(
+      url,
+    );
+
+    if (response.statusCode == 200) {
+      return;
+    }
+
+    if (response.statusCode == 401) {
+      throw UnauthorizedError();
+    }
+
+    if (response.statusCode == 500) {
+      throw InternalServerError();
+    }
+
+    throw UnknownError();
+  }
 }

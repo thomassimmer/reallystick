@@ -1,6 +1,7 @@
 use crate::{
     core::constants::errors::AppError,
     features::{
+        auth::structs::models::Claims,
         habits::{
             helpers::{habit::get_habit_by_id, habit_daily_tracking, unit::get_unit_by_id},
             structs::{
@@ -9,12 +10,11 @@ use crate::{
                 responses::habit_daily_tracking::HabitDailyTrackingResponse,
             },
         },
-        profile::structs::models::User,
     },
 };
 use actix_web::{
     post,
-    web::{Data, Json},
+    web::{Data, Json, ReqData},
     HttpResponse, Responder,
 };
 use chrono::Utc;
@@ -25,7 +25,7 @@ use uuid::Uuid;
 pub async fn create_habit_daily_tracking(
     pool: Data<PgPool>,
     body: Json<HabitDailyTrackingCreateRequest>,
-    request_user: User,
+    request_claims: ReqData<Claims>,
 ) -> impl Responder {
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
@@ -74,7 +74,7 @@ pub async fn create_habit_daily_tracking(
 
     let habit_daily_tracking = HabitDailyTracking {
         id: Uuid::new_v4(),
-        user_id: request_user.id,
+        user_id: request_claims.user_id,
         created_at: Utc::now(),
         habit_id: body.habit_id,
         datetime: body.datetime,

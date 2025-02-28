@@ -1,4 +1,4 @@
-use actix_web::{post, web, HttpResponse, Responder};
+use actix_web::{post, web, HttpRequest, HttpResponse, Responder};
 use argon2::{password_hash::SaltString, Argon2, PasswordHasher};
 use rand::{distributions::Alphanumeric, rngs::OsRng, Rng};
 use sqlx::PgPool;
@@ -16,7 +16,10 @@ use crate::{
             structs::{requests::UserRegisterRequest, responses::UserSignupResponse},
         },
         profile::{
-            helpers::user::{create_user, get_user_by_username},
+            helpers::{
+                device_info::get_user_agent,
+                profile::{create_user, get_user_by_username},
+            },
             structs::models::User,
         },
     },
@@ -24,6 +27,7 @@ use crate::{
 
 #[post("/signup")]
 pub async fn register_user(
+    req: HttpRequest,
     body: web::Json<UserRegisterRequest>,
     pool: web::Data<PgPool>,
     secret: web::Data<String>,
@@ -144,15 +148,24 @@ pub async fn register_user(
         });
     }
 
-    let (access_token, refresh_token) =
-        match generate_tokens(secret.as_bytes(), new_user.id, &mut transaction).await {
-            Ok((access_token, refresh_token)) => (access_token, refresh_token),
-            Err(e) => {
-                eprintln!("Error: {}", e);
-                return HttpResponse::InternalServerError()
-                    .json(AppError::TokenGeneration.to_response());
-            }
-        };
+    let parsed_device_info = get_user_agent(req).await;
+
+    let (access_token, refresh_token) = match generate_tokens(
+        secret.as_bytes(),
+        new_user.id,
+        new_user.is_admin,
+        parsed_device_info,
+        &mut transaction,
+    )
+    .await
+    {
+        Ok((access_token, refresh_token)) => (access_token, refresh_token),
+        Err(e) => {
+            eprintln!("Error: {}", e);
+            return HttpResponse::InternalServerError()
+                .json(AppError::TokenGeneration.to_response());
+        }
+    };
 
     if let Err(e) = transaction.commit().await {
         eprintln!("Error: {}", e);

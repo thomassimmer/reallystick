@@ -1,18 +1,25 @@
 use crate::{
     core::constants::errors::AppError,
     features::{
+        auth::structs::models::Claims,
         habits::{
             helpers::habit_participation,
             structs::responses::habit_participation::HabitParticipationsResponse,
         },
-        profile::structs::models::User,
     },
 };
-use actix_web::{get, web::Data, HttpResponse, Responder};
+use actix_web::{
+    get,
+    web::{Data, ReqData},
+    HttpResponse, Responder,
+};
 use sqlx::PgPool;
 
 #[get("/")]
-pub async fn get_habit_participations(pool: Data<PgPool>, request_user: User) -> impl Responder {
+pub async fn get_habit_participations(
+    pool: Data<PgPool>,
+    request_claims: ReqData<Claims>,
+) -> impl Responder {
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
         Err(e) => {
@@ -22,9 +29,11 @@ pub async fn get_habit_participations(pool: Data<PgPool>, request_user: User) ->
         }
     };
 
-    let get_habits_result =
-        habit_participation::get_habit_participations_for_user(&mut transaction, request_user.id)
-            .await;
+    let get_habits_result = habit_participation::get_habit_participations_for_user(
+        &mut transaction,
+        request_claims.user_id,
+    )
+    .await;
 
     if let Err(e) = transaction.commit().await {
         eprintln!("Error: {}", e);

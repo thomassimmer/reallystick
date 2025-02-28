@@ -1,12 +1,16 @@
 use crate::{
     core::constants::errors::AppError,
-    features::profile::structs::{
-        models::User, requests::UserUpdateRequest, responses::UserResponse,
+    features::{
+        auth::structs::models::Claims,
+        profile::{
+            helpers::profile::get_user_by_id,
+            structs::{requests::UserUpdateRequest, responses::UserResponse},
+        },
     },
 };
 use actix_web::{
     post,
-    web::{Data, Json},
+    web::{Data, Json, ReqData},
     HttpResponse, Responder,
 };
 use sqlx::PgPool;
@@ -15,7 +19,7 @@ use sqlx::PgPool;
 pub async fn post_profile_information(
     body: Json<UserUpdateRequest>,
     pool: Data<PgPool>,
-    mut request_user: User,
+    request_claims: ReqData<Claims>,
 ) -> impl Responder {
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
@@ -23,6 +27,17 @@ pub async fn post_profile_information(
             eprintln!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::DatabaseConnection.to_response());
+        }
+    };
+
+    let mut request_user = match get_user_by_id(&mut transaction, request_claims.user_id).await {
+        Ok(user) => match user {
+            Some(user) => user,
+            None => return HttpResponse::NotFound().json(AppError::UserNotFound.to_response()),
+        },
+        Err(e) => {
+            eprintln!("Error: {}", e);
+            return HttpResponse::InternalServerError().json(AppError::UserUpdate.to_response());
         }
     };
 

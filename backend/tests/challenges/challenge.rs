@@ -439,7 +439,7 @@ pub async fn user_can_get_challenge_statistics() {
         (Utc::now() + Duration::new(59 * 60, 1)).fixed_offset(),
     ));
 
-    let access_token = user_refreshes_token(&app, &refresh_token).await;
+    let (access_token, _) = user_refreshes_token(&app, &refresh_token).await;
 
     let statistics = user_gets_challenge_statistics(&app, &access_token).await;
 
@@ -524,7 +524,7 @@ pub async fn user_can_get_challenge_statistics() {
         (Utc::now() + Duration::new(119 * 60, 1)).fixed_offset(),
     ));
 
-    let access_token = user_refreshes_token(&app, &refresh_token).await;
+    let (access_token, _) = user_refreshes_token(&app, &refresh_token).await;
 
     let statistics = user_gets_challenge_statistics(&app, &access_token).await;
 

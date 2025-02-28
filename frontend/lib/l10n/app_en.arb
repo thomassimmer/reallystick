@@ -42,6 +42,8 @@
   "challenges": "Challenges",
   "challengesInfoTooltip": "This information is refreshed every hour.",
   "comeBack": "Come Back",
+  "confirmDeletion": "Confirm Deletion",
+  "confirmDeletionQuestion": "Are you sure you want to delete the session on this device?",
   "comingSoon": "Coming soon...",
   "confirm": "Confirm",
   "confirmDelete": "Confirm account deletion",
@@ -72,6 +74,25 @@
   "deleteAccount": "Delete account",
   "deleteChallenge": "Delete challenge",
   "description": "Description",
+  "devices": "My devices",
+  "deviceInfo": "{isMobile, select, true {Mobile device} false {Computer} other {Unknown}}{os, select, null {. } other { running on {os}. }}{browser, select, null {App} other {Browser: {browser}}}. {model, select, null {} other {Model: {model}.}}",
+  "@deviceInfo": {
+    "placeholders": {
+      "isMobile": {
+        "type": "String"
+      },
+      "os": {
+        "type": "String"
+      },
+      "browser": {
+        "type": "String"
+      },
+      "model": {
+        "type": "String"
+      }
+    }
+  },
+  "deviceDeleteSuccessful": "You successfully stopped the session on this device",
   "disableTwoFA": "Disable",
   "discussions": "Discussions",
   "discussionsComingSoon": "Some interesting discussions coming soon here...",
@@ -157,6 +178,7 @@
   "keepRecoveryCodesSafe": "Please keep these recovery codes safe.\nThey are necessary if you lose your password or access to your 2FA application.",
   "language": "Language",
   "lastActivity": "Last activity:",
+  "lastActivityDate": "Last activity date:",
   "lastActivitySeconds": "{count,plural, =0 {Just now} one {{count} second ago} other {{count} seconds ago}}",
   "@lastActivitySeconds": {
     "placeholders": {
@@ -240,6 +262,8 @@
   "noConcernedHabitsYet": "There are no concerned habits in this challenge yet.",
   "noContent": "No content to display",
   "noChallengesYet": "You do not have challenges yet.",
+  "noDevices": "No device to display",
+  "noDeviceInfo": "No device information to display",
   "noHabitsYet": "You do not have habits yet.",
   "noRecoveryCodeAvailable": "No recovery codes available.",
   "noResultsFound": "No results found.",

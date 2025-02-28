@@ -16,7 +16,7 @@ use crate::features::habits::helpers::unit::create_unit;
 use crate::features::habits::structs::models::habit_daily_tracking::HabitDailyTracking;
 use crate::features::habits::structs::models::habit_participation::HabitParticipation;
 use crate::features::habits::structs::models::unit::Unit;
-use crate::features::profile::helpers::user::create_user;
+use crate::features::profile::helpers::profile::create_user;
 use crate::features::{
     habits::structs::models::{habit::Habit, habit_category::HabitCategory},
     profile::structs::models::User,

@@ -24,6 +24,7 @@ import 'package:reallystick/features/messages/presentation/messages_screen.dart'
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
 import 'package:reallystick/features/profile/presentation/screens/about_screen.dart';
+import 'package:reallystick/features/profile/presentation/screens/device_screen.dart';
 import 'package:reallystick/features/profile/presentation/screens/language_selection_screen.dart';
 import 'package:reallystick/features/profile/presentation/screens/password_screen.dart';
 import 'package:reallystick/features/profile/presentation/screens/profile_information_screen.dart';
@@ -189,6 +190,11 @@ final router = GoRouter(
               path: 'about',
               name: 'about',
               builder: (context, state) => AboutScreen(),
+            ),
+            GoRoute(
+              path: 'devices',
+              name: 'devices',
+              builder: (context, state) => DeviceScreen(),
             ),
             GoRoute(
               path: 'profile-information',

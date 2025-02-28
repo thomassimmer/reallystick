@@ -1,6 +1,7 @@
 use crate::{
     core::constants::errors::AppError,
     features::{
+        auth::structs::models::Claims,
         challenges::{
             helpers::challenge::{self, get_challenge_by_id},
             structs::{
@@ -8,12 +9,11 @@ use crate::{
                 responses::challenge::ChallengeResponse,
             },
         },
-        profile::structs::models::User,
     },
 };
 use actix_web::{
     put,
-    web::{Data, Json, Path},
+    web::{Data, Json, Path, ReqData},
     HttpResponse, Responder,
 };
 use serde_json::json;
@@ -24,7 +24,7 @@ pub async fn update_challenge(
     pool: Data<PgPool>,
     params: Path<UpdateChallengeParams>,
     body: Json<ChallengeUpdateRequest>,
-    request_user: User,
+    request_claims: ReqData<Claims>,
 ) -> impl Responder {
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
@@ -40,7 +40,7 @@ pub async fn update_challenge(
     let mut challenge = match get_challenge_result {
         Ok(r) => match r {
             Some(challenge) => {
-                if !request_user.is_admin && challenge.creator != request_user.id {
+                if !request_claims.is_admin && challenge.creator != request_claims.user_id {
                     return HttpResponse::Forbidden()
                         .json(AppError::InvalidChallengeCreator.to_response());
                 }

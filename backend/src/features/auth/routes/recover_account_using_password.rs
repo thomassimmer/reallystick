@@ -5,15 +5,16 @@ use crate::{
             helpers::{password::password_is_valid, token::generate_tokens},
             structs::{requests::RecoverAccountUsingPasswordRequest, responses::UserLoginResponse},
         },
-        profile::helpers::user::get_user_by_username,
+        profile::helpers::{device_info::get_user_agent, profile::get_user_by_username},
     },
 };
-use actix_web::{post, web, HttpResponse, Responder};
+use actix_web::{post, web, HttpRequest, HttpResponse, Responder};
 use argon2::{Argon2, PasswordHash, PasswordVerifier};
 use sqlx::PgPool;
 
 #[post("/recover-using-password")]
 pub async fn recover_account_using_password(
+    req: HttpRequest,
     body: web::Json<RecoverAccountUsingPasswordRequest>,
     pool: web::Data<PgPool>,
     secret: web::Data<String>,
@@ -128,15 +129,24 @@ pub async fn recover_account_using_password(
         return HttpResponse::InternalServerError().json(AppError::UserTokenDeletion.to_response());
     }
 
-    let (access_token, refresh_token) =
-        match generate_tokens(secret.as_bytes(), user.id, &mut transaction).await {
-            Ok((access_token, refresh_token)) => (access_token, refresh_token),
-            Err(e) => {
-                eprintln!("Error: {}", e);
-                return HttpResponse::InternalServerError()
-                    .json(AppError::TokenGeneration.to_response());
-            }
-        };
+    let parsed_device_info = get_user_agent(req).await;
+
+    let (access_token, refresh_token) = match generate_tokens(
+        secret.as_bytes(),
+        user.id,
+        user.is_admin,
+        parsed_device_info,
+        &mut transaction,
+    )
+    .await
+    {
+        Ok((access_token, refresh_token)) => (access_token, refresh_token),
+        Err(e) => {
+            eprintln!("Error: {}", e);
+            return HttpResponse::InternalServerError()
+                .json(AppError::TokenGeneration.to_response());
+        }
+    };
 
     user.otp_verified = false;
     user.otp_auth_url = None;

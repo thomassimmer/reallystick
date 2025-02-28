@@ -1,6 +1,7 @@
 use crate::{
     core::constants::errors::AppError,
     features::{
+        auth::structs::models::Claims,
         habits::{
             helpers::unit,
             structs::{
@@ -8,12 +9,11 @@ use crate::{
                 responses::unit::UnitResponse,
             },
         },
-        profile::structs::models::User,
     },
 };
 use actix_web::{
     post,
-    web::{Data, Json},
+    web::{Data, Json, ReqData},
     HttpResponse, Responder,
 };
 use chrono::Utc;
@@ -25,9 +25,9 @@ use uuid::Uuid;
 pub async fn create_unit(
     pool: Data<PgPool>,
     body: Json<UnitCreateRequest>,
-    request_user: User,
+    request_claims: ReqData<Claims>,
 ) -> impl Responder {
-    if !request_user.is_admin {
+    if !request_claims.is_admin {
         return HttpResponse::Forbidden().body("Access denied");
     }
 

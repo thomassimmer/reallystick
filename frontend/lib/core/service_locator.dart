@@ -12,6 +12,7 @@ import 'package:reallystick/features/auth/domain/usecases/check_if_account_has_t
 import 'package:reallystick/features/auth/domain/usecases/disable_two_factor_authentication_use_case.dart';
 import 'package:reallystick/features/auth/domain/usecases/generate_two_factor_authentication_config_use_case.dart';
 import 'package:reallystick/features/auth/domain/usecases/login_usecase.dart';
+import 'package:reallystick/features/auth/domain/usecases/logout_usecase.dart';
 import 'package:reallystick/features/auth/domain/usecases/recover_account_with_two_factor_authentication_and_one_time_password_use_case.dart';
 import 'package:reallystick/features/auth/domain/usecases/recover_account_with_two_factor_authentication_and_password_use_case.dart';
 import 'package:reallystick/features/auth/domain/usecases/recover_account_without_two_factor_authentication_enabled_use_case.dart';
@@ -78,6 +79,8 @@ import 'package:reallystick/features/profile/data/sources/local_data_sources.dar
 import 'package:reallystick/features/profile/data/sources/remote_data_sources.dart';
 import 'package:reallystick/features/profile/domain/repositories/profile_repository.dart';
 import 'package:reallystick/features/profile/domain/usecases/delete_account.dart';
+import 'package:reallystick/features/profile/domain/usecases/delete_device.dart';
+import 'package:reallystick/features/profile/domain/usecases/get_devices.dart';
 import 'package:reallystick/features/profile/domain/usecases/get_profile_usecase.dart';
 import 'package:reallystick/features/profile/domain/usecases/load_countries.dart';
 import 'package:reallystick/features/profile/domain/usecases/post_profile_usecase.dart';
@@ -144,6 +147,7 @@ void setupServiceLocator() {
 
   // Use cases
   sl.registerSingleton<LoginUseCase>(LoginUseCase(sl<AuthRepository>()));
+  sl.registerSingleton<LogoutUseCase>(LogoutUseCase(sl<AuthRepository>()));
   sl.registerSingleton<SignupUseCase>(SignupUseCase(sl<AuthRepository>()));
   sl.registerSingleton<VerifyOneTimePasswordUseCase>(
       VerifyOneTimePasswordUseCase(sl<AuthRepository>()));
@@ -254,4 +258,8 @@ void setupServiceLocator() {
           sl<ChallengeDailyTrackingRepository>()));
   sl.registerSingleton<DeleteChallengeUsecase>(
       DeleteChallengeUsecase(sl<ChallengeRepository>()));
+  sl.registerSingleton<GetDevicesUsecase>(
+      GetDevicesUsecase(sl<ProfileRepository>()));
+  sl.registerSingleton<DeleteDeviceUseCase>(
+      DeleteDeviceUseCase(sl<ProfileRepository>()));
 }

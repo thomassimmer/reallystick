@@ -1,15 +1,19 @@
 use crate::{
     core::constants::errors::AppError,
-    features::profile::{
-        helpers::user::delete_user_by_id,
-        structs::{models::User, responses::DeleteAccountResponse},
+    features::{
+        auth::structs::models::Claims,
+        profile::{helpers::profile::delete_user_by_id, structs::responses::DeleteAccountResponse},
     },
 };
-use actix_web::{delete, web::Data, HttpResponse, Responder};
+use actix_web::{
+    delete,
+    web::{Data, ReqData},
+    HttpResponse, Responder,
+};
 use sqlx::PgPool;
 
 #[delete("/me")]
-pub async fn delete_account(pool: Data<PgPool>, request_user: User) -> impl Responder {
+pub async fn delete_account(pool: Data<PgPool>, request_claims: ReqData<Claims>) -> impl Responder {
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
         Err(e) => {
@@ -19,7 +23,7 @@ pub async fn delete_account(pool: Data<PgPool>, request_user: User) -> impl Resp
         }
     };
 
-    let delete_result = delete_user_by_id(&mut transaction, request_user.id).await;
+    let delete_result = delete_user_by_id(&mut transaction, request_claims.user_id).await;
 
     if let Err(e) = transaction.commit().await {
         eprintln!("Error: {}", e);

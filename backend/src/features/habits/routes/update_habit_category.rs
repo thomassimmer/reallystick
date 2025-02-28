@@ -1,6 +1,7 @@
 use crate::{
     core::constants::errors::AppError,
     features::{
+        auth::structs::models::Claims,
         habits::{
             helpers::habit_category::{self, get_habit_category_by_id},
             structs::{
@@ -8,12 +9,11 @@ use crate::{
                 responses::habit_category::HabitCategoryResponse,
             },
         },
-        profile::structs::models::User,
     },
 };
 use actix_web::{
     put,
-    web::{Data, Json, Path},
+    web::{Data, Json, Path, ReqData},
     HttpResponse, Responder,
 };
 use serde_json::json;
@@ -24,9 +24,9 @@ pub async fn update_habit_category(
     pool: Data<PgPool>,
     params: Path<UpdateHabitCategoryParams>,
     body: Json<HabitCategoryUpdateRequest>,
-    request_user: User,
+    request_claims: ReqData<Claims>,
 ) -> impl Responder {
-    if !request_user.is_admin {
+    if !request_claims.is_admin {
         return HttpResponse::Forbidden().body("Access denied");
     }
 

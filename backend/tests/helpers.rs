@@ -11,7 +11,7 @@ use rand::rngs::OsRng;
 use reallystick::core::helpers::mock_now::now;
 use reallystick::{
     configuration::{get_configuration, DatabaseSettings},
-    features::profile::{helpers::user::create_user, structs::models::User},
+    features::profile::{helpers::profile::create_user, structs::models::User},
     startup::create_app,
 };
 use sqlx::{migrate, Connection, Executor, PgConnection, PgPool};

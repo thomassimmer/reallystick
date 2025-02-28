@@ -46,6 +46,8 @@
   "confirm": "Confirmer",
   "confirmDelete": "Confirmation de suppression de compte",
   "confirmDeleteMessage": "En cliquant sur \"Confirmer\", votre compte et toutes les activités attachées seront supprimées définitivement.",
+  "confirmDeletion": "Confirmer la suppression",
+  "confirmDeletionQuestion": "Confirmez-vous la suppression de la session sur cet appareil ?",
   "confirmDuplicateChallenge": "Voulez-vous créer une copie de ce défi avec les objectifs journaliers associés ?",
   "continent": "Continent",
   "country": "Pays",
@@ -72,6 +74,25 @@
   "deleteAccount": "Supprimer mon compte",
   "deleteChallenge": "Supprimer ce défi",
   "description": "Description",
+  "devices": "Mes appareils",
+  "deviceInfo": "{isMobile, select, true {Appareil mobile} false {Ordinateur} other {Inconnu}}{os, select, null {. } other { exécutant {os}. }}{browser, select, null {Application} other {Navigateur : {browser}}}. {model, select, null {} other {Modèle: {model}.}}",
+  "@deviceInfo": {
+    "placeholders": {
+      "isMobile": {
+        "type": "String"
+      },
+      "os": {
+        "type": "String"
+      },
+      "browser": {
+        "type": "String"
+      },
+      "model": {
+        "type": "String"
+      }
+    }
+  },
+  "deviceDeleteSuccessful": "Vous avez arrêté la session sur cet appareil avec succès.",
   "disableTwoFA": "Désactiver",
   "discussions": "Discussions",
   "discussionsComingSoon": "Des discussions intéressantes vont bientôt arriver...",
@@ -157,6 +178,7 @@
   "keepRecoveryCodesSafe": "Merci de garder ces codes de récupération bien à l'abri.\nIls seront nécessaires si vous perdez votre mot de passe ou l'acès à votre application d'authentification.",
   "language": "Langue",
   "lastActivity": "Dernière activité :",
+  "lastActivityDate": "Date de la dernière activité :",
   "lastActivitySeconds": "{count,plural, =0 {À l'instant} one {il y a {count} seconde} other {il y a {count} secondes}}",
   "@lastActivitySeconds": {
     "placeholders": {
@@ -240,6 +262,8 @@
   "noConcernedHabitsYet": "Il n'y a pas encore d'habitudes concernées par ce défi.",
   "noContent": "Aucun contenu à afficher",
   "noChallengesYet": "Vous n'avez pas encore de défi.",
+  "noDevices": "Aucun appareil à afficher",
+  "noDeviceInfo": "Aucune information sur l'appareil à afficher",
   "noHabitsYet": "Vous n'avez pas encore d'habitude.",
   "noRecoveryCodeAvailable": "Aucun code de récupération disponible.",
   "noResultsFound": "Pas de résultat.",

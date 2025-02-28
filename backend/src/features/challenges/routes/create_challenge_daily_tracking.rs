@@ -1,6 +1,7 @@
 use crate::{
     core::constants::errors::AppError,
     features::{
+        auth::structs::models::Claims,
         challenges::{
             helpers::{challenge::get_challenge_by_id, challenge_daily_tracking},
             structs::{
@@ -10,12 +11,11 @@ use crate::{
             },
         },
         habits::helpers::{habit::get_habit_by_id, unit::get_unit_by_id},
-        profile::structs::models::User,
     },
 };
 use actix_web::{
     post,
-    web::{Data, Json},
+    web::{Data, Json, ReqData},
     HttpResponse, Responder,
 };
 use chrono::Utc;
@@ -26,7 +26,7 @@ use uuid::Uuid;
 pub async fn create_challenge_daily_tracking(
     pool: Data<PgPool>,
     body: Json<ChallengeDailyTrackingCreateRequest>,
-    request_user: User,
+    request_claims: ReqData<Claims>,
 ) -> impl Responder {
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
@@ -40,7 +40,7 @@ pub async fn create_challenge_daily_tracking(
     match get_challenge_by_id(&mut transaction, body.challenge_id).await {
         Ok(r) => match r {
             Some(challenge) => {
-                if !request_user.is_admin && challenge.creator != request_user.id {
+                if !request_claims.is_admin && challenge.creator != request_claims.user_id {
                     return HttpResponse::Forbidden()
                         .json(AppError::InvalidChallengeCreator.to_response());
                 }
@@ -105,7 +105,7 @@ pub async fn create_challenge_daily_tracking(
             unit_id: body.unit_id,
             weight: body.weight,
             weight_unit_id: body.weight_unit_id,
-            note: body.note.to_owned()
+            note: body.note.to_owned(),
         });
     }
 

@@ -57,6 +57,22 @@ pub async fn get_user_by_username(
     .await
 }
 
+pub async fn get_user_by_id(
+    conn: &mut PgConnection,
+    id: Uuid,
+) -> Result<Option<User>, sqlx::Error> {
+    sqlx::query_as!(
+        User,
+        r#"
+        SELECT *
+        FROM users
+        WHERE id = $1
+        "#,
+        id,
+    )
+    .fetch_optional(conn)
+    .await
+}
 
 pub async fn delete_user_by_id(
     conn: &mut PgConnection,

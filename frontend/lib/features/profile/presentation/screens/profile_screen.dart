@@ -72,6 +72,13 @@ class ProfileScreen extends StatelessWidget {
                   },
                 ),
               ListTile(
+                title: Text(AppLocalizations.of(context)!.devices),
+                trailing: Icon(Icons.chevron_right),
+                onTap: () {
+                  context.goNamed('devices');
+                },
+              ),
+              ListTile(
                 title: Text(AppLocalizations.of(context)!.about),
                 trailing: Icon(Icons.chevron_right),
                 onTap: () {

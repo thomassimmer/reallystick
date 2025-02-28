@@ -1,5 +1,6 @@
-import 'package:reallystick/features/auth/data/storage/token_storage.dart';
 import 'package:http_interceptor/http_interceptor.dart';
+import 'package:reallystick/core/utils/user_agent.dart';
+import 'package:reallystick/features/auth/data/storage/token_storage.dart';
 
 class AuthInterceptor extends InterceptorContract {
   final TokenStorage tokenStorage;
@@ -14,6 +15,9 @@ class AuthInterceptor extends InterceptorContract {
     if (accessToken != null) {
       request.headers['Authorization'] = 'Bearer $accessToken';
     }
+
+    final userAgent = await getUserAgent();
+    request.headers['X-User-Agent'] = userAgent;
 
     return request;
   }

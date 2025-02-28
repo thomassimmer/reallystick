@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:reallystick/core/constants/json_decode.dart';
 import 'package:reallystick/core/messages/errors/data_error.dart';
+import 'package:reallystick/core/utils/user_agent.dart';
 import 'package:reallystick/features/auth/data/errors/data_error.dart';
 import 'package:reallystick/features/auth/data/storage/token_storage.dart';
 
@@ -20,9 +21,13 @@ class AuthService {
     }
 
     final url = Uri.parse('$baseUrl/auth/refresh-token');
+    final userAgent = await getUserAgent();
     final response = await http.post(
       url,
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json',
+        'X-User-Agent': userAgent,
+      },
       body: json.encode({'refresh_token': refreshToken}),
     );
     final jsonBody = customJsonDecode(response.body);

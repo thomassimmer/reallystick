@@ -54,4 +54,6 @@ abstract class AuthRepository {
     required String username,
     required String recoveryCode,
   });
+
+  Future<Either<DomainError, void>> logout();
 }

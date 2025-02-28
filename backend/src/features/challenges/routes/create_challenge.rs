@@ -1,6 +1,7 @@
 use crate::{
     core::constants::errors::AppError,
     features::{
+        auth::structs::models::Claims,
         challenges::{
             helpers::challenge,
             structs::{
@@ -8,12 +9,11 @@ use crate::{
                 responses::challenge::ChallengeResponse,
             },
         },
-        profile::structs::models::User,
     },
 };
 use actix_web::{
     post,
-    web::{Data, Json},
+    web::{Data, Json, ReqData},
     HttpResponse, Responder,
 };
 use chrono::Utc;
@@ -25,7 +25,7 @@ use uuid::Uuid;
 pub async fn create_challenge(
     pool: Data<PgPool>,
     body: Json<ChallengeCreateRequest>,
-    request_user: User,
+    request_claims: ReqData<Claims>,
 ) -> impl Responder {
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
@@ -43,7 +43,7 @@ pub async fn create_challenge(
         start_date: body.start_date,
         icon: body.icon.clone(),
         created_at: Utc::now(),
-        creator: request_user.id,
+        creator: request_claims.user_id,
         deleted: false,
     };
 

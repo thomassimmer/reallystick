@@ -1,6 +1,7 @@
 use crate::{
     core::constants::errors::AppError,
     features::{
+        auth::structs::models::Claims,
         challenges::{
             helpers::challenge_participation::{
                 delete_challenge_participation_by_id, get_challenge_participation_by_id,
@@ -10,12 +11,11 @@ use crate::{
                 responses::challenge_participation::ChallengeParticipationResponse,
             },
         },
-        profile::structs::models::User,
     },
 };
 use actix_web::{
     delete,
-    web::{Data, Path},
+    web::{Data, Path, ReqData},
     HttpResponse, Responder,
 };
 use sqlx::PgPool;
@@ -24,7 +24,7 @@ use sqlx::PgPool;
 pub async fn delete_challenge_participation(
     pool: Data<PgPool>,
     params: Path<GetChallengeParticipationParams>,
-    request_user: User,
+    request_claims: ReqData<Claims>,
 ) -> impl Responder {
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
@@ -40,7 +40,9 @@ pub async fn delete_challenge_participation(
     {
         Ok(r) => match r {
             Some(challenge_participation) => {
-                if !request_user.is_admin && challenge_participation.user_id != request_user.id {
+                if !request_claims.is_admin
+                    && challenge_participation.user_id != request_claims.user_id
+                {
                     return HttpResponse::Forbidden()
                         .json(AppError::InvalidChallengeCreator.to_response());
                 }

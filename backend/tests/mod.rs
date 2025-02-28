@@ -6,11 +6,13 @@ pub mod auth {
         pub mod recover_account_using_password;
         pub mod recover_account_without_2fa_enabled;
     }
+    pub mod logout;
     pub mod signup;
     pub mod token;
 }
 
 pub mod profile {
+    pub mod devices;
     pub mod profile;
     pub mod set_password;
     pub mod update_password;

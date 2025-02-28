@@ -1,18 +1,18 @@
 use crate::{
     core::constants::errors::AppError,
     features::{
+        auth::structs::models::Claims,
         habits::{
             helpers::habit_category::delete_habit_category_by_id,
             structs::{
                 requests::habit_category::GetHabitCategoryParams, responses::habit::HabitResponse,
             },
         },
-        profile::structs::models::User,
     },
 };
 use actix_web::{
     delete,
-    web::{Data, Path},
+    web::{Data, Path, ReqData},
     HttpResponse, Responder,
 };
 use sqlx::PgPool;
@@ -21,9 +21,9 @@ use sqlx::PgPool;
 pub async fn delete_habit_category(
     pool: Data<PgPool>,
     params: Path<GetHabitCategoryParams>,
-    request_user: User,
+    request_claims: ReqData<Claims>,
 ) -> impl Responder {
-    if !request_user.is_admin {
+    if !request_claims.is_admin {
         return HttpResponse::Forbidden().body("Access denied");
     }
 

@@ -1,6 +1,7 @@
 use crate::{
     core::constants::errors::AppError,
     features::{
+        auth::structs::models::Claims,
         habits::{
             helpers::{
                 habit::{self, get_habit_by_id},
@@ -12,12 +13,11 @@ use crate::{
                 responses::habit::HabitResponse,
             },
         },
-        profile::structs::models::User,
     },
 };
 use actix_web::{
     post,
-    web::{Data, Json, Path},
+    web::{Data, Json, Path, ReqData},
     HttpResponse, Responder,
 };
 use serde_json::json;
@@ -28,9 +28,9 @@ pub async fn merge_habits(
     pool: Data<PgPool>,
     params: Path<MergeHabitsParams>,
     body: Json<HabitUpdateRequest>,
-    request_user: User,
+    request_claims: ReqData<Claims>,
 ) -> impl Responder {
-    if !request_user.is_admin {
+    if !request_claims.is_admin {
         return HttpResponse::Forbidden().body("Access denied");
     }
 

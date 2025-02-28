@@ -1,7 +1,7 @@
 use crate::{
     core::constants::errors::AppError,
     features::profile::{
-        helpers::user::get_user_by_username,
+        helpers::profile::get_user_by_username,
         structs::{requests::IsOtpEnabledRequest, responses::IsOtpEnabledResponse},
     },
 };

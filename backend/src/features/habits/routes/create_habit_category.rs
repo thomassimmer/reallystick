@@ -1,6 +1,7 @@
 use crate::{
     core::constants::errors::AppError,
     features::{
+        auth::structs::models::Claims,
         habits::{
             helpers::habit_category::{self, get_habit_category_by_name},
             structs::{
@@ -9,12 +10,11 @@ use crate::{
                 responses::habit_category::HabitCategoryResponse,
             },
         },
-        profile::structs::models::User,
     },
 };
 use actix_web::{
     post,
-    web::{Data, Json},
+    web::{Data, Json, ReqData},
     HttpResponse, Responder,
 };
 use chrono::Utc;
@@ -26,9 +26,9 @@ use uuid::Uuid;
 pub async fn create_habit_category(
     pool: Data<PgPool>,
     body: Json<HabitCategoryCreateRequest>,
-    request_user: User,
+    request_claims: ReqData<Claims>,
 ) -> impl Responder {
-    if !request_user.is_admin {
+    if !request_claims.is_admin {
         return HttpResponse::Forbidden().body("Access denied");
     }
 

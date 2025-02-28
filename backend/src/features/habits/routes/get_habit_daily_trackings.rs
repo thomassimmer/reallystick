@@ -1,18 +1,25 @@
 use crate::{
     core::constants::errors::AppError,
     features::{
+        auth::structs::models::Claims,
         habits::{
             helpers::habit_daily_tracking,
             structs::responses::habit_daily_tracking::HabitDailyTrackingsResponse,
         },
-        profile::structs::models::User,
     },
 };
-use actix_web::{get, web::Data, HttpResponse, Responder};
+use actix_web::{
+    get,
+    web::{Data, ReqData},
+    HttpResponse, Responder,
+};
 use sqlx::PgPool;
 
 #[get("/")]
-pub async fn get_habit_daily_trackings(pool: Data<PgPool>, request_user: User) -> impl Responder {
+pub async fn get_habit_daily_trackings(
+    pool: Data<PgPool>,
+    request_claims: ReqData<Claims>,
+) -> impl Responder {
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
         Err(e) => {
@@ -22,9 +29,11 @@ pub async fn get_habit_daily_trackings(pool: Data<PgPool>, request_user: User) -
         }
     };
 
-    let get_habit_daily_tracking_result =
-        habit_daily_tracking::get_habit_daily_trackings_for_user(&mut transaction, request_user.id)
-            .await;
+    let get_habit_daily_tracking_result = habit_daily_tracking::get_habit_daily_trackings_for_user(
+        &mut transaction,
+        request_claims.user_id,
+    )
+    .await;
 
     if let Err(e) = transaction.commit().await {
         eprintln!("Error: {}", e);

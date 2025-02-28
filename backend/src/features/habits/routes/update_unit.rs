@@ -1,6 +1,7 @@
 use crate::{
     core::constants::errors::AppError,
     features::{
+        auth::structs::models::Claims,
         habits::{
             helpers::unit::{self, get_unit_by_id},
             structs::{
@@ -8,12 +9,11 @@ use crate::{
                 responses::unit::UnitResponse,
             },
         },
-        profile::structs::models::User,
     },
 };
 use actix_web::{
     put,
-    web::{Data, Json, Path},
+    web::{Data, Json, Path, ReqData},
     HttpResponse, Responder,
 };
 use serde_json::json;
@@ -24,9 +24,9 @@ pub async fn update_unit(
     pool: Data<PgPool>,
     params: Path<UpdateUnitParams>,
     body: Json<UnitUpdateRequest>,
-    request_user: User,
+    request_claims: ReqData<Claims>,
 ) -> impl Responder {
-    if !request_user.is_admin {
+    if !request_claims.is_admin {
         return HttpResponse::Forbidden().body("Access denied");
     }
 

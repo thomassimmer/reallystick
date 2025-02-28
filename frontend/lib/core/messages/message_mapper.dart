@@ -175,6 +175,8 @@ String getTranslatedMessage(BuildContext context, Message message) {
         return localizations.questionsAnswered;
       case 'accountDeletionSuccessful':
         return localizations.accountDeletionSuccessful;
+      case 'deviceDeleteSuccessful':
+        return localizations.deviceDeleteSuccessful;
 
       default:
         return localizations.defaultError;

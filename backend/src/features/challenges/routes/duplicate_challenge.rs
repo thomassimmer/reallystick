@@ -1,6 +1,7 @@
 use crate::{
     core::{constants::errors::AppError, helpers::mock_now::now},
     features::{
+        auth::structs::models::Claims,
         challenges::{
             helpers::{
                 challenge::{self, get_challenge_by_id},
@@ -14,12 +15,11 @@ use crate::{
                 responses::challenge::ChallengeResponse,
             },
         },
-        profile::structs::models::User,
     },
 };
 use actix_web::{
     get,
-    web::{Data, Path},
+    web::{Data, Path, ReqData},
     HttpResponse, Responder,
 };
 use sqlx::PgPool;
@@ -29,7 +29,7 @@ use uuid::Uuid;
 pub async fn duplicate_challenge(
     pool: Data<PgPool>,
     params: Path<ChallengeDuplicateParams>,
-    request_user: User,
+    request_claims: ReqData<Claims>,
 ) -> impl Responder {
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
@@ -62,7 +62,7 @@ pub async fn duplicate_challenge(
         start_date: challenge_to_duplicate.start_date,
         icon: challenge_to_duplicate.icon,
         created_at: now(),
-        creator: request_user.id,
+        creator: request_claims.user_id,
         deleted: false,
     };
 
