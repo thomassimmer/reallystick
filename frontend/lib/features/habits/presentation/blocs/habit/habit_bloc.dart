@@ -7,7 +7,6 @@ import 'package:reallystick/core/ui/colors.dart';
 import 'package:reallystick/features/auth/domain/errors/domain_error.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_bloc.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_events.dart';
-import 'package:reallystick/features/auth/presentation/blocs/auth/auth_states.dart';
 import 'package:reallystick/features/habits/domain/usecases/create_habit_daily_tracking_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/create_habit_participation_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/create_habit_usecase.dart';
@@ -25,10 +24,14 @@ import 'package:reallystick/features/habits/domain/usecases/update_habit_partici
 import 'package:reallystick/features/habits/domain/usecases/update_habit_usecase.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_events.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_states.dart';
+import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
+import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
 
 class HabitBloc extends Bloc<HabitEvent, HabitState> {
   final AuthBloc authBloc;
-  late StreamSubscription authBlocSubscription;
+  final ProfileBloc profileBloc;
+  late StreamSubscription profileBlocSubscription;
+
   final GetHabitParticipationsUsecase getHabitParticipationsUsecase =
       GetIt.instance<GetHabitParticipationsUsecase>();
   final GetHabitCategoriesUseCase getHabitCategoriesUseCase =
@@ -58,9 +61,12 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
   final DeleteHabitParticipationUsecase deleteHabitParticipationUsecase =
       GetIt.instance<DeleteHabitParticipationUsecase>();
 
-  HabitBloc({required this.authBloc}) : super(HabitsLoading()) {
-    authBlocSubscription = authBloc.stream.listen((authState) {
-      if (authState is AuthAuthenticatedState) {
+  HabitBloc({
+    required this.authBloc,
+    required this.profileBloc,
+  }) : super(HabitsLoading()) {
+    profileBlocSubscription = profileBloc.stream.listen((profileState) {
+      if (profileState is ProfileAuthenticated) {
         add(HabitInitializeEvent());
       }
     });
@@ -79,7 +85,7 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
 
   @override
   Future<void> close() {
-    authBlocSubscription.cancel();
+    profileBlocSubscription.cancel();
     return super.close();
   }
 

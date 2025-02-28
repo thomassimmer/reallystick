@@ -73,14 +73,20 @@ class ReallyStickApp extends StatelessWidget {
     final profileBloc = ProfileBloc(authBloc: authBloc);
     final profileSetPasswordFormBloc = ProfileSetPasswordFormBloc();
     final profileUpdatePasswordFormBloc = ProfileUpdatePasswordFormBloc();
-    final habitBloc = HabitBloc(authBloc: authBloc);
+    final habitBloc = HabitBloc(
+      authBloc: authBloc,
+      profileBloc: profileBloc,
+    );
     final habitCreationFormBloc = HabitCreationFormBloc();
     final habitReviewFormBloc = HabitReviewFormBloc();
     final habitMergeFormBloc = HabitMergeFormBloc();
     final habitDailyTrackingCreationFormBloc =
         HabitDailyTrackingCreationFormBloc();
     final habitDailyTrackingUpdateFormBloc = HabitDailyTrackingUpdateFormBloc();
-    final challengeBloc = ChallengeBloc(authBloc: authBloc);
+    final challengeBloc = ChallengeBloc(
+      authBloc: authBloc,
+      profileBloc: profileBloc,
+    );
     final challengeCreationFormBloc = ChallengeCreationFormBloc();
     final challengeUpdateFormBloc = ChallengeUpdateFormBloc();
     final challengeDailyTrackingCreationFormBloc =

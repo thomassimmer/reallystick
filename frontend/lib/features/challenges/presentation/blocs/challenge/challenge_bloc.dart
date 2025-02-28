@@ -7,7 +7,6 @@ import 'package:reallystick/core/ui/colors.dart';
 import 'package:reallystick/features/auth/domain/errors/domain_error.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_bloc.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_events.dart';
-import 'package:reallystick/features/auth/presentation/blocs/auth/auth_states.dart';
 import 'package:reallystick/features/challenges/domain/entities/challenge_daily_tracking.dart';
 import 'package:reallystick/features/challenges/domain/errors/domain_error.dart';
 import 'package:reallystick/features/challenges/domain/usecases/create_challenge_daily_tracking_usecase.dart';
@@ -28,10 +27,14 @@ import 'package:reallystick/features/challenges/domain/usecases/update_challenge
 import 'package:reallystick/features/challenges/domain/usecases/update_challenge_usecase.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_events.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_states.dart';
+import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
+import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
 
 class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
   final AuthBloc authBloc;
-  late StreamSubscription authBlocSubscription;
+  final ProfileBloc profileBloc;
+  late StreamSubscription profileBlocSubscription;
+
   final GetChallengeParticipationsUsecase getChallengeParticipationsUsecase =
       GetIt.instance<GetChallengeParticipationsUsecase>();
   final GetChallengesUsecase getChallengesUsecase =
@@ -71,9 +74,12 @@ class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
   final GetChallengesDailyTrackingsUsecase getChallengesDailyTrackingsUsecase =
       GetIt.instance<GetChallengesDailyTrackingsUsecase>();
 
-  ChallengeBloc({required this.authBloc}) : super(ChallengesLoading()) {
-    authBlocSubscription = authBloc.stream.listen((authState) {
-      if (authState is AuthAuthenticatedState) {
+  ChallengeBloc({
+    required this.authBloc,
+    required this.profileBloc,
+  }) : super(ChallengesLoading()) {
+    profileBlocSubscription = profileBloc.stream.listen((profileBloc) {
+      if (profileBloc is ProfileAuthenticated) {
         add(ChallengeInitializeEvent());
       }
     });
@@ -95,7 +101,7 @@ class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
 
   @override
   Future<void> close() {
-    authBlocSubscription.cancel();
+    profileBlocSubscription.cancel();
     return super.close();
   }
 
