@@ -22,13 +22,12 @@ pub fn password_is_long_enough(input: &str) -> bool {
 }
 
 pub fn password_is_strong_enough(input: &str) -> bool {
-    let has_letter = input.chars().any(|c| c.is_ascii_alphabetic());
-    let has_digit = input.chars().any(|c| c.is_ascii_digit());
-    let has_special = input.chars().any(|c| "@$!%*?&_".contains(c));
+    let has_letter = input.chars().any(|c| c.is_alphabetic());
+    let has_digit = input.chars().any(|c| c.is_digit(10));
+    let has_special = input.chars().any(|c| c.is_ascii_punctuation());
     let valid_characters = input
         .chars()
-        .all(|c| c.is_ascii_alphanumeric() || "@$!%*?&_".contains(c));
-
+        .all(|c| c.is_alphanumeric() || c.is_ascii_punctuation());
     has_letter && has_digit && has_special && valid_characters
 }
 
