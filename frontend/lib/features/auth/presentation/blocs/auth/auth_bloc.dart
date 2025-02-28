@@ -328,17 +328,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             );
           },
           (userDataBeforeOtpVerified) async {
-            await saveOrGenerateKeys(
-              privateKeyEncrypted:
-                  userDataBeforeOtpVerified.privateKeyEncrypted,
-              passwordOrRecoveryCode: event.password,
-              salt: userDataBeforeOtpVerified.saltUsedToDeriveKey,
-              publicKey: userDataBeforeOtpVerified.publicKey,
-            );
-
             emit(
               AuthValidateOneTimePasswordState(
                 userId: userDataBeforeOtpVerified.userId,
+                password: event.password,
               ),
             );
           },
@@ -349,6 +342,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   void _validateOneTimePassword(
       AuthValidateOneTimePasswordEvent event, Emitter<AuthState> emit) async {
+    final currentState = state as AuthValidateOneTimePasswordState;
     emit(AuthLoadingState());
 
     final result = await validateOneTimePasswordUseCase.call(
@@ -360,10 +354,18 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       (error) => emit(
         AuthValidateOneTimePasswordState(
           message: ErrorMessage(error.messageKey),
+          password: currentState.password,
           userId: event.userId,
         ),
       ),
       (userToken) async {
+        await saveOrGenerateKeys(
+          privateKeyEncrypted: userToken.privateKeyEncrypted,
+          passwordOrRecoveryCode: currentState.password,
+          salt: userToken.saltUsedToDeriveKey,
+          publicKey: userToken.publicKey,
+        );
+
         emit(
           AuthAuthenticatedAfterLoginState(
             hasValidatedOtp: true,

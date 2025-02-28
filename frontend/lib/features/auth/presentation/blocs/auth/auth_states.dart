@@ -77,8 +77,13 @@ class AuthVerifyOneTimePasswordState
 
 class AuthValidateOneTimePasswordState extends AuthState {
   final String userId;
+  final String password;
 
-  const AuthValidateOneTimePasswordState({super.message, required this.userId});
+  const AuthValidateOneTimePasswordState({
+    super.message,
+    required this.userId,
+    required this.password,
+  });
 
   @override
   List<Object?> get props => [message, userId];
