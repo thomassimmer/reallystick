@@ -11,6 +11,7 @@
   "allActivitiesOnThisDay": "Toutes vos activités à cette date",
   "allHabits": "Toutes les habitudes",
   "analytics": "Statistiques",
+  "analyticsInfoTooltip": "Ces statistiques sont rafraîchies toutes les heures.",
   "average": "Moyen",
   "cancel": "Annuler",
   "category": "Catégorie",
@@ -47,6 +48,7 @@
   "failedToLoadHabits": "Une erreur s'est produite lors de la récupération de vos habitudes.",
   "failedToLoadProfile": "Impossible de charger le profil.",
   "female": "Femme",
+  "females": "Femmes",
   "financialSituation": "Situation financière",
   "forbiddenError": "Vous n'êtes pas autorisé à effectuer cette action.",
   "gender": "Sexe",
@@ -153,15 +155,18 @@
       }
     }
   },
-  "levelOfEducation": "Niveau d'éducation",
+  "levelOfEducation": "Niveau d'étude",
   "light": "Clair",
   "livesInUrbanArea": "Je vis en zone urbaine",
+  "livingInUrbanArea": "Zone urbaine",
+  "livingInRuralArea": "Zone rurale",
   "logIn": "Se connecter",
   "loginSuccessful": "Vous êtes bien connecté.",
   "logout": "Se déconnecter",
   "logoutSuccessful": "Vous vous êtes bien déconnecté.",
   "longName": "Nom (version longue)",
   "male": "Homme",
+  "males": "Hommes",
   "mergeHabit": "Fusionner les habitudes",
   "messages": "Messages",
   "missingDateTimeError": "La date ne peut pas être laissée vide.",
@@ -176,6 +181,16 @@
   "noHabitsYet": "Vous n'avez pas encore d'habitude.",
   "noRecoveryCodeAvailable": "Aucun code de récupération disponible.",
   "noResultsFound": "Pas de résultat.",
+  "numberOfParticipantsInHabitTitle": "Nombre de participants",
+  "numberOfParticipantsInHabit": "{count,plural, one {{count} personne suit cette habitude.} other {{count} personnes suivent cette habitude.}}",
+  "@numberOfParticipantsInHabit": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "The number of participants in a given habit."
+      }
+    }
+  },
   "other": "Autre",
   "password": "Mot de passe",
   "passwordForgotten": "Vous avez oublié votre mot de passe ?",
@@ -235,7 +250,19 @@
   "skip": "Passer",
   "startTrackingThisHabit": "Commencer à suivre cette habitude",
   "student": "Étudiant",
+  "tapToSeeLess": "Voir moins",
+  "tapForMoreDetails": "Plus de détails",
   "theme": "Thème",
+  "topActivityCardTitle": "Activité",
+  "topAgesCardTitle": "Catégories d'âge",
+  "topCountriesCardTitle": "Pays",
+  "topFinancialSituationsCardTitle": "Situation financière",
+  "topGenderCardTitle": "Sexe",
+  "topHasChildrenCardTitle": "Enfants",
+  "topLevelsOfEducationCardTitle": "Niveau d'étude",
+  "topLivesInUrbanAreaCardTitle": "Zone d'habitation",
+  "topRegionsCardTitle": "Régions",
+  "topRelationshipStatusesCardTitle": "Status relationnel",
   "twoFA": "Authentification à deux facteurs",
   "twoFAInvitation": "La sécurité et la confidentialité sont nos principales priorités.\nVeuillez activer l'authentification à deux facteurs pour protéger votre compte des attaques par force brute.",
   "twoFAIsWellSetup": "L'authentification à deux facteurs est correctement configurée sur votre compte.",
@@ -271,6 +298,8 @@
   "weight": "Poids",
   "weightUnit": "Unité de poids",
   "welcome": "Bienvenue sur ReallyStick",
+  "peopleWithChildren": "Personnes avec enfant",
+  "peopleWithoutChildren": "Personnes sans enfant",
   "worker": "Travailleur",
   "yes": "Oui"
 }

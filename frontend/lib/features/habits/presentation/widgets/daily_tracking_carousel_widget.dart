@@ -82,7 +82,9 @@ class DailyTrackingCarouselWidgetState
             top: 16.0,
           ),
           child: ListDailyTrackingsModal(
-              datetime: datetime, habitId: widget.habitId),
+            datetime: datetime,
+            habitId: widget.habitId,
+          ),
         );
       },
     );
@@ -147,6 +149,7 @@ class DailyTrackingCarouselWidgetState
                       Icon(
                         Icons.bar_chart,
                         size: 30,
+                        color: widget.habitColor,
                       ),
                       SizedBox(width: 10),
                       Text(
@@ -154,6 +157,7 @@ class DailyTrackingCarouselWidgetState
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
+                          color: widget.habitColor,
                         ),
                       ),
                     ],

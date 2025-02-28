@@ -12,20 +12,6 @@ class LevelOfEducationSelectionWidget extends StatelessWidget {
       {Key? key, required this.profile, required this.updateProfile})
       : super(key: key);
 
-  String _getLocalizedStatus(
-      BuildContext context, LevelOfEducationStatus status) {
-    switch (status) {
-      case LevelOfEducationStatus.highSchoolOrLess:
-        return AppLocalizations.of(context)!.highSchoolOrLess;
-      case LevelOfEducationStatus.highSchoolPlusOneOrTwoYears:
-        return AppLocalizations.of(context)!.highSchoolPlusOneOrTwoYears;
-      case LevelOfEducationStatus.highSchoolPlusThreeOrFourYears:
-        return AppLocalizations.of(context)!.highSchoolPlusThreeOrFourYears;
-      case LevelOfEducationStatus.highSchoolPlusFiveOrMoreYears:
-        return AppLocalizations.of(context)!.highSchoolPlusFiveOrMoreYears;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return DropdownWidget.show(
@@ -35,7 +21,7 @@ class LevelOfEducationSelectionWidget extends StatelessWidget {
       items: LevelOfEducationStatus.values.map((status) {
         return DropdownMenuItem(
           value: status.toShortString(),
-          child: Text(_getLocalizedStatus(context, status)),
+          child: Text(status.getLocalizedStatus(context)),
         );
       }).toList(),
       onChanged: (value) {

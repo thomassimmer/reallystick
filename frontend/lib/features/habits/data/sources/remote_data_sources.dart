@@ -12,6 +12,7 @@ import 'package:reallystick/features/habits/data/models/habit.dart';
 import 'package:reallystick/features/habits/data/models/habit_category.dart';
 import 'package:reallystick/features/habits/data/models/habit_daily_tracking.dart';
 import 'package:reallystick/features/habits/data/models/habit_participation.dart';
+import 'package:reallystick/features/habits/data/models/habit_statistic.dart';
 import 'package:reallystick/features/habits/data/models/requests/habit.dart';
 import 'package:reallystick/features/habits/data/models/requests/habit_category.dart';
 import 'package:reallystick/features/habits/data/models/requests/habit_daily_tracking.dart';
@@ -146,6 +147,34 @@ class HabitRemoteDataSource {
         final List<dynamic> units = jsonBody['units'];
         return units.map((unit) => UnitDataModel.fromJson(unit)).toList();
       } catch (e) {
+        throw ParsingError();
+      }
+    }
+
+    if (response.statusCode == 401) {
+      throw UnauthorizedError();
+    }
+
+    if (response.statusCode == 500) {
+      throw InternalServerError();
+    }
+
+    throw UnknownError();
+  }
+
+  Future<List<HabitStatisticDataModel>> getHabitStatistics() async {
+    final url = Uri.parse('$baseUrl/habit-statistics/');
+    final response = await apiClient.get(url);
+
+    if (response.statusCode == 200) {
+      try {
+        final jsonBody = customJsonDecode(response.body);
+        final List<dynamic> statistics = jsonBody['statistics'];
+        return statistics
+            .map((statistic) => HabitStatisticDataModel.fromJson(statistic))
+            .toList();
+      } catch (e) {
+        print(e);
         throw ParsingError();
       }
     }

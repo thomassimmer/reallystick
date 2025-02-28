@@ -56,12 +56,12 @@ pub mod features {
 
     pub mod profile {
         pub mod routes {
+            pub mod delete_account;
             pub mod get_profile_information;
             pub mod is_otp_enabled;
             pub mod post_profile_information;
             pub mod set_password;
             pub mod update_password;
-            pub mod delete_account;
         }
 
         pub mod structs {
@@ -90,6 +90,7 @@ pub mod features {
             pub mod get_habit_categories;
             pub mod get_habit_daily_trackings;
             pub mod get_habit_participations;
+            pub mod get_habit_statistics;
             pub mod get_habits;
             pub mod get_units;
             pub mod merge_habits;
@@ -106,6 +107,7 @@ pub mod features {
                 pub mod habit_category;
                 pub mod habit_daily_tracking;
                 pub mod habit_participation;
+                pub mod habit_statistics;
                 pub mod unit;
             }
 

@@ -4,6 +4,7 @@ import 'package:reallystick/features/habits/domain/entities/habit.dart';
 import 'package:reallystick/features/habits/domain/entities/habit_category.dart';
 import 'package:reallystick/features/habits/domain/entities/habit_daily_tracking.dart';
 import 'package:reallystick/features/habits/domain/entities/habit_participation.dart';
+import 'package:reallystick/features/habits/domain/entities/habit_statistic.dart';
 import 'package:reallystick/features/habits/domain/entities/unit.dart';
 
 abstract class HabitState extends Equatable {
@@ -35,6 +36,7 @@ class HabitsLoaded extends HabitState {
   final List<HabitDailyTracking> habitDailyTrackings;
   final Map<String, HabitCategory> habitCategories;
   final Map<String, Unit> units;
+  final Map<String, HabitStatistic> habitStatistics;
   final Habit? newlyCreatedHabit;
   final Habit? newlyUpdatedHabit;
 
@@ -45,6 +47,7 @@ class HabitsLoaded extends HabitState {
     required this.habitDailyTrackings,
     required this.habitCategories,
     required this.units,
+    required this.habitStatistics,
     this.newlyCreatedHabit,
     this.newlyUpdatedHabit,
   });
@@ -57,6 +60,7 @@ class HabitsLoaded extends HabitState {
         habitParticipations,
         habits,
         units,
+        habitStatistics,
         newlyCreatedHabit,
         newlyUpdatedHabit,
       ];

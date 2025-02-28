@@ -12,17 +12,6 @@ class GenderSelectionWidget extends StatelessWidget {
       {Key? key, required this.profile, required this.updateProfile})
       : super(key: key);
 
-  String _getLocalizedStatus(BuildContext context, GenderStatus status) {
-    switch (status) {
-      case GenderStatus.male:
-        return AppLocalizations.of(context)!.male;
-      case GenderStatus.female:
-        return AppLocalizations.of(context)!.female;
-      case GenderStatus.other:
-        return AppLocalizations.of(context)!.other;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return DropdownWidget.show(
@@ -32,7 +21,7 @@ class GenderSelectionWidget extends StatelessWidget {
       items: GenderStatus.values.map((status) {
         return DropdownMenuItem(
           value: status.toShortString(),
-          child: Text(_getLocalizedStatus(context, status)),
+          child: Text(status.getLocalizedStatus(context)),
         );
       }).toList(),
       onChanged: (value) {

@@ -18,6 +18,7 @@ class HabitDiscussionListWidget extends StatelessWidget {
               Icon(
                 Icons.forum,
                 size: 30,
+                color: habitColor,
               ),
               SizedBox(width: 10),
               Text(
@@ -25,6 +26,7 @@ class HabitDiscussionListWidget extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
+                  color: habitColor,
                 ),
               ),
             ],

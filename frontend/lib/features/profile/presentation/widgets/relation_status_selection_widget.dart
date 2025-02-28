@@ -12,15 +12,6 @@ class RelationStatusSelectionWidget extends StatelessWidget {
       {Key? key, required this.profile, required this.updateProfile})
       : super(key: key);
 
-  String _getLocalizedStatus(BuildContext context, RelationshipStatus status) {
-    switch (status) {
-      case RelationshipStatus.single:
-        return AppLocalizations.of(context)!.relationshipStatusSingle;
-      case RelationshipStatus.couple:
-        return AppLocalizations.of(context)!.relationshipStatusCouple;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return DropdownWidget.show(
@@ -30,7 +21,7 @@ class RelationStatusSelectionWidget extends StatelessWidget {
       items: RelationshipStatus.values.map((status) {
         return DropdownMenuItem(
           value: status.toShortString(),
-          child: Text(_getLocalizedStatus(context, status)),
+          child: Text(status.getLocalizedStatus(context)),
         );
       }).toList(),
       onChanged: (value) {

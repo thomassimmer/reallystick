@@ -15,6 +15,7 @@ import 'package:reallystick/features/habits/domain/usecases/delete_habit_daily_t
 import 'package:reallystick/features/habits/domain/usecases/delete_habit_participation_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/get_habit_categories_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/get_habit_participations_usecase.dart';
+import 'package:reallystick/features/habits/domain/usecases/get_habit_statistics_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/get_habits_daily_tracking_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/get_habits_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/get_units_usecase.dart';
@@ -36,6 +37,8 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
   final GetHabitsDailyTrackingUsecase getHabitsDailyTrackingUsecase =
       GetIt.instance<GetHabitsDailyTrackingUsecase>();
   final GetUnitsUsecase getUnitsUsecase = GetIt.instance<GetUnitsUsecase>();
+  final GetHabitStatisticsUsecase getHabitStatisticsUsecase =
+      GetIt.instance<GetHabitStatisticsUsecase>();
   final CreateHabitUsecase createHabitUsecase =
       GetIt.instance<CreateHabitUsecase>();
   final CreateHabitParticipationUsecase createHabitParticipationUsecase =
@@ -50,7 +53,6 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
       GetIt.instance<UpdateHabitDailyTrackingUsecase>();
   final DeleteHabitDailyTrackingUsecase deleteHabitDailyTrackingUsecase =
       GetIt.instance<DeleteHabitDailyTrackingUsecase>();
-
   final UpdateHabitParticipationUsecase updateHabitParticipationUsecase =
       GetIt.instance<UpdateHabitParticipationUsecase>();
   final DeleteHabitParticipationUsecase deleteHabitParticipationUsecase =
@@ -129,10 +131,10 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
                     }
                   },
                   (habitDailyTrackings) async {
-                    final resultOfGetUnitsUsecase =
-                        await getUnitsUsecase.call();
+                    final resultOfGetHabitStatisticsUsecase =
+                        await getHabitStatisticsUsecase.call();
 
-                    resultOfGetUnitsUsecase.fold(
+                    await resultOfGetHabitStatisticsUsecase.fold(
                       (error) {
                         if (error is ShouldLogoutError) {
                           authBloc.add(AuthLogoutEvent(
@@ -142,19 +144,39 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
                               message: ErrorMessage(error.messageKey)));
                         }
                       },
-                      (units) {
-                        emit(
-                          HabitsLoaded(
-                            habitParticipations: habitParticipations,
-                            habits: Map.fromEntries(habits
-                                .map((habit) => MapEntry(habit.id, habit))),
-                            habitDailyTrackings: habitDailyTrackings,
-                            habitCategories: Map.fromEntries(
-                                habitCategories.map((habitCategory) =>
-                                    MapEntry(habitCategory.id, habitCategory))),
-                            units: Map.fromEntries(
-                                units.map((unit) => MapEntry(unit.id, unit))),
-                          ),
+                      (habitStatistics) async {
+                        final resultOfGetUnitsUsecase =
+                            await getUnitsUsecase.call();
+
+                        resultOfGetUnitsUsecase.fold(
+                          (error) {
+                            if (error is ShouldLogoutError) {
+                              authBloc.add(AuthLogoutEvent(
+                                  message: ErrorMessage(error.messageKey)));
+                            } else {
+                              emit(HabitsFailed(
+                                  message: ErrorMessage(error.messageKey)));
+                            }
+                          },
+                          (units) {
+                            emit(
+                              HabitsLoaded(
+                                habitParticipations: habitParticipations,
+                                habits: Map.fromEntries(habits
+                                    .map((habit) => MapEntry(habit.id, habit))),
+                                habitDailyTrackings: habitDailyTrackings,
+                                habitCategories: Map.fromEntries(habitCategories
+                                    .map((habitCategory) => MapEntry(
+                                        habitCategory.id, habitCategory))),
+                                units: Map.fromEntries(units
+                                    .map((unit) => MapEntry(unit.id, unit))),
+                                habitStatistics: Map.fromEntries(habitStatistics
+                                    .map((habitStatistic) => MapEntry(
+                                        habitStatistic.habitId,
+                                        habitStatistic))),
+                              ),
+                            );
+                          },
                         );
                       },
                     );
@@ -194,6 +216,7 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
               habitParticipations: currentState.habitParticipations,
               habits: currentState.habits,
               units: currentState.units,
+              habitStatistics: currentState.habitStatistics,
               message: ErrorMessage(error.messageKey),
             ),
           );
@@ -220,6 +243,7 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
                   habitParticipations: currentState.habitParticipations,
                   habits: currentState.habits,
                   units: currentState.units,
+                  habitStatistics: currentState.habitStatistics,
                   message: ErrorMessage(error.messageKey),
                 ),
               );
@@ -235,6 +259,7 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
                 habitParticipations: currentState.habitParticipations,
                 habits: currentState.habits,
                 units: currentState.units,
+                habitStatistics: currentState.habitStatistics,
                 message: SuccessMessage("habitCreated"),
                 newlyCreatedHabit: habit,
               ),
@@ -274,6 +299,7 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
               habitParticipations: currentState.habitParticipations,
               habits: currentState.habits,
               units: currentState.units,
+              habitStatistics: currentState.habitStatistics,
               message: ErrorMessage(error.messageKey),
             ),
           );
@@ -288,6 +314,7 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
             habitParticipations: currentState.habitParticipations,
             habits: currentState.habits,
             units: currentState.units,
+            habitStatistics: currentState.habitStatistics,
             message: SuccessMessage("habitUpdated"),
             newlyUpdatedHabit: habit,
           ),
@@ -326,6 +353,7 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
               habitParticipations: currentState.habitParticipations,
               habits: currentState.habits,
               units: currentState.units,
+              habitStatistics: currentState.habitStatistics,
               message: ErrorMessage(error.messageKey),
             ),
           );
@@ -358,6 +386,7 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
             habitParticipations: currentState.habitParticipations,
             habits: currentState.habits,
             units: currentState.units,
+            habitStatistics: currentState.habitStatistics,
             message: SuccessMessage("habitUpdated"),
             newlyUpdatedHabit: habit,
           ),
@@ -395,6 +424,7 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
               habitParticipations: currentState.habitParticipations,
               habits: currentState.habits,
               units: currentState.units,
+              habitStatistics: currentState.habitStatistics,
               message: ErrorMessage(error.messageKey),
             ),
           );
@@ -409,6 +439,7 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
             habitParticipations: currentState.habitParticipations,
             habits: currentState.habits,
             units: currentState.units,
+            habitStatistics: currentState.habitStatistics,
             message: SuccessMessage("habitDailyTrackingCreated"),
           ),
         );
@@ -445,6 +476,7 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
               habitParticipations: currentState.habitParticipations,
               habits: currentState.habits,
               units: currentState.units,
+              habitStatistics: currentState.habitStatistics,
               message: ErrorMessage(error.messageKey),
             ),
           );
@@ -462,6 +494,7 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
             habitParticipations: currentState.habitParticipations,
             habits: currentState.habits,
             units: currentState.units,
+            habitStatistics: currentState.habitStatistics,
             message: SuccessMessage("habitDailyTrackingUpdated"),
           ),
         );
@@ -492,6 +525,7 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
               habitParticipations: currentState.habitParticipations,
               habits: currentState.habits,
               units: currentState.units,
+              habitStatistics: currentState.habitStatistics,
               message: ErrorMessage(error.messageKey),
             ),
           );
@@ -509,6 +543,7 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
             habitParticipations: currentState.habitParticipations,
             habits: currentState.habits,
             units: currentState.units,
+            habitStatistics: currentState.habitStatistics,
             message: SuccessMessage("habitDailyTrackingDeleted"),
           ),
         );
@@ -541,6 +576,7 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
               habitParticipations: currentState.habitParticipations,
               habits: currentState.habits,
               units: currentState.units,
+              habitStatistics: currentState.habitStatistics,
               message: ErrorMessage(error.messageKey),
             ),
           );
@@ -555,6 +591,7 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
             habitParticipations: currentState.habitParticipations,
             habits: currentState.habits,
             units: currentState.units,
+            habitStatistics: currentState.habitStatistics,
             message: SuccessMessage("habitParticipationCreated"),
           ),
         );
@@ -587,6 +624,7 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
               habitParticipations: currentState.habitParticipations,
               habits: currentState.habits,
               units: currentState.units,
+              habitStatistics: currentState.habitStatistics,
               message: ErrorMessage(error.messageKey),
             ),
           );
@@ -604,6 +642,7 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
             habitParticipations: newHabitParticipations,
             habits: currentState.habits,
             units: currentState.units,
+            habitStatistics: currentState.habitStatistics,
             message: SuccessMessage("habitParticipationUpdated"),
           ),
         );
@@ -634,6 +673,7 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
               habitParticipations: currentState.habitParticipations,
               habits: currentState.habits,
               units: currentState.units,
+              habitStatistics: currentState.habitStatistics,
               message: ErrorMessage(error.messageKey),
             ),
           );
@@ -651,6 +691,7 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
             habitParticipations: newHabitParticipations,
             habits: currentState.habits,
             units: currentState.units,
+            habitStatistics: currentState.habitStatistics,
             message: SuccessMessage("habitParticipationDeleted"),
           ),
         );

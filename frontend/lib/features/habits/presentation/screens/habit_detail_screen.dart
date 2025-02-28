@@ -15,7 +15,7 @@ import 'package:reallystick/features/habits/presentation/widgets/add_activity_bu
 import 'package:reallystick/features/habits/presentation/widgets/analytics_carousel_widget.dart';
 import 'package:reallystick/features/habits/presentation/widgets/challenges_carousel_widget.dart';
 import 'package:reallystick/features/habits/presentation/widgets/daily_tracking_carousel_widget.dart';
-import 'package:reallystick/features/habits/presentation/widgets/habit_discussion_list_widget.dart';
+import 'package:reallystick/features/habits/presentation/widgets/discussion_list_widget.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
 
@@ -149,10 +149,7 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
                   ),
                   SelectableText(
                     isLargeScreen ? longName : shortName,
-                    style: TextStyle(
-                      color: habitColor,
-                      fontWeight: FontWeight.w800,
-                    ),
+                    style: TextStyle(color: habitColor),
                   ),
                 ],
               ),
@@ -202,19 +199,25 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Container(
-                      margin: EdgeInsets.symmetric(horizontal: 8),
+                      margin: EdgeInsets.symmetric(horizontal: 16),
                       decoration: BoxDecoration(
-                        color: habitColor.withAlpha(105),
-                        border: Border.all(width: 1, color: habitColor),
-                        borderRadius: BorderRadius.circular(8.0),
+                        color: habitColor.withAlpha(155),
+                        // border: Border.all(width: 1, color: habitColor),
+                        borderRadius: BorderRadius.circular(16.0),
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(15.0),
-                        child: SelectableText(description),
+                        child: Text(
+                          description,
+                          style: TextStyle(color: Colors.white),
+                        ),
                       ),
                     ),
                     SizedBox(height: 16),
-                    AnalyticsCarouselWidget(habitColor: habitColor),
+                    AnalyticsCarouselWidget(
+                      habitColor: habitColor,
+                      habitId: habit.id,
+                    ),
                     SizedBox(height: 16),
                     if (habitParticipation != null) ...[
                       DailyTrackingCarouselWidget(

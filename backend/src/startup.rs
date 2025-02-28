@@ -29,6 +29,7 @@ use crate::features::habits::routes::get_habit::get_habit;
 use crate::features::habits::routes::get_habit_categories::get_habit_categories;
 use crate::features::habits::routes::get_habit_daily_trackings::get_habit_daily_tracking;
 use crate::features::habits::routes::get_habit_participations::get_habit_participations;
+use crate::features::habits::routes::get_habit_statistics::get_habit_statistics;
 use crate::features::habits::routes::get_habits::get_habits;
 use crate::features::habits::routes::get_units::get_units;
 use crate::features::habits::routes::merge_habits::merge_habits;
@@ -37,6 +38,7 @@ use crate::features::habits::routes::update_habit_category::update_habit_categor
 use crate::features::habits::routes::update_habit_daily_tracking::update_habit_daily_tracking;
 use crate::features::habits::routes::update_habit_participation::update_habit_participation;
 use crate::features::habits::routes::update_unit::update_unit;
+use crate::features::habits::structs::models::habit_statistics::HabitStatisticsCache;
 use crate::features::profile::routes::delete_account::delete_account;
 use crate::features::profile::routes::get_profile_information::get_profile_information;
 use crate::features::profile::routes::is_otp_enabled::is_otp_enabled;
@@ -86,6 +88,8 @@ pub fn create_app(
         ])
         .supports_credentials();
 
+    let cache = HabitStatisticsCache::new();
+
     App::new()
         .service(
             web::scope("/api")
@@ -116,22 +120,18 @@ pub fn create_app(
                         ),
                 )
                 .service(
-                    web::scope("/users")
-                        // Scope without middleware applied to routes that don't need it
-                        .service(is_otp_enabled)
-                        // Nested scope with middleware for protected routes
-                        .service(
-                            web::scope("")
-                                .wrap(TokenValidator::new(
-                                    secret.to_string(),
-                                    connection_pool.clone(),
-                                ))
-                                .service(get_profile_information)
-                                .service(post_profile_information)
-                                .service(set_password)
-                                .service(delete_account)
-                                .service(update_password),
-                        ),
+                    web::scope("/users").service(is_otp_enabled).service(
+                        web::scope("")
+                            .wrap(TokenValidator::new(
+                                secret.to_string(),
+                                connection_pool.clone(),
+                            ))
+                            .service(get_profile_information)
+                            .service(post_profile_information)
+                            .service(set_password)
+                            .service(delete_account)
+                            .service(update_password),
+                    ),
                 )
                 .service(
                     web::scope("/habits").service(
@@ -146,6 +146,16 @@ pub fn create_app(
                             .service(create_habit)
                             .service(delete_habit)
                             .service(merge_habits),
+                    ),
+                )
+                .service(
+                    web::scope("/habit-statistics").service(
+                        web::scope("")
+                            .wrap(TokenValidator::new(
+                                secret.to_string(),
+                                connection_pool.clone(),
+                            ))
+                            .service(get_habit_statistics),
                     ),
                 )
                 .service(
@@ -204,6 +214,7 @@ pub fn create_app(
         .wrap(Logger::default())
         .app_data(web::Data::new(connection_pool.clone()))
         .app_data(web::Data::new(secret.clone()))
+        .app_data(web::Data::new(cache))
 }
 
 pub struct Application {

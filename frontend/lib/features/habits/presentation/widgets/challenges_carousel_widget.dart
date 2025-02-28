@@ -18,6 +18,7 @@ class ChallengesCarouselWidget extends StatelessWidget {
               Icon(
                 Icons.emoji_events,
                 size: 30,
+                color: habitColor,
               ),
               SizedBox(width: 10),
               Text(
@@ -25,6 +26,7 @@ class ChallengesCarouselWidget extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
+                  color: habitColor,
                 ),
               ),
             ],

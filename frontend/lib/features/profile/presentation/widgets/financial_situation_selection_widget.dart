@@ -12,18 +12,6 @@ class FinancialSituationSelectionWidget extends StatelessWidget {
       {Key? key, required this.profile, required this.updateProfile})
       : super(key: key);
 
-  String _getLocalizedStatus(
-      BuildContext context, FinancialSituationStatus status) {
-    switch (status) {
-      case FinancialSituationStatus.poor:
-        return AppLocalizations.of(context)!.poor;
-      case FinancialSituationStatus.average:
-        return AppLocalizations.of(context)!.average;
-      case FinancialSituationStatus.wealthy:
-        return AppLocalizations.of(context)!.wealthy;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return DropdownWidget.show(
@@ -33,7 +21,7 @@ class FinancialSituationSelectionWidget extends StatelessWidget {
       items: FinancialSituationStatus.values.map((status) {
         return DropdownMenuItem(
           value: status.toShortString(),
-          child: Text(_getLocalizedStatus(context, status)),
+          child: Text(status.getLocalizedStatus(context)),
         );
       }).toList(),
       onChanged: (value) {
