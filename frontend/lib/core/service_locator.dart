@@ -32,10 +32,12 @@ import 'package:reallystick/features/challenges/domain/usecases/create_challenge
 import 'package:reallystick/features/challenges/domain/usecases/create_challenge_usecase.dart';
 import 'package:reallystick/features/challenges/domain/usecases/delete_challenge_daily_tracking_usecase.dart';
 import 'package:reallystick/features/challenges/domain/usecases/delete_challenge_participation_usecase.dart';
+import 'package:reallystick/features/challenges/domain/usecases/delete_challenge_usecase.dart';
 import 'package:reallystick/features/challenges/domain/usecases/get_challenge_daily_trackings_usecase.dart';
 import 'package:reallystick/features/challenges/domain/usecases/get_challenge_participations_usecase.dart';
 import 'package:reallystick/features/challenges/domain/usecases/get_challenge_statistics_usecase.dart';
 import 'package:reallystick/features/challenges/domain/usecases/get_challenge_usecase.dart';
+import 'package:reallystick/features/challenges/domain/usecases/get_challenges_daily_trackings_usecase.dart';
 import 'package:reallystick/features/challenges/domain/usecases/get_challenges_usecase.dart';
 import 'package:reallystick/features/challenges/domain/usecases/update_challenge_daily_tracking_usecase.dart';
 import 'package:reallystick/features/challenges/domain/usecases/update_challenge_participation_usecase.dart';
@@ -244,4 +246,9 @@ void setupServiceLocator() {
   sl.registerSingleton<DeleteChallengeParticipationUsecase>(
       DeleteChallengeParticipationUsecase(
           sl<ChallengeParticipationRepository>()));
+  sl.registerSingleton<GetChallengesDailyTrackingsUsecase>(
+      GetChallengesDailyTrackingsUsecase(
+          sl<ChallengeDailyTrackingRepository>()));
+  sl.registerSingleton<DeleteChallengeUsecase>(
+      DeleteChallengeUsecase(sl<ChallengeRepository>()));
 }

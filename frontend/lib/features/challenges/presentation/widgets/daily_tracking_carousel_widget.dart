@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:reallystick/core/constants/dates.dart';
-import 'package:reallystick/core/constants/unit_conversion.dart';
+import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/challenges/domain/entities/challenge_daily_tracking.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_bloc.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_states.dart';
@@ -13,6 +13,7 @@ import 'package:reallystick/features/challenges/presentation/screens/list_daily_
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_states.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
+import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
 
 class DailyTrackingCarouselWidget extends StatefulWidget {
   final String challengeId;
@@ -98,47 +99,54 @@ class DailyTrackingCarouselWidgetState
   @override
   Widget build(BuildContext context) {
     final profileState = context.watch<ProfileBloc>().state;
-    final userLocale = profileState.profile!.locale;
+    final challengeState = context.watch<ChallengeBloc>().state;
+    final habitState = context.watch<HabitBloc>().state;
 
-    // Calculate available screen width and determine how many days to display
-    const dayBoxWidth = 25.0; // Fixed width for each datetime box
-    const numberOfBoxes = 100;
+    if (profileState is ProfileAuthenticated &&
+        challengeState is ChallengesLoaded &&
+        habitState is HabitsLoaded) {
+      final userLocale = profileState.profile.locale;
+      final challenge = challengeState.challenges[widget.challengeId]!;
+      final challengeParticipation = challengeState.challengeParticipations
+          .where((cp) => cp.challengeId == widget.challengeId)
+          .firstOrNull;
 
-    // Calculate the last days
-    final today = DateTime.now();
-    final lastDays = List.generate(
-      numberOfBoxes,
-      (index) => today.subtract(Duration(days: numberOfBoxes - 1 - index)),
-    );
+      const dayBoxWidth = 25.0;
+      final today = DateTime.now();
 
-    final challengeState = context.read<ChallengeBloc>().state;
-    final habitState = context.read<HabitBloc>().state;
+      final numberOfDays = (widget.challengeDailyTrackings.isNotEmpty
+              ? widget.challengeDailyTrackings
+                  .map((cdt) => cdt.dayOfProgram)
+                  .reduce(max)
+              : 0 // Default value if the list is empty
+          ) +
+          1;
 
-    if (challengeState is ChallengesLoaded && habitState is HabitsLoaded) {
-      // Aggregate total quantities per day in normalized unit (seconds)
-      final Map<DateTime, double> aggregatedQuantities = {
+      final startDate =
+          challenge.startDate ?? challengeParticipation?.startDate ?? today;
+
+      // Calculate the last days
+      final lastDays = List.generate(
+        numberOfDays,
+        (index) => startDate.add(Duration(days: index)),
+      );
+
+      final Map<DateTime, int> numberOfTasksPerDay = {
         for (var date in lastDays)
-          date: widget.challengeDailyTrackings
-              .where((tracking) => tracking.datetime.isSameDate(date))
-              .fold<double>(
-                0.0,
-                (sum, tracking) =>
-                    sum +
-                    normalizeUnit(
-                      tracking.quantityOfSet * tracking.quantityPerSet,
-                      tracking.unitId,
-                      habitState.units,
-                    ),
-              )
+          date: widget.challengeDailyTrackings.where((tracking) {
+            if (challenge.startDate != null) {
+              return challenge.startDate!
+                  .add(Duration(days: tracking.dayOfProgram))
+                  .isSameDate(date);
+            }
+            if (challengeParticipation != null) {
+              return challengeParticipation.startDate
+                  .add(Duration(days: tracking.dayOfProgram))
+                  .isSameDate(date);
+            }
+            return false;
+          }).length
       };
-
-      // Determine the maximum and minimum quantities
-      final maxQuantity = aggregatedQuantities.values.isNotEmpty
-          ? aggregatedQuantities.values.reduce((a, b) => a > b ? a : b)
-          : 1.0;
-      final minQuantity = aggregatedQuantities.values.isNotEmpty
-          ? aggregatedQuantities.values.reduce((a, b) => a < b ? a : b)
-          : 0.0;
 
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -154,7 +162,7 @@ class DailyTrackingCarouselWidgetState
                 ),
                 SizedBox(width: 10),
                 Text(
-                  AppLocalizations.of(context)!.dailyTracking,
+                  AppLocalizations.of(context)!.challengeDailyTracking,
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -165,67 +173,78 @@ class DailyTrackingCarouselWidgetState
             ),
             SizedBox(height: 10),
           ],
-          SizedBox(
-            height: 60,
-            child: ListView.builder(
-              controller: scrollController,
-              scrollDirection: Axis.horizontal,
-              itemCount: lastDays.length,
-              itemBuilder: (context, index) {
-                final datetime = lastDays[index];
-                final dayAbbreviation = DateFormat('E', userLocale.toString())
-                    .format(datetime)
-                    .substring(0, 1);
+          if (widget.challengeDailyTrackings.isNotEmpty) ...[
+            SizedBox(
+              height: 60,
+              child: ListView.builder(
+                controller: scrollController,
+                scrollDirection: Axis.horizontal,
+                itemCount: lastDays.length,
+                itemBuilder: (context, index) {
+                  final datetime = lastDays[index];
+                  final dayAbbreviation = challenge.startDate != null
+                      ? DateFormat('Md', userLocale.toString()).format(datetime)
+                      : "${index + 1}";
 
-                final totalQuantity = aggregatedQuantities[datetime] ?? 0.0;
-
-                // Normalize the opacity
-                final normalizedOpacity = maxQuantity == minQuantity
-                    ? 0.1 // Avoid division by zero when all values are equal
-                    : 0.1 +
-                        ((totalQuantity - minQuantity) /
-                            (maxQuantity - minQuantity) *
-                            0.9);
-
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Column(
-                    children: [
-                      Text(
-                        dayAbbreviation,
-                        style: TextStyle(fontSize: 12),
-                      ),
-                      SizedBox(height: 4),
-                      if (widget.canOpenDayBoxes) ...[
-                        GestureDetector(
-                          onTap: () => _openDailyTrackings(datetime: datetime),
-                          child: Container(
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Column(
+                      children: [
+                        Text(
+                          dayAbbreviation,
+                          style: TextStyle(fontSize: 12),
+                        ),
+                        SizedBox(height: 4),
+                        if (widget.canOpenDayBoxes) ...[
+                          GestureDetector(
+                            onTap: () =>
+                                _openDailyTrackings(datetime: datetime),
+                            child: Container(
+                              width: dayBoxWidth,
+                              height: dayBoxWidth,
+                              decoration: BoxDecoration(
+                                color: widget.challengeColor,
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  numberOfTasksPerDay[datetime].toString(),
+                                  style: context.typographies.captionSmall
+                                      .copyWith(
+                                    color: Colors.white.withOpacity(0.5),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ] else ...[
+                          Container(
                             width: dayBoxWidth,
                             height: dayBoxWidth,
                             decoration: BoxDecoration(
-                              color: widget.challengeColor
-                                  .withOpacity(normalizedOpacity),
+                              color: widget.challengeColor,
                               borderRadius: BorderRadius.circular(4),
                             ),
+                            child: Center(
+                              child: Text(
+                                numberOfTasksPerDay[datetime].toString(),
+                                style:
+                                    context.typographies.captionSmall.copyWith(
+                                  color: Colors.white.withOpacity(0.5),
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
-                      ] else ...[
-                        Container(
-                          width: dayBoxWidth,
-                          height: dayBoxWidth,
-                          decoration: BoxDecoration(
-                            color: widget.challengeColor
-                                .withOpacity(normalizedOpacity),
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                        ),
-                      ]
-                    ],
-                  ),
-                );
-              },
+                        ]
+                      ],
+                    ),
+                  );
+                },
+              ),
             ),
-          ),
+          ] else ...[
+            Text(AppLocalizations.of(context)!.noChallengeDailyTrackingYet),
+          ],
         ],
       );
     } else {

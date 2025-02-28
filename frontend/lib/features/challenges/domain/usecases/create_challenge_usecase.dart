@@ -13,14 +13,12 @@ class CreateChallengeUsecase {
     required Map<String, String> description,
     required String icon,
     required DateTime? startDate,
-    required DateTime? endDate,
   }) async {
     return await challengeRepository.createChallenge(
       name: name,
       description: description,
       icon: icon,
       startDate: startDate,
-      endDate: endDate,
     );
   }
 }

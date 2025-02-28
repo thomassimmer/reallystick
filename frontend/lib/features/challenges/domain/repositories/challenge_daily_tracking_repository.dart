@@ -11,11 +11,13 @@ abstract class ChallengeDailyTrackingRepository {
       getChallengeDailyTrackings({
     required String challengeId,
   });
+  Future<Either<DomainError, List<ChallengeDailyTracking>>>
+      getChallengesDailyTrackings({required List<String> challengeIds});
   Future<Either<DomainError, ChallengeDailyTracking>>
       createChallengeDailyTracking({
     required String challengeId,
     required String habitId,
-    required DateTime datetime,
+    required int dayOfProgram,
     required int quantityPerSet,
     required int quantityOfSet,
     required String unitId,
@@ -26,7 +28,7 @@ abstract class ChallengeDailyTrackingRepository {
       updateChallengeDailyTracking({
     required String challengeDailyTrackingId,
     required String habitId,
-    required DateTime datetime,
+    required int dayOfProgram,
     required int quantityPerSet,
     required int quantityOfSet,
     required String unitId,

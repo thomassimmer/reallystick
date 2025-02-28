@@ -20,8 +20,8 @@ class AnalyticsCarouselWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final challengeState = context.read<ChallengeBloc>().state;
-    final profileState = context.read<ProfileBloc>().state;
+    final challengeState = context.watch<ChallengeBloc>().state;
+    final profileState = context.watch<ProfileBloc>().state;
 
     if (challengeState is ChallengesLoaded &&
         profileState is ProfileAuthenticated) {

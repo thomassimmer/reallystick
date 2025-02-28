@@ -49,14 +49,15 @@ class ChallengeDailyTrackingUpdateFormUnitChangedEvent
   List<Object?> get props => [unitId];
 }
 
-class ChallengeDailyTrackingUpdateFormDateTimeChangedEvent
+class ChallengeDailyTrackingUpdateFormDayOfProgramChangedEvent
     extends ChallengeDailyTrackingUpdateEvent {
-  final DateTime? datetime;
+  final int dayOfProgram;
 
-  const ChallengeDailyTrackingUpdateFormDateTimeChangedEvent(this.datetime);
+  const ChallengeDailyTrackingUpdateFormDayOfProgramChangedEvent(
+      this.dayOfProgram);
 
   @override
-  List<Object?> get props => [datetime];
+  List<Object?> get props => [dayOfProgram];
 }
 
 class ChallengeDailyTrackingUpdateFormWeightChangedEvent

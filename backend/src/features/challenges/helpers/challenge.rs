@@ -50,7 +50,6 @@ pub async fn get_created_and_joined_challenges(
             c.icon,
             c.created_at,
             c.start_date,
-            c.end_date,
             c.creator,
             c.deleted
         FROM challenges c
@@ -76,16 +75,14 @@ pub async fn update_challenge(
             description = $2,
             icon = $3,
             start_date = $4,
-            end_date = $5,
-            creator = $6,
-            deleted = $7
-        WHERE id = $8
+            creator = $5,
+            deleted = $6
+        WHERE id = $7
         "#,
         challenge.name,
         challenge.description,
         challenge.icon,
         challenge.start_date,
-        challenge.end_date,
         challenge.creator,
         challenge.deleted,
         challenge.id,
@@ -108,11 +105,10 @@ pub async fn create_challenge(
             created_at,
             icon,
             start_date,
-            end_date,
             creator,
             deleted
         )
-        VALUES ( $1, $2, $3, $4, $5, $6, $7, $8, $9 )
+        VALUES ( $1, $2, $3, $4, $5, $6, $7, $8 )
         "#,
         challenge.id,
         challenge.name,
@@ -120,7 +116,6 @@ pub async fn create_challenge(
         challenge.created_at,
         challenge.icon,
         challenge.start_date,
-        challenge.end_date,
         challenge.creator,
         challenge.deleted
     )

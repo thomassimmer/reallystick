@@ -41,7 +41,6 @@ pub async fn create_challenge(
         name: json!(body.name).to_string(),
         description: json!(body.description).to_string(),
         start_date: body.start_date,
-        end_date: body.end_date,
         icon: body.icon.clone(),
         created_at: Utc::now(),
         creator: request_user.id,

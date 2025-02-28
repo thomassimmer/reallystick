@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:intl/intl.dart';
+import 'package:reallystick/core/constants/dates.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/challenges/domain/entities/challenge_daily_tracking.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_bloc.dart';
@@ -76,8 +76,26 @@ class ListDailyTrackingsModalState extends State<ListDailyTrackingsModal> {
         habitState is HabitsLoaded &&
         profileState is ProfileAuthenticated) {
       final userLocale = profileState.profile.locale;
-      final List<ChallengeDailyTracking> dailyTrackings =
-          challengeState.challengeDailyTrackings[widget.challengeId] ?? [];
+      final challenge = challengeState.challenges[widget.challengeId]!;
+      final challengeParticipation = challengeState.challengeParticipations
+          .where((cp) => cp.challengeId == widget.challengeId)
+          .firstOrNull;
+
+      final List<ChallengeDailyTracking> dailyTrackings = challengeState
+          .challengeDailyTrackings[widget.challengeId]!
+          .where((tracking) {
+        if (challenge.startDate != null) {
+          return challenge.startDate!
+              .add(Duration(days: tracking.dayOfProgram))
+              .isSameDate(widget.datetime);
+        }
+        if (challengeParticipation != null) {
+          return challengeParticipation.startDate
+              .add(Duration(days: tracking.dayOfProgram))
+              .isSameDate(widget.datetime);
+        }
+        return false;
+      }).toList();
 
       return Padding(
         padding:
@@ -95,7 +113,7 @@ class ListDailyTrackingsModalState extends State<ListDailyTrackingsModal> {
               itemCount: dailyTrackings.length,
               itemBuilder: (context, index) {
                 final dailyTracking = dailyTrackings[index];
-                final habit = habitState.habits[dailyTracking.habitId];
+                final habit = habitState.habits[dailyTracking.habitId]!;
                 final unit = habitState.units[dailyTracking.unitId]!;
                 final weightUnit =
                     habitState.units[dailyTracking.weightUnitId]!;
@@ -120,18 +138,17 @@ class ListDailyTrackingsModalState extends State<ListDailyTrackingsModal> {
                             child: Row(
                               children: [
                                 Text(
-                                  DateFormat('HH:mm')
-                                      .format(dailyTracking.datetime),
+                                  "${getRightTranslationFromJson(habit.shortName, userLocale)} - ",
                                   style: context.typographies.bodyLarge,
                                 ),
                                 if (dailyTracking.quantityOfSet > 1) ...[
                                   Text(
-                                    "     ${AppLocalizations.of(context)!.quantityPerSet} : ${dailyTracking.quantityPerSet}",
+                                    "${AppLocalizations.of(context)!.quantityPerSet} : ${dailyTracking.quantityPerSet}",
                                     style: context.typographies.bodyLarge,
                                   ),
                                 ] else ...[
                                   Text(
-                                    "     ${AppLocalizations.of(context)!.quantity} : ${dailyTracking.quantityPerSet}",
+                                    "${AppLocalizations.of(context)!.quantity} : ${dailyTracking.quantityPerSet}",
                                     style: context.typographies.bodyLarge,
                                   ),
                                 ],

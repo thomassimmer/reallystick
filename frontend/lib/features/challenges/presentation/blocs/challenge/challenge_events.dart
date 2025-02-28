@@ -14,14 +14,12 @@ class CreateChallengeEvent extends ChallengeEvent {
   final Map<String, String> description;
   final int icon;
   final DateTime? startDate;
-  final DateTime? endDate;
 
   const CreateChallengeEvent({
     required this.name,
     required this.description,
     required this.icon,
     required this.startDate,
-    required this.endDate,
   });
 
   @override
@@ -30,7 +28,6 @@ class CreateChallengeEvent extends ChallengeEvent {
         description,
         icon,
         startDate,
-        endDate,
       ];
 }
 
@@ -40,7 +37,6 @@ class UpdateChallengeEvent extends ChallengeEvent {
   final Map<String, String> description;
   final int icon;
   final DateTime? startDate;
-  final DateTime? endDate;
 
   const UpdateChallengeEvent({
     required this.challengeId,
@@ -48,7 +44,6 @@ class UpdateChallengeEvent extends ChallengeEvent {
     required this.description,
     required this.icon,
     required this.startDate,
-    required this.endDate,
   });
 
   @override
@@ -58,14 +53,13 @@ class UpdateChallengeEvent extends ChallengeEvent {
         description,
         icon,
         startDate,
-        endDate,
       ];
 }
 
 class CreateChallengeDailyTrackingEvent extends ChallengeEvent {
   final String challengeId;
   final String habitId;
-  final DateTime datetime;
+  final int dayOfProgram;
   final int quantityPerSet;
   final int quantityOfSet;
   final String unitId;
@@ -75,7 +69,7 @@ class CreateChallengeDailyTrackingEvent extends ChallengeEvent {
   const CreateChallengeDailyTrackingEvent({
     required this.challengeId,
     required this.habitId,
-    required this.datetime,
+    required this.dayOfProgram,
     required this.quantityPerSet,
     required this.quantityOfSet,
     required this.unitId,
@@ -87,7 +81,7 @@ class CreateChallengeDailyTrackingEvent extends ChallengeEvent {
   List<Object?> get props => [
         challengeId,
         habitId,
-        datetime,
+        dayOfProgram,
         quantityOfSet,
         quantityPerSet,
         unitId,
@@ -100,7 +94,7 @@ class UpdateChallengeDailyTrackingEvent extends ChallengeEvent {
   final String challengeDailyTrackingId;
   final String challengeId;
   final String habitId;
-  final DateTime datetime;
+  final int dayOfProgram;
   final int quantityPerSet;
   final int quantityOfSet;
   final String unitId;
@@ -111,7 +105,7 @@ class UpdateChallengeDailyTrackingEvent extends ChallengeEvent {
     required this.challengeDailyTrackingId,
     required this.challengeId,
     required this.habitId,
-    required this.datetime,
+    required this.dayOfProgram,
     required this.quantityPerSet,
     required this.quantityOfSet,
     required this.unitId,
@@ -123,7 +117,7 @@ class UpdateChallengeDailyTrackingEvent extends ChallengeEvent {
   List<Object?> get props => [
         challengeDailyTrackingId,
         challengeId,
-        datetime,
+        dayOfProgram,
         quantityOfSet,
         quantityPerSet,
         unitId,
@@ -171,6 +165,22 @@ class DeleteChallengeParticipationEvent extends ChallengeEvent {
 
   @override
   List<Object?> get props => [
+        challengeParticipationId,
+      ];
+}
+
+class DeleteChallengeEvent extends ChallengeEvent {
+  final String challengeId;
+  final String? challengeParticipationId;
+
+  const DeleteChallengeEvent({
+    required this.challengeId,
+    this.challengeParticipationId,
+  });
+
+  @override
+  List<Object?> get props => [
+        challengeId,
         challengeParticipationId,
       ];
 }

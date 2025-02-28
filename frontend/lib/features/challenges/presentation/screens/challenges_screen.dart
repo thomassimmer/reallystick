@@ -37,8 +37,9 @@ class ChallengesScreenState extends State<ChallengesScreen> {
           final challenges = challengeState.challenges.values.toList();
 
           final createdChallenges = challenges
-              .where(
-                  (challenge) => challenge.creator == profileState.profile.id)
+              .where((challenge) =>
+                  challenge.creator == profileState.profile.id &&
+                  !challenge.deleted)
               .toList();
 
           final participatedChallenges = challenges
@@ -47,14 +48,6 @@ class ChallengesScreenState extends State<ChallengesScreen> {
                   challengeState.challengeParticipations
                       .where((cp) => cp.challengeId == challenge.id)
                       .isNotEmpty)
-              .toList();
-
-          final otherChallenges = challenges
-              .where((challenge) =>
-                  challenge.creator != profileState.profile.id &&
-                  challengeState.challengeParticipations
-                      .where((cp) => cp.challengeId == challenge.id)
-                      .isEmpty)
               .toList();
 
           return Scaffold(
@@ -114,9 +107,16 @@ class ChallengesScreenState extends State<ChallengesScreen> {
                                       challenge.id)
                                   .firstOrNull;
 
-                              final challengeDailyTrackings = challengeState
-                                      .challengeDailyTrackings[challenge.id] ??
-                                  [];
+                              var challengeDailyTrackings = challengeState
+                                  .challengeDailyTrackings[challenge.id];
+
+                              if (challengeDailyTrackings == null) {
+                                BlocProvider.of<ChallengeBloc>(context).add(
+                                  GetChallengeDailyTrackingsEvent(
+                                      challengeId: challenge.id),
+                                );
+                                challengeDailyTrackings = [];
+                              }
 
                               return ChallengeWidget(
                                 challenge: challenge,
@@ -129,7 +129,6 @@ class ChallengesScreenState extends State<ChallengesScreen> {
                           ),
                         ),
                       ],
-
                       if (participatedChallenges.isNotEmpty) ...[
                         SliverAppBar(
                           title: Row(
@@ -157,9 +156,16 @@ class ChallengesScreenState extends State<ChallengesScreen> {
                                       challenge.id)
                                   .firstOrNull;
 
-                              final challengeDailyTrackings = challengeState
-                                      .challengeDailyTrackings[challenge.id] ??
-                                  [];
+                              var challengeDailyTrackings = challengeState
+                                  .challengeDailyTrackings[challenge.id];
+
+                              if (challengeDailyTrackings == null) {
+                                BlocProvider.of<ChallengeBloc>(context).add(
+                                  GetChallengeDailyTrackingsEvent(
+                                      challengeId: challenge.id),
+                                );
+                                challengeDailyTrackings = [];
+                              }
 
                               return ChallengeWidget(
                                 challenge: challenge,
@@ -172,42 +178,6 @@ class ChallengesScreenState extends State<ChallengesScreen> {
                           ),
                         ),
                       ],
-
-                      // Section for Participated Challenges
-                      if (otherChallenges.isNotEmpty) ...[
-                        SliverAppBar(
-                          title: Row(
-                            children: [
-                              Text(
-                                AppLocalizations.of(context)!.otherChallenges,
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SliverList(
-                          delegate: SliverChildBuilderDelegate(
-                            (context, index) {
-                              final challenge = otherChallenges[index];
-
-                              final challengeDailyTrackings = challengeState
-                                      .challengeDailyTrackings[challenge.id] ??
-                                  [];
-
-                              return ChallengeWidget(
-                                challenge: challenge,
-                                challengeParticipation: null,
-                                challengeDailyTrackings:
-                                    challengeDailyTrackings,
-                              );
-                            },
-                            childCount: otherChallenges.length,
-                          ),
-                        ),
-                      ]
                     ] else ...[
                       SliverFillRemaining(
                         hasScrollBody: false,

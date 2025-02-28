@@ -120,6 +120,26 @@ String getTranslatedMessage(BuildContext context, Message message) {
       case 'validationCodeCorrect':
         return localizations.validationCodeCorrect;
 
+      // Challenges
+      case 'challengeDeleted':
+        return localizations.challengeDeleted;
+      case 'challengeParticipationCreated':
+        return localizations.challengeParticipationCreated;
+      case 'challengeParticipationUpdated':
+        return localizations.challengeParticipationUpdated;
+      case 'challengeParticipationDeleted':
+        return localizations.challengeParticipationDeleted;
+      case 'challengeDailyTrackingDeleted':
+        return localizations.challengeDailyTrackingDeleted;
+      case 'challengeDailyTrackingUpdated':
+        return localizations.challengeDailyTrackingUpdated;
+      case 'challengeDailyTrackingCreated':
+        return localizations.challengeDailyTrackingCreated;
+      case 'challengeUpdated':
+        return localizations.challengeUpdated;
+      case 'challengeCreated':
+        return localizations.challengeCreated;
+
       // Habits
       case 'habitCreated':
         return localizations.habitCreated;

@@ -27,6 +27,7 @@ use crate::features::challenges::routes::get_challenge_daily_trackings::get_chal
 use crate::features::challenges::routes::get_challenge_participations::get_challenge_participations;
 use crate::features::challenges::routes::get_challenge_statistics::get_challenge_statistics;
 use crate::features::challenges::routes::get_challenges::get_challenges;
+use crate::features::challenges::routes::get_challenges_daily_trackings::get_challenges_daily_trackings;
 use crate::features::challenges::routes::update_challenge::update_challenge;
 use crate::features::challenges::routes::update_challenge_daily_tracking::update_challenge_daily_tracking;
 use crate::features::challenges::routes::update_challenge_participation::update_challenge_participation;
@@ -257,6 +258,7 @@ pub fn create_app(
                                 connection_pool.clone(),
                             ))
                             .service(get_challenge_daily_trackings)
+                            .service(get_challenges_daily_trackings)
                             .service(update_challenge_daily_tracking)
                             .service(create_challenge_daily_tracking)
                             .service(delete_challenge_daily_tracking),

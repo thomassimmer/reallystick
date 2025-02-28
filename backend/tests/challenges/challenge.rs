@@ -5,7 +5,7 @@ use actix_web::{
     http::header::ContentType,
     test, Error,
 };
-use chrono::{Datelike, Utc};
+use chrono::Utc;
 use reallystick::{
     core::{helpers::mock_now::override_now, structs::responses::GenericResponse},
     features::challenges::structs::{
@@ -82,11 +82,9 @@ pub async fn user_updates_a_challenge(
         .to_request();
     let response = test::call_service(&app, req).await;
 
-    // assert_eq!(200, response.status().as_u16());
+    assert_eq!(200, response.status().as_u16());
 
     let body = test::read_body(response).await;
-    println!("{:?}", body);
-
     let response: ChallengeResponse = serde_json::from_slice(&body).unwrap();
 
     assert_eq!(response.code, "CHALLENGE_UPDATED");
@@ -94,10 +92,6 @@ pub async fn user_updates_a_challenge(
     assert_eq!(
         response.challenge.clone().unwrap().name,
         json!(HashMap::from([("en", "English"), ("fr", "Anglais")])).to_string()
-    );
-    assert_eq!(
-        response.challenge.unwrap().end_date.unwrap().day(),
-        (Utc::now() + Duration::new(24 * 3600 * 30, 0)).day()
     );
 }
 

@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:formz/formz.dart';
+import 'package:reallystick/core/validators/challenge_daily_tracking_datetime.dart';
 import 'package:reallystick/core/validators/habit.dart';
-import 'package:reallystick/core/validators/habit_daily_tracking_datetime.dart';
 import 'package:reallystick/core/validators/quantity_of_set.dart';
 import 'package:reallystick/core/validators/quantity_per_set.dart';
 import 'package:reallystick/core/validators/unit.dart';
@@ -20,8 +20,8 @@ class ChallengeDailyTrackingCreationFormBloc extends Bloc<
     on<ChallengeDailyTrackingCreationFormQuantityOfSetChangedEvent>(
         _quantityOfSetChanged);
     on<ChallengeDailyTrackingCreationFormUnitChangedEvent>(_unitChanged);
-    on<ChallengeDailyTrackingCreationFormDateTimeChangedEvent>(
-        _datetimeChanged);
+    on<ChallengeDailyTrackingCreationFormDayOfProgramChangedEvent>(
+        _dayOfProgramChanged);
     on<ChallengeDailyTrackingCreationFormWeightChangedEvent>(_weightChanged);
     on<ChallengeDailyTrackingCreationFormWeightUnitIdChangedEvent>(
         _weightUnitChanged);
@@ -40,7 +40,7 @@ class ChallengeDailyTrackingCreationFormBloc extends Bloc<
           state.quantityOfSet,
           state.quantityPerSet,
           state.unitId,
-          state.datetime,
+          state.dayOfProgram,
           state.weight,
           state.weightUnitId,
         ]),
@@ -61,7 +61,7 @@ class ChallengeDailyTrackingCreationFormBloc extends Bloc<
           state.habitId,
           state.quantityOfSet,
           state.unitId,
-          state.datetime,
+          state.dayOfProgram,
           state.weight,
           state.weightUnitId,
         ]),
@@ -82,7 +82,7 @@ class ChallengeDailyTrackingCreationFormBloc extends Bloc<
           state.habitId,
           state.quantityPerSet,
           state.unitId,
-          state.datetime,
+          state.dayOfProgram,
           state.weight,
           state.weightUnitId,
         ]),
@@ -103,7 +103,7 @@ class ChallengeDailyTrackingCreationFormBloc extends Bloc<
           state.habitId,
           state.quantityOfSet,
           state.quantityPerSet,
-          state.datetime,
+          state.dayOfProgram,
           state.weight,
           state.weightUnitId,
         ]),
@@ -111,16 +111,17 @@ class ChallengeDailyTrackingCreationFormBloc extends Bloc<
     );
   }
 
-  Future<void> _datetimeChanged(
-      ChallengeDailyTrackingCreationFormDateTimeChangedEvent event,
+  Future<void> _dayOfProgramChanged(
+      ChallengeDailyTrackingCreationFormDayOfProgramChangedEvent event,
       Emitter emit) async {
-    final datetime = HabitDailyTrackingDatetime.dirty(event.datetime);
+    final dayOfProgram =
+        ChallengeDailyTrackingDatetime.dirty(event.dayOfProgram);
 
     emit(
       state.copyWith(
-        datetime: datetime,
+        dayOfProgram: dayOfProgram,
         isValid: Formz.validate([
-          datetime,
+          dayOfProgram,
           state.habitId,
           state.quantityOfSet,
           state.quantityPerSet,
@@ -143,7 +144,7 @@ class ChallengeDailyTrackingCreationFormBloc extends Bloc<
         isValid: Formz.validate([
           weight,
           state.habitId,
-          state.datetime,
+          state.dayOfProgram,
           state.quantityOfSet,
           state.quantityPerSet,
           state.unitId,
@@ -165,7 +166,7 @@ class ChallengeDailyTrackingCreationFormBloc extends Bloc<
           weightUnitId,
           state.habitId,
           state.weight,
-          state.datetime,
+          state.dayOfProgram,
           state.quantityOfSet,
           state.quantityPerSet,
           state.unitId,

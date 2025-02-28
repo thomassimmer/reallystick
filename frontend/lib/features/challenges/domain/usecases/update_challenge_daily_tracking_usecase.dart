@@ -11,7 +11,7 @@ class UpdateChallengeDailyTrackingUsecase {
   Future<Either<DomainError, ChallengeDailyTracking>> call({
     required String challengeDailyTrackingId,
     required String habitId,
-    required DateTime datetime,
+    required int dayOfProgram,
     required int quantityPerSet,
     required int quantityOfSet,
     required String unitId,
@@ -21,7 +21,7 @@ class UpdateChallengeDailyTrackingUsecase {
     return await challengeDailyTrackingRepository.updateChallengeDailyTracking(
       challengeDailyTrackingId: challengeDailyTrackingId,
       habitId: habitId,
-      datetime: datetime,
+      dayOfProgram: dayOfProgram,
       quantityPerSet: quantityPerSet,
       quantityOfSet: quantityOfSet,
       unitId: unitId,

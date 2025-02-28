@@ -60,7 +60,6 @@ pub async fn update_challenge(
     challenge.description = json!(body.description).to_string();
     challenge.icon = body.icon.clone();
     challenge.start_date = body.start_date;
-    challenge.end_date = body.end_date;
 
     let update_challenge_result = challenge::update_challenge(&mut transaction, &challenge).await;
 

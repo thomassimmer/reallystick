@@ -31,7 +31,7 @@ class HabitWidget extends StatelessWidget {
     return Builder(
       builder: (context) {
         final profileState = context.watch<ProfileBloc>().state;
-        final habitState = context.read<HabitBloc>().state;
+        final habitState = context.watch<HabitBloc>().state;
 
         if (habitState is HabitsLoaded) {
           final userLocale = profileState.profile!.locale;

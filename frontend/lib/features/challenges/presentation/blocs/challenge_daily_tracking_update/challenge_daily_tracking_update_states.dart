@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
+import 'package:reallystick/core/validators/challenge_daily_tracking_datetime.dart';
 import 'package:reallystick/core/validators/habit.dart';
-import 'package:reallystick/core/validators/habit_daily_tracking_datetime.dart';
 import 'package:reallystick/core/validators/quantity_of_set.dart';
 import 'package:reallystick/core/validators/quantity_per_set.dart';
 import 'package:reallystick/core/validators/unit.dart';
@@ -11,7 +11,7 @@ final class ChallengeDailyTrackingUpdateFormState extends Equatable {
   final QuantityOfSetValidator quantityOfSet;
   final QuantityPerSetValidator quantityPerSet;
   final UnitValidator unitId;
-  final HabitDailyTrackingDatetime datetime;
+  final ChallengeDailyTrackingDatetime dayOfProgram;
   final WeightValidator weight;
   final UnitValidator weightUnitId;
   final bool isValid;
@@ -22,7 +22,7 @@ final class ChallengeDailyTrackingUpdateFormState extends Equatable {
     this.quantityOfSet = const QuantityOfSetValidator.pure(),
     this.quantityPerSet = const QuantityPerSetValidator.pure(),
     this.unitId = const UnitValidator.pure(),
-    this.datetime = const HabitDailyTrackingDatetime.pure(),
+    this.dayOfProgram = const ChallengeDailyTrackingDatetime.pure(),
     this.weight = const WeightValidator.pure(),
     this.weightUnitId = const UnitValidator.pure(),
     this.isValid = true,
@@ -35,7 +35,7 @@ final class ChallengeDailyTrackingUpdateFormState extends Equatable {
         quantityOfSet,
         quantityPerSet,
         unitId,
-        datetime,
+        dayOfProgram,
         weight,
         weightUnitId,
         isValid,
@@ -47,7 +47,7 @@ final class ChallengeDailyTrackingUpdateFormState extends Equatable {
     QuantityOfSetValidator? quantityOfSet,
     QuantityPerSetValidator? quantityPerSet,
     UnitValidator? unitId,
-    HabitDailyTrackingDatetime? datetime,
+    ChallengeDailyTrackingDatetime? dayOfProgram,
     WeightValidator? weight,
     UnitValidator? weightUnitId,
     bool? isValid,
@@ -58,7 +58,7 @@ final class ChallengeDailyTrackingUpdateFormState extends Equatable {
       quantityOfSet: quantityOfSet ?? this.quantityOfSet,
       quantityPerSet: quantityPerSet ?? this.quantityPerSet,
       unitId: unitId ?? this.unitId,
-      datetime: datetime ?? this.datetime,
+      dayOfProgram: dayOfProgram ?? this.dayOfProgram,
       weight: weight ?? this.weight,
       weightUnitId: weightUnitId ?? this.weightUnitId,
       isValid: isValid ?? this.isValid,

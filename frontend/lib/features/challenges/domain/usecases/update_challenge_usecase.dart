@@ -14,7 +14,6 @@ class UpdateChallengeUsecase {
     required Map<String, String> description,
     required String icon,
     required DateTime? startDate,
-    required DateTime? endDate,
   }) async {
     return await challengeRepository.updateChallenge(
       challengeId: challengeId,
@@ -22,7 +21,6 @@ class UpdateChallengeUsecase {
       description: description,
       icon: icon,
       startDate: startDate,
-      endDate: endDate,
     );
   }
 }

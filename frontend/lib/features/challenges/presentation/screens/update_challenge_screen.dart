@@ -5,6 +5,7 @@ import 'package:flutter_iconpicker/Models/configuration.dart';
 import 'package:flutter_iconpicker/flutter_iconpicker.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:reallystick/core/constants/icons.dart';
 import 'package:reallystick/core/messages/message.dart';
 import 'package:reallystick/core/messages/message_mapper.dart';
 import 'package:reallystick/core/presentation/screens/loading_screen.dart';
@@ -36,7 +37,25 @@ class UpdateChallengeScreenState extends State<UpdateChallengeScreen> {
   bool _isFixedDatesEnabled = true;
   IconData? _icon;
   DateTime _startDateTime = DateTime.now();
-  DateTime _endDateTime = DateTime.now().add(Duration(days: 10));
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    final challengeState = context.watch<ChallengeBloc>().state;
+
+    if (challengeState is ChallengesLoaded) {
+      final challenge = challengeState.challenges[widget.challengeId]!;
+
+      setState(() {
+        _nameControllerForChallenge = challenge.name;
+        _descriptionControllerForChallenge = challenge.description;
+        _isFixedDatesEnabled = challenge.startDate != null;
+        _icon = getIconData(iconDataString: challenge.icon.substring(10));
+        _startDateTime = challenge.startDate ?? DateTime.now();
+      });
+    }
+  }
 
   _pickIcon() async {
     IconPickerIcon? icon = await showIconPicker(
@@ -70,14 +89,11 @@ class UpdateChallengeScreenState extends State<UpdateChallengeScreen> {
         _icon != null ? _icon!.codePoint.toString() : ""));
     challengeFormBloc.add(ChallengeUpdateFormStartDateChangedEvent(
         _isFixedDatesEnabled ? _startDateTime : null));
-    challengeFormBloc.add(ChallengeUpdateFormEndDateChangedEvent(
-        _isFixedDatesEnabled ? _endDateTime : null));
 
     // Allow time for the validation states to update
     Future.delayed(
       const Duration(milliseconds: 50),
       () {
-        print(challengeFormBloc.state.isValid);
         if (challengeFormBloc.state.isValid) {
           final newChallengeEvent = UpdateChallengeEvent(
             challengeId: widget.challengeId,
@@ -85,7 +101,6 @@ class UpdateChallengeScreenState extends State<UpdateChallengeScreen> {
             description: _descriptionControllerForChallenge,
             icon: _icon?.codePoint ?? 0,
             startDate: _isFixedDatesEnabled ? _startDateTime : null,
-            endDate: _isFixedDatesEnabled ? _endDateTime : null,
           );
 
           if (mounted) {
@@ -136,7 +151,7 @@ class UpdateChallengeScreenState extends State<UpdateChallengeScreen> {
             }
 
             if (challenge.creator != profileState.profile.id ||
-                profileState.profile.isAdmin) {
+                !profileState.profile.isAdmin) {
               return UserIsNotChallengeCreatorScreen();
             }
 
@@ -195,18 +210,9 @@ class UpdateChallengeScreenState extends State<UpdateChallengeScreen> {
               },
             );
 
-            final displayEndDateTimeErrorMessage = context.select(
-              (ChallengeUpdateFormBloc bloc) {
-                final error = bloc.state.endDate.displayError;
-                return error != null
-                    ? getTranslatedMessage(
-                        context, ErrorMessage(error.messageKey))
-                    : null;
-              },
-            );
             return Scaffold(
               appBar: AppBar(
-                title: Text(AppLocalizations.of(context)!.addNewChallenge),
+                title: Text(AppLocalizations.of(context)!.editChallenge),
               ),
               body: SingleChildScrollView(
                 child: Padding(
@@ -364,98 +370,7 @@ class UpdateChallengeScreenState extends State<UpdateChallengeScreen> {
                               ),
 
                             const SizedBox(height: 16),
-
-                            // End Date & Time Selector
-                            Text(AppLocalizations.of(context)!.endDate),
-                            const SizedBox(height: 8),
-                            Row(
-                              children: [
-                                // Day Selector
-                                Expanded(
-                                  child: TextButton(
-                                    onPressed: () async {
-                                      final pickedDate = await showDatePicker(
-                                        context: context,
-                                        initialDate: _endDateTime,
-                                        firstDate: DateTime(2000),
-                                        lastDate: DateTime(2100),
-                                      );
-                                      if (pickedDate != null) {
-                                        setState(() {
-                                          _endDateTime = DateTime(
-                                            pickedDate.year,
-                                            pickedDate.month,
-                                            pickedDate.day,
-                                            _endDateTime.hour,
-                                            _endDateTime.minute,
-                                          );
-                                        });
-                                      }
-                                      BlocProvider.of<ChallengeUpdateFormBloc>(
-                                              context)
-                                          .add(
-                                        ChallengeUpdateFormEndDateChangedEvent(
-                                            _endDateTime),
-                                      );
-                                    },
-                                    child: Text(
-                                      DateFormat.yMMMd().format(_endDateTime),
-                                      style: context.typographies.body,
-                                    ),
-                                  ),
-                                ),
-
-                                const SizedBox(width: 16),
-
-                                // Time Selector
-                                Expanded(
-                                  child: TextButton(
-                                    onPressed: () async {
-                                      final pickedTime = await showTimePicker(
-                                        context: context,
-                                        initialTime: TimeOfDay.fromDateTime(
-                                            _endDateTime),
-                                      );
-                                      if (pickedTime != null) {
-                                        setState(() {
-                                          _endDateTime = DateTime(
-                                            _endDateTime.year,
-                                            _endDateTime.month,
-                                            _endDateTime.day,
-                                            pickedTime.hour,
-                                            pickedTime.minute,
-                                          );
-                                        });
-                                        BlocProvider.of<
-                                                    ChallengeUpdateFormBloc>(
-                                                context)
-                                            .add(
-                                                ChallengeUpdateFormEndDateChangedEvent(
-                                                    _endDateTime));
-                                      }
-                                    },
-                                    child: Text(
-                                      DateFormat.Hm().format(_endDateTime),
-                                      style: context.typographies.body,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
                           ],
-
-                          if (displayEndDateTimeErrorMessage != null)
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 22.0, vertical: 8),
-                              child: Text(
-                                displayEndDateTimeErrorMessage,
-                                style: TextStyle(
-                                  color: context.colors.error,
-                                  fontSize: 12.0,
-                                ),
-                              ),
-                            ),
 
                           const SizedBox(height: 16.0),
 

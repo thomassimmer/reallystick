@@ -47,7 +47,6 @@ class ChallengeDataModel extends Equatable {
         creator: creator,
         name: name,
         startDate: startDate,
-        endDate: endDate,
         description: description,
         icon: icon,
         deleted: deleted,

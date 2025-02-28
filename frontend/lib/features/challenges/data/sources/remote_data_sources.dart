@@ -144,6 +144,47 @@ class ChallengeRemoteDataSource {
     throw UnknownError();
   }
 
+  Future<List<ChallengeDailyTrackingDataModel>> getChallengesDailyTrackings(
+      ChallengeDailyTrackingsGetRequestModel
+          challengeDailyTrackingsGetRequestModel) async {
+    final url =
+        Uri.parse('$baseUrl/challenge-daily-trackings/multiple-challenges/');
+    final response = await apiClient.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: json.encode(
+        challengeDailyTrackingsGetRequestModel.toJson(),
+      ),
+    );
+
+    if (response.statusCode == 200) {
+      try {
+        final jsonBody = customJsonDecode(response.body);
+        final List<dynamic> challengeDailyTrackings =
+            jsonBody['challenge_daily_trackings'];
+        return challengeDailyTrackings
+            .map((challengeDailyTracking) =>
+                ChallengeDailyTrackingDataModel.fromJson(
+                    challengeDailyTracking))
+            .toList();
+      } catch (e) {
+        throw ParsingError();
+      }
+    }
+
+    if (response.statusCode == 401) {
+      throw UnauthorizedError();
+    }
+
+    if (response.statusCode == 500) {
+      throw InternalServerError();
+    }
+
+    throw UnknownError();
+  }
+
   Future<List<ChallengeStatisticDataModel>> getChallengeStatistics() async {
     final url = Uri.parse('$baseUrl/challenge-statistics/');
     final response = await apiClient.get(url);
@@ -156,7 +197,6 @@ class ChallengeRemoteDataSource {
             .map((statistic) => ChallengeStatisticDataModel.fromJson(statistic))
             .toList();
       } catch (e) {
-        print(e);
         throw ParsingError();
       }
     }

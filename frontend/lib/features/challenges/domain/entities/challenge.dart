@@ -5,7 +5,6 @@ class Challenge {
   Map<String, String> description;
   String icon;
   DateTime? startDate;
-  DateTime? endDate;
   bool deleted;
 
   Challenge({
@@ -15,7 +14,6 @@ class Challenge {
     required this.description,
     required this.icon,
     required this.startDate,
-    required this.endDate,
     required this.deleted,
   });
 }

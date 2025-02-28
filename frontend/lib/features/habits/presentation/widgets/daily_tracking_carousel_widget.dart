@@ -109,7 +109,7 @@ class DailyTrackingCarouselWidgetState
       (index) => today.subtract(Duration(days: numberOfBoxes - 1 - index)),
     );
 
-    final habitState = context.read<HabitBloc>().state;
+    final habitState = context.watch<HabitBloc>().state;
 
     if (habitState is HabitsLoaded) {
       // Aggregate total quantities per day in normalized unit (seconds)
@@ -154,7 +154,7 @@ class DailyTrackingCarouselWidgetState
                     ),
                     SizedBox(width: 10),
                     Text(
-                      AppLocalizations.of(context)!.dailyTracking,
+                      AppLocalizations.of(context)!.habitDailyTracking,
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,

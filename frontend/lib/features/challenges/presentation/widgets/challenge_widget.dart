@@ -30,7 +30,7 @@ class ChallengeWidget extends StatelessWidget {
     return Builder(
       builder: (context) {
         final profileState = context.watch<ProfileBloc>().state;
-        final challengeState = context.read<ChallengeBloc>().state;
+        final challengeState = context.watch<ChallengeBloc>().state;
 
         if (challengeState is ChallengesLoaded) {
           final userLocale = profileState.profile!.locale;

@@ -62,11 +62,47 @@ class ChallengeDailyTrackingRepositoryImpl
   }
 
   @override
+  Future<Either<DomainError, List<ChallengeDailyTracking>>>
+      getChallengesDailyTrackings({required List<String> challengeIds}) async {
+    try {
+      final challengeDailyTrackingDataModels = await remoteDataSource
+          .getChallengesDailyTrackings(ChallengeDailyTrackingsGetRequestModel(
+              challengeIds: challengeIds));
+
+      return Right(challengeDailyTrackingDataModels
+          .map((challengeDailyTrackingDataModel) =>
+              challengeDailyTrackingDataModel.toDomain())
+          .toList());
+    } on ParsingError {
+      logger.e('ParsingError occurred.');
+      return Left(InvalidResponseDomainError());
+    } on UnauthorizedError {
+      logger.e('UnauthorizedError occurred.');
+      return Left(UnauthorizedDomainError());
+    } on InvalidRefreshTokenError {
+      logger.e('InvalidRefreshTokenError occured.');
+      return Left(InvalidRefreshTokenDomainError());
+    } on RefreshTokenNotFoundError {
+      logger.e('RefreshTokenNotFoundError occured.');
+      return Left(RefreshTokenNotFoundDomainError());
+    } on RefreshTokenExpiredError {
+      logger.e('RefreshTokenExpiredError occured.');
+      return Left(RefreshTokenExpiredDomainError());
+    } on InternalServerError {
+      logger.e('InternalServerError occured.');
+      return Left(InternalServerDomainError());
+    } catch (e) {
+      logger.e('Data error occurred: ${e.toString()}');
+      return Left(UnknownDomainError());
+    }
+  }
+
+  @override
   Future<Either<DomainError, ChallengeDailyTracking>>
       createChallengeDailyTracking({
     required String challengeId,
     required String habitId,
-    required DateTime datetime,
+    required int dayOfProgram,
     required int quantityPerSet,
     required int quantityOfSet,
     required String unitId,
@@ -79,7 +115,7 @@ class ChallengeDailyTrackingRepositoryImpl
               ChallengeDailyTrackingCreateRequestModel(
         challengeId: challengeId,
         habitId: habitId,
-        datetime: datetime,
+        dayOfProgram: dayOfProgram,
         quantityPerSet: quantityPerSet,
         quantityOfSet: quantityOfSet,
         unitId: unitId,
@@ -123,7 +159,7 @@ class ChallengeDailyTrackingRepositoryImpl
       updateChallengeDailyTracking({
     required String challengeDailyTrackingId,
     required String habitId,
-    required DateTime datetime,
+    required int dayOfProgram,
     required int quantityPerSet,
     required int quantityOfSet,
     required String unitId,
@@ -136,7 +172,7 @@ class ChallengeDailyTrackingRepositoryImpl
         challengeDailyTrackingId,
         ChallengeDailyTrackingUpdateRequestModel(
           habitId: habitId,
-          datetime: datetime,
+          dayOfProgram: dayOfProgram,
           quantityPerSet: quantityPerSet,
           quantityOfSet: quantityOfSet,
           unitId: unitId,

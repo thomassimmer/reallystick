@@ -7,7 +7,6 @@ sealed class ChallengeDailyTrackingCreationEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-
 class ChallengeDailyTrackingCreationFormHabitChangedEvent
     extends ChallengeDailyTrackingCreationEvent {
   final String? habitId;
@@ -50,14 +49,15 @@ class ChallengeDailyTrackingCreationFormUnitChangedEvent
   List<Object?> get props => [unitId];
 }
 
-class ChallengeDailyTrackingCreationFormDateTimeChangedEvent
+class ChallengeDailyTrackingCreationFormDayOfProgramChangedEvent
     extends ChallengeDailyTrackingCreationEvent {
-  final DateTime? datetime;
+  final int dayOfProgram;
 
-  const ChallengeDailyTrackingCreationFormDateTimeChangedEvent(this.datetime);
+  const ChallengeDailyTrackingCreationFormDayOfProgramChangedEvent(
+      this.dayOfProgram);
 
   @override
-  List<Object?> get props => [datetime];
+  List<Object?> get props => [dayOfProgram];
 }
 
 class ChallengeDailyTrackingCreationFormWeightChangedEvent

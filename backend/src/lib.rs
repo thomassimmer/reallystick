@@ -150,6 +150,7 @@ pub mod features {
             pub mod get_challenge_participations;
             pub mod get_challenge_statistics;
             pub mod get_challenges;
+            pub mod get_challenges_daily_trackings;
             pub mod update_challenge;
             pub mod update_challenge_daily_tracking;
             pub mod update_challenge_participation;

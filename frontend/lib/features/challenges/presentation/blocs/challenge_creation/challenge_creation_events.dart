@@ -44,13 +44,3 @@ class ChallengeCreationFormStartDateChangedEvent
   @override
   List<Object?> get props => [startDate];
 }
-
-class ChallengeCreationFormEndDateChangedEvent
-    extends ChallengeCreationFormEvent {
-  final DateTime? endDate;
-
-  const ChallengeCreationFormEndDateChangedEvent(this.endDate);
-
-  @override
-  List<Object?> get props => [endDate];
-}

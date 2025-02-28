@@ -96,7 +96,7 @@ pub async fn create_challenge_daily_tracking(
         habit_id: body.habit_id,
         created_at: Utc::now(),
         challenge_id: body.challenge_id,
-        datetime: body.datetime,
+        day_of_program: body.day_of_program,
         quantity_per_set: body.quantity_per_set,
         quantity_of_set: body.quantity_of_set,
         unit_id: body.unit_id,

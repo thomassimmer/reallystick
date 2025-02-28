@@ -5,7 +5,7 @@ class ChallengeDailyTrackingDataModel extends Equatable {
   final String id;
   final String habitId;
   final String challengeId;
-  final DateTime datetime;
+  final int dayOfProgram;
   final int quantityPerSet;
   final int quantityOfSet;
   final String unitId;
@@ -16,7 +16,7 @@ class ChallengeDailyTrackingDataModel extends Equatable {
     required this.id,
     required this.habitId,
     required this.challengeId,
-    required this.datetime,
+    required this.dayOfProgram,
     required this.quantityPerSet,
     required this.quantityOfSet,
     required this.unitId,
@@ -29,7 +29,7 @@ class ChallengeDailyTrackingDataModel extends Equatable {
       id: json['id'] as String,
       habitId: json['habit_id'] as String,
       challengeId: json['challenge_id'] as String,
-      datetime: DateTime.parse(json['datetime'] as String),
+      dayOfProgram: json['day_of_program'] as int,
       quantityPerSet: json['quantity_per_set'] as int,
       quantityOfSet: json['quantity_of_set'] as int,
       unitId: json['unit_id'] as String,
@@ -42,7 +42,7 @@ class ChallengeDailyTrackingDataModel extends Equatable {
         id: id,
         habitId: habitId,
         challengeId: challengeId,
-        datetime: datetime,
+        dayOfProgram: dayOfProgram,
         quantityPerSet: quantityPerSet,
         quantityOfSet: quantityOfSet,
         unitId: unitId,
@@ -55,7 +55,7 @@ class ChallengeDailyTrackingDataModel extends Equatable {
         id,
         habitId,
         challengeId,
-        datetime,
+        dayOfProgram,
         quantityPerSet,
         quantityOfSet,
         unitId,

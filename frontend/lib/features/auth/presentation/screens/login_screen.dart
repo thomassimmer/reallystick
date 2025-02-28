@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
@@ -128,6 +129,9 @@ class LoginScreenState extends State<LoginScreen>
         label: AppLocalizations.of(context)!.validationCode,
         obscureText: true,
         onFieldSubmitted: (_) => triggerLogin(),
+        inputFormatters: <TextInputFormatter>[
+          FilteringTextInputFormatter.digitsOnly
+        ],
       ),
       SizedBox(height: 24),
       ElevatedButton(

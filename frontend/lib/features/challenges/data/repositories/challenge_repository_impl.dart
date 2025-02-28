@@ -96,16 +96,15 @@ class ChallengeRepositoryImpl implements ChallengeRepository {
     required Map<String, String> description,
     required String icon,
     required DateTime? startDate,
-    required DateTime? endDate,
   }) async {
     try {
-      final challengeDataModel = await remoteDataSource.createChallenge(
-          ChallengeCreateRequestModel(
-              name: name,
-              description: description,
-              icon: icon,
-              startDate: startDate,
-              endDate: endDate));
+      final challengeDataModel =
+          await remoteDataSource.createChallenge(ChallengeCreateRequestModel(
+        name: name,
+        description: description,
+        icon: icon,
+        startDate: startDate,
+      ));
 
       return Right(challengeDataModel.toDomain());
     } on ParsingError {
@@ -139,7 +138,6 @@ class ChallengeRepositoryImpl implements ChallengeRepository {
     required Map<String, String> description,
     required String icon,
     required DateTime? startDate,
-    required DateTime? endDate,
   }) async {
     try {
       final challengeDataModel = await remoteDataSource.updateChallenge(
@@ -149,7 +147,6 @@ class ChallengeRepositoryImpl implements ChallengeRepository {
           description: description,
           icon: icon,
           startDate: startDate,
-          endDate: endDate,
         ),
       );
 

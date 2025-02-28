@@ -113,7 +113,7 @@ pub async fn update_challenge_daily_tracking(
     }
 
     challenge_daily_tracking.habit_id = body.habit_id;
-    challenge_daily_tracking.datetime = body.datetime;
+    challenge_daily_tracking.day_of_program = body.day_of_program;
     challenge_daily_tracking.quantity_per_set = body.quantity_per_set;
     challenge_daily_tracking.quantity_of_set = body.quantity_of_set;
     challenge_daily_tracking.unit_id = body.unit_id;

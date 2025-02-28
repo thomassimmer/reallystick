@@ -1,5 +1,3 @@
-use chrono::{DateTime, Utc};
-
 use serde::Deserialize;
 use uuid::Uuid;
 
@@ -19,8 +17,13 @@ pub struct GetChallengeDailyTrackingsParams {
 }
 
 #[derive(Deserialize)]
+pub struct GetMultipleChallengesDailyTrackingsRequest {
+    pub challenge_ids: Vec<Uuid>,
+}
+
+#[derive(Deserialize)]
 pub struct ChallengeDailyTrackingUpdateRequest {
-    pub datetime: DateTime<Utc>,
+    pub day_of_program: i32,
     pub habit_id: Uuid,
     pub quantity_per_set: i32,
     pub quantity_of_set: i32,
@@ -33,7 +36,7 @@ pub struct ChallengeDailyTrackingUpdateRequest {
 pub struct ChallengeDailyTrackingCreateRequest {
     pub challenge_id: Uuid,
     pub habit_id: Uuid,
-    pub datetime: DateTime<Utc>,
+    pub day_of_program: i32,
     pub quantity_per_set: i32,
     pub quantity_of_set: i32,
     pub unit_id: Uuid,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
@@ -32,7 +33,7 @@ class UpdateDailyTrackingModal extends StatefulWidget {
 
 class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
   String? _selectedHabitId;
-  DateTime _selectedDateTime = DateTime.now();
+  int _selectedDayOfProgram = 0;
   String? _selectedUnitId;
   int? _quantityPerSet;
   int _quantityOfSet = 1;
@@ -63,7 +64,7 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
       setState(() {
         _selectedHabitId = widget.challengeDailyTracking.habitId;
         _selectedUnitId = widget.challengeDailyTracking.unitId;
-        _selectedDateTime = widget.challengeDailyTracking.datetime;
+        _selectedDayOfProgram = widget.challengeDailyTracking.dayOfProgram;
         _quantityOfSet = widget.challengeDailyTracking.quantityOfSet;
         _quantityPerSet = widget.challengeDailyTracking.quantityPerSet;
         _weight = widget.challengeDailyTracking.weight;
@@ -92,7 +93,8 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
     );
 
     challengeDailyTrackingFormBloc.add(
-      ChallengeDailyTrackingUpdateFormDateTimeChangedEvent(_selectedDateTime),
+      ChallengeDailyTrackingUpdateFormDayOfProgramChangedEvent(
+          _selectedDayOfProgram),
     );
 
     challengeDailyTrackingFormBloc.add(
@@ -122,7 +124,7 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
               UpdateChallengeDailyTrackingEvent(
             challengeId: widget.challengeDailyTracking.challengeId,
             habitId: _selectedHabitId!,
-            datetime: _selectedDateTime,
+            dayOfProgram: _selectedDayOfProgram,
             challengeDailyTrackingId: widget.challengeDailyTracking.id,
             quantityOfSet: _quantityOfSet,
             quantityPerSet: _quantityPerSet ?? 0,
@@ -149,9 +151,10 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
         habitState is HabitsLoaded &&
         profileState is ProfileAuthenticated) {
       final userLocale = profileState.profile.locale;
-
       final habits = habitState.habits;
       final units = habitState.units;
+      final challenge =
+          challengeState.challenges[widget.challengeDailyTracking.challengeId]!;
 
       final displayHabitErrorMessage = context.select(
         (ChallengeDailyTrackingUpdateFormBloc bloc) {
@@ -189,9 +192,9 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
         },
       );
 
-      final displayDateTimeErrorMessage = context.select(
+      final displayDayOfProgramErrorMessage = context.select(
         (ChallengeDailyTrackingUpdateFormBloc bloc) {
-          final error = bloc.state.datetime.displayError;
+          final error = bloc.state.dayOfProgram.displayError;
           return error != null
               ? getTranslatedMessage(context, ErrorMessage(error.messageKey))
               : null;
@@ -283,89 +286,78 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
 
           const SizedBox(height: 16),
 
-          // Date & Time Selector
-          Row(
-            children: [
-              // Day Selector
-              Expanded(
-                child: TextButton(
-                  onPressed: () async {
-                    final pickedDate = await showDatePicker(
-                      context: context,
-                      initialDate: _selectedDateTime,
-                      firstDate: DateTime(2000),
-                      lastDate: DateTime(2100),
-                    );
-                    if (pickedDate != null) {
-                      setState(
-                        () {
-                          _selectedDateTime = DateTime(
+          if (challenge.startDate != null) ...[
+            // Date & Time Selector
+            Row(
+              children: [
+                // Day Selector
+                Expanded(
+                  child: TextButton(
+                    onPressed: () async {
+                      final pickedDate = await showDatePicker(
+                        context: context,
+                        initialDate: challenge.startDate!
+                            .add(Duration(days: _selectedDayOfProgram)),
+                        firstDate: DateTime(2000),
+                        lastDate: DateTime(2100),
+                      );
+                      if (pickedDate != null) {
+                        setState(() {
+                          _selectedDayOfProgram = DateTime(
                             pickedDate.year,
                             pickedDate.month,
                             pickedDate.day,
-                            _selectedDateTime.hour,
-                            _selectedDateTime.minute,
-                          );
-                        },
-                      );
-                    }
-                    BlocProvider.of<ChallengeDailyTrackingUpdateFormBloc>(
-                            context)
-                        .add(
-                      ChallengeDailyTrackingUpdateFormDateTimeChangedEvent(
-                        _selectedDateTime,
-                      ),
-                    );
-                  },
-                  child: Text(
-                    DateFormat.yMMMd().format(_selectedDateTime),
-                    style: context.typographies.body,
-                  ),
-                ),
-              ),
-
-              const SizedBox(width: 16),
-
-              // Time Selector
-              Expanded(
-                child: TextButton(
-                  onPressed: () async {
-                    final pickedTime = await showTimePicker(
-                      context: context,
-                      initialTime: TimeOfDay.fromDateTime(_selectedDateTime),
-                    );
-                    if (pickedTime != null) {
-                      setState(() {
-                        _selectedDateTime = DateTime(
-                          _selectedDateTime.year,
-                          _selectedDateTime.month,
-                          _selectedDateTime.day,
-                          pickedTime.hour,
-                          pickedTime.minute,
-                        );
-                      });
+                            0,
+                            0,
+                          ).difference(challenge.startDate!).inDays;
+                        });
+                      }
                       BlocProvider.of<ChallengeDailyTrackingUpdateFormBloc>(
                               context)
                           .add(
-                              ChallengeDailyTrackingUpdateFormDateTimeChangedEvent(
-                                  _selectedDateTime));
-                    }
-                  },
-                  child: Text(
-                    DateFormat.Hm().format(_selectedDateTime),
-                    style: context.typographies.body,
+                        ChallengeDailyTrackingUpdateFormDayOfProgramChangedEvent(
+                            _selectedDayOfProgram),
+                      );
+                    },
+                    child: Text(
+                      DateFormat.yMMMd().format(
+                        challenge.startDate!.add(
+                          Duration(days: _selectedDayOfProgram),
+                        ),
+                      ),
+                      style: context.typographies.body,
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
+              ],
+            ),
+          ] else ...[
+            // Day of program selector
+            CustomTextField(
+              label: AppLocalizations.of(context)!.dayOfProgram,
+              keyboardType: TextInputType.number,
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.digitsOnly
+              ],
+              onChanged: (value) {
+                setState(() {
+                  _selectedDayOfProgram = (int.tryParse(value) ?? 1) - 1;
+                });
+                BlocProvider.of<ChallengeDailyTrackingUpdateFormBloc>(context)
+                    .add(
+                  ChallengeDailyTrackingUpdateFormDayOfProgramChangedEvent(
+                      _selectedDayOfProgram),
+                );
+              },
+            ),
+          ],
 
-          if (displayDateTimeErrorMessage != null)
+          if (displayDayOfProgramErrorMessage != null)
             Padding(
               padding:
                   const EdgeInsets.symmetric(horizontal: 22.0, vertical: 8),
               child: Text(
-                displayDateTimeErrorMessage,
+                displayDayOfProgramErrorMessage,
                 style: TextStyle(
                   color: context.colors.error,
                   fontSize: 12.0,

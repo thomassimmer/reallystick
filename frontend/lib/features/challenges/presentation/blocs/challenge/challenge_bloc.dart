@@ -8,16 +8,19 @@ import 'package:reallystick/features/auth/domain/errors/domain_error.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_bloc.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_events.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_states.dart';
+import 'package:reallystick/features/challenges/domain/entities/challenge_daily_tracking.dart';
 import 'package:reallystick/features/challenges/domain/errors/domain_error.dart';
 import 'package:reallystick/features/challenges/domain/usecases/create_challenge_daily_tracking_usecase.dart';
 import 'package:reallystick/features/challenges/domain/usecases/create_challenge_participation_usecase.dart';
 import 'package:reallystick/features/challenges/domain/usecases/create_challenge_usecase.dart';
 import 'package:reallystick/features/challenges/domain/usecases/delete_challenge_daily_tracking_usecase.dart';
 import 'package:reallystick/features/challenges/domain/usecases/delete_challenge_participation_usecase.dart';
+import 'package:reallystick/features/challenges/domain/usecases/delete_challenge_usecase.dart';
 import 'package:reallystick/features/challenges/domain/usecases/get_challenge_daily_trackings_usecase.dart';
 import 'package:reallystick/features/challenges/domain/usecases/get_challenge_participations_usecase.dart';
 import 'package:reallystick/features/challenges/domain/usecases/get_challenge_statistics_usecase.dart';
 import 'package:reallystick/features/challenges/domain/usecases/get_challenge_usecase.dart';
+import 'package:reallystick/features/challenges/domain/usecases/get_challenges_daily_trackings_usecase.dart';
 import 'package:reallystick/features/challenges/domain/usecases/get_challenges_usecase.dart';
 import 'package:reallystick/features/challenges/domain/usecases/update_challenge_daily_tracking_usecase.dart';
 import 'package:reallystick/features/challenges/domain/usecases/update_challenge_participation_usecase.dart';
@@ -58,8 +61,12 @@ class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
   final DeleteChallengeParticipationUsecase
       deleteChallengeParticipationUsecase =
       GetIt.instance<DeleteChallengeParticipationUsecase>();
+  final DeleteChallengeUsecase deleteChallengeUsecase =
+      GetIt.instance<DeleteChallengeUsecase>();
   final GetChallengeUsecase getChallengeUsecase =
       GetIt.instance<GetChallengeUsecase>();
+  final GetChallengesDailyTrackingsUsecase getChallengesDailyTrackingsUsecase =
+      GetIt.instance<GetChallengesDailyTrackingsUsecase>();
 
   ChallengeBloc({required this.authBloc}) : super(ChallengesLoading()) {
     authBlocSubscription = authBloc.stream.listen((authState) {
@@ -77,6 +84,7 @@ class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
     on<CreateChallengeParticipationEvent>(createChallengeParticipation);
     on<UpdateChallengeParticipationEvent>(updateChallengeParticipation);
     on<DeleteChallengeParticipationEvent>(deleteChallengeParticipation);
+    on<DeleteChallengeEvent>(deleteChallenge);
     on<GetChallengeEvent>(_getChallenge);
     on<GetChallengeDailyTrackingsEvent>(_getChallengeDailyTrackings);
   }
@@ -111,7 +119,7 @@ class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
             final resultOfGetChallengeStatisticsUsecase =
                 await getChallengeStatisticsUsecase.call();
 
-            resultOfGetChallengeStatisticsUsecase.fold(
+            await resultOfGetChallengeStatisticsUsecase.fold(
               (error) {
                 if (error is ShouldLogoutError) {
                   authBloc.add(
@@ -121,18 +129,47 @@ class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
                       message: ErrorMessage(error.messageKey)));
                 }
               },
-              (challengeStatistics) {
-                emit(
-                  ChallengesLoaded(
-                    challengeParticipations: challengeParticipations,
-                    challenges: Map.fromEntries(challenges
-                        .map((challenge) => MapEntry(challenge.id, challenge))),
-                    challengeDailyTrackings: {},
-                    challengeStatistics: Map.fromEntries(challengeStatistics
-                        .map((challengeStatistic) => MapEntry(
-                            challengeStatistic.challengeId,
-                            challengeStatistic))),
-                  ),
+              (challengeStatistics) async {
+                final resultOfGetChallengesDailyTrackingsUsecase =
+                    await getChallengesDailyTrackingsUsecase.call(
+                        challengeIds: challenges.map((c) => c.id).toList());
+
+                resultOfGetChallengesDailyTrackingsUsecase.fold(
+                  (error) {
+                    if (error is ShouldLogoutError) {
+                      authBloc.add(AuthLogoutEvent(
+                          message: ErrorMessage(error.messageKey)));
+                    } else {
+                      emit(ChallengesFailed(
+                          message: ErrorMessage(error.messageKey)));
+                    }
+                  },
+                  (challengesDailyTrackings) {
+                    Map<String, List<ChallengeDailyTracking>>
+                        mapOfDailyTrackings = Map.fromEntries(
+                      challenges.map(
+                        (challenge) => MapEntry(challenge.id, []),
+                      ),
+                    );
+                    for (final challengeDailyTracking
+                        in challengesDailyTrackings) {
+                      mapOfDailyTrackings[challengeDailyTracking.challengeId]!
+                          .add(challengeDailyTracking);
+                    }
+
+                    emit(
+                      ChallengesLoaded(
+                        challengeParticipations: challengeParticipations,
+                        challenges: Map.fromEntries(challenges.map(
+                            (challenge) => MapEntry(challenge.id, challenge))),
+                        challengeDailyTrackings: mapOfDailyTrackings,
+                        challengeStatistics: Map.fromEntries(challengeStatistics
+                            .map((challengeStatistic) => MapEntry(
+                                challengeStatistic.challengeId,
+                                challengeStatistic))),
+                      ),
+                    );
+                  },
                 );
               },
             );
@@ -152,7 +189,6 @@ class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
       description: event.description,
       icon: "material::${event.icon.toString()}",
       startDate: event.startDate,
-      endDate: event.endDate,
     );
 
     await resultCreateChallengeUsecase.fold(
@@ -227,7 +263,6 @@ class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
       description: event.description,
       icon: "material::${event.icon.toString()}",
       startDate: event.startDate,
-      endDate: event.endDate,
     );
 
     resultUpdateChallengeUsecase.fold(
@@ -272,7 +307,7 @@ class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
     final resultCreateChallengeDailyTrackingUsecase =
         await createChallengeDailyTrackingUsecase.call(
       habitId: event.habitId,
-      datetime: event.datetime,
+      dayOfProgram: event.dayOfProgram,
       challengeId: event.challengeId,
       quantityOfSet: event.quantityOfSet,
       quantityPerSet: event.quantityPerSet,
@@ -324,7 +359,7 @@ class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
         await updateChallengeDailyTrackingUsecase.call(
       challengeDailyTrackingId: event.challengeDailyTrackingId,
       habitId: event.habitId,
-      datetime: event.datetime,
+      dayOfProgram: event.dayOfProgram,
       quantityOfSet: event.quantityOfSet,
       quantityPerSet: event.quantityPerSet,
       unitId: event.unitId,
@@ -558,6 +593,93 @@ class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
             message: SuccessMessage("challengeParticipationDeleted"),
           ),
         );
+      },
+    );
+  }
+
+  Future<void> deleteChallenge(
+      DeleteChallengeEvent event, Emitter<ChallengeState> emit) async {
+    final currentState = state as ChallengesLoaded;
+    emit(ChallengesLoading());
+
+    final resultDeleteChallengeUsecase = await deleteChallengeUsecase.call(
+      challengeId: event.challengeId,
+    );
+
+    await resultDeleteChallengeUsecase.fold(
+      (error) {
+        if (error is ShouldLogoutError) {
+          authBloc
+              .add(AuthLogoutEvent(message: ErrorMessage(error.messageKey)));
+        } else {
+          emit(
+            ChallengesLoaded(
+              challengeDailyTrackings: currentState.challengeDailyTrackings,
+              challengeParticipations: currentState.challengeParticipations,
+              challenges: currentState.challenges,
+              challengeStatistics: currentState.challengeStatistics,
+              message: ErrorMessage(error.messageKey),
+            ),
+          );
+        }
+      },
+      (_) async {
+        final newChallenges = currentState.challenges;
+        newChallenges.remove(event.challengeId);
+
+        if (event.challengeParticipationId != null) {
+          final resultDeleteChallengeParticipationUsecase =
+              await deleteChallengeParticipationUsecase.call(
+            challengeParticipationId: event.challengeParticipationId!,
+          );
+
+          resultDeleteChallengeParticipationUsecase.fold(
+            (error) {
+              if (error is ShouldLogoutError) {
+                authBloc.add(
+                    AuthLogoutEvent(message: ErrorMessage(error.messageKey)));
+              } else {
+                emit(
+                  ChallengesLoaded(
+                    challengeDailyTrackings:
+                        currentState.challengeDailyTrackings,
+                    challengeParticipations:
+                        currentState.challengeParticipations,
+                    challenges: newChallenges,
+                    challengeStatistics: currentState.challengeStatistics,
+                    message: ErrorMessage(error.messageKey),
+                  ),
+                );
+              }
+            },
+            (_) {
+              final newChallengeParticipations = currentState
+                  .challengeParticipations
+                  .where((hdt) => hdt.id != event.challengeParticipationId!)
+                  .toList();
+
+              emit(
+                ChallengesLoaded(
+                  challengeDailyTrackings: currentState.challengeDailyTrackings,
+                  challengeParticipations: newChallengeParticipations,
+                  challenges: newChallenges,
+                  challengeStatistics: currentState.challengeStatistics,
+                  message: SuccessMessage("challengeDeleted"),
+                ),
+              );
+            },
+          );
+        } else {
+          emit(
+            ChallengesLoaded(
+              challengeDailyTrackings: currentState.challengeDailyTrackings,
+              challengeParticipations: currentState.challengeParticipations,
+              challenges: newChallenges,
+              challengeStatistics: currentState.challengeStatistics,
+              message: SuccessMessage("challengeDeleted"),
+            ),
+          );
+        }
       },
     );
   }

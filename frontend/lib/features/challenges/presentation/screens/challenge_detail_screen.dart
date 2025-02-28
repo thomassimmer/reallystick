@@ -68,6 +68,14 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
     context.read<ChallengeBloc>().add(deleteChallengeParticipationEvent);
   }
 
+  void _deleteChallenge(String challengeId, String? challengeParticipationId) {
+    final deleteChallengeEvent = DeleteChallengeEvent(
+      challengeId: challengeId,
+      challengeParticipationId: challengeParticipationId,
+    );
+    context.read<ChallengeBloc>().add(deleteChallengeEvent);
+  }
+
   void _openColorPicker(String challengeParticipationId) async {
     await showModalBottomSheet(
       context: context,
@@ -182,33 +190,43 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
                 ],
               ),
               actions: [
-                if (challengeParticipation != null)
+                if (challenge.creator == profileState.profile.id ||
+                    challengeParticipation != null)
                   PopupMenuButton<String>(
                     color: context.colors.backgroundDark,
                     onSelected: (value) async {
                       if (value == 'quit') {
-                        _quitChallenge(challengeParticipation.id);
+                        _quitChallenge(challengeParticipation!.id);
                       } else if (value == 'change_color') {
-                        _openColorPicker(challengeParticipation.id);
-                      } else if (value == 'udpate') {
+                        _openColorPicker(challengeParticipation!.id);
+                      } else if (value == 'update') {
                         context.goNamed(
-                          'challengeUpdate',
+                          'updateChallenge',
                           pathParameters: {'challengeId': challenge.id},
                         );
-                      } else if (value == 'change_color') {
-                        // TODO
+                      } else if (value == 'delete') {
+                        _deleteChallenge(
+                          challenge.id,
+                          challengeParticipation?.id,
+                        );
+                        context.goNamed(
+                          'challenges',
+                        );
                       }
                     },
                     itemBuilder: (BuildContext context) => [
-                      PopupMenuItem(
-                        value: 'quit',
-                        child: Text(
-                            AppLocalizations.of(context)!.quitThisChallenge),
-                      ),
-                      PopupMenuItem(
-                        value: 'change_color',
-                        child: Text(AppLocalizations.of(context)!.changeColor),
-                      ),
+                      if (challengeParticipation != null) ...[
+                        PopupMenuItem(
+                          value: 'quit',
+                          child: Text(
+                              AppLocalizations.of(context)!.quitThisChallenge),
+                        ),
+                        PopupMenuItem(
+                          value: 'change_color',
+                          child:
+                              Text(AppLocalizations.of(context)!.changeColor),
+                        ),
+                      ],
                       if (challenge.creator == profileState.profile.id) ...[
                         PopupMenuItem(
                           value: 'update',
@@ -270,7 +288,8 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
                       challengeId: challenge.id,
                     ),
                     SizedBox(height: 25),
-                    if (challengeParticipation != null) ...[
+                    if (challenge.creator == profileState.profile.id ||
+                        challengeParticipation != null) ...[
                       DailyTrackingCarouselWidget(
                         challengeDailyTrackings: challengeDailyTrackings,
                         challengeColor: challengeColor,

@@ -1,6 +1,18 @@
+class ChallengeDailyTrackingsGetRequestModel {
+  final List<String> challengeIds;
+
+  const ChallengeDailyTrackingsGetRequestModel({required this.challengeIds});
+
+  Map<String, dynamic> toJson() {
+    return {
+      'challenge_ids': challengeIds,
+    };
+  }
+}
+
 class ChallengeDailyTrackingUpdateRequestModel {
   final String habitId;
-  final DateTime datetime;
+  final int dayOfProgram;
   final int quantityPerSet;
   final int quantityOfSet;
   final String unitId;
@@ -9,7 +21,7 @@ class ChallengeDailyTrackingUpdateRequestModel {
 
   const ChallengeDailyTrackingUpdateRequestModel({
     required this.habitId,
-    required this.datetime,
+    required this.dayOfProgram,
     required this.quantityPerSet,
     required this.quantityOfSet,
     required this.unitId,
@@ -20,7 +32,7 @@ class ChallengeDailyTrackingUpdateRequestModel {
   Map<String, dynamic> toJson() {
     return {
       'habit_id': habitId,
-      'datetime': datetime.toUtc().toIso8601String(),
+      'day_of_program': dayOfProgram,
       'quantity_per_set': quantityPerSet,
       'quantity_of_set': quantityOfSet,
       'unit_id': unitId,
@@ -33,7 +45,7 @@ class ChallengeDailyTrackingUpdateRequestModel {
 class ChallengeDailyTrackingCreateRequestModel {
   final String challengeId;
   final String habitId;
-  final DateTime datetime;
+  final int dayOfProgram;
   final int quantityPerSet;
   final int quantityOfSet;
   final String unitId;
@@ -43,7 +55,7 @@ class ChallengeDailyTrackingCreateRequestModel {
   const ChallengeDailyTrackingCreateRequestModel({
     required this.challengeId,
     required this.habitId,
-    required this.datetime,
+    required this.dayOfProgram,
     required this.quantityPerSet,
     required this.quantityOfSet,
     required this.unitId,
@@ -55,7 +67,7 @@ class ChallengeDailyTrackingCreateRequestModel {
     return {
       'challenge_id': challengeId,
       'habit_id': habitId,
-      'datetime': datetime.toUtc().toIso8601String(),
+      'day_of_program': dayOfProgram,
       'quantity_per_set': quantityPerSet,
       'quantity_of_set': quantityOfSet,
       'unit_id': unitId,

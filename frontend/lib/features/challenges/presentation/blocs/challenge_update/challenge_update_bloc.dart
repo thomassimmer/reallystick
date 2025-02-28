@@ -14,7 +14,6 @@ class ChallengeUpdateFormBloc
     on<ChallengeUpdateFormDescriptionChangedEvent>(_descriptionChanged);
     on<ChallengeUpdateFormIconChangedEvent>(_iconChanged);
     on<ChallengeUpdateFormStartDateChangedEvent>(_startDateChanged);
-    on<ChallengeUpdateFormEndDateChangedEvent>(_endDateChanged);
   }
 
   Future<void> _nameChanged(
@@ -36,7 +35,6 @@ class ChallengeUpdateFormBloc
           ...state.description.values.toList(),
           state.icon,
           state.startDate,
-          state.endDate,
         ]),
       ),
     );
@@ -62,7 +60,6 @@ class ChallengeUpdateFormBloc
           ...state.name.values.toList(),
           state.icon,
           state.startDate,
-          state.endDate,
         ]),
       ),
     );
@@ -79,7 +76,6 @@ class ChallengeUpdateFormBloc
           ...state.name.values.toList(),
           ...state.description.values.toList(),
           state.startDate,
-          state.endDate,
         ]),
       ),
     );
@@ -96,24 +92,6 @@ class ChallengeUpdateFormBloc
           ...state.name.values.toList(),
           ...state.description.values.toList(),
           state.icon,
-          state.endDate,
-        ]),
-      ),
-    );
-  }
-
-  Future<void> _endDateChanged(
-      ChallengeUpdateFormEndDateChangedEvent event, Emitter emit) async {
-    final endDate = ChallengeDatetime.dirty(event.endDate);
-
-    emit(
-      state.copyWith(
-        endDate: endDate,
-        isValid: Formz.validate([
-          ...state.name.values.toList(),
-          ...state.description.values.toList(),
-          state.icon,
-          state.startDate,
         ]),
       ),
     );

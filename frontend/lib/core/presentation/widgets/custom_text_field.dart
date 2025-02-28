@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 
 class CustomTextField extends StatefulWidget {
@@ -13,6 +14,7 @@ class CustomTextField extends StatefulWidget {
   final String? errorText;
   final void Function(String)? onChanged;
   final void Function(String)? onFieldSubmitted;
+  final List<TextInputFormatter>? inputFormatters;
 
   const CustomTextField({
     this.controller,
@@ -26,6 +28,7 @@ class CustomTextField extends StatefulWidget {
     this.errorText,
     this.onChanged,
     this.onFieldSubmitted,
+    this.inputFormatters,
     Key? key,
   }) : super(key: key);
 
@@ -101,6 +104,7 @@ class CustomTextFieldState extends State<CustomTextField> {
               : null,
         ),
         validator: widget.validator,
+        inputFormatters: widget.inputFormatters,
       ),
     );
   }

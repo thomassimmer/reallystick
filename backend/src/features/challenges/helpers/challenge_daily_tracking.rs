@@ -37,6 +37,23 @@ pub async fn get_challenge_daily_trackings_for_challenge(
     .await
 }
 
+pub async fn get_challenge_daily_trackings_for_challenges(
+    conn: &mut PgConnection,
+    challenge_ids: Vec<Uuid>,
+) -> Result<Vec<ChallengeDailyTracking>, sqlx::Error> {
+    sqlx::query_as!(
+        ChallengeDailyTracking,
+        r#"
+        SELECT *
+        FROM challenge_daily_trackings
+        WHERE challenge_id = ANY($1)
+        "#,
+        &challenge_ids
+    )
+    .fetch_all(conn)
+    .await
+}
+
 pub async fn update_challenge_daily_tracking(
     conn: &mut PgConnection,
     challenge_daily_tracking: &ChallengeDailyTracking,
@@ -46,7 +63,7 @@ pub async fn update_challenge_daily_tracking(
         r#"
         UPDATE challenge_daily_trackings
         SET
-            datetime = $1,
+            day_of_program = $1,
             quantity_per_set = $2,
             quantity_of_set = $3,
             unit_id = $4,
@@ -54,7 +71,7 @@ pub async fn update_challenge_daily_tracking(
             weight_unit_id = $6
         WHERE id = $7
         "#,
-        challenge_daily_tracking.datetime,
+        challenge_daily_tracking.day_of_program,
         challenge_daily_tracking.quantity_per_set,
         challenge_daily_tracking.quantity_of_set,
         challenge_daily_tracking.unit_id,
@@ -77,7 +94,7 @@ pub async fn create_challenge_daily_tracking(
             id,
             habit_id,
             challenge_id,
-            datetime,
+            day_of_program,
             created_at,
             quantity_per_set,
             quantity_of_set,
@@ -90,7 +107,7 @@ pub async fn create_challenge_daily_tracking(
         challenge_daily_tracking.id,
         challenge_daily_tracking.habit_id,
         challenge_daily_tracking.challenge_id,
-        challenge_daily_tracking.datetime,
+        challenge_daily_tracking.day_of_program,
         challenge_daily_tracking.created_at,
         challenge_daily_tracking.quantity_per_set,
         challenge_daily_tracking.quantity_of_set,

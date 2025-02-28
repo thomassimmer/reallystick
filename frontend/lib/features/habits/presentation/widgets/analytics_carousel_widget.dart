@@ -20,8 +20,8 @@ class AnalyticsCarouselWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final habitState = context.read<HabitBloc>().state;
-    final profileState = context.read<ProfileBloc>().state;
+    final habitState = context.watch<HabitBloc>().state;
+    final profileState = context.watch<ProfileBloc>().state;
 
     if (habitState is HabitsLoaded && profileState is ProfileAuthenticated) {
       final userLocale = profileState.profile.locale;

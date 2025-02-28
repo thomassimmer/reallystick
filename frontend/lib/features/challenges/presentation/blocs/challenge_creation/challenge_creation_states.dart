@@ -10,7 +10,6 @@ final class ChallengeCreationFormState extends Equatable {
   final Map<String, DescriptionValidator> description;
   final IconValidator icon;
   final ChallengeDatetime startDate;
-  final ChallengeDatetime endDate;
   final bool isValid;
   final String? errorMessage;
 
@@ -19,7 +18,6 @@ final class ChallengeCreationFormState extends Equatable {
     this.description = const {},
     this.icon = const IconValidator.pure(),
     this.startDate = const ChallengeDatetime.pure(),
-    this.endDate = const ChallengeDatetime.pure(),
     this.isValid = true,
     this.errorMessage,
   });
@@ -30,7 +28,6 @@ final class ChallengeCreationFormState extends Equatable {
         icon,
         description,
         startDate,
-        endDate,
         isValid,
         errorMessage,
       ];
@@ -40,7 +37,6 @@ final class ChallengeCreationFormState extends Equatable {
     Map<String, DescriptionValidator>? description,
     IconValidator? icon,
     ChallengeDatetime? startDate,
-    ChallengeDatetime? endDate,
     Password? password,
     bool? isValid,
     String? errorMessage,
@@ -50,7 +46,6 @@ final class ChallengeCreationFormState extends Equatable {
       description: description ?? this.description,
       icon: icon ?? this.icon,
       startDate: startDate ?? this.startDate,
-      endDate: endDate ?? this.endDate,
       isValid: isValid ?? this.isValid,
       errorMessage: errorMessage ?? this.errorMessage,
     );

@@ -16,7 +16,6 @@ abstract class ChallengeRepository {
     required Map<String, String> description,
     required String icon,
     required DateTime? startDate,
-    required DateTime? endDate,
   });
   Future<Either<DomainError, Challenge>> updateChallenge({
     required String challengeId,
@@ -24,7 +23,6 @@ abstract class ChallengeRepository {
     required Map<String, String> description,
     required String icon,
     required DateTime? startDate,
-    required DateTime? endDate,
   });
   Future<Either<DomainError, void>> deleteChallenge({
     required String challengeId,
