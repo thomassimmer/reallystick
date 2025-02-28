@@ -9,7 +9,9 @@ import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/challenges/domain/entities/challenge_daily_tracking.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_bloc.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_states.dart';
+import 'package:reallystick/features/challenges/presentation/helpers/challenge_result.dart';
 import 'package:reallystick/features/challenges/presentation/screens/list_daily_trackings_modal.dart';
+import 'package:reallystick/features/habits/domain/entities/habit_daily_tracking.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_states.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
@@ -131,21 +133,18 @@ class DailyTrackingCarouselWidgetState
         (index) => startDate.add(Duration(days: index)),
       );
 
-      final Map<DateTime, int> numberOfTasksPerDay = {
+      final Map<DateTime, List<ChallengeDailyTracking>>
+          challengeDailyTrackingsPerDay = {
         for (var date in lastDays)
           date: widget.challengeDailyTrackings.where((tracking) {
-            if (challenge.startDate != null) {
-              return challenge.startDate!
-                  .add(Duration(days: tracking.dayOfProgram))
-                  .isSameDate(date);
+            if (startDate
+                .add(Duration(days: tracking.dayOfProgram))
+                .isSameDate(date)) {
+              return true;
             }
-            if (challengeParticipation != null) {
-              return challengeParticipation.startDate
-                  .add(Duration(days: tracking.dayOfProgram))
-                  .isSameDate(date);
-            }
+
             return false;
-          }).length
+          }).toList()
       };
 
       return Column(
@@ -173,9 +172,17 @@ class DailyTrackingCarouselWidgetState
             ),
             SizedBox(height: 10),
           ],
+          if (challengeParticipation != null) ...[
+            SizedBox(height: 10),
+            Text(
+              "${AppLocalizations.of(context)!.challengeParticipationStartDate} ${DateFormat.yMMMd().format(challengeParticipation.startDate)}",
+              style: const TextStyle(fontSize: 16),
+            ),
+            SizedBox(height: 20),
+          ],
           if (widget.challengeDailyTrackings.isNotEmpty) ...[
             SizedBox(
-              height: 60,
+              height: 80,
               child: ListView.builder(
                 controller: scrollController,
                 scrollDirection: Axis.horizontal,
@@ -185,6 +192,52 @@ class DailyTrackingCarouselWidgetState
                   final dayAbbreviation = challenge.startDate != null
                       ? DateFormat('Md', userLocale.toString()).format(datetime)
                       : "${index + 1}";
+
+                  bool? dailyObjectivesDone = true;
+
+                  final now = DateTime.now();
+                  final normalizedToday = DateTime(
+                    now.year,
+                    now.month,
+                    now.day,
+                  );
+                  final normalizedDatetime = DateTime(
+                    datetime.year,
+                    datetime.month,
+                    datetime.day,
+                  );
+
+                  if (normalizedDatetime.isAfter(normalizedToday)) {
+                    dailyObjectivesDone = null;
+                  } else {
+                    final challengeDailyTrackinsOnThisDate =
+                        challengeDailyTrackingsPerDay[datetime]!;
+
+                    for (final cdt in challengeDailyTrackinsOnThisDate) {
+                      final challengeDailyTrackingDate =
+                          startDate.add(Duration(days: cdt.dayOfProgram));
+
+                      List<HabitDailyTracking> habitDailyTrackingsOnThatDay =
+                          challengeParticipation != null
+                              ? habitState.habitDailyTrackings
+                                  .where((hdt) =>
+                                      hdt.datetime.isSameDate(
+                                          challengeDailyTrackingDate) &&
+                                      hdt.habitId == cdt.habitId)
+                                  .toList()
+                              : [];
+
+                      dailyObjectivesDone = checkIfDailyObjectiveWasDone(
+                        cdt,
+                        habitDailyTrackingsOnThatDay,
+                        habitState.units,
+                      );
+
+                      if (!dailyObjectivesDone) {
+                        break;
+                      }
+                    }
+                  }
 
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -208,7 +261,9 @@ class DailyTrackingCarouselWidgetState
                               ),
                               child: Center(
                                 child: Text(
-                                  numberOfTasksPerDay[datetime].toString(),
+                                  challengeDailyTrackingsPerDay[datetime]!
+                                      .length
+                                      .toString(),
                                   style: context.typographies.captionSmall
                                       .copyWith(
                                     color: Colors.white.withOpacity(0.5),
@@ -227,7 +282,9 @@ class DailyTrackingCarouselWidgetState
                             ),
                             child: Center(
                               child: Text(
-                                numberOfTasksPerDay[datetime].toString(),
+                                challengeDailyTrackingsPerDay[datetime]!
+                                    .length
+                                    .toString(),
                                 style:
                                     context.typographies.captionSmall.copyWith(
                                   color: Colors.white.withOpacity(0.5),
@@ -235,6 +292,29 @@ class DailyTrackingCarouselWidgetState
                               ),
                             ),
                           ),
+                        ],
+                        SizedBox(height: 5),
+                        if (dailyObjectivesDone != null) ...[
+                          if (dailyObjectivesDone) ...[
+                            Icon(
+                              Icons.check,
+                              size: 13,
+                              color: context.colors.success,
+                            ),
+                          ] else if (normalizedToday
+                              .isSameDate(normalizedDatetime)) ...[
+                            Icon(
+                              Icons.question_mark,
+                              size: 12,
+                              color: context.colors.warning,
+                            ),
+                          ] else ...[
+                            Icon(
+                              Icons.close,
+                              size: 13,
+                              color: context.colors.error,
+                            ),
+                          ]
                         ]
                       ],
                     ),

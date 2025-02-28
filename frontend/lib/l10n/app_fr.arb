@@ -30,6 +30,7 @@
   "challengeParticipationCreated": "Vous avez rejoint ce défi avec succès.",
   "challengeParticipationDeleted": "Votre participation à ce défi a bien été supprimée.",
   "challengeParticipationNotFoundError": "Vous ne semblez pas participer à cette habitude",
+  "challengeParticipationStartDate": "Défi rejoint le :",
   "challengeParticipationUpdated": "Vos changements ont bien été sauvegardés.",
   "challengeName": "Nom du défi",
   "challengeNameWrongSizeError": "Le nom du challenge ne doit pas être vide et doit contenir moins de 100 caractères.",

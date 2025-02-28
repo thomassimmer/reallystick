@@ -8,7 +8,9 @@ import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/challenges/domain/entities/challenge_daily_tracking.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_bloc.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_states.dart';
+import 'package:reallystick/features/challenges/presentation/helpers/challenge_result.dart';
 import 'package:reallystick/features/challenges/presentation/screens/update_daily_tracking_modal.dart';
+import 'package:reallystick/features/habits/domain/entities/habit_daily_tracking.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_states.dart';
 import 'package:reallystick/features/habits/presentation/helpers/translations.dart';
@@ -120,7 +122,32 @@ class ListDailyTrackingsModalState extends State<ListDailyTrackingsModal> {
 
                 final shouldDisplaySportSpecificInputsResult =
                     shouldDisplaySportSpecificInputs(
-                        habit, habitState.habitCategories);
+                  habit,
+                  habitState.habitCategories,
+                );
+
+                final challengeDailyTrackingDate = (challenge.startDate != null
+                        ? challenge.startDate!
+                        : challengeParticipation != null
+                            ? challengeParticipation.startDate
+                            : DateTime.now())
+                    .add(Duration(days: dailyTracking.dayOfProgram));
+
+                List<HabitDailyTracking> habitDailyTrackingsOnThatDay =
+                    challengeParticipation != null
+                        ? habitState.habitDailyTrackings
+                            .where((hdt) =>
+                                hdt.datetime
+                                    .isSameDate(challengeDailyTrackingDate) &&
+                                hdt.habitId == dailyTracking.habitId)
+                            .toList()
+                        : [];
+
+                final dailyObjectivesDone = checkIfDailyObjectiveWasDone(
+                  dailyTracking,
+                  habitDailyTrackingsOnThatDay,
+                  habitState.units,
+                );
 
                 return GestureDetector(
                   onTap: () => _openDailyTrackingUpdateModal(
@@ -137,6 +164,16 @@ class ListDailyTrackingsModalState extends State<ListDailyTrackingsModal> {
                             alignment: Alignment.topLeft,
                             child: Row(
                               children: [
+                                if (dailyObjectivesDone) ...[
+                                  Icon(
+                                    Icons.check,
+                                    size: 13,
+                                    color: context.colors.success,
+                                  ),
+                                  SizedBox(
+                                    width: 20,
+                                  ),
+                                ],
                                 Text(
                                   "${getRightTranslationFromJson(habit.shortName, userLocale)} - ",
                                   style: context.typographies.bodyLarge,
