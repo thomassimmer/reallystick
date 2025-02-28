@@ -261,7 +261,7 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
       unitIds: event.unitIds,
     );
 
-    await resultUpdateHabitUsecase.fold(
+    resultUpdateHabitUsecase.fold(
       (error) {
         if (error is ShouldLogoutError) {
           authBloc
@@ -279,7 +279,7 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
           );
         }
       },
-      (habit) async {
+      (habit) {
         currentState.habits[habit.id] = habit;
         emit(
           HabitsLoaded(
@@ -313,7 +313,7 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
       unitIds: event.unitIds,
     );
 
-    await resultMergeHabitsUseCase.fold(
+    resultMergeHabitsUseCase.fold(
       (error) {
         if (error is ShouldLogoutError) {
           authBloc
@@ -331,10 +331,16 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
           );
         }
       },
-      (habit) async {
+      (habit) {
         for (var habitParticipation in currentState.habitParticipations) {
           if (habitParticipation.habitId == event.habitToDeleteId) {
-            habitParticipation.habitId = event.habitToMergeOnId;
+            // Replace habitParticipation with old id only if there isn't already a habitParticipation with the new one
+            // Because there can be only one habitParticipation for a couple (user, habit).
+            if (currentState.habitParticipations
+                .where((hp) => hp.habitId == event.habitToMergeOnId)
+                .isEmpty) {
+              habitParticipation.habitId = event.habitToMergeOnId;
+            }
           }
         }
         for (var habitDailyTracking in currentState.habitDailyTrackings) {
