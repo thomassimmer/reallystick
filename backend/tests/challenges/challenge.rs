@@ -25,7 +25,15 @@ use uuid::Uuid;
 use crate::{
     auth::{login::user_logs_in, signup::user_signs_up, token::user_refreshes_token},
     challenges::challenge_participation::user_creates_a_challenge_participation,
+    habits::{
+        habit::user_creates_a_habit, habit_category::user_creates_a_habit_category,
+        unit::user_creates_a_unit,
+    },
     helpers::spawn_app,
+};
+
+use super::challenge_daily_tracking::{
+    user_creates_a_challenge_daily_tracking, user_gets_challenge_daily_trackings,
 };
 
 pub async fn user_creates_a_challenge(
@@ -45,6 +53,28 @@ pub async fn user_creates_a_challenge(
             "icon": "english_icon".to_string(),
             "start_date": Utc::now(),
         }))
+        .to_request();
+    let response = test::call_service(&app, req).await;
+
+    assert_eq!(200, response.status().as_u16());
+
+    let body = test::read_body(response).await;
+    let response: ChallengeResponse = serde_json::from_slice(&body).unwrap();
+
+    assert_eq!(response.code, "CHALLENGE_CREATED");
+    assert!(response.challenge.is_some());
+
+    response.challenge.unwrap().id
+}
+
+pub async fn user_duplicates_a_challenge(
+    app: impl Service<Request, Response = ServiceResponse<impl MessageBody>, Error = Error>,
+    access_token: &str,
+    challenge_id: Uuid,
+) -> Uuid {
+    let req = test::TestRequest::get()
+        .uri(&format!("/api/challenges/duplicate/{}", challenge_id))
+        .insert_header((header::AUTHORIZATION, format!("Bearer {}", access_token)))
         .to_request();
     let response = test::call_service(&app, req).await;
 
@@ -165,7 +195,6 @@ pub async fn user_can_create_a_challenge() {
     let challenges = user_gets_challenges(&app, &access_token).await;
     assert_eq!(challenges.len(), 1);
 
-    // Before it has been reviewed, other users can't see it
     let (access_token, _, _) = user_signs_up(&app, Some("testusername2")).await;
 
     let challenges = user_gets_challenges(&app, &access_token).await;
@@ -175,6 +204,69 @@ pub async fn user_can_create_a_challenge() {
 
     let challenges = user_gets_challenges(&app, &access_token).await;
     assert_eq!(challenges.len(), 1);
+}
+
+#[tokio::test]
+pub async fn user_can_duplicate_a_challenge() {
+    let app = spawn_app().await;
+
+    let (access_token, _) = user_logs_in(&app, "thomas", "").await;
+
+    let habit_category_id = user_creates_a_habit_category(&app, &access_token).await;
+    let unit_id = user_creates_a_unit(&app, &access_token).await;
+    let habit_id = user_creates_a_habit(
+        &app,
+        &access_token,
+        habit_category_id,
+        HashSet::from([unit_id]),
+    )
+    .await;
+
+    let challenges = user_gets_challenges(&app, &access_token).await;
+    assert!(challenges.is_empty());
+
+    let challenge_id = user_creates_a_challenge(&app, &access_token).await;
+
+    let challenge_daily_tracking_id = user_creates_a_challenge_daily_tracking(
+        &app,
+        &access_token,
+        challenge_id,
+        habit_id,
+        unit_id,
+    )
+    .await;
+
+    let challenges = user_gets_challenges(&app, &access_token).await;
+    assert_eq!(challenges.len(), 1);
+
+    let initial_challenge = &challenges[0];
+
+    let challenge_daily_trackings =
+        user_gets_challenge_daily_trackings(&app, &access_token, challenge_id).await;
+    assert!(challenge_daily_trackings.len() == 1);
+    assert!(challenge_daily_trackings[0].id == challenge_daily_tracking_id);
+    assert!(challenge_daily_trackings[0].challenge_id == initial_challenge.id);
+
+    let (access_token, _, _) = user_signs_up(&app, None).await;
+
+    let challenges = user_gets_challenges(&app, &access_token).await;
+    assert_eq!(challenges.len(), 0);
+
+    let duplicated_challenge_id =
+        user_duplicates_a_challenge(&app, &access_token, challenge_id).await;
+
+    let challenges = user_gets_challenges(&app, &access_token).await;
+    assert_eq!(challenges.len(), 1);
+    assert_eq!(challenges[0].id, duplicated_challenge_id);
+    assert!(challenges[0].name == initial_challenge.name);
+    assert!(challenges[0].description == initial_challenge.description);
+    assert!(challenges[0].creator != initial_challenge.creator);
+
+    let challenge_daily_trackings =
+        user_gets_challenge_daily_trackings(&app, &access_token, duplicated_challenge_id).await;
+    assert!(challenge_daily_trackings.len() == 1);
+    assert!(challenge_daily_trackings[0].id != challenge_daily_tracking_id);
+    assert!(challenge_daily_trackings[0].challenge_id == duplicated_challenge_id);
 }
 
 #[tokio::test]

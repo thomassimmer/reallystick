@@ -16,6 +16,7 @@ import 'package:reallystick/features/challenges/domain/usecases/create_challenge
 import 'package:reallystick/features/challenges/domain/usecases/delete_challenge_daily_tracking_usecase.dart';
 import 'package:reallystick/features/challenges/domain/usecases/delete_challenge_participation_usecase.dart';
 import 'package:reallystick/features/challenges/domain/usecases/delete_challenge_usecase.dart';
+import 'package:reallystick/features/challenges/domain/usecases/duplicate_challenge_usecase.dart';
 import 'package:reallystick/features/challenges/domain/usecases/get_challenge_daily_trackings_usecase.dart';
 import 'package:reallystick/features/challenges/domain/usecases/get_challenge_participations_usecase.dart';
 import 'package:reallystick/features/challenges/domain/usecases/get_challenge_statistics_usecase.dart';
@@ -65,6 +66,8 @@ class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
       GetIt.instance<DeleteChallengeUsecase>();
   final GetChallengeUsecase getChallengeUsecase =
       GetIt.instance<GetChallengeUsecase>();
+  final DuplicateChallengeUsecase duplicateChallengeUsecase =
+      GetIt.instance<DuplicateChallengeUsecase>();
   final GetChallengesDailyTrackingsUsecase getChallengesDailyTrackingsUsecase =
       GetIt.instance<GetChallengesDailyTrackingsUsecase>();
 
@@ -87,6 +90,7 @@ class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
     on<DeleteChallengeEvent>(deleteChallenge);
     on<GetChallengeEvent>(_getChallenge);
     on<GetChallengeDailyTrackingsEvent>(_getChallengeDailyTrackings);
+    on<DuplicateChallengeEvent>(_duplicateChallenge);
   }
 
   Future<void> _initialize(
@@ -683,6 +687,122 @@ class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
             ),
           );
         }
+      },
+    );
+  }
+
+  Future<void> _duplicateChallenge(
+      DuplicateChallengeEvent event, Emitter<ChallengeState> emit) async {
+    final currentState = state as ChallengesLoaded;
+    emit(ChallengesLoading());
+
+    final resultDuplicateChallengeUsecase =
+        await duplicateChallengeUsecase.call(
+      challengeId: event.challengeId,
+    );
+
+    await resultDuplicateChallengeUsecase.fold(
+      (error) {
+        if (error is ShouldLogoutError) {
+          authBloc
+              .add(AuthLogoutEvent(message: ErrorMessage(error.messageKey)));
+        } else if (error is ChallengeNotFoundDomainError) {
+          emit(
+            ChallengesLoaded(
+              challengeDailyTrackings: currentState.challengeDailyTrackings,
+              challengeParticipations: currentState.challengeParticipations,
+              challenges: currentState.challenges,
+              challengeStatistics: currentState.challengeStatistics,
+              notFoundChallenge: event.challengeId,
+            ),
+          );
+        } else {
+          emit(
+            ChallengesLoaded(
+              challengeDailyTrackings: currentState.challengeDailyTrackings,
+              challengeParticipations: currentState.challengeParticipations,
+              challenges: currentState.challenges,
+              challengeStatistics: currentState.challengeStatistics,
+              message: ErrorMessage(error.messageKey),
+            ),
+          );
+        }
+      },
+      (challenge) async {
+        currentState.challenges[challenge.id] = challenge;
+
+        final resultGetChallengeDailyTrackingsUsecase =
+            await getChallengeDailyTrackingsUsecase.call(
+          challengeId: challenge.id,
+        );
+
+        await resultGetChallengeDailyTrackingsUsecase.fold(
+          (error) {
+            if (error is ShouldLogoutError) {
+              authBloc.add(
+                  AuthLogoutEvent(message: ErrorMessage(error.messageKey)));
+            } else {
+              emit(
+                ChallengesLoaded(
+                  challengeDailyTrackings: currentState.challengeDailyTrackings,
+                  challengeParticipations: currentState.challengeParticipations,
+                  challenges: currentState.challenges,
+                  challengeStatistics: currentState.challengeStatistics,
+                  message: ErrorMessage(error.messageKey),
+                ),
+              );
+            }
+          },
+          (challengeDailyTrackings) async {
+            currentState.challengeDailyTrackings[challenge.id] =
+                challengeDailyTrackings;
+
+            final resultCreateChallengeParticipationUsecase =
+                await createChallengeParticipationUsecase.call(
+              challengeId: challenge.id,
+              color: AppColorExtension.getRandomColor().toShortString(),
+              startDate: DateTime.now(),
+            );
+
+            resultCreateChallengeParticipationUsecase.fold(
+              (error) {
+                if (error is ShouldLogoutError) {
+                  authBloc.add(
+                      AuthLogoutEvent(message: ErrorMessage(error.messageKey)));
+                } else {
+                  emit(
+                    ChallengesLoaded(
+                      challengeDailyTrackings:
+                          currentState.challengeDailyTrackings,
+                      challengeParticipations:
+                          currentState.challengeParticipations,
+                      challenges: currentState.challenges,
+                      challengeStatistics: currentState.challengeStatistics,
+                      message: ErrorMessage(error.messageKey),
+                    ),
+                  );
+                }
+              },
+              (challengeParticipation) {
+                currentState.challengeParticipations
+                    .add(challengeParticipation);
+
+                emit(
+                  ChallengesLoaded(
+                    challengeDailyTrackings:
+                        currentState.challengeDailyTrackings,
+                    challengeParticipations:
+                        currentState.challengeParticipations,
+                    challenges: currentState.challenges,
+                    challengeStatistics: currentState.challengeStatistics,
+                    message: SuccessMessage("challengeDuplicated"),
+                    newlyCreatedChallenge: challenge,
+                  ),
+                );
+              },
+            );
+          },
+        );
       },
     );
   }

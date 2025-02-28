@@ -10,6 +10,9 @@ abstract class ChallengeRepository {
   Future<Either<DomainError, Challenge>> getChallenge({
     required String challengeId,
   });
+  Future<Either<DomainError, Challenge>> duplicateChallenge({
+    required String challengeId,
+  });
   Future<Either<DomainError, List<Challenge>>> getChallenges();
   Future<Either<DomainError, Challenge>> createChallenge({
     required Map<String, String> name,

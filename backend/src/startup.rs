@@ -22,6 +22,7 @@ use crate::features::challenges::routes::create_challenge_participation::create_
 use crate::features::challenges::routes::delete_challenge::delete_challenge;
 use crate::features::challenges::routes::delete_challenge_daily_tracking::delete_challenge_daily_tracking;
 use crate::features::challenges::routes::delete_challenge_participation::delete_challenge_participation;
+use crate::features::challenges::routes::duplicate_challenge::duplicate_challenge;
 use crate::features::challenges::routes::get_challenge::get_challenge;
 use crate::features::challenges::routes::get_challenge_daily_trackings::get_challenge_daily_trackings;
 use crate::features::challenges::routes::get_challenge_participations::get_challenge_participations;
@@ -237,6 +238,7 @@ pub fn create_app(
                             .service(get_challenge)
                             .service(update_challenge)
                             .service(create_challenge)
+                            .service(duplicate_challenge)
                             .service(delete_challenge),
                     ),
                 )

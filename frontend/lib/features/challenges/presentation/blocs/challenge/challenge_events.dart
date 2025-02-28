@@ -234,3 +234,14 @@ class GetChallengeDailyTrackingsEvent extends ChallengeEvent {
   @override
   List<Object?> get props => [challengeId];
 }
+
+class DuplicateChallengeEvent extends ChallengeEvent {
+  final String challengeId;
+
+  const DuplicateChallengeEvent({
+    required this.challengeId,
+  });
+
+  @override
+  List<Object?> get props => [challengeId];
+}

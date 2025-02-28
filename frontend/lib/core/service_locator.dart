@@ -33,6 +33,7 @@ import 'package:reallystick/features/challenges/domain/usecases/create_challenge
 import 'package:reallystick/features/challenges/domain/usecases/delete_challenge_daily_tracking_usecase.dart';
 import 'package:reallystick/features/challenges/domain/usecases/delete_challenge_participation_usecase.dart';
 import 'package:reallystick/features/challenges/domain/usecases/delete_challenge_usecase.dart';
+import 'package:reallystick/features/challenges/domain/usecases/duplicate_challenge_usecase.dart';
 import 'package:reallystick/features/challenges/domain/usecases/get_challenge_daily_trackings_usecase.dart';
 import 'package:reallystick/features/challenges/domain/usecases/get_challenge_participations_usecase.dart';
 import 'package:reallystick/features/challenges/domain/usecases/get_challenge_statistics_usecase.dart';
@@ -216,6 +217,8 @@ void setupServiceLocator() {
       GetChallengesUsecase(sl<ChallengeRepository>()));
   sl.registerSingleton<GetChallengeUsecase>(
       GetChallengeUsecase(sl<ChallengeRepository>()));
+  sl.registerSingleton<DuplicateChallengeUsecase>(
+      DuplicateChallengeUsecase(sl<ChallengeRepository>()));
   sl.registerSingleton<GetChallengeParticipationsUsecase>(
       GetChallengeParticipationsUsecase(
           sl<ChallengeParticipationRepository>()));

@@ -12,6 +12,7 @@ import 'package:reallystick/features/challenges/presentation/blocs/challenge/cha
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_states.dart';
 import 'package:reallystick/features/challenges/presentation/screens/add_daily_tracking_modal.dart';
 import 'package:reallystick/features/challenges/presentation/screens/challenge_not_found_screen.dart';
+import 'package:reallystick/features/challenges/presentation/screens/duplicate_challenge_modal.dart';
 import 'package:reallystick/features/challenges/presentation/widgets/analytics_carousel_widget.dart';
 import 'package:reallystick/features/challenges/presentation/widgets/challenge_discussion_list_widget.dart';
 import 'package:reallystick/features/challenges/presentation/widgets/daily_tracking_carousel_widget.dart';
@@ -109,6 +110,24 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
     );
   }
 
+  void _openDuplicateChallengeModal() async {
+    await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
+      ),
+      constraints: BoxConstraints(
+        maxWidth: 600,
+      ),
+      builder: (BuildContext context) {
+        return DuplicateChallengeModal(
+          challengeId: widget.challengeId,
+        );
+      },
+    );
+  }
+
   void _joinChallenge() {
     final createChallengeParticipationEvent = CreateChallengeParticipationEvent(
       challengeId: widget.challengeId,
@@ -193,6 +212,9 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
             challengeParticipation != null ? challengeParticipation.color : "",
           ).color;
 
+          final challengeStatistics =
+              challengeState.challengeStatistics[widget.challengeId]!;
+
           return Scaffold(
             appBar: AppBar(
               title: Row(
@@ -237,6 +259,8 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
                         );
                       } else if (value == 'share') {
                         _shareChallenge();
+                      } else if (value == 'duplicate') {
+                        _openDuplicateChallengeModal();
                       }
                     },
                     itemBuilder: (BuildContext context) => [
@@ -256,6 +280,10 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
                           child: Text(AppLocalizations.of(context)!.share),
                         ),
                       ],
+                      PopupMenuItem(
+                        value: "duplicate",
+                        child: Text(AppLocalizations.of(context)!.duplicate),
+                      ),
                       if (challenge.creator == profileState.profile.id) ...[
                         PopupMenuItem(
                           value: 'update',
@@ -305,12 +333,26 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
                         borderRadius: BorderRadius.circular(16.0),
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        child: Text(
-                          description,
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
+                          padding: const EdgeInsets.all(15.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                AppLocalizations.of(context)!.createdBy(
+                                    challengeStatistics.creatorUsername),
+                                style: TextStyle(
+                                    color: context.colors.textOnPrimary),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                              ),
+                              SizedBox(height: 16),
+                              Text(
+                                description,
+                                style: TextStyle(
+                                    color: context.colors.textOnPrimary),
+                              ),
+                            ],
+                          )),
                     ),
                     SizedBox(height: 30),
                     ListOfConcernedHabits(

@@ -15,6 +15,11 @@ pub struct UpdateChallengeParams {
 }
 
 #[derive(Deserialize)]
+pub struct ChallengeDuplicateParams {
+    pub challenge_id: Uuid,
+}
+
+#[derive(Deserialize)]
 pub struct ChallengeUpdateRequest {
     pub name: HashMap<String, String>,
     pub description: HashMap<String, String>,

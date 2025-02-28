@@ -82,6 +82,38 @@ class ChallengeRemoteDataSource {
     throw UnknownError();
   }
 
+  Future<ChallengeDataModel> duplicateChallenge(String challengeId) async {
+    final url = Uri.parse('$baseUrl/challenges/duplicate/$challengeId');
+    final response = await apiClient.get(url);
+
+    final jsonBody = customJsonDecode(response.body);
+    final responseCode = jsonBody['code'] as String;
+
+    if (response.statusCode == 200) {
+      try {
+        return ChallengeDataModel.fromJson(jsonBody['challenge']);
+      } catch (e) {
+        throw ParsingError();
+      }
+    }
+
+    if (response.statusCode == 401) {
+      throw UnauthorizedError();
+    }
+
+    if (response.statusCode == 404) {
+      if (responseCode == 'CHALLENGE_NOT_FOUND') {
+        throw ChallengeNotFoundError();
+      }
+    }
+
+    if (response.statusCode == 500) {
+      throw InternalServerError();
+    }
+
+    throw UnknownError();
+  }
+
   Future<List<ChallengeParticipationDataModel>>
       getChallengeParticipations() async {
     final url = Uri.parse('$baseUrl/challenge-participations/');

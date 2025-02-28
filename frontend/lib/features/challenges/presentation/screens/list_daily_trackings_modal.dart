@@ -96,7 +96,9 @@ class ListDailyTrackingsModalState extends State<ListDailyTrackingsModal> {
               .add(Duration(days: tracking.dayOfProgram))
               .isSameDate(widget.datetime);
         }
-        return false;
+        return DateTime.now()
+            .add(Duration(days: tracking.dayOfProgram))
+            .isSameDate(widget.datetime);
       }).toList();
 
       return Padding(

@@ -145,6 +145,8 @@ String getTranslatedMessage(BuildContext context, Message message) {
         return localizations.challengeUpdated;
       case 'challengeCreated':
         return localizations.challengeCreated;
+      case 'challengeDuplicated':
+        return localizations.challengeDuplicated;
 
       // Habits
       case 'habitCreated':

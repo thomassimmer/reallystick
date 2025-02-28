@@ -91,6 +91,41 @@ class ChallengeRepositoryImpl implements ChallengeRepository {
   }
 
   @override
+  Future<Either<DomainError, Challenge>> duplicateChallenge(
+      {required String challengeId}) async {
+    try {
+      final challengeDataModel =
+          await remoteDataSource.duplicateChallenge(challengeId);
+
+      return Right(challengeDataModel.toDomain());
+    } on ParsingError {
+      logger.e('ParsingError occurred.');
+      return Left(InvalidResponseDomainError());
+    } on UnauthorizedError {
+      logger.e('UnauthorizedError occurred.');
+      return Left(UnauthorizedDomainError());
+    } on InvalidRefreshTokenError {
+      logger.e('InvalidRefreshTokenError occured.');
+      return Left(InvalidRefreshTokenDomainError());
+    } on RefreshTokenNotFoundError {
+      logger.e('RefreshTokenNotFoundError occured.');
+      return Left(RefreshTokenNotFoundDomainError());
+    } on RefreshTokenExpiredError {
+      logger.e('RefreshTokenExpiredError occured.');
+      return Left(RefreshTokenExpiredDomainError());
+    } on InternalServerError {
+      logger.e('InternalServerError occured.');
+      return Left(InternalServerDomainError());
+    } on ChallengeNotFoundError {
+      logger.e('ChallengeNotFoundError occurred.');
+      return Left(ChallengeNotFoundDomainError());
+    } catch (e) {
+      logger.e('Data error occurred: ${e.toString()}');
+      return Left(UnknownDomainError());
+    }
+  }
+
+  @override
   Future<Either<DomainError, Challenge>> createChallenge({
     required Map<String, String> name,
     required Map<String, String> description,
