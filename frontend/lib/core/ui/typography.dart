@@ -15,7 +15,7 @@ class AppThemeTypography {
 
   const AppThemeTypography({
     this.headingLarge = const TextStyle(
-      fontSize: 33,
+      fontSize: 35,
       fontWeight: FontWeight.w600,
     ),
     this.heading = const TextStyle(

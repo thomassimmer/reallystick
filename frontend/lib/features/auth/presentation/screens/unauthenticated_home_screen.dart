@@ -57,12 +57,22 @@ class UnauthenticatedHomeScreen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         AppLogo(size: 200),
-        SizedBox(height: 40),
-        Text(
-          AppLocalizations.of(context)!.welcome,
-          textAlign: TextAlign.center,
-          style: context.typographies.headingLarge
-              .copyWith(color: context.colors.background),
+        SizedBox(height: 20),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Really',
+              style: context.typographies.headingLarge
+                  .copyWith(color: context.colors.background),
+            ),
+            SizedBox(width: 5),
+            Text(
+              'Stick',
+              style: context.typographies.headingLarge
+                  .copyWith(color: context.colors.hint),
+            ),
+          ],
         ),
         SizedBox(height: 16),
         Text(
