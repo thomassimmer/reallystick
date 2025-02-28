@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
+import 'package:reallystick/core/constants/dates.dart';
 import 'package:reallystick/features/habits/domain/entities/habit_daily_tracking.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 
@@ -75,7 +76,7 @@ class DailyTrackingCarouselWidget extends StatelessWidget {
                     .format(date)
                     .substring(0, 1);
                 final isTracked = habitDailyTrackings.any(
-                  (tracking) => tracking.datetime.day == date.day,
+                  (tracking) => tracking.datetime.isSameDate(date),
                 );
 
                 return Padding(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:reallystick/core/constants/dates.dart';
 import 'package:reallystick/core/constants/icons.dart';
 import 'package:reallystick/core/constants/screen_size.dart';
 import 'package:reallystick/core/ui/colors.dart';
@@ -120,8 +121,7 @@ class HabitWidget extends StatelessWidget {
                             .format(date)
                             .substring(0, 1);
                         final isTracked = habitDailyTrackings.any(
-                          (tracking) =>
-                              tracking.datetime.day == date.day,
+                          (tracking) => tracking.datetime.isSameDate(date),
                         );
 
                         return Column(
