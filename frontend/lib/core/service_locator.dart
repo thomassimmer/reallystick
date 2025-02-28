@@ -34,6 +34,7 @@ import 'package:reallystick/features/habits/domain/usecases/create_habit_partici
 import 'package:reallystick/features/habits/domain/usecases/create_habit_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/create_unit_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/delete_habit_daily_tracking_usecase.dart';
+import 'package:reallystick/features/habits/domain/usecases/delete_habit_participation_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/get_habit_categories_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/get_habit_participations_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/get_habits_daily_tracking_usecase.dart';
@@ -41,6 +42,7 @@ import 'package:reallystick/features/habits/domain/usecases/get_habits_usecase.d
 import 'package:reallystick/features/habits/domain/usecases/get_units_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/merge_habits_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/update_habit_daily_tracking_usecase.dart';
+import 'package:reallystick/features/habits/domain/usecases/update_habit_participation_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/update_habit_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/update_unit_usecase.dart';
 import 'package:reallystick/features/profile/data/repositories/profile_repository_impl.dart';
@@ -159,4 +161,8 @@ void setupServiceLocator() {
       UpdateHabitDailyTrackingUsecase(sl<HabitDailyTrackingRepository>()));
   sl.registerSingleton<DeleteHabitDailyTrackingUsecase>(
       DeleteHabitDailyTrackingUsecase(sl<HabitDailyTrackingRepository>()));
+  sl.registerSingleton<UpdateHabitParticipationUsecase>(
+      UpdateHabitParticipationUsecase(sl<HabitParticipationRepository>()));
+  sl.registerSingleton<DeleteHabitParticipationUsecase>(
+      DeleteHabitParticipationUsecase(sl<HabitParticipationRepository>()));
 }

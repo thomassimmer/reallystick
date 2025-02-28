@@ -113,6 +113,12 @@ String getTranslatedMessage(BuildContext context, Message message) {
         return localizations.habitDailyTrackingUpdated;
       case 'habitDailyTrackingDeleted':
         return localizations.habitDailyTrackingDeleted;
+      case 'habitParticipationDeleted':
+        return localizations.habitParticipationDeleted;
+      case 'habitParticipationUpdated':
+        return localizations.habitParticipationUpdated;
+      case 'habitParticipationCreated':
+        return localizations.habitParticipationCreated;
 
       // Profile
       case 'passwordUpdateSuccessful':

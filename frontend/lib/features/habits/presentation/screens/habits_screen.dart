@@ -270,13 +270,23 @@ class HabitsScreenState extends State<HabitsScreen> {
     for (final tracking in state.habitDailyTrackings) {
       // Find the habit associated with the tracking
       final habit = state.habits[tracking.habitId];
-      if (habit != null) {
-        final categoryId = habit.categoryId;
-        final currentLatest = categoryToLatestDate[categoryId];
 
-        // Update the latest date for the category if this tracking is newer
-        if (currentLatest == null || tracking.datetime.isAfter(currentLatest)) {
-          categoryToLatestDate[categoryId] = tracking.datetime;
+      if (habit != null) {
+        // Find the habit participation associated with the tracking
+        final habitParticipation = state.habitParticipations
+            .where((hp) => hp.habitId == tracking.habitId)
+            .toList()
+            .firstOrNull;
+
+        if (habitParticipation != null) {
+          final categoryId = habit.categoryId;
+          final currentLatest = categoryToLatestDate[categoryId];
+
+          // Update the latest date for the category if this tracking is newer
+          if (currentLatest == null ||
+              tracking.datetime.isAfter(currentLatest)) {
+            categoryToLatestDate[categoryId] = tracking.datetime;
+          }
         }
       }
     }
@@ -289,6 +299,22 @@ class HabitsScreenState extends State<HabitsScreen> {
     final sortedCategories = sortedCategoryIds.map((entry) {
       return state.habitCategories[entry.key]!;
     }).toList();
+
+    // Step 4: Add categories without daily tracking data
+    for (final participation in state.habitParticipations) {
+      // Find the habit associated with the tracking
+      final habit = state.habits[participation.habitId];
+
+      if (habit != null) {
+        // Find the habit associated with the tracking
+        final habitCategory = state.habitCategories[habit.categoryId];
+
+        if (habitCategory != null &&
+            !sortedCategories.contains(habitCategory)) {
+          sortedCategories.add(habitCategory);
+        }
+      }
+    }
 
     return [...sortedCategories];
   }

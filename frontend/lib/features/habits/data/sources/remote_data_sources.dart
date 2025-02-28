@@ -146,7 +146,6 @@ class HabitRemoteDataSource {
         final List<dynamic> units = jsonBody['units'];
         return units.map((unit) => UnitDataModel.fromJson(unit)).toList();
       } catch (e) {
-        print(e);
         throw ParsingError();
       }
     }

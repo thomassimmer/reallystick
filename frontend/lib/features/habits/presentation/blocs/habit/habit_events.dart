@@ -169,3 +169,45 @@ class DeleteHabitDailyTrackingEvent extends HabitEvent {
         habitDailyTrackingId,
       ];
 }
+
+class CreateHabitParticipationEvent extends HabitEvent {
+  final String habitId;
+
+  const CreateHabitParticipationEvent({
+    required this.habitId,
+  });
+
+  @override
+  List<Object?> get props => [
+        habitId,
+      ];
+}
+
+class DeleteHabitParticipationEvent extends HabitEvent {
+  final String habitParticipationId;
+
+  const DeleteHabitParticipationEvent({
+    required this.habitParticipationId,
+  });
+
+  @override
+  List<Object?> get props => [
+        habitParticipationId,
+      ];
+}
+
+class UpdateHabitParticipationEvent extends HabitEvent {
+  final String habitParticipationId;
+  final String color;
+
+  const UpdateHabitParticipationEvent({
+    required this.habitParticipationId,
+    required this.color,
+  });
+
+  @override
+  List<Object?> get props => [
+        habitParticipationId,
+        color,
+      ];
+}

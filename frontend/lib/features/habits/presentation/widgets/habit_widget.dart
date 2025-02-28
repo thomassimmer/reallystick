@@ -51,7 +51,8 @@ class HabitWidget extends StatelessWidget {
           // Define screen size breakpoint
           final bool isLargeScreen = checkIfLargeScreen(context);
 
-          final habitColor = getAppColorsFromString(habitParticipation.color);
+          final habitColor =
+              AppColorExtension.fromString(habitParticipation.color).color;
 
           return InkWell(
             onTap: () {

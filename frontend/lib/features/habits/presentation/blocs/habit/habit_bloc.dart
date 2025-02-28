@@ -12,6 +12,7 @@ import 'package:reallystick/features/habits/domain/usecases/create_habit_daily_t
 import 'package:reallystick/features/habits/domain/usecases/create_habit_participation_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/create_habit_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/delete_habit_daily_tracking_usecase.dart';
+import 'package:reallystick/features/habits/domain/usecases/delete_habit_participation_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/get_habit_categories_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/get_habit_participations_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/get_habits_daily_tracking_usecase.dart';
@@ -19,6 +20,7 @@ import 'package:reallystick/features/habits/domain/usecases/get_habits_usecase.d
 import 'package:reallystick/features/habits/domain/usecases/get_units_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/merge_habits_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/update_habit_daily_tracking_usecase.dart';
+import 'package:reallystick/features/habits/domain/usecases/update_habit_participation_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/update_habit_usecase.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_events.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_states.dart';
@@ -49,6 +51,11 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
   final DeleteHabitDailyTrackingUsecase deleteHabitDailyTrackingUsecase =
       GetIt.instance<DeleteHabitDailyTrackingUsecase>();
 
+  final UpdateHabitParticipationUsecase updateHabitParticipationUsecase =
+      GetIt.instance<UpdateHabitParticipationUsecase>();
+  final DeleteHabitParticipationUsecase deleteHabitParticipationUsecase =
+      GetIt.instance<DeleteHabitParticipationUsecase>();
+
   HabitBloc({required this.authBloc}) : super(HabitsLoading()) {
     authBlocSubscription = authBloc.stream.listen((authState) {
       if (authState is AuthAuthenticatedState) {
@@ -63,6 +70,9 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
     on<CreateHabitDailyTrackingEvent>(createHabitDailyTracking);
     on<UpdateHabitDailyTrackingEvent>(updateHabitDailyTracking);
     on<DeleteHabitDailyTrackingEvent>(deleteHabitDailyTracking);
+    on<CreateHabitParticipationEvent>(createHabitParticipation);
+    on<UpdateHabitParticipationEvent>(updateHabitParticipation);
+    on<DeleteHabitParticipationEvent>(deleteHabitParticipation);
   }
 
   Future<void> _initialize(
@@ -193,7 +203,7 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
         final resultCreateHabitParticipationUsecase =
             await createHabitParticipationUsecase.call(
           habitId: habit.id,
-          color: getRandomAppColor(),
+          color: AppColorExtension.getRandomColor().toShortString(),
           toGain: true,
         );
 
@@ -490,6 +500,148 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
             habits: currentState.habits,
             units: currentState.units,
             message: SuccessMessage("habitDailyTrackingDeleted"),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> createHabitParticipation(
+      CreateHabitParticipationEvent event, Emitter<HabitState> emit) async {
+    final currentState = state as HabitsLoaded;
+    emit(HabitsLoading());
+
+    final resultCreateHabitParticipationUsecase =
+        await createHabitParticipationUsecase.call(
+      habitId: event.habitId,
+      color: AppColorExtension.getRandomColor().toShortString(),
+      toGain: true,
+    );
+
+    resultCreateHabitParticipationUsecase.fold(
+      (error) {
+        if (error is ShouldLogoutError) {
+          authBloc
+              .add(AuthLogoutEvent(message: ErrorMessage(error.messageKey)));
+        } else {
+          emit(
+            HabitsLoaded(
+              habitCategories: currentState.habitCategories,
+              habitDailyTrackings: currentState.habitDailyTrackings,
+              habitParticipations: currentState.habitParticipations,
+              habits: currentState.habits,
+              units: currentState.units,
+              message: ErrorMessage(error.messageKey),
+            ),
+          );
+        }
+      },
+      (habitParticipation) {
+        currentState.habitParticipations.add(habitParticipation);
+        emit(
+          HabitsLoaded(
+            habitCategories: currentState.habitCategories,
+            habitDailyTrackings: currentState.habitDailyTrackings,
+            habitParticipations: currentState.habitParticipations,
+            habits: currentState.habits,
+            units: currentState.units,
+            message: SuccessMessage("habitParticipationCreated"),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> updateHabitParticipation(
+      UpdateHabitParticipationEvent event, Emitter<HabitState> emit) async {
+    final currentState = state as HabitsLoaded;
+    emit(HabitsLoading());
+
+    final resultUpdateHabitParticipationUsecase =
+        await updateHabitParticipationUsecase.call(
+      habitParticipationId: event.habitParticipationId,
+      color: event.color,
+      toGain: true,
+    );
+
+    resultUpdateHabitParticipationUsecase.fold(
+      (error) {
+        if (error is ShouldLogoutError) {
+          authBloc
+              .add(AuthLogoutEvent(message: ErrorMessage(error.messageKey)));
+        } else {
+          emit(
+            HabitsLoaded(
+              habitCategories: currentState.habitCategories,
+              habitDailyTrackings: currentState.habitDailyTrackings,
+              habitParticipations: currentState.habitParticipations,
+              habits: currentState.habits,
+              units: currentState.units,
+              message: ErrorMessage(error.messageKey),
+            ),
+          );
+        }
+      },
+      (habitParticipation) {
+        final newHabitParticipations = currentState.habitParticipations
+            .where((hdt) => hdt.id != habitParticipation.id)
+            .toList();
+        newHabitParticipations.add(habitParticipation);
+        emit(
+          HabitsLoaded(
+            habitCategories: currentState.habitCategories,
+            habitDailyTrackings: currentState.habitDailyTrackings,
+            habitParticipations: newHabitParticipations,
+            habits: currentState.habits,
+            units: currentState.units,
+            message: SuccessMessage("habitParticipationUpdated"),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> deleteHabitParticipation(
+      DeleteHabitParticipationEvent event, Emitter<HabitState> emit) async {
+    final currentState = state as HabitsLoaded;
+    emit(HabitsLoading());
+
+    final resultDeleteHabitParticipationUsecase =
+        await deleteHabitParticipationUsecase.call(
+      habitParticipationId: event.habitParticipationId,
+    );
+
+    resultDeleteHabitParticipationUsecase.fold(
+      (error) {
+        if (error is ShouldLogoutError) {
+          authBloc
+              .add(AuthLogoutEvent(message: ErrorMessage(error.messageKey)));
+        } else {
+          emit(
+            HabitsLoaded(
+              habitCategories: currentState.habitCategories,
+              habitDailyTrackings: currentState.habitDailyTrackings,
+              habitParticipations: currentState.habitParticipations,
+              habits: currentState.habits,
+              units: currentState.units,
+              message: ErrorMessage(error.messageKey),
+            ),
+          );
+        }
+      },
+      (_) {
+        final newHabitParticipations = currentState.habitParticipations
+            .where((hdt) => hdt.id != event.habitParticipationId)
+            .toList();
+
+        emit(
+          HabitsLoaded(
+            habitCategories: currentState.habitCategories,
+            habitDailyTrackings: currentState.habitDailyTrackings,
+            habitParticipations: newHabitParticipations,
+            habits: currentState.habits,
+            units: currentState.units,
+            message: SuccessMessage("habitParticipationDeleted"),
           ),
         );
       },

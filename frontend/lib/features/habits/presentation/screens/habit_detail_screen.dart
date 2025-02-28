@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:reallystick/core/constants/icons.dart';
 import 'package:reallystick/core/constants/screen_size.dart';
 import 'package:reallystick/core/ui/colors.dart';
+import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.dart';
+import 'package:reallystick/features/habits/presentation/blocs/habit/habit_events.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_states.dart';
 import 'package:reallystick/features/habits/presentation/helpers/translations.dart';
 import 'package:reallystick/features/habits/presentation/screens/add_daily_tracking_modal.dart';
+import 'package:reallystick/features/habits/presentation/screens/color_picker_modal.dart';
 import 'package:reallystick/features/habits/presentation/widgets/add_activity_button.dart';
 import 'package:reallystick/features/habits/presentation/widgets/analytics_carousel_widget.dart';
 import 'package:reallystick/features/habits/presentation/widgets/challenges_carousel_widget.dart';
@@ -18,7 +22,10 @@ import 'package:reallystick/features/profile/presentation/blocs/profile/profile_
 class HabitDetailsScreen extends StatefulWidget {
   final String habitId;
 
-  const HabitDetailsScreen({Key? key, required this.habitId}) : super(key: key);
+  const HabitDetailsScreen({
+    Key? key,
+    required this.habitId,
+  }) : super(key: key);
 
   @override
   HabitDetailsScreenState createState() => HabitDetailsScreenState();
@@ -48,6 +55,43 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
         );
       },
     );
+  }
+
+  void _quitHabit(String habitParticipationId) {
+    final deleteHabitParticipationEvent = DeleteHabitParticipationEvent(
+      habitParticipationId: habitParticipationId,
+    );
+    context.read<HabitBloc>().add(deleteHabitParticipationEvent);
+  }
+
+  void _openColorPicker(String habitParticipationId) async {
+    await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
+      ),
+      builder: (BuildContext context) {
+        return ColorPickerModal(
+          onColorSelected: (selectedColor) {
+            final updateHabitParticipationEvent = UpdateHabitParticipationEvent(
+              habitParticipationId: habitParticipationId,
+              color: selectedColor.toShortString(),
+            );
+            context.read<HabitBloc>().add(updateHabitParticipationEvent);
+
+            Navigator.of(context).pop();
+          },
+        );
+      },
+    );
+  }
+
+  void _startTrackingThisHabit() {
+    final createHabitParticipationEvent = CreateHabitParticipationEvent(
+      habitId: widget.habitId,
+    );
+    context.read<HabitBloc>().add(createHabitParticipationEvent);
   }
 
   @override
@@ -85,8 +129,9 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
           );
 
           final bool isLargeScreen = checkIfLargeScreen(context);
-          final habitColor = getAppColorsFromString(
-              habitParticipation != null ? habitParticipation.color : "");
+          final habitColor = AppColorExtension.fromString(
+            habitParticipation != null ? habitParticipation.color : "",
+          ).color;
 
           return Scaffold(
             appBar: AppBar(
@@ -109,15 +154,49 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
                 ],
               ),
               actions: [
-                Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: AddActivityButton(
-                    action: _showAddDailyTrackingBottomSheet,
-                    color: habitColor,
+                if (habitParticipation != null) ...[
+                  PopupMenuButton<String>(
+                    color: context.colors.backgroundDark,
+                    onSelected: (value) async {
+                      if (value == 'quit') {
+                        _quitHabit(habitParticipation.id);
+                      } else if (value == 'change_color') {
+                        _openColorPicker(habitParticipation.id);
+                      }
+                    },
+                    itemBuilder: (BuildContext context) => [
+                      PopupMenuItem(
+                        value: 'quit',
+                        child:
+                            Text(AppLocalizations.of(context)!.quitThisHabit),
+                      ),
+                      PopupMenuItem(
+                        value: 'change_color',
+                        child: Text(AppLocalizations.of(context)!.changeColor),
+                      ),
+                    ],
                   ),
-                )
+                ] else ...[
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                    child: FloatingActionButton.extended(
+                      onPressed: _startTrackingThisHabit,
+                      icon: Icon(Icons.join_full),
+                      label: Text(
+                          AppLocalizations.of(context)!.startTrackingThisHabit),
+                      backgroundColor: context.colors.primary,
+                      extendedTextStyle: TextStyle(letterSpacing: 1),
+                    ),
+                  )
+                ]
               ],
             ),
+            floatingActionButton: habitParticipation != null
+                ? AddActivityButton(
+                    action: _showAddDailyTrackingBottomSheet,
+                    color: habitColor,
+                  )
+                : null,
             body: SingleChildScrollView(
               child: Padding(
                 padding: EdgeInsets.all(10),
@@ -136,8 +215,10 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
                         child: SelectableText(description),
                       ),
                     ),
+                    SizedBox(height: 16),
                     AnalyticsCarouselWidget(),
-                    if (habitDailyTrackings.isNotEmpty)
+                    SizedBox(height: 16),
+                    if (habitDailyTrackings.isNotEmpty) ...[
                       DailyTrackingCarouselWidget(
                         habitDailyTrackings: habitDailyTrackings,
                         habitColor: habitColor,
@@ -145,8 +226,12 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
                         canOpenDayBoxes: true,
                         displayTitle: true,
                       ),
+                      SizedBox(height: 16),
+                    ],
                     ChallengesCarouselWidget(),
+                    SizedBox(height: 16),
                     HabitDiscussionListWidget(),
+                    SizedBox(height: 64),
                   ],
                 ),
               ),
