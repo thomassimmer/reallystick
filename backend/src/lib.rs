@@ -80,6 +80,7 @@ pub mod features {
             pub mod create_habit_category;
             pub mod create_habit_daily_tracking;
             pub mod create_habit_participation;
+            pub mod create_unit;
             pub mod delete_habit;
             pub mod delete_habit_category;
             pub mod delete_habit_daily_tracking;
@@ -89,11 +90,13 @@ pub mod features {
             pub mod get_habit_daily_trackings;
             pub mod get_habit_participations;
             pub mod get_habits;
+            pub mod get_units;
             pub mod merge_habits;
             pub mod update_habit;
             pub mod update_habit_category;
             pub mod update_habit_daily_tracking;
             pub mod update_habit_participation;
+            pub mod update_unit;
         }
 
         pub mod structs {
@@ -102,6 +105,7 @@ pub mod features {
                 pub mod habit_category;
                 pub mod habit_daily_tracking;
                 pub mod habit_participation;
+                pub mod unit;
             }
 
             pub mod requests {
@@ -109,6 +113,7 @@ pub mod features {
                 pub mod habit_category;
                 pub mod habit_daily_tracking;
                 pub mod habit_participation;
+                pub mod unit;
             }
 
             pub mod responses {
@@ -116,15 +121,16 @@ pub mod features {
                 pub mod habit_category;
                 pub mod habit_daily_tracking;
                 pub mod habit_participation;
+                pub mod unit;
             }
         }
 
         pub mod helpers {
-            pub mod dates;
             pub mod habit;
             pub mod habit_category;
             pub mod habit_daily_tracking;
             pub mod habit_participation;
+            pub mod unit;
         }
     }
 }

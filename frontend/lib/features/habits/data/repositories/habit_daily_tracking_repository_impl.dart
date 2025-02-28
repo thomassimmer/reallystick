@@ -61,23 +61,19 @@ class HabitDailyTrackingRepositoryImpl implements HabitDailyTrackingRepository {
   @override
   Future<Either<DomainError, HabitDailyTracking>> createHabitDailyTracking({
     required String habitId,
-    required DateTime day,
-    required Duration? duration,
-    required int? quantityPerSet,
-    required int? quantityOfSet,
-    required String? unit,
-    required bool reset,
+    required DateTime datetime,
+    required int quantityPerSet,
+    required int quantityOfSet,
+    required String unitId,
   }) async {
     try {
       final habitDailyTrackingDataModel = await remoteDataSource
           .createHabitDailyTracking(HabitDailyTrackingCreateRequestModel(
         habitId: habitId,
-        day: day,
-        duration: duration,
+        datetime: datetime,
         quantityPerSet: quantityPerSet,
         quantityOfSet: quantityOfSet,
-        unit: unit,
-        reset: reset,
+        unitId: unitId,
       ));
 
       return Right(habitDailyTrackingDataModel.toDomain());
@@ -111,24 +107,20 @@ class HabitDailyTrackingRepositoryImpl implements HabitDailyTrackingRepository {
   @override
   Future<Either<DomainError, HabitDailyTracking>> updateHabitDailyTracking({
     required String habitDailyTrackingId,
-    required DateTime day,
-    required Duration? duration,
-    required int? quantityPerSet,
-    required int? quantityOfSet,
-    required String? unit,
-    required bool reset,
+    required DateTime datetime,
+    required int quantityPerSet,
+    required int quantityOfSet,
+    required String unitId,
   }) async {
     try {
       final habitDailyTrackingDataModel =
           await remoteDataSource.updateHabitDailyTracking(
         habitDailyTrackingId,
         HabitDailyTrackingUpdateRequestModel(
-          day: day,
-          duration: duration,
+          datetime: datetime,
           quantityPerSet: quantityPerSet,
           quantityOfSet: quantityOfSet,
-          unit: unit,
-          reset: reset,
+          unitId: unitId,
         ),
       );
 

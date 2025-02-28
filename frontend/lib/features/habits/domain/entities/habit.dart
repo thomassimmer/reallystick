@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 class Habit {
   String id;
   Map<String, String> shortName;
@@ -6,6 +8,7 @@ class Habit {
   bool reviewed;
   Map<String, String> description;
   String icon;
+  HashSet<String> unitIds;
 
   Habit({
     required this.id,
@@ -15,5 +18,6 @@ class Habit {
     required this.reviewed,
     required this.description,
     required this.icon,
+    required this.unitIds,
   });
 }

@@ -10,7 +10,7 @@ use reallystick::features::habits::structs::{
     responses::habit::{HabitResponse, HabitsResponse},
 };
 use serde_json::json;
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use uuid::Uuid;
 
 use crate::{
@@ -22,6 +22,7 @@ use crate::{
     habits::habit_participation::{
         user_creates_a_habit_participation, user_gets_habit_participations,
     },
+    habits::unit::user_creates_a_unit,
     helpers::spawn_app,
 };
 
@@ -29,6 +30,7 @@ pub async fn user_creates_a_habit(
     app: impl Service<Request, Response = ServiceResponse<impl MessageBody>, Error = Error>,
     access_token: &str,
     habit_category_id: Uuid,
+    unit_ids: HashSet<Uuid>,
 ) -> Uuid {
     let req = test::TestRequest::post()
         .uri("/api/habits/")
@@ -43,6 +45,7 @@ pub async fn user_creates_a_habit(
                 "Our goal is to speak English fluently!"
             )]),
             "icon": "english_icon".to_string(),
+            "unit_ids": unit_ids
         }))
         .to_request();
     let response = test::call_service(&app, req).await;
@@ -63,6 +66,7 @@ pub async fn user_updates_a_habit(
     access_token: &str,
     habit_category_id: Uuid,
     habit_id: Uuid,
+    unit_ids: HashSet<Uuid>,
 ) {
     let req = test::TestRequest::put()
         .uri(&format!("/api/habits/{}", habit_id))
@@ -77,7 +81,8 @@ pub async fn user_updates_a_habit(
                 "Our goal is to speak English fluently!"
             )]),
             "icon": "english_icon".to_string(),
-            "reviewed": true
+            "reviewed": true,
+            "unit_ids": unit_ids
         }))
         .to_request();
     let response = test::call_service(&app, req).await;
@@ -146,6 +151,7 @@ pub async fn user_create_two_habits_to_merge(
     app: impl Service<Request, Response = ServiceResponse<impl MessageBody>, Error = Error>,
     access_token: &str,
     habit_category_id: Uuid,
+    units_ids: Vec<Uuid>,
 ) -> (Uuid, Uuid) {
     let req = test::TestRequest::post()
         .uri("/api/habits/")
@@ -160,6 +166,7 @@ pub async fn user_create_two_habits_to_merge(
                 "Our goal is to quit smoking!"
             )]),
             "icon": "smoking".to_string(),
+            "unit_ids": units_ids
         }))
         .to_request();
 
@@ -182,6 +189,7 @@ pub async fn user_create_two_habits_to_merge(
                 "Notre but est d'arrêter de fumer !"
             )]),
             "icon": "smoking".to_string(),
+            "unit_ids": units_ids
         }))
         .to_request();
 
@@ -203,7 +211,9 @@ pub async fn user_can_create_a_habit() {
     let habits = user_gets_habits(&app, &access_token).await;
     assert!(habits.is_empty());
 
-    user_creates_a_habit(&app, &access_token, category_id).await;
+    let unit_id = user_creates_a_unit(&app, &access_token).await;
+
+    user_creates_a_habit(&app, &access_token, category_id, HashSet::from([unit_id])).await;
 
     let habits = user_gets_habits(&app, &access_token).await;
     assert!(!habits.is_empty());
@@ -214,9 +224,23 @@ pub async fn user_can_update_a_habit() {
     let app = spawn_app().await;
     let (access_token, _, _) = user_signs_up(&app).await;
     let habit_category_id = user_creates_a_habit_category(&app, &access_token).await;
+    let unit_id = user_creates_a_unit(&app, &access_token).await;
 
-    let habit_id = user_creates_a_habit(&app, &access_token, habit_category_id).await;
-    user_updates_a_habit(app, &access_token, habit_category_id, habit_id).await;
+    let habit_id = user_creates_a_habit(
+        &app,
+        &access_token,
+        habit_category_id,
+        HashSet::from([unit_id]),
+    )
+    .await;
+    user_updates_a_habit(
+        app,
+        &access_token,
+        habit_category_id,
+        habit_id,
+        HashSet::from([unit_id]),
+    )
+    .await;
 }
 
 #[tokio::test]
@@ -228,7 +252,15 @@ pub async fn user_can_delete_a_habit() {
     let habit_categories = user_gets_habits(&app, &access_token).await;
     assert!(habit_categories.is_empty());
 
-    let habit_id = user_creates_a_habit(&app, &access_token, habit_category_id).await;
+    let unit_id = user_creates_a_unit(&app, &access_token).await;
+
+    let habit_id = user_creates_a_habit(
+        &app,
+        &access_token,
+        habit_category_id,
+        HashSet::from([unit_id]),
+    )
+    .await;
 
     let habit_categories = user_gets_habits(&app, &access_token).await;
     assert!(!habit_categories.is_empty());
@@ -244,9 +276,11 @@ pub async fn normal_user_can_not_merge_two_habits() {
     let app = spawn_app().await;
     let (access_token, _, _) = user_signs_up(&app).await;
     let habit_category_id = user_creates_a_habit_category(&app, &access_token).await;
+    let unit_id = user_creates_a_unit(&app, &access_token).await;
 
     let (first_habit_id, second_habit_id) =
-        user_create_two_habits_to_merge(&app, &access_token, habit_category_id).await;
+        user_create_two_habits_to_merge(&app, &access_token, habit_category_id, vec![unit_id])
+            .await;
 
     let req = test::TestRequest::post()
         .uri(&format!(
@@ -268,7 +302,8 @@ pub async fn normal_user_can_not_merge_two_habits() {
                 "Notre but est d'arrêter de fumer !"
             )]),
             "icon": "smoking".to_string(),
-            "reviewed": true
+            "reviewed": true,
+            "unit_ids": vec![unit_id]
         }))
         .to_request();
 
@@ -282,12 +317,14 @@ pub async fn admin_user_can_merge_two_habits() {
     let app = spawn_app().await;
     let (access_token, _) = user_logs_in(&app, "thomas", "").await;
     let habit_category_id = user_creates_a_habit_category(&app, &access_token).await;
+    let unit_id = user_creates_a_unit(&app, &access_token).await;
 
     let (first_habit_id, second_habit_id) =
-        user_create_two_habits_to_merge(&app, &access_token, habit_category_id).await;
+        user_create_two_habits_to_merge(&app, &access_token, habit_category_id, vec![unit_id])
+            .await;
 
     // We create a habit daily tracking with the second habit to check that it will use the first habit after merging
-    user_creates_a_habit_daily_tracking(&app, &access_token, second_habit_id).await;
+    user_creates_a_habit_daily_tracking(&app, &access_token, second_habit_id, unit_id).await;
     let habit_daily_trackings = user_gets_habit_daily_trackings(&app, &access_token).await;
     assert_eq!(habit_daily_trackings[0].habit_id, second_habit_id);
 
@@ -318,7 +355,8 @@ pub async fn admin_user_can_merge_two_habits() {
                 "Notre but est d'arrêter de fumer !"
             )]),
             "icon": "smoking".to_string(),
-            "reviewed": true
+            "reviewed": true,
+            "unit_ids": vec![unit_id]
         }))
         .to_request();
 

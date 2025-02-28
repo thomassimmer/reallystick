@@ -5,6 +5,7 @@ import 'package:reallystick/core/validators/habit_description.dart';
 import 'package:reallystick/core/validators/habit_icon.dart';
 import 'package:reallystick/core/validators/habit_long_name.dart';
 import 'package:reallystick/core/validators/habit_short_name.dart';
+import 'package:reallystick/core/validators/unit.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit_creation/habit_creation_events.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit_creation/habit_creation_states.dart';
 
@@ -16,6 +17,7 @@ class HabitCreationFormBloc
     on<HabitCreationFormLongNameChangedEvent>(_longNameChanged);
     on<HabitCreationFormDescriptionChangedEvent>(_descriptionChanged);
     on<HabitCreationFormIconChangedEvent>(_iconChanged);
+    on<HabitCreationFormUnitsChangedEvent>(_unitsChanged);
   }
 
   Future<void> _categoryChanged(
@@ -31,6 +33,7 @@ class HabitCreationFormBloc
           state.longName,
           state.description,
           state.icon,
+          ...state.unitIds.values.toList()
         ]),
       ),
     );
@@ -49,6 +52,7 @@ class HabitCreationFormBloc
           state.longName,
           state.description,
           state.icon,
+          ...state.unitIds.values.toList()
         ]),
       ),
     );
@@ -67,6 +71,7 @@ class HabitCreationFormBloc
           longName,
           state.description,
           state.icon,
+          ...state.unitIds.values.toList()
         ]),
       ),
     );
@@ -85,6 +90,7 @@ class HabitCreationFormBloc
           state.longName,
           description,
           state.icon,
+          ...state.unitIds.values.toList()
         ]),
       ),
     );
@@ -103,6 +109,30 @@ class HabitCreationFormBloc
           state.longName,
           state.description,
           icon,
+          ...state.unitIds.values.toList()
+        ]),
+      ),
+    );
+  }
+
+  Future<void> _unitsChanged(
+      HabitCreationFormUnitsChangedEvent event, Emitter emit) async {
+    final Map<String, UnitValidator> unitIdsMap = {};
+
+    for (final entry in event.unitIds) {
+      unitIdsMap[entry] = UnitValidator.dirty(entry);
+    }
+
+    emit(
+      state.copyWith(
+        unitIds: unitIdsMap,
+        isValid: Formz.validate([
+          state.habitCategory,
+          state.shortName,
+          state.longName,
+          state.description,
+          state.icon,
+          ...unitIdsMap.values.toList()
         ]),
       ),
     );

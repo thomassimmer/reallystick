@@ -14,6 +14,7 @@ import 'package:reallystick/features/habits/domain/usecases/get_habit_categories
 import 'package:reallystick/features/habits/domain/usecases/get_habit_participations_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/get_habits_daily_tracking_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/get_habits_usecase.dart';
+import 'package:reallystick/features/habits/domain/usecases/get_units_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/merge_habits_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/update_habit_usecase.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_events.dart';
@@ -29,6 +30,7 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
   final GetHabitsUsecase getHabitsUsecase = GetIt.instance<GetHabitsUsecase>();
   final GetHabitsDailyTrackingUsecase getHabitsDailyTrackingUsecase =
       GetIt.instance<GetHabitsDailyTrackingUsecase>();
+  final GetUnitsUsecase getUnitsUsecase = GetIt.instance<GetUnitsUsecase>();
   final CreateHabitUsecase createHabitUsecase =
       GetIt.instance<CreateHabitUsecase>();
   final CreateHabitParticipationUsecase createHabitParticipationUsecase =
@@ -94,7 +96,7 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
                 final resultOfGetHabitsDailyTrackingUsecase =
                     await getHabitsDailyTrackingUsecase.call();
 
-                resultOfGetHabitsDailyTrackingUsecase.fold(
+                await resultOfGetHabitsDailyTrackingUsecase.fold(
                   (error) {
                     if (error is ShouldLogoutError) {
                       authBloc.add(AuthLogoutEvent(
@@ -104,17 +106,35 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
                           message: ErrorMessage(error.messageKey)));
                     }
                   },
-                  (habitDailyTrackings) {
-                    emit(
-                      HabitsLoaded(
-                        habitParticipations: habitParticipations,
-                        habits: Map.fromEntries(
-                            habits.map((habit) => MapEntry(habit.id, habit))),
-                        habitDailyTrackings: habitDailyTrackings,
-                        habitCategories: Map.fromEntries(habitCategories.map(
-                            (habitCategory) =>
-                                MapEntry(habitCategory.id, habitCategory))),
-                      ),
+                  (habitDailyTrackings) async {
+                    final resultOfGetUnitsUsecase =
+                        await getUnitsUsecase.call();
+
+                    resultOfGetUnitsUsecase.fold(
+                      (error) {
+                        if (error is ShouldLogoutError) {
+                          authBloc.add(AuthLogoutEvent(
+                              message: ErrorMessage(error.messageKey)));
+                        } else {
+                          emit(HabitsFailed(
+                              message: ErrorMessage(error.messageKey)));
+                        }
+                      },
+                      (units) {
+                        emit(
+                          HabitsLoaded(
+                            habitParticipations: habitParticipations,
+                            habits: Map.fromEntries(habits
+                                .map((habit) => MapEntry(habit.id, habit))),
+                            habitDailyTrackings: habitDailyTrackings,
+                            habitCategories: Map.fromEntries(
+                                habitCategories.map((habitCategory) =>
+                                    MapEntry(habitCategory.id, habitCategory))),
+                            units: Map.fromEntries(
+                                units.map((unit) => MapEntry(unit.id, unit))),
+                          ),
+                        );
+                      },
                     );
                   },
                 );
@@ -132,12 +152,12 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
     emit(HabitsLoading());
 
     final resultCreateHabitUsecase = await createHabitUsecase.call(
-      categoryId: event.categoryId,
-      shortName: Map.from({event.locale: event.shortName}),
-      longName: Map.from({event.locale: event.longName}),
-      description: Map.from({event.locale: event.description}),
-      icon: "material::${event.icon.toString()}",
-    );
+        categoryId: event.categoryId,
+        shortName: Map.from({event.locale: event.shortName}),
+        longName: Map.from({event.locale: event.longName}),
+        description: Map.from({event.locale: event.description}),
+        icon: "material::${event.icon.toString()}",
+        unitIds: event.unitIds);
 
     await resultCreateHabitUsecase.fold(
       (error) {
@@ -151,6 +171,7 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
               habitDailyTrackings: currentState.habitDailyTrackings,
               habitParticipations: currentState.habitParticipations,
               habits: currentState.habits,
+              units: currentState.units,
               message: ErrorMessage(error.messageKey),
             ),
           );
@@ -176,6 +197,7 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
                   habitDailyTrackings: currentState.habitDailyTrackings,
                   habitParticipations: currentState.habitParticipations,
                   habits: currentState.habits,
+                  units: currentState.units,
                   message: ErrorMessage(error.messageKey),
                 ),
               );
@@ -190,6 +212,7 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
                 habitDailyTrackings: currentState.habitDailyTrackings,
                 habitParticipations: currentState.habitParticipations,
                 habits: currentState.habits,
+                units: currentState.units,
                 message: SuccessMessage("habitCreated"),
                 newlyCreatedHabit: habit,
               ),
@@ -213,6 +236,7 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
       description: event.description,
       icon: "material::${event.icon.toString()}",
       reviewed: true,
+      unitIds: event.unitIds,
     );
 
     await resultUpdateHabitUsecase.fold(
@@ -227,6 +251,7 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
               habitDailyTrackings: currentState.habitDailyTrackings,
               habitParticipations: currentState.habitParticipations,
               habits: currentState.habits,
+              units: currentState.units,
               message: ErrorMessage(error.messageKey),
             ),
           );
@@ -240,6 +265,7 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
             habitDailyTrackings: currentState.habitDailyTrackings,
             habitParticipations: currentState.habitParticipations,
             habits: currentState.habits,
+            units: currentState.units,
             message: SuccessMessage("habitUpdated"),
             newlyUpdatedHabit: habit,
           ),
@@ -262,6 +288,7 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
       description: event.description,
       icon: "material::${event.icon.toString()}",
       reviewed: true,
+      unitIds: event.unitIds,
     );
 
     await resultMergeHabitsUseCase.fold(
@@ -276,6 +303,7 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
               habitDailyTrackings: currentState.habitDailyTrackings,
               habitParticipations: currentState.habitParticipations,
               habits: currentState.habits,
+              units: currentState.units,
               message: ErrorMessage(error.messageKey),
             ),
           );
@@ -301,6 +329,7 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
             habitDailyTrackings: currentState.habitDailyTrackings,
             habitParticipations: currentState.habitParticipations,
             habits: currentState.habits,
+            units: currentState.units,
             message: SuccessMessage("habitUpdated"),
             newlyUpdatedHabit: habit,
           ),

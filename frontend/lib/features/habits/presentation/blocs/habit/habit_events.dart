@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:equatable/equatable.dart';
 
 abstract class HabitEvent extends Equatable {
@@ -16,6 +18,7 @@ class CreateHabitEvent extends HabitEvent {
   final String categoryId;
   final int icon;
   final String locale;
+  final HashSet<String> unitIds;
 
   const CreateHabitEvent({
     required this.shortName,
@@ -24,6 +27,7 @@ class CreateHabitEvent extends HabitEvent {
     required this.categoryId,
     required this.icon,
     required this.locale,
+    required this.unitIds,
   });
 
   @override
@@ -34,6 +38,7 @@ class CreateHabitEvent extends HabitEvent {
         categoryId,
         icon,
         locale,
+        unitIds,
       ];
 }
 
@@ -44,6 +49,7 @@ class UpdateHabitEvent extends HabitEvent {
   final Map<String, String> description;
   final String categoryId;
   final int icon;
+  final HashSet<String> unitIds;
 
   const UpdateHabitEvent({
     required this.habitId,
@@ -52,6 +58,7 @@ class UpdateHabitEvent extends HabitEvent {
     required this.description,
     required this.categoryId,
     required this.icon,
+    required this.unitIds,
   });
 
   @override
@@ -62,6 +69,7 @@ class UpdateHabitEvent extends HabitEvent {
         description,
         categoryId,
         icon,
+        unitIds,
       ];
 }
 
@@ -73,6 +81,7 @@ class MergeHabitsEvent extends HabitEvent {
   final Map<String, String> description;
   final String categoryId;
   final int icon;
+  final HashSet<String> unitIds;
 
   const MergeHabitsEvent({
     required this.habitToDeleteId,
@@ -82,6 +91,7 @@ class MergeHabitsEvent extends HabitEvent {
     required this.description,
     required this.categoryId,
     required this.icon,
+    required this.unitIds,
   });
 
   @override
@@ -93,5 +103,6 @@ class MergeHabitsEvent extends HabitEvent {
         description,
         categoryId,
         icon,
+        unitIds,
       ];
 }

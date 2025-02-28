@@ -48,7 +48,7 @@ class HabitWidget extends StatelessWidget {
 
         // Calculate available screen width and determine how many days to display
         final screenWidth = MediaQuery.of(context).size.width;
-        const dayBoxWidth = 25.0; // Fixed width for each day box
+        const dayBoxWidth = 25.0; // Fixed width for each datetime box
         const dayBoxSpacing = 10.0; // Spacing between boxes
         final maxBoxes = (screenWidth / (dayBoxWidth + dayBoxSpacing)).floor();
 
@@ -120,7 +120,8 @@ class HabitWidget extends StatelessWidget {
                             .format(date)
                             .substring(0, 1);
                         final isTracked = habitDailyTrackings.any(
-                          (tracking) => tracking.day.day == date.day,
+                          (tracking) =>
+                              tracking.datetime.day == date.day,
                         );
 
                         return Column(

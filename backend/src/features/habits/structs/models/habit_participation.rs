@@ -6,9 +6,9 @@ use uuid::Uuid;
 #[allow(non_snake_case)]
 #[derive(Debug, Deserialize, Serialize, Clone, FromRow)]
 pub struct HabitParticipation {
-    pub id: uuid::Uuid,
-    pub user_id: uuid::Uuid,
-    pub habit_id: uuid::Uuid,
+    pub id: Uuid,
+    pub user_id: Uuid,
+    pub habit_id: Uuid,
     pub color: String,
     pub to_gain: bool,
     pub created_at: DateTime<Utc>,
@@ -18,8 +18,8 @@ pub struct HabitParticipation {
 #[derive(Serialize, Debug, Deserialize, Clone)]
 pub struct HabitParticipationData {
     pub id: Uuid,
-    pub user_id: uuid::Uuid,
-    pub habit_id: uuid::Uuid,
+    pub user_id: Uuid,
+    pub habit_id: Uuid,
     pub color: String,
     pub to_gain: bool,
 }

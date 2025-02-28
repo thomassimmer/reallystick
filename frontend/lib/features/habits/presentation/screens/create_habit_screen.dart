@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -9,6 +11,7 @@ import 'package:reallystick/core/messages/message_mapper.dart';
 import 'package:reallystick/core/presentation/widgets/custom_dropdown_button_form_field.dart';
 import 'package:reallystick/core/presentation/widgets/custom_elevated_button_form_field.dart';
 import 'package:reallystick/core/presentation/widgets/custom_text_field.dart';
+import 'package:reallystick/core/presentation/widgets/multi_unit_select_dropdown.dart';
 import 'package:reallystick/features/habits/domain/entities/habit_category.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_events.dart';
@@ -31,6 +34,7 @@ class CreateHabitScreenState extends State<CreateHabitScreen> {
 
   String? _selectedCategoryId;
   IconData? _icon;
+  HashSet<String> _selectedUnitIds = HashSet();
 
   _pickIcon() async {
     IconPickerIcon? icon = await showIconPicker(
@@ -79,6 +83,7 @@ class CreateHabitScreenState extends State<CreateHabitScreen> {
             categoryId: _selectedCategoryId ?? "",
             icon: _icon?.codePoint ?? 0,
             locale: locale,
+            unitIds: _selectedUnitIds,
           );
 
           if (mounted) {
@@ -166,6 +171,19 @@ class CreateHabitScreenState extends State<CreateHabitScreen> {
                     context, ErrorMessage(displayIconError.messageKey))
                 : null;
 
+            final unitsErrorMap = context.select(
+              (HabitCreationFormBloc habitCreationFormBloc) =>
+                  habitCreationFormBloc.state.unitIds.values
+                      .map((validator) => validator.displayError != null
+                          ? getTranslatedMessage(
+                              context,
+                              ErrorMessage(validator.displayError!.messageKey),
+                            )
+                          : '')
+                      .where((error) => error.isNotEmpty)
+                      .toList(),
+            );
+
             return Scaffold(
               appBar: AppBar(
                 title: Text(AppLocalizations.of(context)!.addANewHabit),
@@ -216,6 +234,7 @@ class CreateHabitScreenState extends State<CreateHabitScreen> {
                         label: AppLocalizations.of(context)!.shortName,
                         errorText: displayShortNameErrorMessage,
                       ),
+
                       const SizedBox(height: 16.0),
 
                       // Long Name Input
@@ -228,6 +247,7 @@ class CreateHabitScreenState extends State<CreateHabitScreen> {
                         label: AppLocalizations.of(context)!.longName,
                         errorText: displayLongNameErrorMessage,
                       ),
+
                       const SizedBox(height: 16.0),
 
                       // Description Input
@@ -241,6 +261,20 @@ class CreateHabitScreenState extends State<CreateHabitScreen> {
                         label: AppLocalizations.of(context)!.description,
                         errorText: displayDescriptionErrorMessage,
                       ),
+
+                      const SizedBox(height: 16.0),
+
+                      // Unit Selector
+                      MultiUnitSelectDropdown(
+                        initialSelectedValues: _selectedUnitIds.toList(),
+                        options: habitState.units,
+                        userLocale: userLocale,
+                        errors: unitsErrorMap,
+                        onUnitsChanged: (newUnits) {
+                          _selectedUnitIds = newUnits;
+                        },
+                      ),
+
                       const SizedBox(height: 16.0),
 
                       // Icon Selector with error display

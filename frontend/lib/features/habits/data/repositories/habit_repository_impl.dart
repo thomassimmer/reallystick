@@ -1,6 +1,7 @@
 // features/auth/data/repositories/auth_repository.dart
 
 import 'dart:async';
+import 'dart:collection';
 
 import 'package:dartz/dartz.dart';
 import 'package:logger/web.dart';
@@ -62,6 +63,7 @@ class HabitRepositoryImpl implements HabitRepository {
     required Map<String, String> description,
     required String categoryId,
     required String icon,
+    required HashSet<String> unitIds,
   }) async {
     try {
       final habitDataModel =
@@ -71,6 +73,7 @@ class HabitRepositoryImpl implements HabitRepository {
         description: description,
         categoryId: categoryId,
         icon: icon,
+        unitIds: unitIds,
       ));
 
       return Right(habitDataModel.toDomain());
@@ -110,6 +113,7 @@ class HabitRepositoryImpl implements HabitRepository {
     required String categoryId,
     required String icon,
     required bool reviewed,
+    required HashSet<String> unitIds,
   }) async {
     try {
       final habitDataModel = await remoteDataSource.updateHabit(
@@ -121,6 +125,7 @@ class HabitRepositoryImpl implements HabitRepository {
           categoryId: categoryId,
           icon: icon,
           reviewed: reviewed,
+          unitIds: unitIds,
         ),
       );
 
@@ -203,6 +208,7 @@ class HabitRepositoryImpl implements HabitRepository {
     required String categoryId,
     required String icon,
     required bool reviewed,
+    required HashSet<String> unitIds,
   }) async {
     try {
       final habitDataModel = await remoteDataSource.mergeHabits(
@@ -215,6 +221,7 @@ class HabitRepositoryImpl implements HabitRepository {
           categoryId: categoryId,
           icon: icon,
           reviewed: reviewed,
+          unitIds: unitIds,
         ),
       );
 

@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:dartz/dartz.dart';
 import 'package:reallystick/core/messages/errors/domain_error.dart';
 import 'package:reallystick/features/habits/domain/entities/habit.dart';
@@ -14,6 +16,7 @@ class CreateHabitUsecase {
     required Map<String, String> description,
     required String categoryId,
     required String icon,
+    required HashSet<String> unitIds,
   }) async {
     return await habitRepository.createHabit(
       shortName: shortName,
@@ -21,6 +24,7 @@ class CreateHabitUsecase {
       description: description,
       categoryId: categoryId,
       icon: icon,
+      unitIds: unitIds,
     );
   }
 }

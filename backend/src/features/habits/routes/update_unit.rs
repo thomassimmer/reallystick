@@ -1,0 +1,68 @@
+use crate::{
+    core::constants::errors::AppError,
+    features::habits::{
+        helpers::unit::{self, get_unit_by_id},
+        structs::{
+            requests::unit::{UnitUpdateRequest, UpdateUnitParams},
+            responses::unit::UnitResponse,
+        },
+    },
+};
+use actix_web::{
+    put,
+    web::{Data, Json, Path},
+    HttpResponse, Responder,
+};
+use serde_json::json;
+use sqlx::PgPool;
+
+#[put("/{unit_id}")]
+pub async fn update_unit(
+    pool: Data<PgPool>,
+    params: Path<UpdateUnitParams>,
+    body: Json<UnitUpdateRequest>,
+) -> impl Responder {
+    let mut transaction = match pool.begin().await {
+        Ok(t) => t,
+        Err(e) => {
+            eprintln!("Error: {}", e);
+            return HttpResponse::InternalServerError()
+                .json(AppError::DatabaseConnection.to_response());
+        }
+    };
+
+    let get_unit_result = get_unit_by_id(&mut transaction, params.unit_id).await;
+
+    let mut unit = match get_unit_result {
+        Ok(r) => match r {
+            Some(unit) => unit,
+            None => return HttpResponse::NotFound().json(AppError::UnitNotFound.to_response()),
+        },
+        Err(e) => {
+            eprintln!("Error: {}", e);
+            return HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response());
+        }
+    };
+
+    unit.short_name = json!(body.short_name).to_string();
+    unit.long_name = json!(body.long_name).to_string();
+
+    let update_unit_result = unit::update_unit(&mut transaction, &unit).await;
+
+    if let Err(e) = transaction.commit().await {
+        eprintln!("Error: {}", e);
+        return HttpResponse::InternalServerError()
+            .json(AppError::DatabaseTransaction.to_response());
+    }
+
+    match update_unit_result {
+        Ok(_) => HttpResponse::Ok().json(UnitResponse {
+            code: "UNIT_UPDATED".to_string(),
+            unit: Some(unit.to_unit_data()),
+        }),
+        Err(e) => {
+            eprintln!("Error: {}", e);
+            HttpResponse::InternalServerError().json(AppError::UnitUpdate.to_response())
+        }
+    }
+}

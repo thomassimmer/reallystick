@@ -33,6 +33,10 @@ pub enum AppError {
     PasswordTooWeak,
     TokenGeneration,
     TwoFactorAuthenticationNotEnabled,
+    UnitCreation,
+    UnitDelete,
+    UnitNotFound,
+    UnitUpdate,
     UsernameNotRespectingRules,
     UsernameWrongSize,
     UserTokenDeletion,
@@ -169,6 +173,22 @@ impl AppError {
             AppError::TwoFactorAuthenticationNotEnabled => GenericResponse {
                 code: "TWO_FACTOR_AUTHENTICATION_NOT_ENABLED".to_string(),
                 message: "Two factor authentication is not enabled".to_string(),
+            },
+            AppError::UnitCreation => GenericResponse {
+                code: "UNIT_NOT_CREATED".to_string(),
+                message: "Failed to create this unit".to_string(),
+            },
+            AppError::UnitDelete => GenericResponse {
+                code: "UNIT_NOT_DELETED".to_string(),
+                message: "Failed to delete this unit".to_string(),
+            },
+            AppError::UnitNotFound => GenericResponse {
+                code: "UNIT_NOT_FOUND".to_string(),
+                message: "The unit requested does not exist".to_string(),
+            },
+            AppError::UnitUpdate => GenericResponse {
+                code: "UNIT_UPDATE".to_string(),
+                message: "Failed to update unit".to_string(),
             },
             AppError::UsernameNotRespectingRules => GenericResponse {
                 code: "USERNAME_NOT_RESPECTING_RULES".to_string(),

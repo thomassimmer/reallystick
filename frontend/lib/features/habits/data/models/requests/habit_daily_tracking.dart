@@ -1,60 +1,48 @@
 class HabitDailyTrackingUpdateRequestModel {
-  final DateTime day;
-  final Duration? duration;
-  final int? quantityPerSet;
-  final int? quantityOfSet;
-  final String? unit;
-  final bool reset;
+  final DateTime datetime;
+  final int quantityPerSet;
+  final int quantityOfSet;
+  final String unitId;
 
   const HabitDailyTrackingUpdateRequestModel({
-    required this.day,
-    this.duration,
-    this.quantityPerSet,
-    this.quantityOfSet,
-    this.unit,
-    required this.reset,
+    required this.datetime,
+    required this.quantityPerSet,
+    required this.quantityOfSet,
+    required this.unitId,
   });
 
   Map<String, dynamic> toJson() {
     return {
-      'day': day.toIso8601String(),
-      'duration': duration?.inMilliseconds,
+      'datetime': datetime.toIso8601String(),
       'quantity_per_set': quantityPerSet,
       'quantity_of_set': quantityOfSet,
-      'unit': unit,
-      'reset': reset,
+      'unit_id': unitId,
     };
   }
 }
 
 class HabitDailyTrackingCreateRequestModel {
   final String habitId;
-  final DateTime day;
-  final Duration? duration;
-  final int? quantityPerSet;
-  final int? quantityOfSet;
-  final String? unit;
-  final bool reset;
+  final DateTime datetime;
+  final int quantityPerSet;
+  final int quantityOfSet;
+  final String unitId;
 
   const HabitDailyTrackingCreateRequestModel({
     required this.habitId,
-    required this.day,
-    this.duration,
-    this.quantityPerSet,
-    this.quantityOfSet,
-    this.unit,
-    required this.reset,
+    required this.datetime,
+    required this.quantityPerSet,
+    required this.quantityOfSet,
+    required this.unitId,
   });
 
   Map<String, dynamic> toJson() {
     return {
       'habit_id': habitId,
-      'day': day.toIso8601String(),
-      'duration': duration?.inMilliseconds,
+      'datetime': datetime.toIso8601String(),
       'quantity_per_set': quantityPerSet,
       'quantity_of_set': quantityOfSet,
-      'unit': unit,
-      'reset': reset,
+      'unit_id': unitId,
     };
   }
 }

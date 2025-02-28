@@ -10,21 +10,17 @@ abstract class HabitDailyTrackingRepository {
   Future<Either<DomainError, List<HabitDailyTracking>>> getHabitDailyTracking();
   Future<Either<DomainError, HabitDailyTracking>> createHabitDailyTracking({
     required String habitId,
-    required DateTime day,
-    required Duration? duration,
-    required int? quantityPerSet,
-    required int? quantityOfSet,
-    required String? unit,
-    required bool reset,
+    required DateTime datetime,
+    required int quantityPerSet,
+    required int quantityOfSet,
+    required String unitId,
   });
   Future<Either<DomainError, HabitDailyTracking>> updateHabitDailyTracking({
     required String habitDailyTrackingId,
-    required DateTime day,
-    required Duration? duration,
-    required int? quantityPerSet,
-    required int? quantityOfSet,
-    required String? unit,
-    required bool reset,
+    required DateTime datetime,
+    required int quantityPerSet,
+    required int quantityOfSet,
+    required String unitId,
   });
   Future<Either<DomainError, void>> deleteHabitDailyTracking({
     required String habitDailyTrackingId,

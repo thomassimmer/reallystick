@@ -5,6 +5,7 @@ import 'package:reallystick/core/validators/habit_description.dart';
 import 'package:reallystick/core/validators/habit_icon.dart';
 import 'package:reallystick/core/validators/habit_long_name.dart';
 import 'package:reallystick/core/validators/habit_short_name.dart';
+import 'package:reallystick/core/validators/unit.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit_review/habit_review_events.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit_review/habit_review_states.dart';
 
@@ -16,6 +17,7 @@ class HabitReviewFormBloc
     on<HabitReviewFormLongNameChangedEvent>(_longNameChanged);
     on<HabitReviewFormDescriptionChangedEvent>(_descriptionChanged);
     on<HabitReviewFormIconChangedEvent>(_iconChanged);
+    on<HabitReviewFormUnitsChangedEvent>(_unitsChanged);
   }
 
   Future<void> _categoryChanged(
@@ -31,6 +33,7 @@ class HabitReviewFormBloc
           ...state.longName.values.toList(),
           ...state.description.values.toList(),
           state.icon,
+          ...state.unitIds.values.toList(),
         ]),
       ),
     );
@@ -53,6 +56,7 @@ class HabitReviewFormBloc
           ...state.description.values.toList(),
           state.icon,
           state.habitCategory,
+          ...state.unitIds.values.toList(),
         ]),
       ),
     );
@@ -75,6 +79,7 @@ class HabitReviewFormBloc
           ...state.description.values.toList(),
           state.icon,
           state.habitCategory,
+          ...state.unitIds.values.toList(),
         ]),
       ),
     );
@@ -97,6 +102,7 @@ class HabitReviewFormBloc
           ...state.description.values.toList(),
           state.icon,
           state.habitCategory,
+          ...state.unitIds.values.toList(),
         ]),
       ),
     );
@@ -115,6 +121,30 @@ class HabitReviewFormBloc
           ...state.longName.values.toList(),
           ...state.description.values.toList(),
           icon,
+          ...state.unitIds.values.toList(),
+        ]),
+      ),
+    );
+  }
+
+  Future<void> _unitsChanged(
+      HabitReviewFormUnitsChangedEvent event, Emitter emit) async {
+    final Map<String, UnitValidator> unitIdsMap = {};
+
+    for (final entry in event.unitIds) {
+      unitIdsMap[entry] = UnitValidator.dirty(entry);
+    }
+
+    emit(
+      state.copyWith(
+        unitIds: unitIdsMap,
+        isValid: Formz.validate([
+          state.habitCategory,
+          ...state.shortName.values.toList(),
+          ...state.longName.values.toList(),
+          ...state.description.values.toList(),
+          state.icon,
+          ...unitIdsMap.values.toList()
         ]),
       ),
     );

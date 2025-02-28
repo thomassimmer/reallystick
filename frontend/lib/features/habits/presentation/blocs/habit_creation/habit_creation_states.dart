@@ -4,7 +4,7 @@ import 'package:reallystick/core/validators/habit_description.dart';
 import 'package:reallystick/core/validators/habit_icon.dart';
 import 'package:reallystick/core/validators/habit_long_name.dart';
 import 'package:reallystick/core/validators/habit_short_name.dart';
-import 'package:reallystick/core/validators/password.dart';
+import 'package:reallystick/core/validators/unit.dart';
 
 final class HabitCreationFormState extends Equatable {
   const HabitCreationFormState({
@@ -13,6 +13,7 @@ final class HabitCreationFormState extends Equatable {
     this.habitCategory = const HabitCategoryValidator.pure(),
     this.icon = const HabitIconValidator.pure(),
     this.description = const HabitDescriptionValidator.pure(),
+    this.unitIds = const {},
     this.isValid = true,
     this.errorMessage,
   });
@@ -22,6 +23,7 @@ final class HabitCreationFormState extends Equatable {
   final HabitDescriptionValidator description;
   final HabitCategoryValidator habitCategory;
   final HabitIconValidator icon;
+  final Map<String, UnitValidator> unitIds;
   final bool isValid;
   final String? errorMessage;
 
@@ -34,6 +36,7 @@ final class HabitCreationFormState extends Equatable {
         habitCategory,
         isValid,
         errorMessage,
+        unitIds,
       ];
 
   HabitCreationFormState copyWith({
@@ -42,7 +45,7 @@ final class HabitCreationFormState extends Equatable {
     HabitDescriptionValidator? description,
     HabitCategoryValidator? habitCategory,
     HabitIconValidator? icon,
-    Password? password,
+    Map<String, UnitValidator>? unitIds,
     bool? isValid,
     String? errorMessage,
   }) {
@@ -52,6 +55,7 @@ final class HabitCreationFormState extends Equatable {
       description: description ?? this.description,
       habitCategory: habitCategory ?? this.habitCategory,
       icon: icon ?? this.icon,
+      unitIds: unitIds ?? this.unitIds,
       isValid: isValid ?? this.isValid,
       errorMessage: errorMessage ?? this.errorMessage,
     );

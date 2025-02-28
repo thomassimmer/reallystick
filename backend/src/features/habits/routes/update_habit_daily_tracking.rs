@@ -49,12 +49,12 @@ pub async fn update_habit_daily_tracking(
         }
     };
 
-    habit_daily_tracking.day = body.day;
-    habit_daily_tracking.duration = body.duration;
+    // TODO: check unit exists
+
+    habit_daily_tracking.datetime = body.datetime;
     habit_daily_tracking.quantity_per_set = body.quantity_per_set;
     habit_daily_tracking.quantity_of_set = body.quantity_of_set;
-    habit_daily_tracking.unit = body.unit.clone();
-    habit_daily_tracking.reset = body.reset;
+    habit_daily_tracking.unit_id = body.unit_id;
 
     let update_habit_daily_tracking_result =
         habit_daily_tracking::update_habit_daily_tracking(&mut transaction, &habit_daily_tracking)

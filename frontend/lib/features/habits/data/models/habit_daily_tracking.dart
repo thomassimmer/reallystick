@@ -5,23 +5,19 @@ class HabitDailyTrackingDataModel extends Equatable {
   final String id;
   final String userId;
   final String habitId;
-  final DateTime day;
-  final Duration? duration;
-  final int? quantityPerSet;
-  final int? quantityOfSet;
-  final String? unit;
-  final bool reset;
+  final DateTime datetime;
+  final int quantityPerSet;
+  final int quantityOfSet;
+  final String unitId;
 
   const HabitDailyTrackingDataModel({
     required this.id,
     required this.userId,
     required this.habitId,
-    required this.day,
-    this.duration,
-    this.quantityPerSet,
-    this.quantityOfSet,
-    this.unit,
-    required this.reset,
+    required this.datetime,
+    required this.quantityPerSet,
+    required this.quantityOfSet,
+    required this.unitId,
   });
 
   factory HabitDailyTrackingDataModel.fromJson(Map<String, dynamic> json) {
@@ -29,14 +25,10 @@ class HabitDailyTrackingDataModel extends Equatable {
       id: json['id'] as String,
       userId: json['user_id'] as String,
       habitId: json['habit_id'] as String,
-      day: DateTime.parse(json['day'] as String),
-      duration: json['duration'] != null
-          ? Duration(milliseconds: json['duration'] as int)
-          : null,
-      quantityPerSet: json['quantity_per_set'] as int?,
-      quantityOfSet: json['quantity_of_set'] as int?,
-      unit: json['unit'] as String?,
-      reset: json['reset'] as bool,
+      datetime: DateTime.parse(json['datetime'] as String),
+      quantityPerSet: json['quantity_per_set'] as int,
+      quantityOfSet: json['quantity_of_set'] as int,
+      unitId: json['unit_id'] as String,
     );
   }
 
@@ -44,12 +36,10 @@ class HabitDailyTrackingDataModel extends Equatable {
         id: id,
         userId: userId,
         habitId: habitId,
-        day: day,
-        duration: duration,
+        datetime: datetime,
         quantityPerSet: quantityPerSet,
         quantityOfSet: quantityOfSet,
-        unit: unit,
-        reset: reset,
+        unitId: unitId,
       );
 
   @override
@@ -57,11 +47,9 @@ class HabitDailyTrackingDataModel extends Equatable {
         id,
         userId,
         habitId,
-        day,
-        duration,
+        datetime,
         quantityPerSet,
         quantityOfSet,
-        unit,
-        reset,
+        unitId,
       ];
 }

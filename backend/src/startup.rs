@@ -20,6 +20,7 @@ use crate::features::habits::routes::create_habit::create_habit;
 use crate::features::habits::routes::create_habit_category::create_habit_category;
 use crate::features::habits::routes::create_habit_daily_tracking::create_habit_daily_tracking;
 use crate::features::habits::routes::create_habit_participation::create_habit_participation;
+use crate::features::habits::routes::create_unit::create_unit;
 use crate::features::habits::routes::delete_habit::delete_habit;
 use crate::features::habits::routes::delete_habit_category::delete_habit_category;
 use crate::features::habits::routes::delete_habit_daily_tracking::delete_habit_daily_tracking;
@@ -29,11 +30,13 @@ use crate::features::habits::routes::get_habit_categories::get_habit_categories;
 use crate::features::habits::routes::get_habit_daily_trackings::get_habit_daily_tracking;
 use crate::features::habits::routes::get_habit_participations::get_habit_participations;
 use crate::features::habits::routes::get_habits::get_habits;
+use crate::features::habits::routes::get_units::get_units;
 use crate::features::habits::routes::merge_habits::merge_habits;
 use crate::features::habits::routes::update_habit::update_habit;
 use crate::features::habits::routes::update_habit_category::update_habit_category;
 use crate::features::habits::routes::update_habit_daily_tracking::update_habit_daily_tracking;
 use crate::features::habits::routes::update_habit_participation::update_habit_participation;
+use crate::features::habits::routes::update_unit::update_unit;
 use crate::features::profile::routes::get_profile_information::get_profile_information;
 use crate::features::profile::routes::is_otp_enabled::is_otp_enabled;
 use crate::features::profile::routes::post_profile_information::post_profile_information;
@@ -180,6 +183,18 @@ pub fn create_app(
                             .service(update_habit_participation)
                             .service(create_habit_participation)
                             .service(delete_habit_participation),
+                    ),
+                )
+                .service(
+                    web::scope("/units").service(
+                        web::scope("")
+                            .wrap(TokenValidator::new(
+                                secret.to_string(),
+                                connection_pool.clone(),
+                            ))
+                            .service(get_units)
+                            .service(update_unit)
+                            .service(create_unit),
                     ),
                 ),
         )

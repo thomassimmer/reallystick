@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 use serde::Deserialize;
 use uuid::Uuid;
@@ -27,6 +27,7 @@ pub struct HabitUpdateRequest {
     pub category_id: Uuid,
     pub reviewed: bool,
     pub icon: String,
+    pub unit_ids: HashSet<String>,
 }
 
 #[derive(Deserialize)]
@@ -36,4 +37,5 @@ pub struct HabitCreateRequest {
     pub description: HashMap<String, String>,
     pub category_id: Uuid,
     pub icon: String,
+    pub unit_ids: HashSet<String>,
 }

@@ -2,22 +2,18 @@ class HabitDailyTracking {
   String id;
   String userId;
   String habitId;
-  DateTime day;
-  Duration? duration;
-  int? quantityPerSet;
-  int? quantityOfSet;
-  String? unit;
-  bool reset;
+  DateTime datetime;
+  int quantityPerSet;
+  int quantityOfSet;
+  String unitId;
 
   HabitDailyTracking({
     required this.id,
     required this.userId,
     required this.habitId,
-    required this.day,
-    this.duration,
-    this.quantityPerSet,
-    this.quantityOfSet,
-    this.unit,
-    required this.reset,
+    required this.datetime,
+    required this.quantityPerSet,
+    required this.quantityOfSet,
+    required this.unitId,
   });
 }

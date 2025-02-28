@@ -1,3 +1,5 @@
+use std::collections::HashSet;
+
 use actix_http::{header, Request};
 use actix_web::{
     body::MessageBody,
@@ -13,7 +15,8 @@ use uuid::Uuid;
 
 use crate::{
     auth::signup::user_signs_up, habits::habit::user_creates_a_habit,
-    habits::habit_category::user_creates_a_habit_category, helpers::spawn_app,
+    habits::habit_category::user_creates_a_habit_category, habits::unit::user_creates_a_unit,
+    helpers::spawn_app,
 };
 
 pub async fn user_creates_a_habit_participation(
@@ -124,7 +127,14 @@ pub async fn user_can_create_a_habit_participation() {
     let app = spawn_app().await;
     let (access_token, _, _) = user_signs_up(&app).await;
     let habit_category_id = user_creates_a_habit_category(&app, &access_token).await;
-    let habit_id = user_creates_a_habit(&app, &access_token, habit_category_id).await;
+    let unit_id = user_creates_a_unit(&app, &access_token).await;
+    let habit_id = user_creates_a_habit(
+        &app,
+        &access_token,
+        habit_category_id,
+        HashSet::from([unit_id]),
+    )
+    .await;
 
     let habit_participations = user_gets_habit_participations(&app, &access_token).await;
     assert!(habit_participations.is_empty());
@@ -140,7 +150,14 @@ pub async fn user_can_update_a_habit_participation() {
     let app = spawn_app().await;
     let (access_token, _, _) = user_signs_up(&app).await;
     let habit_category_id = user_creates_a_habit_category(&app, &access_token).await;
-    let habit_id = user_creates_a_habit(&app, &access_token, habit_category_id).await;
+    let unit_id = user_creates_a_unit(&app, &access_token).await;
+    let habit_id = user_creates_a_habit(
+        &app,
+        &access_token,
+        habit_category_id,
+        HashSet::from([unit_id]),
+    )
+    .await;
 
     let habit_participation_id =
         user_creates_a_habit_participation(&app, &access_token, habit_id).await;
@@ -152,7 +169,14 @@ pub async fn user_can_delete_a_habit_participation() {
     let app = spawn_app().await;
     let (access_token, _, _) = user_signs_up(&app).await;
     let habit_category_id = user_creates_a_habit_category(&app, &access_token).await;
-    let habit_id = user_creates_a_habit(&app, &access_token, habit_category_id).await;
+    let unit_id = user_creates_a_unit(&app, &access_token).await;
+    let habit_id = user_creates_a_habit(
+        &app,
+        &access_token,
+        habit_category_id,
+        HashSet::from([unit_id]),
+    )
+    .await;
 
     let habit_participations = user_gets_habit_participations(&app, &access_token).await;
     assert!(habit_participations.is_empty());

@@ -42,5 +42,10 @@ class HabitIconNotFoundError implements DomainError {
 
 class HabitsNotMergedDomainError implements DomainError {
   @override
-  final String messageKey = 'habitsNotMergedDomainError';
+  final String messageKey = 'habitsNotMergedError';
+}
+
+class UnitNotFoundDomainError implements DomainError {
+  @override
+  final String messageKey = 'unitNotFoundError';
 }

@@ -60,12 +60,15 @@ pub async fn update_habit(
         }
     };
 
+    // TODO: Check units exist
+
     habit.short_name = json!(body.short_name).to_string();
     habit.long_name = json!(body.long_name).to_string();
     habit.description = json!(body.description).to_string();
     habit.reviewed = body.reviewed;
     habit.icon = body.icon.clone();
     habit.category_id = body.category_id;
+    habit.unit_ids = json!(body.unit_ids.clone()).to_string();
 
     let update_habit_result = habit::update_habit(&mut transaction, &habit).await;
 

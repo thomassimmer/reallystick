@@ -42,6 +42,8 @@ pub async fn create_habit(pool: Data<PgPool>, body: Json<HabitCreateRequest>) ->
         }
     };
 
+    // TODO: check units exist
+
     let habit = Habit {
         id: Uuid::new_v4(),
         short_name: json!(body.short_name).to_string(),
@@ -51,6 +53,7 @@ pub async fn create_habit(pool: Data<PgPool>, body: Json<HabitCreateRequest>) ->
         reviewed: false,
         icon: body.icon.clone(),
         created_at: Utc::now(),
+        unit_ids: json!(body.unit_ids).to_string(),
     };
 
     let create_habit_result = habit::create_habit(&mut transaction, &habit).await;

@@ -6,6 +6,7 @@ import 'package:reallystick/core/validators/habit_description.dart';
 import 'package:reallystick/core/validators/habit_icon.dart';
 import 'package:reallystick/core/validators/habit_long_name.dart';
 import 'package:reallystick/core/validators/habit_short_name.dart';
+import 'package:reallystick/core/validators/unit.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit_merge/habit_merge_events.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit_merge/habit_merge_states.dart';
 
@@ -18,6 +19,7 @@ class HabitMergeFormBloc
     on<HabitMergeFormLongNameChangedEvent>(_longNameChanged);
     on<HabitMergeFormDescriptionChangedEvent>(_descriptionChanged);
     on<HabitMergeFormIconChangedEvent>(_iconChanged);
+    on<HabitMergeFormUnitsChangedEvent>(_unitsChanged);
   }
 
   Future<void> _habitChanged(
@@ -34,6 +36,7 @@ class HabitMergeFormBloc
           ...state.description.values.toList(),
           state.icon,
           state.habitCategory,
+          ...state.unitIds.values.toList(),
         ]),
       ),
     );
@@ -53,6 +56,7 @@ class HabitMergeFormBloc
           ...state.description.values.toList(),
           state.icon,
           state.habitToMergeOn,
+          ...state.unitIds.values.toList(),
         ]),
       ),
     );
@@ -76,6 +80,7 @@ class HabitMergeFormBloc
           state.icon,
           state.habitCategory,
           state.habitToMergeOn,
+          ...state.unitIds.values.toList(),
         ]),
       ),
     );
@@ -99,6 +104,7 @@ class HabitMergeFormBloc
           state.icon,
           state.habitCategory,
           state.habitToMergeOn,
+          ...state.unitIds.values.toList(),
         ]),
       ),
     );
@@ -122,6 +128,7 @@ class HabitMergeFormBloc
           state.icon,
           state.habitCategory,
           state.habitToMergeOn,
+          ...state.unitIds.values.toList(),
         ]),
       ),
     );
@@ -141,6 +148,30 @@ class HabitMergeFormBloc
           ...state.description.values.toList(),
           icon,
           state.habitToMergeOn,
+          ...state.unitIds.values.toList(),
+        ]),
+      ),
+    );
+  }
+
+  Future<void> _unitsChanged(
+      HabitMergeFormUnitsChangedEvent event, Emitter emit) async {
+    final Map<String, UnitValidator> unitIdsMap = {};
+
+    for (final entry in event.unitIds) {
+      unitIdsMap[entry] = UnitValidator.dirty(entry);
+    }
+
+    emit(
+      state.copyWith(
+        unitIds: unitIdsMap,
+        isValid: Formz.validate([
+          state.habitCategory,
+          ...state.shortName.values.toList(),
+          ...state.longName.values.toList(),
+          ...state.description.values.toList(),
+          state.icon,
+          ...unitIdsMap.values.toList()
         ]),
       ),
     );

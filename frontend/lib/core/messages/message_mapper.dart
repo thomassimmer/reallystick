@@ -68,6 +68,10 @@ String getTranslatedMessage(BuildContext context, Message message) {
         return localizations.habitDescriptionWrongSizeError;
       case 'habitIconNotFoundError':
         return localizations.habitIconNotFoundError;
+      case 'habitsNotMergedError':
+        return localizations.habitsNotMergedError;
+      case 'unitNotFoundError':
+        return localizations.unitNotFoundError;
 
       // Profile
       case 'passwordNotExpiredError':

@@ -52,12 +52,10 @@ pub async fn create_habit_daily_tracking(
         user_id: request_user.id,
         created_at: Utc::now(),
         habit_id: body.habit_id,
-        day: body.day,
-        duration: body.duration,
+        datetime: body.datetime,
         quantity_per_set: body.quantity_per_set,
         quantity_of_set: body.quantity_of_set,
-        unit: body.unit.clone(),
-        reset: body.reset,
+        unit_id: body.unit_id,
     };
 
     let create_habit_daily_tracking_result =

@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:equatable/equatable.dart';
 
 sealed class HabitMergeFormEvent extends Equatable {
@@ -59,4 +61,13 @@ class HabitMergeFormIconChangedEvent extends HabitMergeFormEvent {
 
   @override
   List<Object?> get props => [icon];
+}
+
+class HabitMergeFormUnitsChangedEvent extends HabitMergeFormEvent {
+  final HashSet<String> unitIds;
+
+  const HabitMergeFormUnitsChangedEvent(this.unitIds);
+
+  @override
+  List<Object?> get props => [unitIds];
 }

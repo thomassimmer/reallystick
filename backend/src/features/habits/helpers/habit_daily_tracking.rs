@@ -1,14 +1,7 @@
-use chrono::Duration;
-use sqlx::{
-    postgres::{types::PgInterval, PgQueryResult},
-    PgConnection,
-};
+use sqlx::{postgres::PgQueryResult, PgConnection};
 use uuid::Uuid;
 
-use crate::features::habits::{
-    helpers::dates::duration_to_pg_interval,
-    structs::models::habit_daily_tracking::HabitDailyTracking,
-};
+use crate::features::habits::structs::models::habit_daily_tracking::HabitDailyTracking;
 
 pub async fn get_habit_daily_tracking_by_id(
     conn: &mut PgConnection,
@@ -31,20 +24,11 @@ pub async fn get_habit_daily_tracking_by_id(
             id: row.id,
             user_id: row.user_id,
             habit_id: row.habit_id,
-            day: row.day,
+            datetime: row.datetime,
             created_at: row.created_at,
-            duration: {
-                let pg_interval: Option<PgInterval> = row.duration;
-                pg_interval.map(|interval| {
-                    Duration::microseconds(interval.microseconds)
-                        + Duration::days(interval.days as i64)
-                        + Duration::days((interval.months as i64) * 30) // Approximate months as 30 days
-                })
-            },
             quantity_per_set: row.quantity_per_set,
             quantity_of_set: row.quantity_of_set,
-            unit: row.unit,
-            reset: row.reset,
+            unit_id: row.unit_id,
         }),
         None => None,
     };
@@ -73,20 +57,11 @@ pub async fn get_habit_daily_trackings_for_user(
             id: row.id,
             user_id: row.user_id,
             habit_id: row.habit_id,
-            day: row.day,
+            datetime: row.datetime,
             created_at: row.created_at,
-            duration: {
-                let pg_interval: Option<PgInterval> = row.duration;
-                pg_interval.map(|interval| {
-                    Duration::microseconds(interval.microseconds)
-                        + Duration::days(interval.days as i64)
-                        + Duration::days((interval.months as i64) * 30) // Approximate months as 30 days
-                })
-            },
             quantity_per_set: row.quantity_per_set,
             quantity_of_set: row.quantity_of_set,
-            unit: row.unit,
-            reset: row.reset,
+            unit_id: row.unit_id,
         })
         .collect::<Vec<HabitDailyTracking>>();
 
@@ -101,15 +76,17 @@ pub async fn update_habit_daily_tracking(
         HabitDailyTracking,
         r#"
         UPDATE habit_daily_trackings
-        SET day = $1, duration = $2, quantity_per_set = $3, quantity_of_set = $4, unit = $5, reset = $6
-        WHERE id = $7
+        SET
+            datetime = $1,
+            quantity_per_set = $2,
+            quantity_of_set = $3,
+            unit_id = $4
+        WHERE id = $5
         "#,
-        habit_daily_tracking.day,
-        duration_to_pg_interval(habit_daily_tracking.duration),
+        habit_daily_tracking.datetime,
         habit_daily_tracking.quantity_per_set,
         habit_daily_tracking.quantity_of_set,
-        habit_daily_tracking.unit,
-        habit_daily_tracking.reset,
+        habit_daily_tracking.unit_id,
         habit_daily_tracking.id
     )
     .execute(conn)
@@ -127,26 +104,22 @@ pub async fn create_habit_daily_tracking(
             id,
             user_id,
             habit_id,
-            day,
+            datetime,
             created_at,
-            duration,
             quantity_per_set,
             quantity_of_set,
-            unit,
-            reset
+            unit_id
         )
-        VALUES ( $1, $2, $3, $4, $5, $6, $7, $8, $9, $10 )
+        VALUES ( $1, $2, $3, $4, $5, $6, $7, $8 )
         "#,
         habit_daily_tracking.id,
         habit_daily_tracking.user_id,
         habit_daily_tracking.habit_id,
-        habit_daily_tracking.day,
+        habit_daily_tracking.datetime,
         habit_daily_tracking.created_at,
-        duration_to_pg_interval(habit_daily_tracking.duration),
         habit_daily_tracking.quantity_per_set,
         habit_daily_tracking.quantity_of_set,
-        habit_daily_tracking.unit,
-        habit_daily_tracking.reset
+        habit_daily_tracking.unit_id,
     )
     .execute(conn)
     .await

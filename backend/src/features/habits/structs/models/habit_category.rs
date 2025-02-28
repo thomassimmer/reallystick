@@ -6,7 +6,7 @@ use uuid::Uuid;
 #[allow(non_snake_case)]
 #[derive(Debug, Deserialize, Serialize, Clone, FromRow)]
 pub struct HabitCategory {
-    pub id: uuid::Uuid,
+    pub id: Uuid,
     pub name: String,
     pub icon: String,
     pub created_at: DateTime<Utc>,

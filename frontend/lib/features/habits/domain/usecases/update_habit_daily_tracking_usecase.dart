@@ -10,21 +10,17 @@ class UpdateHabitDailyTrackingUsecase {
 
   Future<Either<DomainError, HabitDailyTracking>> call({
     required String habitDailyTrackingId,
-    required DateTime day,
-    required Duration? duration,
-    required int? quantityPerSet,
-    required int? quantityOfSet,
-    required String? unit,
-    required bool reset,
+    required DateTime datetime,
+    required int quantityPerSet,
+    required int quantityOfSet,
+    required String unitId,
   }) async {
     return await habitDailyTrackingRepository.updateHabitDailyTracking(
       habitDailyTrackingId: habitDailyTrackingId,
-      day: day,
-      duration: duration,
+      datetime: datetime,
       quantityPerSet: quantityPerSet,
       quantityOfSet: quantityOfSet,
-      unit: unit,
-      reset: reset,
+      unitId: unitId,
     );
   }
 }

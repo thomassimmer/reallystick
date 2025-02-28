@@ -46,8 +46,9 @@ pub async fn update_habit(
             description = $3,
             reviewed = $4,
             icon = $5,
-            category_id = $6
-        WHERE id = $7
+            category_id = $6,
+            unit_ids = $7
+        WHERE id = $8
         "#,
         habit.short_name,
         habit.long_name,
@@ -55,6 +56,7 @@ pub async fn update_habit(
         habit.reviewed,
         habit.icon,
         habit.category_id,
+        habit.unit_ids,
         habit.id,
     )
     .execute(conn)
@@ -76,9 +78,10 @@ pub async fn create_habit(
             reviewed,
             created_at,
             icon,
-            category_id
+            category_id,
+            unit_ids
         )
-        VALUES ( $1, $2, $3, $4, $5, $6, $7, $8 )
+        VALUES ( $1, $2, $3, $4, $5, $6, $7, $8, $9 )
         "#,
         habit.id,
         habit.short_name,
@@ -87,7 +90,8 @@ pub async fn create_habit(
         habit.reviewed,
         habit.created_at,
         habit.icon,
-        habit.category_id
+        habit.category_id,
+        habit.unit_ids
     )
     .execute(conn)
     .await

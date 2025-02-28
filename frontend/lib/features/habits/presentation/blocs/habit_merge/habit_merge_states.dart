@@ -6,6 +6,7 @@ import 'package:reallystick/core/validators/habit_icon.dart';
 import 'package:reallystick/core/validators/habit_long_name.dart';
 import 'package:reallystick/core/validators/habit_short_name.dart';
 import 'package:reallystick/core/validators/password.dart';
+import 'package:reallystick/core/validators/unit.dart';
 
 final class HabitMergeFormState extends Equatable {
   const HabitMergeFormState({
@@ -15,6 +16,7 @@ final class HabitMergeFormState extends Equatable {
     this.habitCategory = const HabitCategoryValidator.pure(),
     this.icon = const HabitIconValidator.pure(),
     this.description = const {},
+    this.unitIds = const {},
     this.isValid = true,
     this.errorMessage,
   });
@@ -25,6 +27,7 @@ final class HabitMergeFormState extends Equatable {
   final Map<String, HabitDescriptionValidator> description;
   final HabitCategoryValidator habitCategory;
   final HabitIconValidator icon;
+  final Map<String, UnitValidator> unitIds;
   final bool isValid;
   final String? errorMessage;
 
@@ -36,6 +39,7 @@ final class HabitMergeFormState extends Equatable {
         icon,
         description,
         habitCategory,
+        unitIds,
         isValid,
         errorMessage,
       ];
@@ -47,6 +51,7 @@ final class HabitMergeFormState extends Equatable {
     Map<String, HabitDescriptionValidator>? description,
     HabitCategoryValidator? habitCategory,
     HabitIconValidator? icon,
+    Map<String, UnitValidator>? unitIds,
     Password? password,
     bool? isValid,
     String? errorMessage,
@@ -58,6 +63,7 @@ final class HabitMergeFormState extends Equatable {
       description: description ?? this.description,
       habitCategory: habitCategory ?? this.habitCategory,
       icon: icon ?? this.icon,
+      unitIds: unitIds ?? this.unitIds,
       isValid: isValid ?? this.isValid,
       errorMessage: errorMessage ?? this.errorMessage,
     );

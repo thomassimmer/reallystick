@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:dartz/dartz.dart';
 import 'package:reallystick/core/messages/errors/domain_error.dart';
 import 'package:reallystick/features/habits/domain/entities/habit.dart';
@@ -17,6 +19,7 @@ class MergeHabitsUsecase {
     required String categoryId,
     required String icon,
     required bool reviewed,
+    required HashSet<String> unitIds,
   }) async {
     return await habitRepository.mergeHabits(
       habitToDeleteId: habitToDeleteId,
@@ -27,6 +30,7 @@ class MergeHabitsUsecase {
       categoryId: categoryId,
       icon: icon,
       reviewed: reviewed,
+      unitIds: unitIds,
     );
   }
 }

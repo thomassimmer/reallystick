@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:equatable/equatable.dart';
 
 sealed class HabitReviewFormEvent extends Equatable {
@@ -50,4 +52,13 @@ class HabitReviewFormIconChangedEvent extends HabitReviewFormEvent {
 
   @override
   List<Object?> get props => [icon];
+}
+
+class HabitReviewFormUnitsChangedEvent extends HabitReviewFormEvent {
+  final HashSet<String> unitIds;
+
+  const HabitReviewFormUnitsChangedEvent(this.unitIds);
+
+  @override
+  List<Object?> get props => [unitIds];
 }

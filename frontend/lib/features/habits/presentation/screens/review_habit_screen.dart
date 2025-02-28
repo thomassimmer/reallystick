@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -10,6 +12,7 @@ import 'package:reallystick/core/messages/message_mapper.dart';
 import 'package:reallystick/core/presentation/widgets/custom_dropdown_button_form_field.dart';
 import 'package:reallystick/core/presentation/widgets/custom_elevated_button_form_field.dart';
 import 'package:reallystick/core/presentation/widgets/multi_language_input_field.dart';
+import 'package:reallystick/core/presentation/widgets/multi_unit_select_dropdown.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/habits/domain/entities/habit.dart';
 import 'package:reallystick/features/habits/domain/entities/habit_category.dart';
@@ -46,6 +49,8 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
   String? _selectedCategoryIdForHabitToMergeWith;
   IconData? _iconForHabitToMergeWith;
   String? _selectedHabitToMergeOnId;
+  HashSet<String> _selectedUnitIdsForCurrentHabit = HashSet();
+  HashSet<String> _selectedUnitIdsForHabitToMergeWith = HashSet();
 
   _pickIcon(bool forCurrentHabit) async {
     IconPickerIcon? icon = await showIconPicker(
@@ -78,7 +83,6 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
     } else {
       setState(() {
         _iconForHabitToMergeWith = newIconData;
-        ;
       });
     }
   }
@@ -112,6 +116,7 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
             description: _descriptionControllerForCurrentHabit,
             categoryId: _selectedCategoryIdForCurrentHabit ?? "",
             icon: _iconForCurrentHabit?.codePoint ?? 0,
+            unitIds: _selectedUnitIdsForCurrentHabit,
           );
 
           if (mounted) {
@@ -154,6 +159,7 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
             description: _descriptionControllerForHabitToMergeWith,
             categoryId: _selectedCategoryIdForHabitToMergeWith ?? "",
             icon: _iconForHabitToMergeWith?.codePoint ?? 0,
+            unitIds: _selectedUnitIdsForHabitToMergeWith,
           );
 
           if (mounted) {
@@ -178,6 +184,7 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
         _longNameControllerForCurrentHabit = habit.longName;
         _descriptionControllerForCurrentHabit = habit.description;
         _selectedCategoryIdForCurrentHabit = habit.categoryId;
+        _selectedUnitIdsForCurrentHabit = habit.unitIds;
         _iconForCurrentHabit =
             getIconData(iconDataString: habit.icon.substring(10));
       });
@@ -196,6 +203,7 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
             habitToMergeWith.description;
         _selectedHabitToMergeOnId = newHabitToMergeWithId;
         _selectedCategoryIdForHabitToMergeWith = habitToMergeWith.categoryId;
+        _selectedUnitIdsForHabitToMergeWith = habitToMergeWith.unitIds;
         _iconForHabitToMergeWith =
             getIconData(iconDataString: habitToMergeWith.icon.substring(10));
       });
@@ -206,6 +214,7 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
         _descriptionControllerForHabitToMergeWith = {};
         _selectedHabitToMergeOnId = null;
         _selectedCategoryIdForHabitToMergeWith = null;
+        _selectedUnitIdsForHabitToMergeWith = HashSet();
         _iconForHabitToMergeWith = null;
       });
     }
@@ -389,6 +398,32 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
                             displayIconErrorForHabitToMergeWith.messageKey))
                     : null;
 
+            final unitsErrorMapForCurrentHabit = context.select(
+              (HabitReviewFormBloc habitReviewFormBloc) =>
+                  habitReviewFormBloc.state.unitIds.values
+                      .map((validator) => validator.displayError != null
+                          ? getTranslatedMessage(
+                              context,
+                              ErrorMessage(validator.displayError!.messageKey),
+                            )
+                          : '')
+                      .where((error) => error.isNotEmpty)
+                      .toList(),
+            );
+
+            final unitsErrorMapForHabitToMergeWith = context.select(
+              (HabitMergeFormBloc habitMergeFormBloc) =>
+                  habitMergeFormBloc.state.unitIds.values
+                      .map((validator) => validator.displayError != null
+                          ? getTranslatedMessage(
+                              context,
+                              ErrorMessage(validator.displayError!.messageKey),
+                            )
+                          : '')
+                      .where((error) => error.isNotEmpty)
+                      .toList(),
+            );
+
             return Scaffold(
               appBar: AppBar(
                 title: Text(AppLocalizations.of(context)!.reviewHabit),
@@ -470,6 +505,20 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
                         },
                         label: AppLocalizations.of(context)!.description,
                         errors: descriptionErrorMapForCurrentHabit,
+                      ),
+
+                      const SizedBox(height: 16.0),
+
+                      // Unit Selector
+                      MultiUnitSelectDropdown(
+                        initialSelectedValues:
+                            _selectedUnitIdsForCurrentHabit.toList(),
+                        options: habitState.units,
+                        userLocale: userLocale,
+                        errors: unitsErrorMapForCurrentHabit,
+                        onUnitsChanged: (newUnits) {
+                          _selectedUnitIdsForCurrentHabit = newUnits;
+                        },
                       ),
 
                       const SizedBox(height: 16.0),
@@ -623,6 +672,20 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
                           },
                           label: AppLocalizations.of(context)!.description,
                           errors: descriptionErrorMapForHabitToMergeWith,
+                        ),
+
+                        const SizedBox(height: 16.0),
+
+                        // Unit Selector
+                        MultiUnitSelectDropdown(
+                          initialSelectedValues:
+                              _selectedUnitIdsForHabitToMergeWith.toList(),
+                          options: habitState.units,
+                          userLocale: userLocale,
+                          errors: unitsErrorMapForHabitToMergeWith,
+                          onUnitsChanged: (newUnits) {
+                            _selectedUnitIdsForHabitToMergeWith = newUnits;
+                          },
                         ),
 
                         const SizedBox(height: 16.0),

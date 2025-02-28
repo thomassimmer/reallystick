@@ -16,6 +16,8 @@ import 'package:reallystick/features/habits/data/models/requests/habit.dart';
 import 'package:reallystick/features/habits/data/models/requests/habit_category.dart';
 import 'package:reallystick/features/habits/data/models/requests/habit_daily_tracking.dart';
 import 'package:reallystick/features/habits/data/models/requests/habit_participation.dart';
+import 'package:reallystick/features/habits/data/models/requests/unit.dart';
+import 'package:reallystick/features/habits/data/models/unit.dart';
 
 class HabitRemoteDataSource {
   final InterceptedClient apiClient;
@@ -119,6 +121,32 @@ class HabitRemoteDataSource {
                 HabitDailyTrackingDataModel.fromJson(habitDailyTracking))
             .toList();
       } catch (e) {
+        throw ParsingError();
+      }
+    }
+
+    if (response.statusCode == 401) {
+      throw UnauthorizedError();
+    }
+
+    if (response.statusCode == 500) {
+      throw InternalServerError();
+    }
+
+    throw UnknownError();
+  }
+
+  Future<List<UnitDataModel>> getUnits() async {
+    final url = Uri.parse('$baseUrl/units/');
+    final response = await apiClient.get(url);
+
+    if (response.statusCode == 200) {
+      try {
+        final jsonBody = customJsonDecode(response.body);
+        final List<dynamic> units = jsonBody['units'];
+        return units.map((unit) => UnitDataModel.fromJson(unit)).toList();
+      } catch (e) {
+        print(e);
         throw ParsingError();
       }
     }
@@ -278,6 +306,38 @@ class HabitRemoteDataSource {
       if (responseCode == 'HABIT_NOT_FOUND') {
         throw HabitNotFoundError();
       }
+    }
+
+    if (response.statusCode == 500) {
+      throw InternalServerError();
+    }
+
+    throw UnknownError();
+  }
+
+  Future<UnitDataModel> createUnit(
+      UnitCreateRequestModel unitCreateRequestModel) async {
+    final url = Uri.parse('$baseUrl/units/');
+    final response = await apiClient.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: json.encode(unitCreateRequestModel.toJson()),
+    );
+
+    final jsonBody = customJsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      try {
+        return UnitDataModel.fromJson(jsonBody['unit']);
+      } catch (e) {
+        throw ParsingError();
+      }
+    }
+
+    if (response.statusCode == 401) {
+      throw UnauthorizedError();
     }
 
     if (response.statusCode == 500) {
@@ -448,6 +508,47 @@ class HabitRemoteDataSource {
     if (response.statusCode == 404) {
       if (responseCode == 'HABIT_DAILY_TRACKING_NOT_FOUND') {
         throw HabitDailyTrackingNotFoundError();
+      }
+    }
+
+    if (response.statusCode == 500) {
+      throw InternalServerError();
+    }
+
+    throw UnknownError();
+  }
+
+  Future<UnitDataModel> updateUnit(
+    String unitId,
+    UnitUpdateRequestModel unitUpdateRequestModel,
+  ) async {
+    final url = Uri.parse('$baseUrl/units/$unitId');
+    final response = await apiClient.put(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: json.encode(unitUpdateRequestModel.toJson()),
+    );
+
+    final jsonBody = customJsonDecode(response.body);
+    final responseCode = jsonBody['code'] as String;
+
+    if (response.statusCode == 200) {
+      try {
+        return UnitDataModel.fromJson(jsonBody['unit']);
+      } catch (e) {
+        throw ParsingError();
+      }
+    }
+
+    if (response.statusCode == 401) {
+      throw UnauthorizedError();
+    }
+
+    if (response.statusCode == 404) {
+      if (responseCode == 'UNIT_NOT_FOUND') {
+        throw UnitNotFoundError();
       }
     }
 

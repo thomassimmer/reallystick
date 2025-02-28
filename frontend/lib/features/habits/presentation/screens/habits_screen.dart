@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/habits/domain/entities/habit_category.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.dart';
+import 'package:reallystick/features/habits/presentation/blocs/habit/habit_events.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_states.dart';
 import 'package:reallystick/features/habits/presentation/screens/questionnaire_modal.dart';
 import 'package:reallystick/features/habits/presentation/widgets/habit_category_widget.dart';
@@ -53,6 +54,10 @@ class HabitsScreenState extends State<HabitsScreen> {
         ));
       }
     });
+  }
+
+  void onRetry() {
+    BlocProvider.of<HabitBloc>(context).add(HabitInitializeEvent());
   }
 
   @override
@@ -134,6 +139,31 @@ class HabitsScreenState extends State<HabitsScreen> {
                 ),
               ],
             );
+          } else if (habitState is HabitsFailed) {
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      AppLocalizations.of(context)!.failedToLoadHabits,
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 24),
+                    ElevatedButton.icon(
+                      onPressed: onRetry,
+                      icon: const Icon(Icons.refresh),
+                      label: Text(AppLocalizations.of(context)!.retry),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.redAccent,
+                        foregroundColor: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
           } else {
             return SizedBox.shrink();
           }
@@ -154,8 +184,8 @@ class HabitsScreenState extends State<HabitsScreen> {
         final currentLatest = categoryToLatestDate[categoryId];
 
         // Update the latest date for the category if this tracking is newer
-        if (currentLatest == null || tracking.day.isAfter(currentLatest)) {
-          categoryToLatestDate[categoryId] = tracking.day;
+        if (currentLatest == null || tracking.datetime.isAfter(currentLatest)) {
+          categoryToLatestDate[categoryId] = tracking.datetime;
         }
       }
     }

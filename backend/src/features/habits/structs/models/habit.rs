@@ -14,6 +14,7 @@ pub struct Habit {
     pub description: String,
     pub icon: String,
     pub created_at: DateTime<Utc>,
+    pub unit_ids: String,
 }
 
 #[allow(non_snake_case)]
@@ -26,6 +27,7 @@ pub struct HabitData {
     pub reviewed: bool,
     pub description: String,
     pub icon: String,
+    pub unit_ids: String,
 }
 
 impl Habit {
@@ -38,6 +40,7 @@ impl Habit {
             reviewed: self.reviewed,
             description: self.description.to_owned(),
             icon: self.icon.to_owned(),
+            unit_ids: self.unit_ids.to_owned(),
         }
     }
 }

@@ -1,6 +1,7 @@
 // features/auth/data/repositories/auth_repository.dart
 
 import 'dart:async';
+import 'dart:collection';
 
 import 'package:dartz/dartz.dart';
 import 'package:reallystick/core/messages/errors/domain_error.dart';
@@ -14,6 +15,7 @@ abstract class HabitRepository {
     required Map<String, String> description,
     required String categoryId,
     required String icon,
+    required HashSet<String> unitIds,
   });
   Future<Either<DomainError, Habit>> updateHabit({
     required String habitId,
@@ -23,6 +25,7 @@ abstract class HabitRepository {
     required String categoryId,
     required String icon,
     required bool reviewed,
+    required HashSet<String> unitIds,
   });
 
   Future<Either<DomainError, void>> deleteHabit({
@@ -38,5 +41,6 @@ abstract class HabitRepository {
     required String categoryId,
     required String icon,
     required bool reviewed,
+    required HashSet<String> unitIds,
   });
 }
