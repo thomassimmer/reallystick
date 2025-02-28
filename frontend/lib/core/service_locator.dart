@@ -33,6 +33,7 @@ import 'package:reallystick/features/habits/domain/usecases/create_habit_daily_t
 import 'package:reallystick/features/habits/domain/usecases/create_habit_participation_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/create_habit_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/create_unit_usecase.dart';
+import 'package:reallystick/features/habits/domain/usecases/delete_habit_daily_tracking_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/get_habit_categories_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/get_habit_participations_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/get_habits_daily_tracking_usecase.dart';
@@ -156,4 +157,6 @@ void setupServiceLocator() {
       UpdateUnitUsecase(sl<UnitRepository>()));
   sl.registerSingleton<UpdateHabitDailyTrackingUsecase>(
       UpdateHabitDailyTrackingUsecase(sl<HabitDailyTrackingRepository>()));
+  sl.registerSingleton<DeleteHabitDailyTrackingUsecase>(
+      DeleteHabitDailyTrackingUsecase(sl<HabitDailyTrackingRepository>()));
 }

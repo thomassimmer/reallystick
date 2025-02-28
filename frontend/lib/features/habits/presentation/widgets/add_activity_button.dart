@@ -14,18 +14,12 @@ class AddActivityButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      child: FloatingActionButton.extended(
-        onPressed: action,
-        icon: Icon(
-          Icons.add,
-        ),
-        label: Text(
-          AppLocalizations.of(context)!.addActivity,
-        ),
-        elevation: 4.0,
-        backgroundColor: color ?? context.colors.primary,
-      ),
+    return FloatingActionButton.extended(
+      onPressed: action,
+      icon: Icon(Icons.add),
+      label: Text(AppLocalizations.of(context)!.addActivity),
+      backgroundColor: color ?? context.colors.primary,
+      extendedTextStyle: TextStyle(letterSpacing: 1),
     );
   }
 }

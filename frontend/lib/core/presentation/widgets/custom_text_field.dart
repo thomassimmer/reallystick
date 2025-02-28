@@ -3,6 +3,7 @@ import 'package:reallystick/core/ui/extensions.dart';
 
 class CustomTextField extends StatelessWidget {
   final TextEditingController? controller;
+  final String? initialValue;
   final String label;
   final TextInputType keyboardType;
   final String? Function(String?)? validator;
@@ -15,6 +16,7 @@ class CustomTextField extends StatelessWidget {
 
   CustomTextField({
     this.controller,
+    this.initialValue,
     required this.label,
     this.keyboardType = TextInputType.text,
     this.validator,
@@ -32,6 +34,7 @@ class CustomTextField extends StatelessWidget {
       width: 300.0,
       child: TextFormField(
         controller: controller,
+        initialValue: initialValue,
         keyboardType: keyboardType,
         obscureText: obscureText,
         maxLength: maxLength,

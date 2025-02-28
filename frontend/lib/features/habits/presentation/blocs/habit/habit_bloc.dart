@@ -11,6 +11,7 @@ import 'package:reallystick/features/auth/presentation/blocs/auth/auth_states.da
 import 'package:reallystick/features/habits/domain/usecases/create_habit_daily_tracking_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/create_habit_participation_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/create_habit_usecase.dart';
+import 'package:reallystick/features/habits/domain/usecases/delete_habit_daily_tracking_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/get_habit_categories_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/get_habit_participations_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/get_habits_daily_tracking_usecase.dart';
@@ -45,6 +46,8 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
       GetIt.instance<UpdateHabitUsecase>();
   final UpdateHabitDailyTrackingUsecase updateHabitDailyTrackingUsecase =
       GetIt.instance<UpdateHabitDailyTrackingUsecase>();
+  final DeleteHabitDailyTrackingUsecase deleteHabitDailyTrackingUsecase =
+      GetIt.instance<DeleteHabitDailyTrackingUsecase>();
 
   HabitBloc({required this.authBloc}) : super(HabitsLoading()) {
     authBlocSubscription = authBloc.stream.listen((authState) {
@@ -58,6 +61,8 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
     on<UpdateHabitEvent>(updateHabit);
     on<MergeHabitsEvent>(mergeHabits);
     on<CreateHabitDailyTrackingEvent>(createHabitDailyTracking);
+    on<UpdateHabitDailyTrackingEvent>(updateHabitDailyTracking);
+    on<DeleteHabitDailyTrackingEvent>(deleteHabitDailyTracking);
   }
 
   Future<void> _initialize(
@@ -437,7 +442,54 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
             habitParticipations: currentState.habitParticipations,
             habits: currentState.habits,
             units: currentState.units,
-            message: SuccessMessage("habitDailyTrackingCreated"),
+            message: SuccessMessage("habitDailyTrackingUpdated"),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> deleteHabitDailyTracking(
+      DeleteHabitDailyTrackingEvent event, Emitter<HabitState> emit) async {
+    final currentState = state as HabitsLoaded;
+    emit(HabitsLoading());
+
+    final resultDeleteHabitDailyTrackingUsecase =
+        await deleteHabitDailyTrackingUsecase.call(
+      habitDailyTrackingId: event.habitDailyTrackingId,
+    );
+
+    resultDeleteHabitDailyTrackingUsecase.fold(
+      (error) {
+        if (error is ShouldLogoutError) {
+          authBloc
+              .add(AuthLogoutEvent(message: ErrorMessage(error.messageKey)));
+        } else {
+          emit(
+            HabitsLoaded(
+              habitCategories: currentState.habitCategories,
+              habitDailyTrackings: currentState.habitDailyTrackings,
+              habitParticipations: currentState.habitParticipations,
+              habits: currentState.habits,
+              units: currentState.units,
+              message: ErrorMessage(error.messageKey),
+            ),
+          );
+        }
+      },
+      (_) {
+        final newHabitDailyTrackings = currentState.habitDailyTrackings
+            .where((hdt) => hdt.id != event.habitDailyTrackingId)
+            .toList();
+
+        emit(
+          HabitsLoaded(
+            habitCategories: currentState.habitCategories,
+            habitDailyTrackings: newHabitDailyTrackings,
+            habitParticipations: currentState.habitParticipations,
+            habits: currentState.habits,
+            units: currentState.units,
+            message: SuccessMessage("habitDailyTrackingDeleted"),
           ),
         );
       },

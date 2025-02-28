@@ -1,19 +1,61 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:reallystick/core/constants/dates.dart';
+import 'package:reallystick/core/constants/unit_conversion.dart';
 import 'package:reallystick/features/habits/domain/entities/habit_daily_tracking.dart';
+import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.dart';
+import 'package:reallystick/features/habits/presentation/blocs/habit/habit_states.dart';
+import 'package:reallystick/features/habits/presentation/screens/list_daily_trackings_modal.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 
-class DailyTrackingCarouselWidget extends StatelessWidget {
+class DailyTrackingCarouselWidget extends StatefulWidget {
+  final String habitId;
   final List<HabitDailyTracking> habitDailyTrackings;
   final Color habitColor;
 
   DailyTrackingCarouselWidget({
+    Key? key,
+    required this.habitId,
     required this.habitDailyTrackings,
     required this.habitColor,
-  });
+  }) : super(key: key);
+
+  @override
+  DailyTrackingCarouselWidgetState createState() =>
+      DailyTrackingCarouselWidgetState();
+}
+
+class DailyTrackingCarouselWidgetState
+    extends State<DailyTrackingCarouselWidget> {
+  void _openDailyTrackings({required DateTime datetime}) {
+    showModalBottomSheet(
+      context: context,
+      isDismissible: true,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
+      ),
+      builder: (BuildContext context) {
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: max(
+              16.0,
+              MediaQuery.of(context).viewInsets.bottom,
+            ),
+            left: 16.0,
+            right: 16.0,
+            top: 16.0,
+          ),
+          child: ListDailyTrackingsModal(
+              datetime: datetime, habitId: widget.habitId),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,75 +77,118 @@ class DailyTrackingCarouselWidget extends StatelessWidget {
       (index) => today.subtract(Duration(days: maxBoxes - 1 - index)),
     );
 
-    // Ensure the scroll starts at the end
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      scrollController.jumpTo(scrollController.position.maxScrollExtent);
-    });
+    final habitState = context.read<HabitBloc>().state;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Row(
-            children: [
-              Icon(
-                Icons.bar_chart,
-                size: 30,
-              ),
-              SizedBox(width: 10),
-              Text(
-                AppLocalizations.of(context)!.dailyTracking,
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
+    if (habitState is HabitsLoaded) {
+      // Aggregate total quantities per day in normalized unit (seconds)
+      final Map<DateTime, double> aggregatedQuantities = {
+        for (var date in lastDays)
+          date: widget.habitDailyTrackings
+              .where((tracking) => tracking.datetime.isSameDate(date))
+              .fold<double>(
+                0.0,
+                (sum, tracking) =>
+                    sum +
+                    normalizeUnit(
+                      (tracking.quantityOfSet * tracking.quantityPerSet)
+                          as double,
+                      tracking.unitId,
+                      habitState.units,
+                    ),
+              )
+      };
+
+      // Determine the maximum and minimum quantities
+      final maxQuantity = aggregatedQuantities.values.isNotEmpty
+          ? aggregatedQuantities.values.reduce((a, b) => a > b ? a : b)
+          : 1.0;
+      final minQuantity = aggregatedQuantities.values.isNotEmpty
+          ? aggregatedQuantities.values.reduce((a, b) => a < b ? a : b)
+          : 0.0;
+
+      // Ensure the scroll starts at the end
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        scrollController.jumpTo(scrollController.position.maxScrollExtent);
+      });
+
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.bar_chart,
+                  size: 30,
                 ),
-              ),
-            ],
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: SizedBox(
-            height: 100,
-            child: ListView.builder(
-              controller: scrollController,
-              scrollDirection: Axis.horizontal,
-              itemCount: lastDays.length,
-              itemBuilder: (context, index) {
-                final date = lastDays[index];
-                final dayAbbreviation = DateFormat('E', userLocale.toString())
-                    .format(date)
-                    .substring(0, 1);
-                final isTracked = habitDailyTrackings.any(
-                  (tracking) => tracking.datetime.isSameDate(date),
-                );
-
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Column(
-                    children: [
-                      Text(
-                        dayAbbreviation,
-                        style: TextStyle(fontSize: 12),
-                      ),
-                      SizedBox(height: 4),
-                      Container(
-                        width: dayBoxWidth,
-                        height: dayBoxWidth,
-                        decoration: BoxDecoration(
-                          color: isTracked ? habitColor : Colors.grey[300],
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                      ),
-                    ],
+                SizedBox(width: 10),
+                Text(
+                  AppLocalizations.of(context)!.dailyTracking,
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
                   ),
-                );
-              },
+                ),
+              ],
             ),
           ),
-        ),
-      ],
-    );
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: SizedBox(
+              height: 100,
+              child: ListView.builder(
+                controller: scrollController,
+                scrollDirection: Axis.horizontal,
+                itemCount: lastDays.length,
+                itemBuilder: (context, index) {
+                  final datetime = lastDays[index];
+                  final dayAbbreviation = DateFormat('E', userLocale.toString())
+                      .format(datetime)
+                      .substring(0, 1);
+
+                  final totalQuantity = aggregatedQuantities[datetime] ?? 0.0;
+
+                  // Normalize the opacity
+                  final normalizedOpacity = maxQuantity == minQuantity
+                      ? 1.0 // Avoid division by zero when all values are equal
+                      : 0.1 +
+                          ((totalQuantity - minQuantity) /
+                              (maxQuantity - minQuantity) *
+                              0.9);
+
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Column(
+                      children: [
+                        Text(
+                          dayAbbreviation,
+                          style: TextStyle(fontSize: 12),
+                        ),
+                        SizedBox(height: 4),
+                        GestureDetector(
+                          onTap: () => _openDailyTrackings(datetime: datetime),
+                          child: Container(
+                            width: dayBoxWidth,
+                            height: dayBoxWidth,
+                            decoration: BoxDecoration(
+                              color: widget.habitColor
+                                  .withOpacity(normalizedOpacity),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+        ],
+      );
+    } else {
+      return SizedBox.shrink();
+    }
   }
 }

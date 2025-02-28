@@ -156,3 +156,16 @@ class UpdateHabitDailyTrackingEvent extends HabitEvent {
         unitId,
       ];
 }
+
+class DeleteHabitDailyTrackingEvent extends HabitEvent {
+  final String habitDailyTrackingId;
+
+  const DeleteHabitDailyTrackingEvent({
+    required this.habitDailyTrackingId,
+  });
+
+  @override
+  List<Object?> get props => [
+        habitDailyTrackingId,
+      ];
+}

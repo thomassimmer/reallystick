@@ -5,10 +5,13 @@ import 'package:intl/intl.dart';
 import 'package:reallystick/core/constants/dates.dart';
 import 'package:reallystick/core/constants/icons.dart';
 import 'package:reallystick/core/constants/screen_size.dart';
+import 'package:reallystick/core/constants/unit_conversion.dart';
 import 'package:reallystick/core/ui/colors.dart';
 import 'package:reallystick/features/habits/domain/entities/habit.dart';
 import 'package:reallystick/features/habits/domain/entities/habit_daily_tracking.dart';
 import 'package:reallystick/features/habits/domain/entities/habit_participation.dart';
+import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.dart';
+import 'package:reallystick/features/habits/presentation/blocs/habit/habit_states.dart';
 import 'package:reallystick/features/habits/presentation/helpers/translations.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 
@@ -29,127 +32,168 @@ class HabitWidget extends StatelessWidget {
     return Builder(
       builder: (context) {
         final profileState = context.watch<ProfileBloc>().state;
-        final userLocale = profileState.profile!.locale;
+        final habitState = context.read<HabitBloc>().state;
 
-        final shortName = getRightTranslationFromJson(
-          habit.shortName,
-          userLocale,
-        );
+        if (habitState is HabitsLoaded) {
+          final userLocale = profileState.profile!.locale;
 
-        final longName = getRightTranslationFromJson(
-          habit.longName,
-          userLocale,
-        );
+          final shortName = getRightTranslationFromJson(
+            habit.shortName,
+            userLocale,
+          );
 
-        // Calculate streak (for simplicity, using a hardcoded value)
-        const streak = 100;
+          final longName = getRightTranslationFromJson(
+            habit.longName,
+            userLocale,
+          );
 
-        // Define screen size breakpoint
-        final bool isLargeScreen = checkIfLargeScreen(context);
+          // Calculate streak (for simplicity, using a hardcoded value)
+          const streak = 100;
 
-        // Calculate available screen width and determine how many days to display
-        final screenWidth = MediaQuery.of(context).size.width;
-        const dayBoxWidth = 25.0; // Fixed width for each datetime box
-        const dayBoxSpacing = 10.0; // Spacing between boxes
-        final maxBoxes = (screenWidth / (dayBoxWidth + dayBoxSpacing)).floor();
+          // Define screen size breakpoint
+          final bool isLargeScreen = checkIfLargeScreen(context);
 
-        // Calculate the last days
-        final today = DateTime.now();
-        final lastDays = List.generate(
-          maxBoxes,
-          (index) => today.subtract(Duration(days: maxBoxes - 1 - index)),
-        );
+          // Calculate available screen width and determine how many days to display
+          final screenWidth = MediaQuery.of(context).size.width;
+          const dayBoxWidth = 25.0; // Fixed width for each datetime box
+          const dayBoxSpacing = 10.0; // Spacing between boxes
+          final maxBoxes =
+              (screenWidth / (dayBoxWidth + dayBoxSpacing)).floor();
 
-        final habitColor = getAppColorsFromString(habitParticipation.color);
+          // Calculate the last days
+          final today = DateTime.now();
+          final lastDays = List.generate(
+            maxBoxes,
+            (index) => today.subtract(Duration(days: maxBoxes - 1 - index)),
+          );
 
-        return InkWell(
-          onTap: () {
-            context.pushNamed(
-              'habitDetails',
-              pathParameters: {'habitId': habit.id},
-            );
-          },
-          child: Card(
-            elevation: 2,
-            margin: const EdgeInsets.all(8),
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      // Habit icon
-                      Padding(
-                        padding: const EdgeInsets.only(right: 16.0),
-                        child: getIconWidget(
-                          iconString: habit.icon,
-                          size: 30,
-                          color: habitColor,
+          // Aggregate total quantities per day in normalized unit (seconds)
+          final Map<DateTime, double> aggregatedQuantities = {
+            for (var date in lastDays)
+              date: habitDailyTrackings
+                  .where((tracking) => tracking.datetime.isSameDate(date))
+                  .fold<double>(
+                    0.0,
+                    (sum, tracking) =>
+                        sum +
+                        normalizeUnit(
+                          (tracking.quantityOfSet * tracking.quantityPerSet)
+                              as double,
+                          tracking.unitId,
+                          habitState.units,
                         ),
-                      ),
+                  )
+          };
 
-                      // Short or Long name based on screen size
-                      Expanded(
-                        child: SelectableText(
-                          isLargeScreen ? longName : shortName,
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
+          // Determine the maximum and minimum quantities
+          final maxQuantity = aggregatedQuantities.values.isNotEmpty
+              ? aggregatedQuantities.values.reduce((a, b) => a > b ? a : b)
+              : 1.0;
+          final minQuantity = aggregatedQuantities.values.isNotEmpty
+              ? aggregatedQuantities.values.reduce((a, b) => a < b ? a : b)
+              : 0.0;
+
+          final habitColor = getAppColorsFromString(habitParticipation.color);
+
+          return InkWell(
+            onTap: () {
+              context.goNamed(
+                'habitDetails',
+                pathParameters: {'habitId': habit.id},
+              );
+            },
+            child: Card(
+              elevation: 2,
+              margin: const EdgeInsets.all(8),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        // Habit icon
+                        Padding(
+                          padding: const EdgeInsets.only(right: 16.0),
+                          child: getIconWidget(
+                            iconString: habit.icon,
+                            size: 30,
                             color: habitColor,
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
 
-                  // TODO: Day streak + Timer since stop
-                  Text(
-                    "Day streak: $streak",
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Days tracker
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: lastDays.map(
-                      (date) {
-                        final dayAbbreviation = DateFormat(
-                                'E', profileState.profile?.locale ?? 'en')
-                            .format(date)
-                            .substring(0, 1);
-                        final isTracked = habitDailyTrackings.any(
-                          (tracking) => tracking.datetime.isSameDate(date),
-                        );
-
-                        return Column(
-                          children: [
-                            Text(
-                              dayAbbreviation,
-                              style: TextStyle(fontSize: 12),
+                        // Short or Long name based on screen size
+                        Expanded(
+                          child: Text(
+                            isLargeScreen ? longName : shortName,
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: habitColor,
                             ),
-                            SizedBox(height: 4),
-                            Container(
-                              width: dayBoxWidth,
-                              height: dayBoxWidth,
-                              decoration: BoxDecoration(
-                                color:
-                                    isTracked ? habitColor : Colors.grey[300],
-                                borderRadius: BorderRadius.circular(4),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+
+                    // TODO: Day streak + Timer since stop
+                    Text(
+                      "Day streak: $streak",
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Days tracker
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: lastDays.map(
+                        (datetime) {
+                          final dayAbbreviation = DateFormat(
+                                  'E', profileState.profile?.locale ?? 'en')
+                              .format(datetime)
+                              .substring(0, 1);
+
+                          final totalQuantity =
+                              aggregatedQuantities[datetime] ?? 0.0;
+
+                          // Normalize the opacity
+                          final normalizedOpacity = maxQuantity == minQuantity
+                              ? 1.0 // Avoid division by zero when all values are equal
+                              : 0.1 +
+                                  ((totalQuantity - minQuantity) /
+                                      (maxQuantity - minQuantity) *
+                                      0.9);
+
+                          return Column(
+                            children: [
+                              Text(
+                                dayAbbreviation,
+                                style: TextStyle(fontSize: 12),
                               ),
-                            ),
-                          ],
-                        );
-                      },
-                    ).toList(),
-                  ),
-                ],
+                              SizedBox(height: 4),
+                              Container(
+                                width: dayBoxWidth,
+                                height: dayBoxWidth,
+                                decoration: BoxDecoration(
+                                  color:
+                                      habitColor.withOpacity(normalizedOpacity),
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      ).toList(),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        );
+          );
+        } else {
+          return SizedBox.shrink();
+        }
       },
     );
   }

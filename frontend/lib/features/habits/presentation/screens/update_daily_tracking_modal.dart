@@ -7,26 +7,27 @@ import 'package:reallystick/core/messages/message_mapper.dart';
 import 'package:reallystick/core/presentation/widgets/custom_dropdown_button_form_field.dart';
 import 'package:reallystick/core/presentation/widgets/custom_text_field.dart';
 import 'package:reallystick/core/ui/extensions.dart';
+import 'package:reallystick/features/habits/domain/entities/habit_daily_tracking.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_events.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_states.dart';
-import 'package:reallystick/features/habits/presentation/blocs/habit_daily_tracking_creation/habit_daily_tracking_creation_bloc.dart';
-import 'package:reallystick/features/habits/presentation/blocs/habit_daily_tracking_creation/habit_daily_tracking_creation_events.dart';
+import 'package:reallystick/features/habits/presentation/blocs/habit_daily_tracking_update/habit_daily_tracking_update_bloc.dart';
+import 'package:reallystick/features/habits/presentation/blocs/habit_daily_tracking_update/habit_daily_tracking_update_events.dart';
 import 'package:reallystick/features/habits/presentation/helpers/translations.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
 
-class AddDailyTrackingModal extends StatefulWidget {
-  final String? habitId;
+class UpdateDailyTrackingModal extends StatefulWidget {
+  final HabitDailyTracking habitDailyTracking;
 
-  const AddDailyTrackingModal({this.habitId});
+  const UpdateDailyTrackingModal({required this.habitDailyTracking});
 
   @override
-  AddDailyTrackingModalState createState() => AddDailyTrackingModalState();
+  UpdateDailyTrackingModalState createState() =>
+      UpdateDailyTrackingModalState();
 }
 
-class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
-  String? _selectedHabitId;
+class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
   DateTime _selectedDateTime = DateTime.now();
   String? _selectedUnitId;
   int? _quantityPerSet;
@@ -36,39 +37,40 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    final habitState = context.watch<HabitBloc>().state;
+    setState(() {
+      _selectedUnitId = widget.habitDailyTracking.unitId;
+      _selectedDateTime = widget.habitDailyTracking.datetime;
+      _quantityOfSet = widget.habitDailyTracking.quantityOfSet;
+      _quantityPerSet = widget.habitDailyTracking.quantityPerSet;
+    });
+  }
 
-    if (habitState is HabitsLoaded) {
-      final habit = habitState.habits[widget.habitId];
-
-      setState(() {
-        _selectedHabitId = widget.habitId;
-        _selectedUnitId = habit?.unitIds
-            .where((unitId) => habitState.units.containsKey(unitId))
-            .first;
-      });
+  void deleteHabitDailyTracking() {
+    final deleteHabitDailyTrackingEvent = DeleteHabitDailyTrackingEvent(
+        habitDailyTrackingId: widget.habitDailyTracking.id);
+    if (mounted) {
+      context.read<HabitBloc>().add(deleteHabitDailyTrackingEvent);
+      Navigator.of(context).pop();
     }
   }
 
-  void addHabitDailyTracking() {
+  void updateHabitDailyTracking() {
     final habitDailyTrackingFormBloc =
-        context.read<HabitDailyTrackingCreationFormBloc>();
+        context.read<HabitDailyTrackingUpdateFormBloc>();
 
     // Dispatch validation events for all fields
     habitDailyTrackingFormBloc.add(
-      HabitDailyTrackingCreationFormDateTimeChangedEvent(_selectedDateTime),
+      HabitDailyTrackingUpdateFormDateTimeChangedEvent(_selectedDateTime),
+    );
+
+    habitDailyTrackingFormBloc.add(
+      HabitDailyTrackingUpdateFormQuantityOfSetChangedEvent(_quantityOfSet),
     );
     habitDailyTrackingFormBloc.add(
-      HabitDailyTrackingCreationFormHabitChangedEvent(_selectedHabitId ?? ""),
+      HabitDailyTrackingUpdateFormQuantityPerSetChangedEvent(_quantityPerSet),
     );
     habitDailyTrackingFormBloc.add(
-      HabitDailyTrackingCreationFormQuantityOfSetChangedEvent(_quantityOfSet),
-    );
-    habitDailyTrackingFormBloc.add(
-      HabitDailyTrackingCreationFormQuantityPerSetChangedEvent(_quantityPerSet),
-    );
-    habitDailyTrackingFormBloc.add(
-      HabitDailyTrackingCreationFormUnitChangedEvent(_selectedUnitId ?? ""),
+      HabitDailyTrackingUpdateFormUnitChangedEvent(_selectedUnitId ?? ""),
     );
 
     // Allow time for the validation states to update
@@ -76,9 +78,9 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
       const Duration(milliseconds: 50),
       () {
         if (habitDailyTrackingFormBloc.state.isValid) {
-          final newHabitDailyTrackingEvent = CreateHabitDailyTrackingEvent(
+          final newHabitDailyTrackingEvent = UpdateHabitDailyTrackingEvent(
             datetime: _selectedDateTime,
-            habitId: _selectedHabitId!,
+            habitDailyTrackingId: widget.habitDailyTracking.id,
             quantityOfSet: _quantityOfSet,
             quantityPerSet: _quantityPerSet ?? 0,
             unitId: _selectedUnitId!,
@@ -103,17 +105,8 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
       final habits = habitState.habits;
       final units = habitState.units;
 
-      final displayHabitErrorMessage = context.select(
-        (HabitDailyTrackingCreationFormBloc bloc) {
-          final error = bloc.state.habitId.displayError;
-          return error != null
-              ? getTranslatedMessage(context, ErrorMessage(error.messageKey))
-              : null;
-        },
-      );
-
       final displayUnitErrorMessage = context.select(
-        (HabitDailyTrackingCreationFormBloc bloc) {
+        (HabitDailyTrackingUpdateFormBloc bloc) {
           final error = bloc.state.unitId.displayError;
           return error != null
               ? getTranslatedMessage(context, ErrorMessage(error.messageKey))
@@ -122,7 +115,7 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
       );
 
       final displayQuantityOfSetErrorMessage = context.select(
-        (HabitDailyTrackingCreationFormBloc bloc) {
+        (HabitDailyTrackingUpdateFormBloc bloc) {
           final error = bloc.state.quantityOfSet.displayError;
           return error != null
               ? getTranslatedMessage(context, ErrorMessage(error.messageKey))
@@ -131,7 +124,7 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
       );
 
       final displayQuantityPerSetErrorMessage = context.select(
-        (HabitDailyTrackingCreationFormBloc bloc) {
+        (HabitDailyTrackingUpdateFormBloc bloc) {
           final error = bloc.state.quantityPerSet.displayError;
           return error != null
               ? getTranslatedMessage(context, ErrorMessage(error.messageKey))
@@ -140,7 +133,7 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
       );
 
       final displayQuantityDateTimeErrorMessage = context.select(
-        (HabitDailyTrackingCreationFormBloc bloc) {
+        (HabitDailyTrackingUpdateFormBloc bloc) {
           final error = bloc.state.datetime.displayError;
           return error != null
               ? getTranslatedMessage(context, ErrorMessage(error.messageKey))
@@ -148,59 +141,42 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
         },
       );
 
-      final shouldDisplayQuantityOfSet = _selectedHabitId != null &&
-          habits[_selectedHabitId] != null &&
-          habitState.habitCategories[habits[_selectedHabitId]!.categoryId] !=
-              null &&
-          getRightTranslationFromJson(
-                habitState
-                    .habitCategories[habits[_selectedHabitId]!.categoryId]!
-                    .name,
-                'en',
-              ) ==
-              'Sport';
+      final shouldDisplayQuantityOfSet =
+          habits[widget.habitDailyTracking.habitId] != null &&
+              habitState.habitCategories[
+                      habits[widget.habitDailyTracking.habitId]!.categoryId] !=
+                  null &&
+              getRightTranslationFromJson(
+                    habitState
+                        .habitCategories[
+                            habits[widget.habitDailyTracking.habitId]!
+                                .categoryId]!
+                        .name,
+                    'en',
+                  ) ==
+                  'Sport';
 
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(
-            AppLocalizations.of(context)!.addActivity,
-            textAlign: TextAlign.center,
-            style: context.typographies.headingSmall,
-          ),
-
-          const SizedBox(height: 16),
-
-          // Habit Selector
-          CustomDropdownButtonFormField(
-            value: _selectedHabitId,
-            items: habits.entries.map(
-              (entry) {
-                final habit = entry.value;
-                return DropdownMenuItem(
-                  value: entry.key,
-                  child: Text(getRightTranslationFromJson(
-                    habit.longName,
-                    userLocale,
-                  )), // Adjust to show translated name
-                );
-              },
-            ).toList(),
-            onChanged: (value) {
-              BlocProvider.of<HabitDailyTrackingCreationFormBloc>(context).add(
-                  HabitDailyTrackingCreationFormHabitChangedEvent(value ?? ""));
-              setState(() {
-                _selectedHabitId = value;
-                _selectedUnitId = _selectedHabitId != null
-                    ? habits[_selectedHabitId]!
-                        .unitIds
-                        .where((unitId) => units.containsKey(unitId))
-                        .first
-                    : null;
-              });
-            },
-            label: AppLocalizations.of(context)!.habit,
-            errorText: displayHabitErrorMessage,
+          Row(
+            children: [
+              IconButton(
+                icon: const Icon(Icons.arrow_back, size: 20),
+                splashRadius: 25,
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              SizedBox(
+                width: 32,
+              ),
+              Text(
+                AppLocalizations.of(context)!.editActivity,
+                textAlign: TextAlign.center,
+                style: context.typographies.headingSmall,
+              ),
+            ],
           ),
 
           const SizedBox(height: 16),
@@ -219,19 +195,24 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
                       lastDate: DateTime(2100),
                     );
                     if (pickedDate != null) {
-                      setState(() {
-                        _selectedDateTime = DateTime(
-                          pickedDate.year,
-                          pickedDate.month,
-                          pickedDate.day,
-                          _selectedDateTime.hour,
-                          _selectedDateTime.minute,
-                        );
-                      });
+                      setState(
+                        () {
+                          _selectedDateTime = DateTime(
+                            pickedDate.year,
+                            pickedDate.month,
+                            pickedDate.day,
+                            _selectedDateTime.hour,
+                            _selectedDateTime.minute,
+                          );
+                        },
+                      );
                     }
-                    BlocProvider.of<HabitDailyTrackingCreationFormBloc>(context)
-                        .add(HabitDailyTrackingCreationFormDateTimeChangedEvent(
-                            _selectedDateTime));
+                    BlocProvider.of<HabitDailyTrackingUpdateFormBloc>(context)
+                        .add(
+                      HabitDailyTrackingUpdateFormDateTimeChangedEvent(
+                        _selectedDateTime,
+                      ),
+                    );
                   },
                   child: Text(
                     DateFormat.yMMMd().format(_selectedDateTime),
@@ -260,11 +241,9 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
                           pickedTime.minute,
                         );
                       });
-                      BlocProvider.of<HabitDailyTrackingCreationFormBloc>(
-                              context)
-                          .add(
-                              HabitDailyTrackingCreationFormDateTimeChangedEvent(
-                                  _selectedDateTime));
+                      BlocProvider.of<HabitDailyTrackingUpdateFormBloc>(context)
+                          .add(HabitDailyTrackingUpdateFormDateTimeChangedEvent(
+                              _selectedDateTime));
                     }
                   },
                   child: Text(
@@ -297,6 +276,7 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
               // Quantity Input
               Expanded(
                 child: CustomTextField(
+                  initialValue: _quantityPerSet.toString(),
                   keyboardType: TextInputType.number,
                   label: shouldDisplayQuantityOfSet
                       ? AppLocalizations.of(context)!.quantityPerSet
@@ -305,10 +285,9 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
                     setState(() {
                       _quantityPerSet = int.tryParse(value);
                     });
-                    BlocProvider.of<HabitDailyTrackingCreationFormBloc>(context)
-                        .add(
-                            HabitDailyTrackingCreationFormQuantityPerSetChangedEvent(
-                                int.tryParse(value)));
+                    BlocProvider.of<HabitDailyTrackingUpdateFormBloc>(context).add(
+                        HabitDailyTrackingUpdateFormQuantityPerSetChangedEvent(
+                            int.tryParse(value)));
                   },
                   errorText: displayQuantityPerSetErrorMessage,
                 ),
@@ -320,30 +299,32 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
               Expanded(
                 child: CustomDropdownButtonFormField(
                   value: _selectedUnitId,
-                  items: (_selectedHabitId != null
-                      ? habits[_selectedHabitId]!
+                  items: habits[widget.habitDailyTracking.habitId] != null
+                      ? habits[widget.habitDailyTracking.habitId]!
                           .unitIds
                           .where((unitId) => units.containsKey(unitId))
-                          .map((unitId) {
-                          final unit = units[unitId]!;
-                          return DropdownMenuItem(
-                            value: unitId,
-                            child: Text(
-                              getRightTranslationForUnitFromJson(
-                                unit.longName,
-                                _quantityPerSet ?? 0,
-                                userLocale,
+                          .map(
+                          (unitId) {
+                            final unit = units[unitId]!;
+                            return DropdownMenuItem(
+                              value: unitId,
+                              child: Text(
+                                getRightTranslationForUnitFromJson(
+                                  unit.longName,
+                                  _quantityPerSet ?? 0,
+                                  userLocale,
+                                ),
                               ),
-                            ),
-                          );
-                        }).toList()
-                      : []),
+                            );
+                          },
+                        ).toList()
+                      : [],
                   onChanged: (value) {
                     setState(() {
                       _selectedUnitId = value;
                     });
-                    BlocProvider.of<HabitDailyTrackingCreationFormBloc>(context)
-                        .add(HabitDailyTrackingCreationFormUnitChangedEvent(
+                    BlocProvider.of<HabitDailyTrackingUpdateFormBloc>(context)
+                        .add(HabitDailyTrackingUpdateFormUnitChangedEvent(
                             value ?? ""));
                   },
                   label: AppLocalizations.of(context)!.unit,
@@ -361,16 +342,16 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
               children: [
                 Expanded(
                   child: CustomTextField(
+                    initialValue: _quantityOfSet.toString(),
                     keyboardType: TextInputType.number,
                     label: AppLocalizations.of(context)!.quantityOfSet,
                     onChanged: (value) {
                       setState(() {
                         _quantityOfSet = int.tryParse(value) ?? 1;
                       });
-                      BlocProvider.of<HabitDailyTrackingCreationFormBloc>(
-                              context)
+                      BlocProvider.of<HabitDailyTrackingUpdateFormBloc>(context)
                           .add(
-                              HabitDailyTrackingCreationFormQuantityOfSetChangedEvent(
+                              HabitDailyTrackingUpdateFormQuantityOfSetChangedEvent(
                                   int.tryParse(value)));
                     },
                     errorText: displayQuantityOfSetErrorMessage,
@@ -381,10 +362,25 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
 
           const SizedBox(height: 16),
 
-          // Save Button
-          ElevatedButton(
-            onPressed: addHabitDailyTracking,
-            child: Text(AppLocalizations.of(context)!.save),
+          Row(
+            children: [
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: deleteHabitDailyTracking,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: context.colors.error,
+                  ),
+                  child: Text(AppLocalizations.of(context)!.delete),
+                ),
+              ),
+              SizedBox(width: 16.0),
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: updateHabitDailyTracking,
+                  child: Text(AppLocalizations.of(context)!.save),
+                ),
+              ),
+            ],
           ),
 
           const SizedBox(height: 16),
