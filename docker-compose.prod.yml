@@ -46,7 +46,7 @@ services:
       - ./backend/.env.notifications.docker
     command: ["./target/release/notifications"]
     ports:
-      - "8000:8000"
+      - "8001:8001"
     volumes:
       - ./backend:/app
     networks:
