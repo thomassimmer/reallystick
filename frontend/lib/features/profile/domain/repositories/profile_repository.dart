@@ -4,6 +4,7 @@ import 'dart:async';
 
 import 'package:dartz/dartz.dart';
 import 'package:reallystick/core/messages/errors/domain_error.dart';
+import 'package:reallystick/features/profile/data/models/country_model.dart';
 import 'package:reallystick/features/profile/domain/entities/profile.dart';
 
 abstract class ProfileRepository {
@@ -12,4 +13,5 @@ abstract class ProfileRepository {
   Future<Either<DomainError, Profile>> setPassword(String newPassword);
   Future<Either<DomainError, Profile>> updatePassword(
       String currentPassword, String newPassword);
+  Future<List<Country>> loadCountries();
 }

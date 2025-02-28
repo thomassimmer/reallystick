@@ -1,4 +1,6 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:get_it/get_it.dart';
+import 'package:http_interceptor/http_interceptor.dart';
 import 'package:reallystick/core/network/auth_interceptor.dart';
 import 'package:reallystick/core/network/expired_token_retry_policy.dart';
 import 'package:reallystick/features/auth/data/repositories/auth_repository_impl.dart';
@@ -17,14 +19,14 @@ import 'package:reallystick/features/auth/domain/usecases/signup_usecase.dart';
 import 'package:reallystick/features/auth/domain/usecases/validate_one_time_password_use_case.dart';
 import 'package:reallystick/features/auth/domain/usecases/verify_one_time_password_use_case.dart';
 import 'package:reallystick/features/profile/data/repositories/profile_repository_impl.dart';
+import 'package:reallystick/features/profile/data/sources/local_data_sources.dart';
 import 'package:reallystick/features/profile/data/sources/remote_data_sources.dart';
 import 'package:reallystick/features/profile/domain/repositories/profile_repository.dart';
 import 'package:reallystick/features/profile/domain/usecases/get_profile_usecase.dart';
+import 'package:reallystick/features/profile/domain/usecases/load_countries.dart';
 import 'package:reallystick/features/profile/domain/usecases/post_profile_usecase.dart';
 import 'package:reallystick/features/profile/domain/usecases/set_password_use_case.dart';
 import 'package:reallystick/features/profile/domain/usecases/update_password_use_case.dart';
-import 'package:get_it/get_it.dart';
-import 'package:http_interceptor/http_interceptor.dart';
 
 final sl = GetIt.instance;
 
@@ -46,12 +48,14 @@ void setupServiceLocator() {
       AuthRemoteDataSource(apiClient: apiClient, baseUrl: baseUrl));
   sl.registerSingleton<ProfileRemoteDataSource>(
       ProfileRemoteDataSource(apiClient: apiClient, baseUrl: baseUrl));
+  sl.registerSingleton<ProfileLocalDataSource>(ProfileLocalDataSource());
 
   // Repositories
   sl.registerSingleton<AuthRepository>(
       AuthRepositoryImpl(sl<AuthRemoteDataSource>()));
-  sl.registerSingleton<ProfileRepository>(
-      ProfileRepositoryImpl(sl<ProfileRemoteDataSource>()));
+  sl.registerSingleton<ProfileRepository>(ProfileRepositoryImpl(
+      remoteDataSource: sl<ProfileRemoteDataSource>(),
+      localDataSource: sl<ProfileLocalDataSource>()));
 
   // Use cases
   sl.registerSingleton<LoginUseCase>(LoginUseCase(sl<AuthRepository>()));
@@ -87,4 +91,6 @@ void setupServiceLocator() {
       SetPasswordUseCase(sl<ProfileRepository>()));
   sl.registerSingleton<UpdatePasswordUseCase>(
       UpdatePasswordUseCase(sl<ProfileRepository>()));
+  sl.registerSingleton<LoadCountriesUseCase>(
+      LoadCountriesUseCase(sl<ProfileRepository>()));
 }

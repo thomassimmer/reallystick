@@ -1,12 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:reallystick/features/profile/data/models/country_model.dart';
 import 'package:reallystick/features/profile/domain/entities/profile.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_events.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
 
-class ProfileInformationScreen extends StatelessWidget {
+class ProfileInformationScreen extends StatefulWidget {
+  @override
+  ProfileInformationState createState() => ProfileInformationState();
+}
+
+class ProfileInformationState extends State<ProfileInformationScreen> {
+  List<Country> countries = [];
+  List<String> regions = [];
+
+  @override
+  void initState() {
+    super.initState();
+    initializeRegions();
+  }
+
+  Future<void> initializeRegions() async {
+    final List<Country> newCountries =
+        await BlocProvider.of<ProfileBloc>(context).loadCountriesUseCase.call();
+
+    final newRegions =
+        newCountries.map((country) => country.region).toSet().toList();
+
+    setState(() {
+      countries = newCountries;
+      regions = newRegions;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,6 +70,9 @@ class ProfileInformationScreen extends StatelessWidget {
       return categories;
     }
 
+    List<Country> countriesInRegion =
+        countries.where((country) => country.region == profile.region).toList();
+
     return ListView(
       padding: EdgeInsets.all(16.0),
       children: [
@@ -67,51 +98,37 @@ class ProfileInformationScreen extends StatelessWidget {
             _updateProfile(context, newProfile);
           },
         ),
+
         _buildDropdownField(
           context,
-          label: AppLocalizations.of(context)!.continent,
-          value: profile.continent,
-          items: ['North America', 'Europe', 'Asia'], // TODO
+          label: AppLocalizations.of(context)!.region,
+          value: profile.region,
+          items: regions,
           onChanged: (value) {
             final newProfile = state.profile;
-            newProfile.continent = value;
+            newProfile.region = value;
 
             if (value == null) {
               newProfile.country = null;
-              newProfile.region = null;
             }
+
             _updateProfile(context, newProfile);
           },
         ),
 
-        // Show country field only if continent is set
-        if (profile.continent != null)
-          _buildTextField(
-            context,
+        // Country Dropdown (only show if a region is selected)
+        if (profile.region != null)
+          _buildCountryDropdownField(
             label: AppLocalizations.of(context)!.country,
-            value: profile.country, // TODO
+            value: countriesInRegion
+                    .where((country) => country.name.common == profile.country)
+                    .isNotEmpty
+                ? profile.country
+                : null,
+            countries: countriesInRegion,
             onChanged: (value) {
               final newProfile = state.profile;
               newProfile.country = value;
-
-              if (value.isEmpty) {
-                newProfile.region = null;
-              }
-              _updateProfile(context, newProfile);
-            },
-          ),
-
-        // Show region field only if continent and country are set
-        if (profile.continent != null &&
-            profile.country != null &&
-            profile.country!.isNotEmpty)
-          _buildTextField(
-            context,
-            label: AppLocalizations.of(context)!.region,
-            value: profile.region, // TODO
-            onChanged: (value) {
-              final newProfile = state.profile;
-              newProfile.region = value;
               _updateProfile(context, newProfile);
             },
           ),
@@ -235,19 +252,41 @@ class ProfileInformationScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildTextField(
-    BuildContext context, {
+  Widget _buildCountryDropdownField({
     required String label,
     required String? value,
-    required ValueChanged<String> onChanged,
+    required List<Country> countries,
+    required ValueChanged<String?> onChanged,
   }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: TextFormField(
-        initialValue: value,
-        decoration: InputDecoration(labelText: label),
-        onChanged: onChanged,
+    return DropdownButtonFormField<String>(
+      value: value,
+      decoration: InputDecoration(
+        labelText: label,
+        border: OutlineInputBorder(),
+        contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       ),
+      items: [
+        DropdownMenuItem<String>(
+          value: null,
+          child: Text(
+            AppLocalizations.of(context)!.noAnswer,
+            style: TextStyle(color: Colors.grey),
+          ),
+        ),
+        ...countries.map((country) {
+          return DropdownMenuItem(
+            value: country.name.common,
+            child: Row(
+              children: [
+                Image.network(country.flags.png, width: 24, height: 16),
+                SizedBox(width: 8),
+                Text(country.name.common),
+              ],
+            ),
+          );
+        })
+      ],
+      onChanged: onChanged,
     );
   }
 }

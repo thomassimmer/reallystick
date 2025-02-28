@@ -12,6 +12,7 @@ import 'package:reallystick/features/auth/presentation/blocs/auth/auth_events.da
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_states.dart';
 import 'package:reallystick/features/profile/domain/entities/profile.dart';
 import 'package:reallystick/features/profile/domain/usecases/get_profile_usecase.dart';
+import 'package:reallystick/features/profile/domain/usecases/load_countries.dart';
 import 'package:reallystick/features/profile/domain/usecases/post_profile_usecase.dart';
 import 'package:reallystick/features/profile/domain/usecases/set_password_use_case.dart';
 import 'package:reallystick/features/profile/domain/usecases/update_password_use_case.dart';
@@ -37,6 +38,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       GetIt.instance<SetPasswordUseCase>();
   final UpdatePasswordUseCase updatePasswordUseCase =
       GetIt.instance<UpdatePasswordUseCase>();
+  final LoadCountriesUseCase loadCountriesUseCase =
+      GetIt.instance<LoadCountriesUseCase>();
 
   ProfileBloc({required this.authBloc}) : super(ProfileLoading()) {
     authBlocSubscription = authBloc.stream.listen((authState) {

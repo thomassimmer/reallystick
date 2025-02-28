@@ -9,7 +9,9 @@ import 'package:reallystick/core/messages/errors/domain_error.dart';
 import 'package:reallystick/features/auth/data/errors/data_error.dart';
 import 'package:reallystick/features/auth/domain/errors/domain_error.dart';
 import 'package:reallystick/features/profile/data/errors/data_error.dart';
+import 'package:reallystick/features/profile/data/models/country_model.dart';
 import 'package:reallystick/features/profile/data/models/profile_request_model.dart';
+import 'package:reallystick/features/profile/data/sources/local_data_sources.dart';
 import 'package:reallystick/features/profile/data/sources/remote_data_sources.dart';
 import 'package:reallystick/features/profile/domain/entities/profile.dart';
 import 'package:reallystick/features/profile/domain/errors/domain_error.dart';
@@ -17,9 +19,11 @@ import 'package:reallystick/features/profile/domain/repositories/profile_reposit
 
 class ProfileRepositoryImpl implements ProfileRepository {
   final ProfileRemoteDataSource remoteDataSource;
+  final ProfileLocalDataSource localDataSource;
   final logger = Logger();
 
-  ProfileRepositoryImpl(this.remoteDataSource);
+  ProfileRepositoryImpl(
+      {required this.remoteDataSource, required this.localDataSource});
 
   @override
   Future<Either<DomainError, Profile>> getProfileInformation() async {
@@ -227,5 +231,10 @@ class ProfileRepositoryImpl implements ProfileRepository {
       logger.e('Data error occurred: ${e.toString()}');
       return Left(UnknownDomainError());
     }
+  }
+
+  @override
+  Future<List<Country>> loadCountries() async {
+    return await localDataSource.loadCountries();
   }
 }

@@ -46,6 +46,7 @@ flutter:
     - assets/images/actix-logo.png
     - assets/images/flutter-logo.png
     - assets/images/github-logo.png
+    - assets/ressources/countries.json
   fonts:
     - family: Montserrat
       fonts:
