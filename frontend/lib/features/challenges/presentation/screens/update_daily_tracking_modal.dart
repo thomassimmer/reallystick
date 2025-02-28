@@ -156,6 +156,8 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
       final challenge =
           challengeState.challenges[widget.challengeDailyTracking.challengeId]!;
 
+      final canEdit = challenge.creator == profileState.profile.id;
+
       final displayHabitErrorMessage = context.select(
         (ChallengeDailyTrackingUpdateFormBloc bloc) {
           final error = bloc.state.habitId.displayError;
@@ -242,7 +244,9 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
                 width: 32,
               ),
               Text(
-                AppLocalizations.of(context)!.editActivity,
+                canEdit
+                    ? AppLocalizations.of(context)!.editActivity
+                    : AppLocalizations.of(context)!.activity,
                 textAlign: TextAlign.center,
                 style: context.typographies.headingSmall,
               ),
@@ -266,20 +270,23 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
                 );
               },
             ).toList(),
-            onChanged: (value) {
-              BlocProvider.of<ChallengeDailyTrackingUpdateFormBloc>(context)
-                  .add(
-                      ChallengeDailyTrackingUpdateFormHabitChangedEvent(value));
-              setState(() {
-                _selectedHabitId = value;
-                _selectedUnitId = _selectedHabitId != null
-                    ? habits[_selectedHabitId]!
-                        .unitIds
-                        .where((unitId) => units.containsKey(unitId))
-                        .first
-                    : null;
-              });
-            },
+            onChanged: canEdit
+                ? (value) {
+                    BlocProvider.of<ChallengeDailyTrackingUpdateFormBloc>(
+                            context)
+                        .add(ChallengeDailyTrackingUpdateFormHabitChangedEvent(
+                            value));
+                    setState(() {
+                      _selectedHabitId = value;
+                      _selectedUnitId = _selectedHabitId != null
+                          ? habits[_selectedHabitId]!
+                              .unitIds
+                              .where((unitId) => units.containsKey(unitId))
+                              .first
+                          : null;
+                    });
+                  }
+                : null,
             label: AppLocalizations.of(context)!.habit,
             errorText: displayHabitErrorMessage,
           ),
@@ -334,6 +341,8 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
           ] else ...[
             // Day of program selector
             CustomTextField(
+              initialValue: (_selectedDayOfProgram + 1).toString(),
+              enabled: canEdit,
               label: AppLocalizations.of(context)!.dayOfProgram,
               keyboardType: TextInputType.number,
               inputFormatters: <TextInputFormatter>[
@@ -373,6 +382,7 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
               // Quantity Input
               Expanded(
                 child: CustomTextField(
+                  enabled: canEdit,
                   initialValue: _quantityPerSet.toString(),
                   keyboardType: TextInputType.number,
                   label: shouldDisplaySportSpecificInputsResult
@@ -418,15 +428,18 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
                           },
                         ).toList()
                       : [],
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedUnitId = value;
-                    });
-                    BlocProvider.of<ChallengeDailyTrackingUpdateFormBloc>(
-                            context)
-                        .add(ChallengeDailyTrackingUpdateFormUnitChangedEvent(
-                            value ?? ""));
-                  },
+                  onChanged: canEdit
+                      ? (value) {
+                          setState(() {
+                            _selectedUnitId = value;
+                          });
+                          BlocProvider.of<ChallengeDailyTrackingUpdateFormBloc>(
+                                  context)
+                              .add(
+                                  ChallengeDailyTrackingUpdateFormUnitChangedEvent(
+                                      value ?? ""));
+                        }
+                      : null,
                   label: AppLocalizations.of(context)!.unit,
                   errorText: displayUnitErrorMessage,
                 ),
@@ -439,6 +452,7 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
           // Quantity of Sets (only for sport challenges)
           if (shouldDisplaySportSpecificInputsResult) ...[
             CustomTextField(
+              enabled: canEdit,
               initialValue: _quantityOfSet.toString(),
               keyboardType: TextInputType.number,
               label: AppLocalizations.of(context)!.quantityOfSet,
@@ -458,6 +472,7 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
               children: [
                 Expanded(
                   child: CustomTextField(
+                    enabled: canEdit,
                     initialValue: _weight.toString(),
                     keyboardType: TextInputType.number,
                     label: AppLocalizations.of(context)!.weight,
@@ -492,17 +507,20 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
                         ),
                       );
                     }).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedWeightUnitId = value;
-                      });
-                      BlocProvider.of<ChallengeDailyTrackingUpdateFormBloc>(
-                              context)
-                          .add(
-                        ChallengeDailyTrackingUpdateFormWeightUnitIdChangedEvent(
-                            value ?? ""),
-                      );
-                    },
+                    onChanged: canEdit
+                        ? (value) {
+                            setState(() {
+                              _selectedWeightUnitId = value;
+                            });
+                            BlocProvider.of<
+                                        ChallengeDailyTrackingUpdateFormBloc>(
+                                    context)
+                                .add(
+                              ChallengeDailyTrackingUpdateFormWeightUnitIdChangedEvent(
+                                  value ?? ""),
+                            );
+                          }
+                        : null,
                     label: AppLocalizations.of(context)!.weightUnit,
                     errorText: displayWeightUnitErrorMessage,
                   ),

@@ -12,6 +12,7 @@ class CustomTextField extends StatefulWidget {
   final int? maxLength;
   final int? maxLines;
   final String? errorText;
+  final bool? enabled;
   final void Function(String)? onChanged;
   final void Function(String)? onFieldSubmitted;
   final List<TextInputFormatter>? inputFormatters;
@@ -29,6 +30,7 @@ class CustomTextField extends StatefulWidget {
     this.onChanged,
     this.onFieldSubmitted,
     this.inputFormatters,
+    this.enabled,
     Key? key,
   }) : super(key: key);
 
@@ -56,6 +58,7 @@ class CustomTextFieldState extends State<CustomTextField> {
     return SizedBox(
       width: 300.0,
       child: TextFormField(
+        enabled: widget.enabled,
         controller: widget.controller,
         initialValue: widget.initialValue,
         keyboardType: widget.keyboardType,
@@ -75,6 +78,12 @@ class CustomTextFieldState extends State<CustomTextField> {
             ),
           ),
           enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8.0),
+            borderSide: BorderSide(
+              color: context.colors.primary,
+            ),
+          ),
+          disabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8.0),
             borderSide: BorderSide(
               color: context.colors.primary,
