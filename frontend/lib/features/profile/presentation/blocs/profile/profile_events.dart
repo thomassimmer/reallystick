@@ -74,3 +74,5 @@ class DeleteDeviceEvent extends ProfileEvent {
 }
 
 class GenerateNewRecoveryCodeEvent extends ProfileEvent {}
+
+class GetStatisticsEvent extends ProfileEvent {}

@@ -72,15 +72,6 @@ class ProfileScreen extends StatelessWidget {
                   context.goNamed('reported-messages');
                 },
               ),
-              if (userIsAdmin)
-                ListTile(
-                  title:
-                      Text(AppLocalizations.of(context)!.allReportedMessages),
-                  trailing: Icon(Icons.chevron_right),
-                  onTap: () {
-                    context.goNamed('all-reported-messages');
-                  },
-                ),
               ListTile(
                 title: Text(AppLocalizations.of(context)!.twoFA),
                 trailing: Icon(Icons.chevron_right),
@@ -133,6 +124,24 @@ class ProfileScreen extends StatelessWidget {
                   context.goNamed('about');
                 },
               ),
+              if (userIsAdmin) ...[
+                ListTile(
+                  title:
+                      Text(AppLocalizations.of(context)!.allReportedMessages),
+                  trailing: Icon(Icons.chevron_right),
+                  onTap: () {
+                    context.goNamed('all-reported-messages');
+                  },
+                ),
+                ListTile(
+                  title:
+                      Text(AppLocalizations.of(context)!.statistics),
+                  trailing: Icon(Icons.chevron_right),
+                  onTap: () {
+                    context.goNamed('statistics');
+                  },
+                ),
+              ],
               const SizedBox(height: 32),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,

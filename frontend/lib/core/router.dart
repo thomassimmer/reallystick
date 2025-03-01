@@ -34,6 +34,7 @@ import 'package:reallystick/features/profile/presentation/screens/notification_s
 import 'package:reallystick/features/profile/presentation/screens/password_screen.dart';
 import 'package:reallystick/features/profile/presentation/screens/profile_information_screen.dart';
 import 'package:reallystick/features/profile/presentation/screens/profile_screen.dart';
+import 'package:reallystick/features/profile/presentation/screens/statistics_screen.dart';
 import 'package:reallystick/features/profile/presentation/screens/theme_selection_screen.dart';
 import 'package:reallystick/features/profile/presentation/screens/two_factor_authentication_screen.dart';
 import 'package:reallystick/features/profile/presentation/screens/update_recovery_code_screen.dart';
@@ -330,6 +331,21 @@ class AppRouter {
                 path: 'all-reported-messages',
                 name: 'all-reported-messages',
                 builder: (context, state) => AllReportedMessagesScreen(),
+                redirect: (context, state) {
+                  final profileState = context.read<ProfileBloc>().state;
+
+                  if (profileState is ProfileAuthenticated &&
+                      !profileState.profile.isAdmin) {
+                    return '/profil'; // Redirect non admin users to profil page
+                  }
+
+                  return null;
+                },
+              ),
+              GoRoute(
+                path: 'statistics',
+                name: 'statistics',
+                builder: (context, state) => StatisticsScreen(),
                 redirect: (context, state) {
                   final profileState = context.read<ProfileBloc>().state;
 

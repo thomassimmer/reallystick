@@ -6,6 +6,7 @@ use crate::{
     },
 };
 
+#[derive(Debug)]
 pub enum AppError {
     AccessTokenExpired,
     BothHabitAndChallengePassed,
@@ -501,3 +502,57 @@ impl AppError {
         }
     }
 }
+
+// TODO: To reduce boilerplate code in every routes.
+// impl From<sqlx::Error> for AppError {
+//     fn from(error: sqlx::Error) -> Self {
+//         match error {
+//             _ => AppError::DatabaseConnection, // Default to InternalServerError
+//         }
+//     }
+// }
+
+// impl fmt::Display for AppError {
+//     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+//         write!(f, "{:?}", self)
+//     }
+// }
+
+// impl ResponseError for AppError {
+//     fn error_response(&self) -> HttpResponse {
+//         match self {
+//             AppError::ChallengeNotFound => HttpResponse::NotFound().json(self.to_response()),
+//             AppError::UnitNotFound => HttpResponse::NotFound().json(self.to_response()),
+//             AppError::HabitNotFound => HttpResponse::NotFound().json(self.to_response()),
+//             AppError::UserTokenNotFound => HttpResponse::NotFound().json(self.to_response()),
+//             AppError::HabitCategoryNotFound => HttpResponse::NotFound().json(self.to_response()),
+//             AppError::PublicMessageNotFound => HttpResponse::NotFound().json(self.to_response()),
+//             AppError::PrivateMessageNotFound => HttpResponse::NotFound().json(self.to_response()),
+//             AppError::PrivateDiscussionNotFound => {
+//                 HttpResponse::NotFound().json(self.to_response())
+//             }
+//             AppError::HabitDailyTrackingNotFound => {
+//                 HttpResponse::NotFound().json(self.to_response())
+//             }
+//             AppError::HabitParticipationNotFound => {
+//                 HttpResponse::NotFound().json(self.to_response())
+//             }
+//             AppError::PublicMessageReportNotFound => {
+//                 HttpResponse::NotFound().json(self.to_response())
+//             }
+//             AppError::ChallengeDailyTrackingNotFound => {
+//                 HttpResponse::NotFound().json(self.to_response())
+//             }
+//             AppError::PrivateDiscussionParticipationNotFound => {
+//                 HttpResponse::NotFound().json(self.to_response())
+//             }
+//             AppError::InvalidChallengeCreator => HttpResponse::Forbidden().json(self.to_response()),
+//             AppError::InvalidChallengeCreator => HttpResponse::Forbidden().json(self.to_response()),
+//             AppError::InvalidChallengeCreator => HttpResponse::Forbidden().json(self.to_response()),
+//             AppError::InvalidChallengeCreator => HttpResponse::Forbidden().json(self.to_response()),
+
+//             AppError::UserNotFound => HttpResponse::NotFound().json(self.to_response()),
+//             _ => HttpResponse::InternalServerError().json(self.to_response()),
+//         }
+//     }
+// }

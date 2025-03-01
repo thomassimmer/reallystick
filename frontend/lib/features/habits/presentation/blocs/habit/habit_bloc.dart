@@ -63,7 +63,8 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
 
   HabitBloc() : super(HabitsLoading()) {
     profileBlocSubscription = profileBloc.stream.listen((profileState) {
-      if (profileState is ProfileAuthenticated) {
+      if (profileState is ProfileAuthenticated &&
+          profileState.shouldReloadData) {
         add(HabitInitializeEvent());
       }
     });

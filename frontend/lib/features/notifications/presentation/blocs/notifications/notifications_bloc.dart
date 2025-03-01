@@ -60,7 +60,9 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState>
     profileBlocSubscription = profileBloc.stream.listen(
       (profileState) async {
         if (profileState is ProfileAuthenticated) {
-          add(InitializeNotificationsEvent());
+          if (profileState.shouldReloadData) {
+            add(InitializeNotificationsEvent());
+          }
         } else {
           webSocketService.disconnect();
         }

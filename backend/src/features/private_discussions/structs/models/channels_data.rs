@@ -71,4 +71,13 @@ impl ChannelsData {
             .get(&UserIdWithUserTokenId { user_id, token_id })
             .cloned()
     }
+
+    pub async fn count_sessions(&self) -> usize {
+        self.data
+            .read()
+            .await
+            .values()
+            .map(|sessions| sessions.len()) // Count sessions per user
+            .sum() // Sum up total sessions
+    }
 }

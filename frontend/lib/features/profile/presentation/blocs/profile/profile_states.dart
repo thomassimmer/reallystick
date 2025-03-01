@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:reallystick/core/messages/message.dart';
 import 'package:reallystick/features/profile/domain/entities/device.dart';
 import 'package:reallystick/features/profile/domain/entities/profile.dart';
+import 'package:reallystick/features/profile/domain/entities/statistics.dart';
 
 abstract class ProfileState extends Equatable {
   final Message? message;
@@ -38,10 +39,14 @@ class ProfileAuthenticated extends ProfileState {
 
   final List<Device> devices;
   final String? recoveryCode;
+  final Statistics? statistics;
+  final bool shouldReloadData;
 
   const ProfileAuthenticated({
     required super.profile,
     required this.devices,
+    required this.statistics,
+    required this.shouldReloadData,
     this.recoveryCode,
     super.message,
   });
@@ -52,5 +57,7 @@ class ProfileAuthenticated extends ProfileState {
         devices,
         recoveryCode,
         message,
+        statistics,
+        shouldReloadData,
       ];
 }

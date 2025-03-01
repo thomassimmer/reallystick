@@ -10,6 +10,7 @@ pub mod core {
 
     pub mod routes {
         pub mod health_check;
+        pub mod statistics;
     }
 
     pub mod helpers {

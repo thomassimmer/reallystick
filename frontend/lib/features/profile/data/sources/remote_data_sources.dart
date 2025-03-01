@@ -3,6 +3,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http_interceptor/http_interceptor.dart';
 import 'package:reallystick/core/constants/json_decode.dart';
 import 'package:reallystick/core/messages/errors/data_error.dart';
@@ -12,6 +13,7 @@ import 'package:reallystick/features/profile/data/errors/data_error.dart';
 import 'package:reallystick/features/profile/data/models/device_model.dart';
 import 'package:reallystick/features/profile/data/models/profile.dart';
 import 'package:reallystick/features/profile/data/models/requests.dart';
+import 'package:reallystick/features/profile/data/models/statistics_model.dart';
 
 class ProfileRemoteDataSource {
   final InterceptedClient apiClient;
@@ -191,9 +193,7 @@ class ProfileRemoteDataSource {
 
   Future<List<DeviceModel>> getDevices() async {
     final url = Uri.parse('$baseUrl/devices/');
-    final response = await apiClient.get(
-      url,
-    );
+    final response = await apiClient.get(url);
 
     final jsonBody = json.decode(response.body);
 
@@ -219,9 +219,7 @@ class ProfileRemoteDataSource {
 
   Future<void> deleteDevice(String deviceId) async {
     final url = Uri.parse('$baseUrl/devices/$deviceId');
-    final response = await apiClient.delete(
-      url,
-    );
+    final response = await apiClient.delete(url);
 
     if (response.statusCode == 200) {
       return;
@@ -229,6 +227,38 @@ class ProfileRemoteDataSource {
 
     if (response.statusCode == 401) {
       throw UnauthorizedError();
+    }
+
+    if (response.statusCode == 500) {
+      throw InternalServerError();
+    }
+
+    throw UnknownError();
+  }
+
+  Future<StatisticsDataModel> getStatistics() async {
+    final url = Uri.parse('${baseUrl.replaceFirst(
+      dotenv.env['API_BASE_URL'] ?? '',
+      dotenv.env['WS_BASE_URL'] ?? '',
+    )}/statistics/');
+    final response = await apiClient.get(url);
+
+    final jsonBody = json.decode(response.body);
+
+    if (response.statusCode == 200) {
+      try {
+        return StatisticsDataModel.fromJson(jsonBody);
+      } catch (e) {
+        throw ParsingError();
+      }
+    }
+
+    if (response.statusCode == 401) {
+      throw UnauthorizedError();
+    }
+
+    if (response.statusCode == 403) {
+      throw ForbiddenError();
     }
 
     if (response.statusCode == 500) {

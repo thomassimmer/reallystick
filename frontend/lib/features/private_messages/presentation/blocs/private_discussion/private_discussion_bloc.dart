@@ -60,7 +60,10 @@ class PrivateDiscussionBloc
       (profileState) {
         if (profileState is ProfileAuthenticated) {
           userId = profileState.profile.id;
-          add(InitializePrivateDiscussionsEvent());
+
+          if (profileState.shouldReloadData) {
+            add(InitializePrivateDiscussionsEvent());
+          }
         }
       },
     );

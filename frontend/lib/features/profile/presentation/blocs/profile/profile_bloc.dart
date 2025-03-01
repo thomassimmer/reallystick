@@ -23,6 +23,7 @@ import 'package:reallystick/features/profile/domain/usecases/delete_account.dart
 import 'package:reallystick/features/profile/domain/usecases/delete_device.dart';
 import 'package:reallystick/features/profile/domain/usecases/get_devices.dart';
 import 'package:reallystick/features/profile/domain/usecases/get_profile_usecase.dart';
+import 'package:reallystick/features/profile/domain/usecases/get_statistics.dart';
 import 'package:reallystick/features/profile/domain/usecases/load_countries.dart';
 import 'package:reallystick/features/profile/domain/usecases/post_profile_usecase.dart';
 import 'package:reallystick/features/profile/domain/usecases/set_password_use_case.dart';
@@ -69,6 +70,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState>
       GetIt.instance<EncryptKeyUsingDerivatedKeyUsecase>();
   final GenerateRSAKeysUsecase generateRSAKeysUsecase =
       GetIt.instance<GenerateRSAKeysUsecase>();
+  final GetStatisticsUsecase getStatisticsUsecase =
+      GetIt.instance<GetStatisticsUsecase>();
 
   ProfileBloc() : super(ProfileLoading()) {
     authBlocSubscription = authBloc.stream.listen((authState) {
@@ -92,7 +95,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState>
     on<DeleteAccountEvent>(_deleteAccount);
     on<DeleteDeviceEvent>(_deleteDevice);
     on<GenerateNewRecoveryCodeEvent>(_generateNewRecoveryCode);
-    
+    on<GetStatisticsEvent>(_getStatistics);
 
     WidgetsBinding.instance.addObserver(this);
   }
@@ -164,6 +167,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState>
               ProfileAuthenticated(
                 profile: profile,
                 devices: devices,
+                statistics: null,
+                shouldReloadData: true,
               ),
             );
           },
@@ -195,6 +200,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState>
             ProfileAuthenticated(
               profile: currentState.profile,
               devices: currentState.devices,
+              statistics: currentState.statistics,
+              shouldReloadData: false,
               message: ErrorMessage(error.messageKey),
             ),
           );
@@ -204,6 +211,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState>
         ProfileAuthenticated(
           profile: profile,
           devices: currentState.devices,
+          statistics: currentState.statistics,
+          shouldReloadData: false,
           message: event.displayNotification
               ? SuccessMessage('profileUpdateSuccessful')
               : null,
@@ -231,6 +240,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState>
             ProfileAuthenticated(
               profile: currentState.profile,
               devices: currentState.devices,
+              statistics: currentState.statistics,
+              shouldReloadData: false,
               message: ErrorMessage(error.messageKey),
             ),
           );
@@ -246,6 +257,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState>
           ProfileAuthenticated(
             profile: profile,
             devices: currentState.devices,
+            statistics: currentState.statistics,
+            shouldReloadData: false,
           ),
         );
       },
@@ -271,6 +284,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState>
             ProfileAuthenticated(
               profile: currentState.profile,
               devices: currentState.devices,
+              statistics: currentState.statistics,
+              shouldReloadData: false,
               message: ErrorMessage(error.messageKey),
             ),
           );
@@ -286,6 +301,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState>
           ProfileAuthenticated(
             profile: profile,
             devices: currentState.devices,
+            statistics: currentState.statistics,
+            shouldReloadData: false,
           ),
         );
       },
@@ -310,6 +327,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState>
             ProfileAuthenticated(
               profile: currentState.profile,
               devices: currentState.devices,
+              statistics: currentState.statistics,
+              shouldReloadData: false,
               message: ErrorMessage(error.messageKey),
             ),
           );
@@ -323,6 +342,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState>
           ProfileAuthenticated(
             profile: profile,
             devices: currentState.devices,
+            statistics: currentState.statistics,
+            shouldReloadData: false,
             message: SuccessMessage("validationCodeCorrect"),
           ),
         );
@@ -349,6 +370,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState>
             ProfileAuthenticated(
               profile: currentState.profile,
               devices: currentState.devices,
+              statistics: currentState.statistics,
+              shouldReloadData: false,
               message: ErrorMessage(error.messageKey),
             ),
           );
@@ -358,6 +381,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState>
         ProfileAuthenticated(
           profile: profile,
           devices: currentState.devices,
+          statistics: currentState.statistics,
+          shouldReloadData: false,
           message: SuccessMessage('passwordUpdateSuccessful'),
         ),
       ),
@@ -383,6 +408,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState>
             ProfileAuthenticated(
               profile: currentState.profile,
               devices: currentState.devices,
+              statistics: currentState.statistics,
+              shouldReloadData: false,
               message: ErrorMessage(error.messageKey),
             ),
           );
@@ -392,6 +419,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState>
         ProfileAuthenticated(
           profile: profile,
           devices: currentState.devices,
+          statistics: currentState.statistics,
+          shouldReloadData: false,
           message: SuccessMessage('passwordUpdateSuccessful'),
         ),
       ),
@@ -416,6 +445,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState>
             ProfileAuthenticated(
               profile: currentState.profile,
               devices: currentState.devices,
+              statistics: currentState.statistics,
+              shouldReloadData: false,
               message: ErrorMessage(error.messageKey),
             ),
           );
@@ -448,6 +479,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState>
             ProfileAuthenticated(
               profile: currentState.profile,
               devices: currentState.devices,
+              statistics: currentState.statistics,
+              shouldReloadData: false,
               message: ErrorMessage(error.messageKey),
             ),
           );
@@ -460,6 +493,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState>
             devices: currentState.devices
                 .where((device) => device.tokenId != event.deviceId)
                 .toList(),
+            statistics: currentState.statistics,
+            shouldReloadData: false,
             message: SuccessMessage('deviceDeleteSuccessful'),
           ),
         );
@@ -494,8 +529,49 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState>
       ProfileAuthenticated(
         profile: currentState.profile,
         devices: currentState.devices,
+        statistics: currentState.statistics,
+        shouldReloadData: false,
         recoveryCode: recoveryCode,
       ),
+    );
+  }
+
+  void _getStatistics(
+      GetStatisticsEvent event, Emitter<ProfileState> emit) async {
+    final currentState = state as ProfileAuthenticated;
+
+    final result = await getStatisticsUsecase.call();
+
+    result.fold(
+      (error) {
+        if (error is ShouldLogoutError) {
+          authBloc.add(
+            AuthLogoutEvent(
+              message: ErrorMessage(error.messageKey),
+            ),
+          );
+        } else {
+          emit(
+            ProfileAuthenticated(
+              profile: currentState.profile,
+              devices: currentState.devices,
+              statistics: currentState.statistics,
+              shouldReloadData: false,
+              message: ErrorMessage(error.messageKey),
+            ),
+          );
+        }
+      },
+      (statistics) {
+        emit(
+          ProfileAuthenticated(
+            profile: currentState.profile,
+            devices: currentState.devices,
+            statistics: statistics,
+            shouldReloadData: false,
+          ),
+        );
+      },
     );
   }
 }

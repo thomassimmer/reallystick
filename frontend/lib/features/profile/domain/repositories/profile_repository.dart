@@ -7,6 +7,7 @@ import 'package:reallystick/core/messages/errors/domain_error.dart';
 import 'package:reallystick/features/profile/data/models/country.dart';
 import 'package:reallystick/features/profile/domain/entities/device.dart';
 import 'package:reallystick/features/profile/domain/entities/profile.dart';
+import 'package:reallystick/features/profile/domain/entities/statistics.dart';
 
 abstract class ProfileRepository {
   Future<Either<DomainError, Profile>> getProfileInformation();
@@ -18,4 +19,5 @@ abstract class ProfileRepository {
   Future<Either<DomainError, void>> deleteAccount();
   Future<Either<DomainError, List<Device>>> getDevices();
   Future<Either<DomainError, void>> deleteDevice(String deviceId);
+  Future<Either<DomainError, Statistics>> getStatistics();
 }

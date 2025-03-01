@@ -15,6 +15,7 @@ import 'package:reallystick/features/profile/data/sources/local_data_sources.dar
 import 'package:reallystick/features/profile/data/sources/remote_data_sources.dart';
 import 'package:reallystick/features/profile/domain/entities/device.dart';
 import 'package:reallystick/features/profile/domain/entities/profile.dart';
+import 'package:reallystick/features/profile/domain/entities/statistics.dart';
 import 'package:reallystick/features/profile/domain/errors/domain_error.dart';
 import 'package:reallystick/features/profile/domain/repositories/profile_repository.dart';
 
@@ -294,6 +295,45 @@ class ProfileRepositoryImpl implements ProfileRepository {
       await remoteDataSource.deleteDevice(deviceId);
 
       return Right(null);
+    } on ParsingError {
+      logger.e('ParsingError occurred.');
+      return Left(InvalidResponseDomainError());
+    } on InvalidUsernameOrPasswordError {
+      logger.e('InvalidUsernameOrPasswordError occured.');
+      return Left(InvalidUsernameOrPasswordDomainError());
+    } on UnauthorizedError {
+      logger.e('UnauthorizedError occurred.');
+      return Left(UnauthorizedDomainError());
+    } on InvalidRefreshTokenError {
+      logger.e('InvalidRefreshTokenError occured.');
+      return Left(InvalidRefreshTokenDomainError());
+    } on RefreshTokenNotFoundError {
+      logger.e('RefreshTokenNotFoundError occured.');
+      return Left(RefreshTokenNotFoundDomainError());
+    } on RefreshTokenExpiredError {
+      logger.e('RefreshTokenExpiredError occured.');
+      return Left(RefreshTokenExpiredDomainError());
+    } on PasswordTooShortError {
+      logger.e('PasswordTooShortError occured.');
+      return Left(PasswordTooShortError());
+    } on PasswordNotComplexEnoughError {
+      logger.e('PasswordNotComplexEnoughError occured.');
+      return Left(PasswordNotComplexEnoughError());
+    } on InternalServerError {
+      logger.e('InternalServerError occured.');
+      return Left(InternalServerDomainError());
+    } catch (e) {
+      logger.e('Data error occurred: ${e.toString()}');
+      return Left(UnknownDomainError());
+    }
+  }
+
+  @override
+  Future<Either<DomainError, Statistics>> getStatistics() async {
+    try {
+      final statisticsDataModel = await remoteDataSource.getStatistics();
+
+      return Right(statisticsDataModel.toDomain());
     } on ParsingError {
       logger.e('ParsingError occurred.');
       return Left(InvalidResponseDomainError());

@@ -166,3 +166,19 @@ pub async fn generate_notification<'a, E>(
         }
     }
 }
+
+pub async fn get_notification_count<'a, E>(executor: E) -> Result<i64, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
+    let row = sqlx::query!(
+        r#"
+        SELECT COUNT(*) as count
+        FROM notifications
+        "#,
+    )
+    .fetch_one(executor)
+    .await?;
+
+    Ok(row.count.unwrap_or(0))
+}

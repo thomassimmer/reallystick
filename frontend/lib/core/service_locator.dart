@@ -136,6 +136,7 @@ import 'package:reallystick/features/profile/domain/usecases/delete_account.dart
 import 'package:reallystick/features/profile/domain/usecases/delete_device.dart';
 import 'package:reallystick/features/profile/domain/usecases/get_devices.dart';
 import 'package:reallystick/features/profile/domain/usecases/get_profile_usecase.dart';
+import 'package:reallystick/features/profile/domain/usecases/get_statistics.dart';
 import 'package:reallystick/features/profile/domain/usecases/load_countries.dart';
 import 'package:reallystick/features/profile/domain/usecases/post_profile_usecase.dart';
 import 'package:reallystick/features/profile/domain/usecases/set_password_use_case.dart';
@@ -463,6 +464,8 @@ Future<void> setupServiceLocator() async {
       DeleteAllNotificationsUsecase(sl<NotificationRepository>()));
   sl.registerSingleton<SaveFcmTokenUsecase>(
       SaveFcmTokenUsecase(sl<NotificationRepository>()));
+  sl.registerSingleton<GetStatisticsUsecase>(
+      GetStatisticsUsecase(sl<ProfileRepository>()));
 
   // WebSocketService
   sl.registerSingleton<WebSocketService>(WebSocketService());

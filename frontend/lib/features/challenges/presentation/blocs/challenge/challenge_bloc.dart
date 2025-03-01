@@ -75,8 +75,9 @@ class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
       GetIt.instance<GetChallengesDailyTrackingsUsecase>();
 
   ChallengeBloc() : super(ChallengesLoading()) {
-    profileBlocSubscription = profileBloc.stream.listen((profileBloc) {
-      if (profileBloc is ProfileAuthenticated) {
+    profileBlocSubscription = profileBloc.stream.listen((profileState) {
+      if (profileState is ProfileAuthenticated &&
+          profileState.shouldReloadData) {
         add(ChallengeInitializeEvent());
       }
     });

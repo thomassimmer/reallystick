@@ -108,3 +108,19 @@ where
     .fetch_optional(executor)
     .await
 }
+
+pub async fn get_public_message_report_count<'a, E>(executor: E) -> Result<i64, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
+    let row = sqlx::query!(
+        r#"
+        SELECT COUNT(*) as count
+        FROM public_message_reports
+        "#,
+    )
+    .fetch_one(executor)
+    .await?;
+
+    Ok(row.count.unwrap_or(0))
+}

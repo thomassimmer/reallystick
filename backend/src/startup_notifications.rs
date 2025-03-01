@@ -4,8 +4,11 @@ use std::fs::File;
 use std::net::TcpListener;
 
 use crate::configuration::{DatabaseSettings, Settings};
+use crate::core::middlewares::token_validator::TokenValidator;
 use crate::core::routes::health_check::health_check;
 
+use crate::core::routes::statistics::statistics;
+use crate::features::auth::structs::models::TokenCache;
 use crate::features::notifications::helpers::redis_handler::handle_redis_messages;
 use crate::features::oauth_fcm::token_manager::create_shared_token_manager;
 use crate::features::private_discussions::routes::websocket::broadcast_ws;
@@ -29,6 +32,7 @@ pub fn run(listener: TcpListener, configuration: Settings) -> Result<Server, std
     let connection_pool = get_connection_pool(&configuration.database);
     let secret = configuration.application.secret;
 
+    let token_cache = TokenCache::default();
     let channels_data = ChannelsData::default();
     let users_data = UsersData::default();
     let shared_token_manager = create_shared_token_manager(File::open(
@@ -57,6 +61,7 @@ pub fn run(listener: TcpListener, configuration: Settings) -> Result<Server, std
         create_app(
             connection_pool.clone(),
             secret.clone(),
+            token_cache.clone(),
             channels_data.clone(),
             users_data.clone(),
         )
@@ -70,6 +75,7 @@ pub fn run(listener: TcpListener, configuration: Settings) -> Result<Server, std
 pub fn create_app(
     connection_pool: Pool<Postgres>,
     secret: String,
+    token_cache: TokenCache,
     channels_data: ChannelsData,
     users_data: UsersData,
 ) -> App<
@@ -97,12 +103,14 @@ pub fn create_app(
         .service(
             web::scope("/api")
                 .service(health_check)
-                .service(broadcast_ws),
+                .service(broadcast_ws)
+                .service(web::scope("").wrap(TokenValidator {}).service(statistics)),
         )
         .wrap(cors)
         .wrap(Logger::default())
         .app_data(web::Data::new(connection_pool))
         .app_data(web::Data::new(secret))
+        .app_data(web::Data::new(token_cache))
         .app_data(web::Data::new(channels_data))
         .app_data(web::Data::new(users_data))
 }
