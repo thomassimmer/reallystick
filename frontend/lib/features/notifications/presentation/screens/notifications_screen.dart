@@ -40,28 +40,32 @@ class NotificationsScreenState extends State<NotificationsScreen> {
         ),
         centerTitle: false,
         actions: [
-          Center(
-            child: Container(
-              padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color:
-                      notificationState.isConnected ? Colors.green : Colors.red,
-                ),
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8),
+            child: Center(
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                decoration: BoxDecoration(
+                  border: Border.all(
                     color: notificationState.isConnected
-                        ? Colors.green.withAlpha(50)
-                        : Colors.red.withAlpha(50),
-                    blurRadius: 6,
+                        ? Colors.green
+                        : Colors.red,
                   ),
-                ],
-              ),
-              child: Text(
-                notificationState.isConnected
-                    ? AppLocalizations.of(context)!.connected
-                    : AppLocalizations.of(context)!.disconnected,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: notificationState.isConnected
+                          ? Colors.green.withAlpha(50)
+                          : Colors.red.withAlpha(50),
+                      blurRadius: 6,
+                    ),
+                  ],
+                ),
+                child: Text(
+                  notificationState.isConnected
+                      ? AppLocalizations.of(context)!.connected
+                      : AppLocalizations.of(context)!.disconnected,
+                ),
               ),
             ),
           ),
