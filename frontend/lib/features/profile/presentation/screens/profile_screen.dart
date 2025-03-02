@@ -29,195 +29,183 @@ class ProfileScreen extends StatelessWidget {
             centerTitle: false,
           ),
           body: ListView(
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
             children: [
-              ListTile(
-                title: Text(AppLocalizations.of(context)!.language),
-                trailing: Icon(Icons.chevron_right),
-                onTap: () {
-                  context.goNamed('language');
-                },
-              ),
-              ListTile(
-                title: Text(AppLocalizations.of(context)!.theme),
-                trailing: Icon(Icons.chevron_right),
-                onTap: () {
-                  context.goNamed('theme');
-                },
-              ),
-              ListTile(
-                title: Text(AppLocalizations.of(context)!.notifications),
-                trailing: Icon(Icons.chevron_right),
-                onTap: () {
-                  context.goNamed('profile-notifications');
-                },
-              ),
-              ListTile(
-                title: Text(AppLocalizations.of(context)!.likedMessages),
-                trailing: Icon(Icons.chevron_right),
-                onTap: () {
-                  context.goNamed('liked-messages');
-                },
-              ),
-              ListTile(
-                title: Text(AppLocalizations.of(context)!.writtenMessages),
-                trailing: Icon(Icons.chevron_right),
-                onTap: () {
-                  context.goNamed('written-messages');
-                },
-              ),
-              ListTile(
-                title: Text(AppLocalizations.of(context)!.reportedMessages),
-                trailing: Icon(Icons.chevron_right),
-                onTap: () {
-                  context.goNamed('reported-messages');
-                },
-              ),
-              ListTile(
-                title: Text(AppLocalizations.of(context)!.twoFA),
-                trailing: Icon(Icons.chevron_right),
-                onTap: () {
-                  context.goNamed('two-factor-authentication');
-                },
-              ),
-              ListTile(
-                title: Text(AppLocalizations.of(context)!.changePassword),
-                trailing: IconWithWarning(
-                    iconData: Icons.chevron_right,
-                    shouldBeWarning: shouldBeWarning),
-                onTap: () {
-                  context.goNamed('password');
-                },
-              ),
-              ListTile(
-                title: Text(AppLocalizations.of(context)!.changeRecoveryCode),
-                trailing: Icon(Icons.chevron_right),
-                onTap: () {
-                  context.goNamed('update-recovery-code');
-                },
-              ),
-              ListTile(
-                title: Text(AppLocalizations.of(context)!.profileInformation),
-                trailing: Icon(Icons.chevron_right),
-                onTap: () {
-                  context.goNamed('profile-information');
-                },
-              ),
+              _buildSection(context, AppLocalizations.of(context)!.activity, [
+                _buildCardTile(
+                    context,
+                    AppLocalizations.of(context)!.likedMessages,
+                    'liked-messages'),
+                _buildCardTile(
+                    context,
+                    AppLocalizations.of(context)!.writtenMessages,
+                    'written-messages'),
+                _buildCardTile(
+                    context,
+                    AppLocalizations.of(context)!.reportedMessages,
+                    'reported-messages'),
+              ]),
+              _buildSection(context, AppLocalizations.of(context)!.account, [
+                _buildCardTile(context, AppLocalizations.of(context)!.language,
+                    'language'),
+                _buildCardTile(
+                    context, AppLocalizations.of(context)!.theme, 'theme'),
+                _buildCardTile(
+                    context,
+                    AppLocalizations.of(context)!.notifications,
+                    'profile-notifications'),
+                _buildCardTile(
+                  context,
+                  AppLocalizations.of(context)!.changePassword,
+                  'password',
+                  iconWithWarning: shouldBeWarning,
+                ),
+                _buildCardTile(
+                    context,
+                    AppLocalizations.of(context)!.changeRecoveryCode,
+                    'update-recovery-code'),
+                _buildCardTile(context, AppLocalizations.of(context)!.twoFA,
+                    'two-factor-authentication'),
+                _buildCardTile(
+                    context,
+                    AppLocalizations.of(context)!.profileInformation,
+                    'profile-information'),
+              ]),
               if (userIsAdmin)
-                ListTile(
-                  title: Text(AppLocalizations.of(context)!.allHabits),
-                  trailing: Icon(Icons.chevron_right),
-                  onTap: () {
-                    context.goNamed('allHabits');
-                  },
-                ),
-              ListTile(
-                title: Text(AppLocalizations.of(context)!.devices),
-                trailing: Icon(Icons.chevron_right),
-                onTap: () {
-                  context.goNamed('devices');
-                },
-              ),
-              ListTile(
-                title: Text(AppLocalizations.of(context)!.about),
-                trailing: Icon(Icons.chevron_right),
-                onTap: () {
-                  context.goNamed('about');
-                },
-              ),
-              if (userIsAdmin) ...[
-                ListTile(
-                  title:
-                      Text(AppLocalizations.of(context)!.allReportedMessages),
-                  trailing: Icon(Icons.chevron_right),
-                  onTap: () {
-                    context.goNamed('all-reported-messages');
-                  },
-                ),
-                ListTile(
-                  title:
-                      Text(AppLocalizations.of(context)!.statistics),
-                  trailing: Icon(Icons.chevron_right),
-                  onTap: () {
-                    context.goNamed('statistics');
-                  },
-                ),
-              ],
-              const SizedBox(height: 32),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      BlocProvider.of<AuthBloc>(context).add(AuthLogoutEvent());
-                    },
-                    style: context.styles.buttonMedium,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 32.0,
-                        vertical: 4,
-                      ),
-                      child: Text(AppLocalizations.of(context)!.logout),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () async {
-                      final shouldDelete = await showDialog<bool>(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: Text(
-                                AppLocalizations.of(context)!.confirmDelete),
-                            content: Text(AppLocalizations.of(context)!
-                                .confirmDeleteMessage),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop(false);
-                                },
-                                child: Text(
-                                  AppLocalizations.of(context)!.cancel,
-                                  style: context.typographies.body,
-                                ),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop(true);
-                                },
-                                child: Text(
-                                  AppLocalizations.of(context)!.confirm,
-                                  style: context.typographies.body
-                                      .copyWith(color: context.colors.error),
-                                ),
-                              ),
-                            ],
-                          );
-                        },
-                      );
-
-                      if (shouldDelete == true) {
-                        BlocProvider.of<ProfileBloc>(context)
-                            .add(DeleteAccountEvent());
-                      }
-                    },
-                    style: context.styles.buttonMedium.copyWith(
-                      backgroundColor:
-                          WidgetStatePropertyAll(context.colors.error),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 32.0,
-                        vertical: 4,
-                      ),
-                      child: Text(AppLocalizations.of(context)!.deleteAccount),
-                    ),
-                  )
-                ],
-              )
+                _buildSection(context, AppLocalizations.of(context)!.admin, [
+                  _buildCardTile(context,
+                      AppLocalizations.of(context)!.allHabits, 'allHabits'),
+                  _buildCardTile(
+                      context,
+                      AppLocalizations.of(context)!.allReportedMessages,
+                      'all-reported-messages'),
+                  _buildCardTile(context,
+                      AppLocalizations.of(context)!.statistics, 'statistics'),
+                ]),
+              _buildSection(context, AppLocalizations.of(context)!.other, [
+                _buildCardTile(
+                    context, AppLocalizations.of(context)!.devices, 'devices'),
+                _buildCardTile(
+                    context, AppLocalizations.of(context)!.about, 'about'),
+              ]),
+              _buildActionButtons(context),
             ],
           ),
         );
       },
+    );
+  }
+
+  Widget _buildSection(
+      BuildContext context, String title, List<Widget> children) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+          child: Text(
+            title,
+            style: context.typographies.body.copyWith(
+              color: context.colors.hint,
+              fontSize: 14,
+            ),
+          ),
+        ),
+        ...children,
+      ],
+    );
+  }
+
+  Widget _buildCardTile(
+    BuildContext context,
+    String title,
+    String route, {
+    bool iconWithWarning = false,
+  }) {
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: ListTile(
+        title: Text(title),
+        trailing: iconWithWarning
+            ? IconWithWarning(
+                iconData: Icons.chevron_right, shouldBeWarning: true)
+            : Icon(Icons.chevron_right),
+        onTap: () {
+          context.goNamed(route);
+        },
+      ),
+    );
+  }
+
+  Widget _buildActionButtons(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 0),
+      child: Card(
+        elevation: 2,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          child: Column(
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  BlocProvider.of<AuthBloc>(context).add(AuthLogoutEvent());
+                },
+                style: ElevatedButton.styleFrom(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                  backgroundColor: context.colors.primary,
+                  foregroundColor: Colors.white,
+                ),
+                child: Text(AppLocalizations.of(context)!.logout),
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () async {
+                  final shouldDelete = await showDialog<bool>(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title:
+                            Text(AppLocalizations.of(context)!.confirmDelete),
+                        content: Text(
+                            AppLocalizations.of(context)!.confirmDeleteMessage),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(false),
+                            child: Text(AppLocalizations.of(context)!.cancel),
+                          ),
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(true),
+                            child: Text(
+                              AppLocalizations.of(context)!.confirm,
+                              style: TextStyle(color: context.colors.error),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+
+                  if (shouldDelete == true) {
+                    BlocProvider.of<ProfileBloc>(context)
+                        .add(DeleteAccountEvent());
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                  backgroundColor: context.colors.error,
+                  foregroundColor: Colors.white,
+                ),
+                child: Text(AppLocalizations.of(context)!.deleteAccount),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
