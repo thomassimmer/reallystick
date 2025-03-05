@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:reallystick/core/constants/dates.dart';
 import 'package:reallystick/core/constants/unit_conversion.dart';
 import 'package:reallystick/core/ui/extensions.dart';
+import 'package:reallystick/features/habits/domain/entities/habit.dart';
 import 'package:reallystick/features/habits/domain/entities/habit_daily_tracking.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_states.dart';
@@ -15,7 +16,7 @@ import 'package:reallystick/features/habits/presentation/widgets/last_activity_w
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 
 class DailyTrackingCarouselWidget extends StatefulWidget {
-  final String habitId;
+  final Habit habit;
   final List<HabitDailyTracking> habitDailyTrackings;
   final Color habitColor;
   final bool canOpenDayBoxes;
@@ -23,7 +24,7 @@ class DailyTrackingCarouselWidget extends StatefulWidget {
 
   DailyTrackingCarouselWidget(
       {Key? key,
-      required this.habitId,
+      required this.habit,
       required this.habitDailyTrackings,
       required this.habitColor,
       required this.canOpenDayBoxes,
@@ -83,7 +84,7 @@ class DailyTrackingCarouselWidgetState
           ),
           child: ListDailyTrackingsModal(
             datetime: datetime,
-            habitId: widget.habitId,
+            habitId: widget.habit.id,
           ),
         );
       },
@@ -95,30 +96,38 @@ class DailyTrackingCarouselWidgetState
     final profileState = context.watch<ProfileBloc>().state;
     final userLocale = profileState.profile!.locale;
 
-    const dayBoxSize = 30.0;
-    const numberOfDays = 7 * 10;
-
     final today = DateTime.now();
+
+    final firstDayWithActivity = widget.habitDailyTrackings.firstOrNull;
+    final daysSinceFirstActivity = firstDayWithActivity != null
+        ? today.difference(firstDayWithActivity.datetime).inDays
+        : 0;
+
+    const dayBoxSize = 30.0;
+    final numberOfDays = max(8, daysSinceFirstActivity);
+
     final lastSunday =
         today.add(Duration(days: DateTime.sunday - today.weekday));
     final firstMonday =
-        lastSunday.subtract(Duration(days: numberOfDays - 1)).subtract(
+        lastSunday.subtract(Duration(days: numberOfDays)).subtract(
               Duration(
-                days: (lastSunday
-                            .subtract(Duration(days: numberOfDays - 1))
-                            .weekday -
-                        1) %
-                    7,
+                days:
+                    (lastSunday.subtract(Duration(days: numberOfDays)).weekday -
+                            1) %
+                        7,
               ),
             );
 
+    final actualNumberOfBoxesToDisplay =
+        lastSunday.difference(firstMonday).inDays + 1;
+
     final lastDays = List.generate(
-      numberOfDays,
+      actualNumberOfBoxesToDisplay,
       (index) => firstMonday.add(Duration(days: index)),
     );
 
     final weeks = List.generate(
-      (numberOfDays / 7).ceil(),
+      (actualNumberOfBoxesToDisplay / 7).ceil(),
       (index) => lastDays.skip(index * 7).take(7).toList(),
     );
 

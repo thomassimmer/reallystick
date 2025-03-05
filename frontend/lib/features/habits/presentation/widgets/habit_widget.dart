@@ -106,7 +106,7 @@ class HabitWidget extends StatelessWidget {
                         if (isLargeScreen) ...[
                           Spacer(),
                           DailyTrackingCarouselWidget(
-                            habitId: habit.id,
+                            habit: habit,
                             habitDailyTrackings: habitDailyTrackings,
                             habitColor: habitColor,
                             canOpenDayBoxes: false,
@@ -118,7 +118,7 @@ class HabitWidget extends StatelessWidget {
                     if (!isLargeScreen) ...[
                       const SizedBox(height: 16),
                       DailyTrackingCarouselWidget(
-                        habitId: habit.id,
+                        habit: habit,
                         habitDailyTrackings: habitDailyTrackings,
                         habitColor: habitColor,
                         canOpenDayBoxes: false,
