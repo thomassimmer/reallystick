@@ -459,7 +459,7 @@
   "twoFAInvitation": "Security and privacy are our top priorities.\n\nPlease set up two-factor authentication to protect your account from brute-force attacks.",
   "twoFAIsWellSetup": "Two-Factor Authentication is successfully set up for your account.",
   "twoFAScanQrCode": "Scan this QR code with your authentication app.",
-  "twoFASecretKey": "Your secret key is: {secretKey}",
+  "twoFASecretKey": "Your QR code secret key is: {secretKey}",
   "@twoFASecretKey": {
     "placeholders": {
       "secretKey": {

@@ -8,6 +8,7 @@ import 'package:reallystick/core/presentation/widgets/app_logo.dart';
 import 'package:reallystick/core/presentation/widgets/custom_container.dart';
 import 'package:reallystick/core/presentation/widgets/custom_text_field.dart';
 import 'package:reallystick/core/presentation/widgets/global_snack_bar.dart';
+import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_bloc.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_events.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_states.dart';
@@ -92,8 +93,12 @@ class RecoverAccountScreenState extends State<RecoverAccountScreen>
                               onPressed: () {
                                 context.goNamed('home');
                               },
-                              child:
-                                  Text(AppLocalizations.of(context)!.comeBack),
+                              child: Text(
+                                AppLocalizations.of(context)!.comeBack,
+                                style: TextStyle(
+                                  color: context.colors.background,
+                                ),
+                              ),
                             ),
                           ],
                         )))),
@@ -142,7 +147,12 @@ class RecoverAccountScreenState extends State<RecoverAccountScreen>
       SizedBox(height: 24),
       ElevatedButton(
         onPressed: triggerNextAction,
-        child: Text(AppLocalizations.of(context)!.next),
+        child: Text(
+          AppLocalizations.of(context)!.next,
+          style: TextStyle(
+            color: context.colors.background,
+          ),
+        ),
       ),
     ]);
   }
@@ -191,7 +201,12 @@ class RecoverAccountScreenState extends State<RecoverAccountScreen>
       SizedBox(height: 24),
       ElevatedButton(
         onPressed: recoverAccount,
-        child: Text(AppLocalizations.of(context)!.next),
+        child: Text(
+          AppLocalizations.of(context)!.next,
+          style: TextStyle(
+            color: context.colors.background,
+          ),
+        ),
       ),
     ]);
   }
@@ -227,7 +242,12 @@ class RecoverAccountScreenState extends State<RecoverAccountScreen>
       SizedBox(height: 24),
       ElevatedButton(
         onPressed: recoverAccount,
-        child: Text(AppLocalizations.of(context)!.next),
+        child: Text(
+          AppLocalizations.of(context)!.next,
+          style: TextStyle(
+            color: context.colors.background,
+          ),
+        ),
       ),
     ]);
   }
@@ -276,7 +296,12 @@ class RecoverAccountScreenState extends State<RecoverAccountScreen>
       SizedBox(height: 24),
       ElevatedButton(
         onPressed: recoverAccount,
-        child: Text(AppLocalizations.of(context)!.next),
+        child: Text(
+          AppLocalizations.of(context)!.next,
+          style: TextStyle(
+            color: context.colors.background,
+          ),
+        ),
       ),
     ]);
   }

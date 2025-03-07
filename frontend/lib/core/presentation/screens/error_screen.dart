@@ -25,13 +25,16 @@ class ErrorScreen extends StatelessWidget {
                   child: Row(children: [
                     Text(
                       'Really',
-                      style: context.typographies.headingSmall
-                          .copyWith(color: context.colors.background),
+                      style: context.typographies.headingSmall.copyWith(
+                        color: context.colors.background,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                     Text(
                       'Stick',
-                      style: context.typographies.headingSmall
-                          .copyWith(color: context.colors.text),
+                      style: context.typographies.headingSmall.copyWith(
+                        color: context.colors.background,
+                      ),
                     ),
                   ])),
               Spacer(),

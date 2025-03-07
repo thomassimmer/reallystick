@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:reallystick/core/presentation/widgets/custom_app_bar.dart';
+import 'package:reallystick/core/presentation/widgets/full_width_list_view_builder.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_states.dart';
@@ -26,39 +28,23 @@ class AllHabitsScreenState extends State<AllHabitsScreen> {
           final categories = habitState.habitCategories.values.toList();
 
           return Scaffold(
-            body: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0,
-                      vertical: 16.0,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          AppLocalizations.of(context)!.allHabits,
-                          style: context.typographies.heading,
-                        ),
-                      ],
-                    )),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: categories.length,
-                    itemBuilder: (context, index) {
-                      final habitCategory = categories[index];
-                      return HabitCategoryReviewWidget(
-                        habits: habitState.habits.values
-                            .where(
-                                (habit) => habit.categoryId == habitCategory.id)
-                            .toList(),
-                        category: habitCategory,
-                      );
-                    },
-                  ),
-                ),
-              ],
+            appBar: CustomAppBar(
+              title: Text(
+                AppLocalizations.of(context)!.allHabits,
+                style: context.typographies.heading,
+              ),
+            ),
+            body: FullWidthListViewBuilder(
+              itemCount: categories.length,
+              itemBuilder: (context, index) {
+                final habitCategory = categories[index];
+                return HabitCategoryReviewWidget(
+                  habits: habitState.habits.values
+                      .where((habit) => habit.categoryId == habitCategory.id)
+                      .toList(),
+                  category: habitCategory,
+                );
+              },
             ),
           );
         } else {

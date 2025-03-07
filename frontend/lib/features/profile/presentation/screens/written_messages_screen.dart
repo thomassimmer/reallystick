@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
+import 'package:reallystick/core/presentation/widgets/custom_app_bar.dart';
+import 'package:reallystick/core/presentation/widgets/full_width_list_view.dart';
 import 'package:reallystick/core/ui/colors.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
@@ -41,7 +43,7 @@ class WrittenMessagesScreenState extends State<WrittenMessagesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: CustomAppBar(
         title: Text(
           AppLocalizations.of(context)!.writtenMessages,
           style: context.typographies.headingSmall,
@@ -68,77 +70,75 @@ class WrittenMessagesScreenState extends State<WrittenMessagesScreen> {
   Widget _buildWrittenMessagesView(
       BuildContext context, PublicMessagesLoaded state) {
     if (state.writtenMessages.isNotEmpty) {
-      return SingleChildScrollView(
-        child: Column(
-          children: state.writtenMessages.map(
-            (message) {
-              return Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(16),
-                  onTap: () => {
-                    if (message.repliesTo == null)
-                      {
-                        if (message.challengeId != null)
-                          {
-                            context.pushNamed(
-                              'challengeThread',
-                              pathParameters: {
-                                'challengeId': message.challengeId!,
-                                'threadId': message.threadId,
-                              },
-                            )
-                          }
-                        else if (message.habitId != null)
-                          {
-                            context.pushNamed(
-                              'habitThread',
-                              pathParameters: {
-                                'habitId': message.habitId!,
-                                'threadId': message.threadId,
-                              },
-                            )
-                          }
-                      }
-                    else
-                      {
-                        if (message.challengeId != null)
-                          {
-                            context.pushNamed(
-                              'challengeThreadReply',
-                              pathParameters: {
-                                'challengeId': message.challengeId!,
-                                'messageId': message.id,
-                                'threadId': message.threadId,
-                              },
-                            )
-                          }
-                        else if (message.habitId != null)
-                          {
-                            context.pushNamed(
-                              'habitThreadReply',
-                              pathParameters: {
-                                'habitId': message.habitId!,
-                                'messageId': message.id,
-                                'threadId': message.threadId,
-                              },
-                            )
-                          }
-                      }
-                  },
-                  child: MessageWidget(
-                    threadId: message.threadId,
-                    messageId: message.id,
-                    color: AppColorExtension.fromString("").color,
-                    habitId: message.habitId,
-                    challengeId: message.challengeId,
-                    withReplies: false,
-                  ),
+      return FullWidthListView(
+        children: state.writtenMessages.map(
+          (message) {
+            return Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: InkWell(
+                borderRadius: BorderRadius.circular(16),
+                onTap: () => {
+                  if (message.repliesTo == null)
+                    {
+                      if (message.challengeId != null)
+                        {
+                          context.pushNamed(
+                            'challengeThread',
+                            pathParameters: {
+                              'challengeId': message.challengeId!,
+                              'threadId': message.threadId,
+                            },
+                          )
+                        }
+                      else if (message.habitId != null)
+                        {
+                          context.pushNamed(
+                            'habitThread',
+                            pathParameters: {
+                              'habitId': message.habitId!,
+                              'threadId': message.threadId,
+                            },
+                          )
+                        }
+                    }
+                  else
+                    {
+                      if (message.challengeId != null)
+                        {
+                          context.pushNamed(
+                            'challengeThreadReply',
+                            pathParameters: {
+                              'challengeId': message.challengeId!,
+                              'messageId': message.id,
+                              'threadId': message.threadId,
+                            },
+                          )
+                        }
+                      else if (message.habitId != null)
+                        {
+                          context.pushNamed(
+                            'habitThreadReply',
+                            pathParameters: {
+                              'habitId': message.habitId!,
+                              'messageId': message.id,
+                              'threadId': message.threadId,
+                            },
+                          )
+                        }
+                    }
+                },
+                child: MessageWidget(
+                  threadId: message.threadId,
+                  messageId: message.id,
+                  color: AppColorExtension.fromString("").color,
+                  habitId: message.habitId,
+                  challengeId: message.challengeId,
+                  withReplies: false,
                 ),
-              );
-            },
-          ).toList(),
-        ),
+              ),
+            );
+          },
+        ).toList(),
       );
     } else {
       return Center(

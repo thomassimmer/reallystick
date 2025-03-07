@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:reallystick/core/presentation/widgets/custom_app_bar.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -9,7 +10,7 @@ class AboutScreen extends StatelessWidget {
     final Uri githubUrl = Uri.parse('https://github.com/tatkagore');
 
     return Scaffold(
-      appBar: AppBar(
+      appBar: CustomAppBar(
         title: Text(
           AppLocalizations.of(context)!.about,
           style: context.typographies.headingSmall,

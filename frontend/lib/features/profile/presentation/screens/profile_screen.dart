@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
+import 'package:reallystick/core/presentation/widgets/custom_app_bar.dart';
+import 'package:reallystick/core/presentation/widgets/full_width_list_view.dart';
 import 'package:reallystick/core/presentation/widgets/icon_with_warning.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_bloc.dart';
@@ -21,15 +23,14 @@ class ProfileScreen extends StatelessWidget {
             state is ProfileAuthenticated && state.profile.isAdmin;
 
         return Scaffold(
-          appBar: AppBar(
+          appBar: CustomAppBar(
             title: Text(
               AppLocalizations.of(context)!.profileSettings,
               style: context.typographies.heading,
             ),
             centerTitle: false,
           ),
-          body: ListView(
-            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+          body: FullWidthListView(
             children: [
               _buildSection(context, AppLocalizations.of(context)!.activity, [
                 _buildCardTile(
@@ -89,6 +90,7 @@ class ProfileScreen extends StatelessWidget {
                     context, AppLocalizations.of(context)!.about, 'about'),
               ]),
               _buildActionButtons(context),
+              SizedBox(height: 20),
             ],
           ),
         );

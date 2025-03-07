@@ -4,6 +4,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:reallystick/core/messages/message.dart';
+import 'package:reallystick/core/presentation/widgets/custom_app_bar.dart';
+import 'package:reallystick/core/presentation/widgets/full_width_list_view_builder.dart';
 import 'package:reallystick/core/presentation/widgets/global_snack_bar.dart';
 import 'package:reallystick/core/ui/colors.dart';
 import 'package:reallystick/core/ui/extensions.dart';
@@ -156,7 +158,7 @@ class PrivateDiscussionScreenState extends State<PrivateDiscussionScreen> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
       ),
       constraints: BoxConstraints(
-        maxWidth: 600,
+        maxWidth: 700,
       ),
       builder: (BuildContext context) {
         return ColorPickerModal(
@@ -281,7 +283,7 @@ class PrivateDiscussionScreenState extends State<PrivateDiscussionScreen> {
       });
 
       return Scaffold(
-        appBar: AppBar(
+        appBar: CustomAppBar(
           title: Text(
             recipient.username,
             style: context.typographies.headingSmall,
@@ -318,7 +320,7 @@ class PrivateDiscussionScreenState extends State<PrivateDiscussionScreen> {
           child: Center(
             child: Container(
               constraints: BoxConstraints(
-                maxWidth: 600,
+                maxWidth: 700,
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -327,7 +329,7 @@ class PrivateDiscussionScreenState extends State<PrivateDiscussionScreen> {
                     Text(AppLocalizations.of(context)!.youBlockedThisUser)
                   ] else ...[
                     Expanded(
-                      child: ListView.builder(
+                      child: FullWidthListViewBuilder(
                         controller: _scrollController,
                         itemCount: messages.length,
                         itemBuilder: (context, index) {
@@ -427,13 +429,13 @@ class PrivateDiscussionScreenState extends State<PrivateDiscussionScreen> {
       );
     } else {
       return Scaffold(
-        appBar: AppBar(),
+        appBar: CustomAppBar(),
         body: Padding(
           padding: EdgeInsets.all(16),
           child: Center(
             child: Container(
                 constraints: BoxConstraints(
-                  maxWidth: 600,
+                  maxWidth: 700,
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
+import 'package:reallystick/core/presentation/widgets/custom_app_bar.dart';
+import 'package:reallystick/core/presentation/widgets/full_width_list_view.dart';
 import 'package:reallystick/core/ui/colors.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
@@ -41,7 +43,7 @@ class LikedMessagesScreenState extends State<LikedMessagesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: CustomAppBar(
         title: Text(
           AppLocalizations.of(context)!.likedMessages,
           style: context.typographies.headingSmall,
@@ -68,7 +70,7 @@ class LikedMessagesScreenState extends State<LikedMessagesScreen> {
   Widget _buildLikedMessagesView(
       BuildContext context, PublicMessagesLoaded state) {
     if (state.likedMessages.isNotEmpty) {
-      return Column(
+      return FullWidthListView(
         children: state.likedMessages.map(
           (message) {
             return Padding(

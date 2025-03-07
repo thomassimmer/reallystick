@@ -222,8 +222,9 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState>
   }
 
   Future<void> _generateTwoFactorAuthenticationConfig(
-      ProfileGenerateTwoFactorAuthenticationConfigEvent event,
-      Emitter<ProfileState> emit) async {
+    ProfileGenerateTwoFactorAuthenticationConfigEvent event,
+    Emitter<ProfileState> emit,
+  ) async {
     final currentState = state as ProfileAuthenticated;
     final result = await generateTwoFactorAuthenticationConfigUseCase.call();
 
@@ -248,14 +249,14 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState>
         }
       },
       (twoFactorAuthenticationConfig) {
-        Profile profile = currentState.profile;
-        profile.otpAuthUrl = twoFactorAuthenticationConfig.otpAuthUrl;
-        profile.otpBase32 = twoFactorAuthenticationConfig.otpBase32;
-        profile.otpVerified = false;
+        Profile newProfile = currentState.profile.copyWith();
+        newProfile.otpAuthUrl = twoFactorAuthenticationConfig.otpAuthUrl;
+        newProfile.otpBase32 = twoFactorAuthenticationConfig.otpBase32;
+        newProfile.otpVerified = false;
 
         emit(
           ProfileAuthenticated(
-            profile: profile,
+            profile: newProfile,
             devices: currentState.devices,
             statistics: currentState.statistics,
             shouldReloadData: false,
@@ -266,8 +267,9 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState>
   }
 
   Future<void> _disableTwoFactorAuthentication(
-      ProfileDisableTwoFactorAuthenticationEvent event,
-      Emitter<ProfileState> emit) async {
+    ProfileDisableTwoFactorAuthenticationEvent event,
+    Emitter<ProfileState> emit,
+  ) async {
     final currentState = state as ProfileAuthenticated;
     final result = await disableTwoFactorAuthenticationUseCase.call();
 
@@ -292,14 +294,14 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState>
         }
       },
       (_) {
-        Profile profile = currentState.profile;
-        profile.otpAuthUrl = null;
-        profile.otpBase32 = null;
-        profile.otpVerified = false;
+        Profile newProfile = currentState.profile.copyWith();
+        newProfile.otpAuthUrl = null;
+        newProfile.otpBase32 = null;
+        newProfile.otpVerified = false;
 
         emit(
           ProfileAuthenticated(
-            profile: profile,
+            profile: newProfile,
             devices: currentState.devices,
             statistics: currentState.statistics,
             shouldReloadData: false,
@@ -506,6 +508,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState>
       GenerateNewRecoveryCodeEvent event, Emitter<ProfileState> emit) async {
     final currentState = state as ProfileAuthenticated;
 
+    emit(ProfileLoading(profile: currentState.profile));
+
     String recoveryCode = RecoveryCodeGenerator.generate();
     String privateKey = await PrivateMessageKeyStorage().getPrivateKey() ?? "";
 
@@ -519,7 +523,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState>
       derivedKey: derivatedKeyResult.derivedKey,
     );
 
-    saveRecoveryCodeUsecase.call(
+    await saveRecoveryCodeUsecase.call(
       recoveryCode: recoveryCode,
       privateKeyEncrypted: privateKeyEncrypted,
       saltUsedToDeriveKeyFromRecoveryCode: derivatedKeyResult.salt,

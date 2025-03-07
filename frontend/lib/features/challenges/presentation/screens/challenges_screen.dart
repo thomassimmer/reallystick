@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
+import 'package:reallystick/core/presentation/widgets/custom_app_bar.dart';
+import 'package:reallystick/core/presentation/widgets/full_width_scroll_view.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_bloc.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_events.dart';
@@ -51,7 +53,7 @@ class ChallengesScreenState extends State<ChallengesScreen> {
               .toList();
 
           return Scaffold(
-            appBar: AppBar(
+            appBar: CustomAppBar(
               title: Text(
                 AppLocalizations.of(context)!.myChallenges,
                 style: context.typographies.heading,
@@ -78,7 +80,7 @@ class ChallengesScreenState extends State<ChallengesScreen> {
               child: Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
-                child: CustomScrollView(
+                child: FullWidthScrollView(
                   slivers: [
                     if (createdChallenges.isNotEmpty ||
                         participatedChallenges.isNotEmpty) ...[

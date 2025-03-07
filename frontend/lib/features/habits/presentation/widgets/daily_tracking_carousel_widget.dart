@@ -72,7 +72,7 @@ class DailyTrackingCarouselWidgetState
         borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
       ),
       constraints: BoxConstraints(
-        maxWidth: 600,
+        maxWidth: 700,
       ),
       builder: (BuildContext context) {
         return Padding(

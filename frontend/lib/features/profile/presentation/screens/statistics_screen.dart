@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:reallystick/core/presentation/widgets/custom_app_bar.dart';
+import 'package:reallystick/core/presentation/widgets/full_width_list_view.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_events.dart';
@@ -41,7 +43,7 @@ class StatisticsScreenState extends State<StatisticsScreen> {
     final profileState = context.watch<ProfileBloc>().state;
 
     return Scaffold(
-      appBar: AppBar(
+      appBar: CustomAppBar(
         title: Text(
           AppLocalizations.of(context)!.statistics,
           style: context.typographies.headingSmall,
@@ -51,85 +53,81 @@ class StatisticsScreenState extends State<StatisticsScreen> {
       ),
       body: RefreshIndicator(
         onRefresh: _pullRefresh,
-        child: SingleChildScrollView(
-          physics: AlwaysScrollableScrollPhysics(),
-          padding: const EdgeInsets.all(30.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (profileState is ProfileAuthenticated &&
-                  profileState.statistics != null) ...[
-                _buildStatisticRow(
-                  label: 'User Count: ',
-                  value: profileState.statistics!.userCount,
-                ),
-                _buildStatisticRow(
-                  label: 'User Token Count: ',
-                  value: profileState.statistics!.userTokenCount,
-                ),
-                _buildStatisticRow(
-                  label: 'Unit Count: ',
-                  value: profileState.statistics!.unitCount,
-                ),
-                _buildStatisticRow(
-                  label: 'Habit Category Count: ',
-                  value: profileState.statistics!.habitCategoryCount,
-                ),
-                _buildStatisticRow(
-                  label: 'Habit Count: ',
-                  value: profileState.statistics!.habitCount,
-                ),
-                _buildStatisticRow(
-                  label: 'Challenge Count: ',
-                  value: profileState.statistics!.challengeCount,
-                ),
-                _buildStatisticRow(
-                  label: 'Habit Participation Count: ',
-                  value: profileState.statistics!.habitParticipationCount,
-                ),
-                _buildStatisticRow(
-                  label: 'Challenge Participation Count: ',
-                  value: profileState.statistics!.challengeParticipationCount,
-                ),
-                _buildStatisticRow(
-                  label: 'Habit Daily Tracking Count: ',
-                  value: profileState.statistics!.habitDailyTrackingCount,
-                ),
-                _buildStatisticRow(
-                  label: 'Challenge Daily Tracking Count: ',
-                  value: profileState.statistics!.challengeDailyTrackingCount,
-                ),
-                _buildStatisticRow(
-                  label: 'Notification Count: ',
-                  value: profileState.statistics!.notificationCount,
-                ),
-                _buildStatisticRow(
-                  label: 'Private Discussion Count: ',
-                  value: profileState.statistics!.privateDiscussionCount,
-                ),
-                _buildStatisticRow(
-                  label: 'Private Message Count: ',
-                  value: profileState.statistics!.privateMessageCount,
-                ),
-                _buildStatisticRow(
-                  label: 'Public Message Count: ',
-                  value: profileState.statistics!.publicMessageCount,
-                ),
-                _buildStatisticRow(
-                  label: 'Public Message Like Count: ',
-                  value: profileState.statistics!.publicMessageLikeCount,
-                ),
-                _buildStatisticRow(
-                  label: 'Public Message Report Count: ',
-                  value: profileState.statistics!.publicMessageReportCount,
-                ),
-                _buildStatisticRow(
-                  label: 'Active Socket Count: ',
-                  value: profileState.statistics!.activeSocketCount,
-                ),
-              ]
-            ],
-          ),
+        child: FullWidthListView(
+          children: [
+            if (profileState is ProfileAuthenticated &&
+                profileState.statistics != null) ...[
+              SizedBox(height: 30),
+              _buildStatisticRow(
+                label: 'User Count: ',
+                value: profileState.statistics!.userCount,
+              ),
+              _buildStatisticRow(
+                label: 'User Token Count: ',
+                value: profileState.statistics!.userTokenCount,
+              ),
+              _buildStatisticRow(
+                label: 'Unit Count: ',
+                value: profileState.statistics!.unitCount,
+              ),
+              _buildStatisticRow(
+                label: 'Habit Category Count: ',
+                value: profileState.statistics!.habitCategoryCount,
+              ),
+              _buildStatisticRow(
+                label: 'Habit Count: ',
+                value: profileState.statistics!.habitCount,
+              ),
+              _buildStatisticRow(
+                label: 'Challenge Count: ',
+                value: profileState.statistics!.challengeCount,
+              ),
+              _buildStatisticRow(
+                label: 'Habit Participation Count: ',
+                value: profileState.statistics!.habitParticipationCount,
+              ),
+              _buildStatisticRow(
+                label: 'Challenge Participation Count: ',
+                value: profileState.statistics!.challengeParticipationCount,
+              ),
+              _buildStatisticRow(
+                label: 'Habit Daily Tracking Count: ',
+                value: profileState.statistics!.habitDailyTrackingCount,
+              ),
+              _buildStatisticRow(
+                label: 'Challenge Daily Tracking Count: ',
+                value: profileState.statistics!.challengeDailyTrackingCount,
+              ),
+              _buildStatisticRow(
+                label: 'Notification Count: ',
+                value: profileState.statistics!.notificationCount,
+              ),
+              _buildStatisticRow(
+                label: 'Private Discussion Count: ',
+                value: profileState.statistics!.privateDiscussionCount,
+              ),
+              _buildStatisticRow(
+                label: 'Private Message Count: ',
+                value: profileState.statistics!.privateMessageCount,
+              ),
+              _buildStatisticRow(
+                label: 'Public Message Count: ',
+                value: profileState.statistics!.publicMessageCount,
+              ),
+              _buildStatisticRow(
+                label: 'Public Message Like Count: ',
+                value: profileState.statistics!.publicMessageLikeCount,
+              ),
+              _buildStatisticRow(
+                label: 'Public Message Report Count: ',
+                value: profileState.statistics!.publicMessageReportCount,
+              ),
+              _buildStatisticRow(
+                label: 'Active Socket Count: ',
+                value: profileState.statistics!.activeSocketCount,
+              ),
+            ]
+          ],
         ),
       ),
     );

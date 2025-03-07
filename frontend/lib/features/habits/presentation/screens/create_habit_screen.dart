@@ -8,6 +8,7 @@ import 'package:flutter_iconpicker/flutter_iconpicker.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reallystick/core/messages/message.dart';
 import 'package:reallystick/core/messages/message_mapper.dart';
+import 'package:reallystick/core/presentation/widgets/custom_app_bar.dart';
 import 'package:reallystick/core/presentation/widgets/custom_dropdown_button_form_field.dart';
 import 'package:reallystick/core/presentation/widgets/custom_elevated_button_form_field.dart';
 import 'package:reallystick/core/presentation/widgets/custom_text_field.dart';
@@ -186,7 +187,7 @@ class CreateHabitScreenState extends State<CreateHabitScreen> {
             );
 
             return Scaffold(
-              appBar: AppBar(
+              appBar: CustomAppBar(
                 title: Text(
                   AppLocalizations.of(context)!.createANewHabit,
                   style: context.typographies.headingSmall,
@@ -326,7 +327,7 @@ class CreateHabitScreenState extends State<CreateHabitScreen> {
             );
           } else {
             return Scaffold(
-              appBar: AppBar(
+              appBar: CustomAppBar(
                 title: Text(AppLocalizations.of(context)!.createANewHabit),
               ),
               body: Center(

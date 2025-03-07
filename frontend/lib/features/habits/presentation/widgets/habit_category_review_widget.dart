@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reallystick/core/constants/icons.dart';
+import 'package:reallystick/core/presentation/widgets/full_width_list_view_builder.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/habits/domain/entities/habit.dart';
 import 'package:reallystick/features/habits/domain/entities/habit_category.dart';
@@ -58,7 +59,7 @@ class HabitCategoryReviewWidget extends StatelessWidget {
             border: Border.all(color: Colors.grey, width: 0.5),
             borderRadius: BorderRadius.circular(8),
           ),
-          child: ListView.builder(
+          child: FullWidthListViewBuilder(
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             itemCount: habits.length,

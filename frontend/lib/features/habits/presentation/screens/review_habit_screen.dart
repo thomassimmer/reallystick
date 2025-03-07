@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:reallystick/core/constants/icons.dart';
 import 'package:reallystick/core/messages/message.dart';
 import 'package:reallystick/core/messages/message_mapper.dart';
+import 'package:reallystick/core/presentation/widgets/custom_app_bar.dart';
 import 'package:reallystick/core/presentation/widgets/custom_dropdown_button_form_field.dart';
 import 'package:reallystick/core/presentation/widgets/custom_elevated_button_form_field.dart';
 import 'package:reallystick/core/presentation/widgets/multi_language_input_field.dart';
@@ -425,7 +426,7 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
             );
 
             return Scaffold(
-              appBar: AppBar(
+              appBar: CustomAppBar(
                 title: Text(
                   AppLocalizations.of(context)!.reviewHabit,
                   style: context.typographies.headingSmall,
@@ -736,7 +737,7 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
             );
           } else {
             return Scaffold(
-              appBar: AppBar(
+              appBar: CustomAppBar(
                 title: Text(
                   AppLocalizations.of(context)!.reviewHabit,
                   style: context.typographies.headingSmall,

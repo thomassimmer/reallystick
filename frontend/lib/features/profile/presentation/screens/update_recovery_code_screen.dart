@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:reallystick/core/messages/message.dart';
+import 'package:reallystick/core/presentation/widgets/custom_app_bar.dart';
 import 'package:reallystick/core/presentation/widgets/global_snack_bar.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
@@ -13,7 +14,7 @@ class UpdateRecoveryCodeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: CustomAppBar(
         title: Text(
           AppLocalizations.of(context)!.changeRecoveryCode,
           style: context.typographies.headingSmall,

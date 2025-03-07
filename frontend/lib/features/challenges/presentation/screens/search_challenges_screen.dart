@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
+import 'package:reallystick/core/presentation/widgets/custom_app_bar.dart';
+import 'package:reallystick/core/presentation/widgets/full_width_list_view_builder.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/challenges/domain/entities/challenge.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_bloc.dart';
@@ -54,7 +56,7 @@ class SearchChallengesScreenState extends State<SearchChallengesScreen> {
           .toList();
 
       return Scaffold(
-        appBar: AppBar(
+        appBar: CustomAppBar(
           title: Text(
             AppLocalizations.of(context)!.addNewChallenge,
             style: context.typographies.headingSmall,
@@ -66,25 +68,31 @@ class SearchChallengesScreenState extends State<SearchChallengesScreen> {
           children: [
             Padding(
               padding: const EdgeInsets.all(16.0),
-              child: TextField(
-                controller: _searchController,
-                decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!.searchChallenges,
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.search),
-                  suffixIcon: searchQuery.isNotEmpty
-                      ? IconButton(
-                          icon: Icon(Icons.clear),
-                          onPressed: () {
-                            _searchController.clear();
-                          },
-                        )
-                      : null,
+              child: Center(
+                child: ConstrainedBox(
+                  constraints:
+                      const BoxConstraints(maxWidth: 700), // Limit max width
+                  child: TextField(
+                    controller: _searchController,
+                    decoration: InputDecoration(
+                      labelText: AppLocalizations.of(context)!.searchChallenges,
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.search),
+                      suffixIcon: searchQuery.isNotEmpty
+                          ? IconButton(
+                              icon: Icon(Icons.clear),
+                              onPressed: () {
+                                _searchController.clear();
+                              },
+                            )
+                          : null,
+                    ),
+                  ),
                 ),
               ),
             ),
             Expanded(
-              child: ListView.builder(
+              child: FullWidthListViewBuilder(
                 itemCount: filteredChallenges.isNotEmpty
                     ? filteredChallenges.length +
                         1 // +1 for the "Create Challenge" button

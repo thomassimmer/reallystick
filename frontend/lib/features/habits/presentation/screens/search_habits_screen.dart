@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
+import 'package:reallystick/core/presentation/widgets/custom_app_bar.dart';
+import 'package:reallystick/core/presentation/widgets/full_width_list_view_builder.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/habits/domain/entities/habit.dart';
 import 'package:reallystick/features/habits/domain/entities/habit_category.dart';
@@ -58,7 +60,7 @@ class SearchHabitsScreenState extends State<SearchHabitsScreen> {
           .toList();
 
       return Scaffold(
-        appBar: AppBar(
+        appBar: CustomAppBar(
           title: Text(
             AppLocalizations.of(context)!.addNewHabit,
             style: context.typographies.headingSmall,
@@ -70,25 +72,31 @@ class SearchHabitsScreenState extends State<SearchHabitsScreen> {
           children: [
             Padding(
               padding: const EdgeInsets.all(16.0),
-              child: TextField(
-                controller: _searchController,
-                decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!.searchHabits,
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.search),
-                  suffixIcon: searchQuery.isNotEmpty
-                      ? IconButton(
-                          icon: Icon(Icons.clear),
-                          onPressed: () {
-                            _searchController.clear();
-                          },
-                        )
-                      : null,
+              child: Center(
+                child: ConstrainedBox(
+                  constraints:
+                      const BoxConstraints(maxWidth: 700), // Limit max width
+                  child: TextField(
+                    controller: _searchController,
+                    decoration: InputDecoration(
+                      labelText: AppLocalizations.of(context)!.searchHabits,
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.search),
+                      suffixIcon: searchQuery.isNotEmpty
+                          ? IconButton(
+                              icon: Icon(Icons.clear),
+                              onPressed: () {
+                                _searchController.clear();
+                              },
+                            )
+                          : null,
+                    ),
+                  ),
                 ),
               ),
             ),
             Expanded(
-              child: ListView.builder(
+              child: FullWidthListViewBuilder(
                 itemCount: filteredHabits.isNotEmpty
                     ? filteredHabits.length +
                         1 // +1 for the "Create Habit" button

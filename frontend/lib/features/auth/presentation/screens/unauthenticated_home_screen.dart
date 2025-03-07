@@ -63,14 +63,16 @@ class UnauthenticatedHomeScreen extends StatelessWidget {
           children: [
             Text(
               'Really',
-              style: context.typographies.headingLarge
-                  .copyWith(color: context.colors.background),
+              style: context.typographies.headingLarge.copyWith(
+                color: context.colors.background,
+              ),
             ),
-            SizedBox(width: 5),
             Text(
               'Stick',
-              style: context.typographies.headingLarge
-                  .copyWith(color: context.colors.text),
+              style: context.typographies.headingLarge.copyWith(
+                fontWeight: FontWeight.w500,
+                color: context.colors.background,
+              ),
             ),
           ],
         ),
@@ -79,7 +81,7 @@ class UnauthenticatedHomeScreen extends StatelessWidget {
           AppLocalizations.of(context)!.pleaseLoginOrSignUp,
           style: TextStyle(
             fontSize: 18,
-            color: context.colors.textOnPrimary,
+            color: context.colors.background,
           ),
           textAlign: TextAlign.center,
         ),
@@ -88,7 +90,12 @@ class UnauthenticatedHomeScreen extends StatelessWidget {
           onPressed: () {
             context.goNamed('login');
           },
-          child: Text(AppLocalizations.of(context)!.logIn),
+          child: Text(
+            AppLocalizations.of(context)!.logIn,
+            style: TextStyle(
+              color: context.colors.background,
+            ),
+          ),
         ),
         SizedBox(height: 16),
         ElevatedButton(
@@ -98,7 +105,12 @@ class UnauthenticatedHomeScreen extends StatelessWidget {
           style: ButtonStyle(
               backgroundColor:
                   WidgetStatePropertyAll(context.colors.secondary)),
-          child: Text(AppLocalizations.of(context)!.signUp),
+          child: Text(
+            AppLocalizations.of(context)!.signUp,
+            style: TextStyle(
+              color: context.colors.background,
+            ),
+          ),
         ),
       ],
     );

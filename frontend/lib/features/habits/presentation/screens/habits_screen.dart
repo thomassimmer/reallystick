@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reallystick/core/constants/icons.dart';
+import 'package:reallystick/core/presentation/widgets/custom_app_bar.dart';
+import 'package:reallystick/core/presentation/widgets/full_width_scroll_view.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/habits/domain/entities/habit_category.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.dart';
@@ -69,7 +71,7 @@ class HabitsScreenState extends State<HabitsScreen> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
       ),
       constraints: BoxConstraints(
-        maxWidth: 600,
+        maxWidth: 700,
       ),
       builder: (BuildContext context) {
         return Padding(
@@ -135,7 +137,7 @@ class HabitsScreenState extends State<HabitsScreen> {
             final categories = getCategoriesOrderedByLatestTracking(habitState);
 
             return Scaffold(
-              appBar: AppBar(
+              appBar: CustomAppBar(
                 title: Text(
                   AppLocalizations.of(context)!.myHabits,
                   style: context.typographies.heading,
@@ -170,7 +172,7 @@ class HabitsScreenState extends State<HabitsScreen> {
                 child: Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
-                  child: CustomScrollView(
+                  child: FullWidthScrollView(
                     slivers: [
                       if (categories.isNotEmpty) ...[
                         ...categories.expand((habitCategory) {

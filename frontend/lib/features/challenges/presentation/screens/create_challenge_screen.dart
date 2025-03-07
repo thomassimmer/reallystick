@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:reallystick/core/messages/message.dart';
 import 'package:reallystick/core/messages/message_mapper.dart';
+import 'package:reallystick/core/presentation/widgets/custom_app_bar.dart';
 import 'package:reallystick/core/presentation/widgets/custom_elevated_button_form_field.dart';
 import 'package:reallystick/core/presentation/widgets/multi_language_input_field.dart';
 import 'package:reallystick/core/ui/extensions.dart';
@@ -165,7 +166,7 @@ class CreateChallengeScreenState extends State<CreateChallengeScreen> {
             );
 
             return Scaffold(
-              appBar: AppBar(
+              appBar: CustomAppBar(
                 title: Text(
                   AppLocalizations.of(context)!.addNewChallenge,
                   style: context.typographies.headingSmall,
@@ -376,7 +377,7 @@ class CreateChallengeScreenState extends State<CreateChallengeScreen> {
             );
           } else {
             return Scaffold(
-              appBar: AppBar(
+              appBar: CustomAppBar(
                 title: Text(
                   AppLocalizations.of(context)!.addNewChallenge,
                   style: context.typographies.headingSmall,

@@ -6,6 +6,8 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:reallystick/core/constants/icons.dart';
 import 'package:reallystick/core/presentation/screens/loading_screen.dart';
+import 'package:reallystick/core/presentation/widgets/custom_app_bar.dart';
+import 'package:reallystick/core/presentation/widgets/full_width_list_view.dart';
 import 'package:reallystick/core/ui/colors.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_bloc.dart';
@@ -50,7 +52,7 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
       ),
       constraints: BoxConstraints(
-        maxWidth: 600,
+        maxWidth: 700,
       ),
       builder: (BuildContext context) {
         return Padding(
@@ -92,7 +94,7 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
       ),
       constraints: BoxConstraints(
-        maxWidth: 600,
+        maxWidth: 700,
       ),
       builder: (BuildContext context) {
         return ColorPickerModal(
@@ -122,7 +124,7 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
       ),
       constraints: BoxConstraints(
-        maxWidth: 600,
+        maxWidth: 700,
       ),
       builder: (BuildContext context) {
         return DuplicateChallengeModal(
@@ -237,7 +239,7 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
               challengeState.challengeStatistics[widget.challengeId];
 
           return Scaffold(
-            appBar: AppBar(
+            appBar: CustomAppBar(
               title: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -352,7 +354,7 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
               child: Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
-                child: ListView(
+                child: FullWidthListView(
                   children: [
                     Container(
                       decoration: BoxDecoration(

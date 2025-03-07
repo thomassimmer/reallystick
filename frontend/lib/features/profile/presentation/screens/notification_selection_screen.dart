@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:reallystick/core/presentation/widgets/custom_app_bar.dart';
+import 'package:reallystick/core/presentation/widgets/full_width_list_view.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/profile/domain/entities/profile.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
@@ -11,7 +13,7 @@ class NotificationSelectionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: CustomAppBar(
         title: Text(
           AppLocalizations.of(context)!.notifications,
           style: context.typographies.headingSmall,
@@ -83,7 +85,7 @@ class NotificationSelectionScreen extends StatelessWidget {
       },
     ];
 
-    return ListView(
+    return FullWidthListView(
       children: [
         SwitchListTile(
           title: Text('Enable Notifications'),

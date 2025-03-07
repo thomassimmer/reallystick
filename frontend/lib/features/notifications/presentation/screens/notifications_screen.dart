@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart' hide Notification;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:reallystick/core/presentation/widgets/custom_app_bar.dart';
+import 'package:reallystick/core/presentation/widgets/full_width_scroll_view.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/notifications/domain/entities/notification.dart';
 import 'package:reallystick/features/notifications/presentation/blocs/notifications/notifications_bloc.dart';
@@ -33,7 +35,7 @@ class NotificationsScreenState extends State<NotificationsScreen> {
     notifications.sort((a, b) => a.createdAt.isBefore(b.createdAt) ? 1 : -1);
 
     return Scaffold(
-      appBar: AppBar(
+      appBar: CustomAppBar(
         title: Text(
           AppLocalizations.of(context)!.notifications,
           style: context.typographies.heading,
@@ -85,7 +87,7 @@ class NotificationsScreenState extends State<NotificationsScreen> {
         onRefresh: _pullRefresh,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
-          child: CustomScrollView(
+          child: FullWidthScrollView(
             slivers: [
               SliverList(
                 delegate: SliverChildBuilderDelegate(

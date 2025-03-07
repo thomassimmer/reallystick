@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reallystick/core/presentation/screens/loading_screen.dart';
+import 'package:reallystick/core/presentation/widgets/custom_app_bar.dart';
+import 'package:reallystick/core/presentation/widgets/full_width_column.dart';
 import 'package:reallystick/core/ui/colors.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_bloc.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_events.dart';
@@ -193,13 +195,12 @@ class ReplyScreenState extends State<ReplyScreen> {
               replyState.reply;
 
           return Scaffold(
-            appBar: AppBar(),
+            appBar: CustomAppBar(),
             body: RefreshIndicator(
               onRefresh: _pullRefresh,
               child: Padding(
-                padding:
-                    const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                child: Column(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                child: FullWidthColumn(
                   children: [
                     Expanded(
                       child: SingleChildScrollView(

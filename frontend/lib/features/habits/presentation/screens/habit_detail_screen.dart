@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:reallystick/core/constants/icons.dart';
 import 'package:reallystick/core/constants/screen_size.dart';
+import 'package:reallystick/core/presentation/widgets/custom_app_bar.dart';
+import 'package:reallystick/core/presentation/widgets/full_width_list_view.dart';
 import 'package:reallystick/core/ui/colors.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.dart';
@@ -43,7 +45,7 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
       ),
       constraints: BoxConstraints(
-        maxWidth: 600,
+        maxWidth: 700,
       ),
       builder: (BuildContext context) {
         return Padding(
@@ -77,7 +79,7 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
       ),
       constraints: BoxConstraints(
-        maxWidth: 600,
+        maxWidth: 700,
       ),
       builder: (BuildContext context) {
         return ColorPickerModal(
@@ -165,7 +167,7 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
           ).color;
 
           return Scaffold(
-            appBar: AppBar(
+            appBar: CustomAppBar(
               title: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -234,7 +236,7 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
               child: Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
-                child: ListView(
+                child: FullWidthListView(
                   children: [
                     Container(
                       decoration: BoxDecoration(

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:reallystick/core/presentation/widgets/custom_app_bar.dart';
+import 'package:reallystick/core/presentation/widgets/full_width_scroll_view.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/private_messages/presentation/blocs/private_discussion/private_discussion_bloc.dart';
 import 'package:reallystick/features/private_messages/presentation/blocs/private_discussion/private_discussion_events.dart';
@@ -62,7 +64,7 @@ class DiscussionListScreenState extends State<DiscussionListScreen> {
     });
 
     return Scaffold(
-      appBar: AppBar(
+      appBar: CustomAppBar(
         title: Text(
           AppLocalizations.of(context)!.messages,
           style: context.typographies.heading,
@@ -75,39 +77,51 @@ class DiscussionListScreenState extends State<DiscussionListScreen> {
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
-              TextField(
-                controller: _searchController,
-                onChanged: (value) {
-                  setState(() {
-                    searchQuery = value;
-                  });
-                  BlocProvider.of<UserBloc>(context).add(
-                    GetUserPublicDataEvent(
-                      userIds: null,
-                      username: searchQuery,
+              Center(
+                child: ConstrainedBox(
+                  constraints:
+                      const BoxConstraints(maxWidth: 700), // Limit max width
+                  child: TextField(
+                    controller: _searchController,
+                    onChanged: (value) {
+                      setState(() {
+                        searchQuery = value;
+                      });
+                      BlocProvider.of<UserBloc>(context).add(
+                        GetUserPublicDataEvent(
+                          userIds: null,
+                          username: searchQuery,
+                        ),
+                      );
+                    },
+                    decoration: InputDecoration(
+                      labelText: AppLocalizations.of(context)!.searchUser,
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.search),
+                      suffixIcon: searchQuery.isNotEmpty
+                          ? IconButton(
+                              icon: Icon(Icons.clear),
+                              onPressed: () {
+                                _searchController.clear();
+                              },
+                            )
+                          : null,
                     ),
-                  );
-                },
-                decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!.searchUser,
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.search),
-                  suffixIcon: searchQuery.isNotEmpty
-                      ? IconButton(
-                          icon: Icon(Icons.clear),
-                          onPressed: () {
-                            _searchController.clear();
-                          },
-                        )
-                      : null,
+                  ),
                 ),
               ),
               if (searchQuery != '') ...[
                 if (userState is UsersLoaded) ...[
                   if (userState.user != null) ...[
-                    NewDiscussionWithUserWidget(
-                      user: userState.user!,
-                    )
+                    Center(
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(
+                            maxWidth: 700), // Limit max width
+                        child: NewDiscussionWithUserWidget(
+                          user: userState.user!,
+                        ),
+                      ),
+                    ),
                   ] else if (searchQuery != '') ...[
                     Padding(
                       padding: const EdgeInsets.all(16),
@@ -128,9 +142,10 @@ class DiscussionListScreenState extends State<DiscussionListScreen> {
                   ),
                 ],
               ] else ...[
+                SizedBox(height: 10),
                 discussions.isNotEmpty
                     ? Expanded(
-                        child: CustomScrollView(
+                        child: FullWidthScrollView(
                           slivers: [
                             SliverList(
                               delegate:

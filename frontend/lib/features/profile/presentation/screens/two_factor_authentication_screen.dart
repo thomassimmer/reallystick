@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:reallystick/core/messages/message.dart';
-import 'package:reallystick/core/presentation/widgets/custom_container.dart';
+import 'package:reallystick/core/presentation/widgets/custom_app_bar.dart';
 import 'package:reallystick/core/presentation/widgets/custom_text_field.dart';
 import 'package:reallystick/core/presentation/widgets/global_snack_bar.dart';
 import 'package:reallystick/core/ui/extensions.dart';
@@ -18,7 +18,7 @@ class TwoFactorAuthenticationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: CustomAppBar(
         title: Text(
           AppLocalizations.of(context)!.twoFA,
           style: context.typographies.headingSmall,
@@ -49,14 +49,17 @@ class TwoFactorAuthenticationScreen extends StatelessWidget {
   }
 
   Widget _buildTwoFactorAuthenticationRegenerateConfigOrDisableView(
-      BuildContext context, ProfileAuthenticated state) {
+    BuildContext context,
+    ProfileAuthenticated state,
+  ) {
     return SingleChildScrollView(
-        child: Column(
-      children: [
-        Center(
+      child: Column(
+        children: [
+          Center(
             child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(children: [
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
                   Text(
                     AppLocalizations.of(context)!.twoFAIsWellSetup,
                   ),
@@ -86,9 +89,13 @@ class TwoFactorAuthenticationScreen extends StatelessWidget {
                       ),
                     ],
                   )
-                ])))
-      ],
-    ));
+                ],
+              ),
+            ),
+          )
+        ],
+      ),
+    );
   }
 
   Widget _buildOneTimePasswordVerificationView(
@@ -102,12 +109,13 @@ class TwoFactorAuthenticationScreen extends StatelessWidget {
     }
 
     return SingleChildScrollView(
-        child: Column(
-      children: [
-        Center(
+      child: Column(
+        children: [
+          Center(
             child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(children: [
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
                   Text(
                     AppLocalizations.of(context)!.twoFAScanQrCode,
                   ),
@@ -119,80 +127,87 @@ class TwoFactorAuthenticationScreen extends StatelessWidget {
                     backgroundColor: Colors.white,
                   ),
                   SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () {
+                      BlocProvider.of<ProfileBloc>(context).add(
+                        ProfileGenerateTwoFactorAuthenticationConfigEvent(),
+                      );
+                    },
+                    style: context.styles.buttonSmall.copyWith(
+                      backgroundColor:
+                          WidgetStatePropertyAll(context.colors.secondary),
+                    ),
+                    child: Text(AppLocalizations.of(context)!.regenerateQrCode),
+                  ),
+                  SizedBox(height: 16),
                   Wrap(
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      alignment: WrapAlignment.center,
-                      spacing: 8.0,
-                      direction: Axis.horizontal,
-                      children: [
-                        SelectableText(AppLocalizations.of(context)!
-                            .twoFASecretKey(state.profile.otpBase32!)),
-                        IconButton(
-                          icon: Icon(
-                            Icons.copy,
-                          ),
-                          onPressed: () {
-                            Clipboard.setData(
-                                ClipboardData(text: state.profile.otpBase32!));
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    alignment: WrapAlignment.center,
+                    spacing: 8.0,
+                    direction: Axis.horizontal,
+                    children: [
+                      SelectableText(AppLocalizations.of(context)!
+                          .twoFASecretKey(state.profile.otpBase32!)),
+                      IconButton(
+                        icon: Icon(
+                          Icons.copy,
+                        ),
+                        onPressed: () {
+                          Clipboard.setData(
+                              ClipboardData(text: state.profile.otpBase32!));
 
-                            final message =
-                                InfoMessage('qrCodeSecretKeyCopied');
-                            GlobalSnackBar.show(context: context, message: message);
-                          },
-                        )
-                      ]),
+                          final message = InfoMessage('qrCodeSecretKeyCopied');
+                          GlobalSnackBar.show(
+                              context: context, message: message);
+                        },
+                      )
+                    ],
+                  ),
                   SizedBox(height: 24),
                   IntrinsicWidth(
-                      child: CustomContainer(
-                          child: Column(children: [
-                    CustomTextField(
-                      controller: _otpController,
-                      label: AppLocalizations.of(context)!.validationCode,
-                      obscureText: true,
-                      onFieldSubmitted: (_) =>
-                          triggerOneTimePasswordVerification(),
-                      inputFormatters: <TextInputFormatter>[
-                        FilteringTextInputFormatter.digitsOnly
-                      ],
-                    ),
-                    SizedBox(height: 24),
-                    ElevatedButton(
-                      onPressed: triggerOneTimePasswordVerification,
-                      style: context.styles.buttonMedium,
-                      child: Text(AppLocalizations.of(context)!.verify),
-                    ),
-                    SizedBox(
-                      height: 24,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                    child: Column(
                       children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            BlocProvider.of<ProfileBloc>(context).add(
-                              ProfileGenerateTwoFactorAuthenticationConfigEvent(),
-                            );
-                          },
-                          style: context.styles.buttonSmall,
-                          child: Text(
-                              AppLocalizations.of(context)!.regenerateQrCode),
+                        CustomTextField(
+                          controller: _otpController,
+                          label: AppLocalizations.of(context)!.validationCode,
+                          obscureText: true,
+                          onFieldSubmitted: (_) =>
+                              triggerOneTimePasswordVerification(),
+                          inputFormatters: <TextInputFormatter>[
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
                         ),
-                        SizedBox(width: 16),
-                        ElevatedButton(
-                          onPressed: () {
-                            BlocProvider.of<ProfileBloc>(context).add(
-                              ProfileDisableTwoFactorAuthenticationEvent(),
-                            );
-                          },
-                          style: context.styles.buttonSmall,
-                          child: Text(AppLocalizations.of(context)!.cancel),
-                        ),
+                        SizedBox(height: 24),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                BlocProvider.of<ProfileBloc>(context).add(
+                                  ProfileDisableTwoFactorAuthenticationEvent(),
+                                );
+                              },
+                              style: context.styles.buttonMedium,
+                              child: Text(AppLocalizations.of(context)!.cancel),
+                            ),
+                            SizedBox(width: 16),
+                            ElevatedButton(
+                              onPressed: triggerOneTimePasswordVerification,
+                              style: context.styles.buttonMedium,
+                              child: Text(AppLocalizations.of(context)!.verify),
+                            ),
+                          ],
+                        )
                       ],
-                    )
-                  ])))
-                ])))
-      ],
-    ));
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          )
+        ],
+      ),
+    );
   }
 
   Widget _buildTwoFactorAuthenticationSetupView(
