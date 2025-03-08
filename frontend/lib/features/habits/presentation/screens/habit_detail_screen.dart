@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:reallystick/core/constants/icons.dart';
 import 'package:reallystick/core/constants/screen_size.dart';
 import 'package:reallystick/core/presentation/widgets/custom_app_bar.dart';
 import 'package:reallystick/core/presentation/widgets/full_width_list_view.dart';
@@ -173,10 +172,11 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(right: 16.0),
-                    child: getIconWidget(
-                      iconString: habit.icon,
-                      size: 25,
-                      color: habitColor,
+                    child: Text(
+                      habit.icon,
+                      style: TextStyle(
+                        fontSize: 25,
+                      ),
                     ),
                   ),
                   Flexible(

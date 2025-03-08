@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:reallystick/core/constants/icons.dart';
 import 'package:reallystick/core/constants/screen_size.dart';
 import 'package:reallystick/core/ui/colors.dart';
 import 'package:reallystick/features/challenges/domain/entities/challenge.dart';
@@ -80,10 +79,11 @@ class ChallengeWidget extends StatelessWidget {
                                       Padding(
                                         padding:
                                             const EdgeInsets.only(right: 16.0),
-                                        child: getIconWidget(
-                                          iconString: challenge.icon,
-                                          size: 30,
-                                          color: challengeColor,
+                                        child: Text(
+                                          challenge.icon,
+                                          style: TextStyle(
+                                            fontSize: 25,
+                                          ),
                                         ),
                                       ),
                                       Text(

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:reallystick/core/constants/icons.dart';
 import 'package:reallystick/core/presentation/widgets/full_width_list_view_builder.dart';
-import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/habits/domain/entities/habit.dart';
 import 'package:reallystick/features/habits/domain/entities/habit_category.dart';
 import 'package:reallystick/features/habits/presentation/helpers/translations.dart';
@@ -35,12 +33,14 @@ class HabitCategoryReviewWidget extends StatelessWidget {
           child: Row(
             children: [
               Padding(
-                  padding: const EdgeInsets.only(right: 16.0),
-                  child: getIconWidget(
-                    iconString: category.icon,
-                    size: 25,
-                    color: context.colors.text,
-                  )),
+                padding: const EdgeInsets.only(right: 16.0),
+                child: Text(
+                  category.icon,
+                  style: TextStyle(
+                    fontSize: 25,
+                  ),
+                ),
+              ),
               Expanded(
                 child: Text(
                   categoryName,

@@ -208,7 +208,7 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
         shortName: Map.from({event.locale: event.shortName}),
         longName: Map.from({event.locale: event.longName}),
         description: Map.from({event.locale: event.description}),
-        icon: "material::${event.icon.toString()}",
+        icon: event.icon,
         unitIds: event.unitIds);
 
     await resultCreateHabitUsecase.fold(
@@ -287,7 +287,7 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
       shortName: event.shortName,
       longName: event.longName,
       description: event.description,
-      icon: "material::${event.icon.toString()}",
+      icon: event.icon,
       reviewed: true,
       unitIds: event.unitIds,
     );
@@ -339,7 +339,7 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
       shortName: event.shortName,
       longName: event.longName,
       description: event.description,
-      icon: "material::${event.icon.toString()}",
+      icon: event.icon,
       reviewed: true,
       unitIds: event.unitIds,
     );

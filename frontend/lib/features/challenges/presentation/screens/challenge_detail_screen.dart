@@ -4,7 +4,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:reallystick/core/constants/icons.dart';
 import 'package:reallystick/core/presentation/screens/loading_screen.dart';
 import 'package:reallystick/core/presentation/widgets/custom_app_bar.dart';
 import 'package:reallystick/core/presentation/widgets/full_width_list_view.dart';
@@ -245,10 +244,11 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(right: 16.0),
-                    child: getIconWidget(
-                      iconString: challenge.icon,
-                      size: 25,
-                      color: challengeColor,
+                    child: Text(
+                      challenge.icon,
+                      style: TextStyle(
+                        fontSize: 25,
+                      ),
                     ),
                   ),
                   Flexible(

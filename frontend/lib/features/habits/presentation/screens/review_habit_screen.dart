@@ -3,15 +3,13 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_iconpicker/Models/configuration.dart';
-import 'package:flutter_iconpicker/flutter_iconpicker.dart';
 import 'package:go_router/go_router.dart';
-import 'package:reallystick/core/constants/icons.dart';
 import 'package:reallystick/core/messages/message.dart';
 import 'package:reallystick/core/messages/message_mapper.dart';
 import 'package:reallystick/core/presentation/widgets/custom_app_bar.dart';
 import 'package:reallystick/core/presentation/widgets/custom_dropdown_button_form_field.dart';
 import 'package:reallystick/core/presentation/widgets/custom_elevated_button_form_field.dart';
+import 'package:reallystick/core/presentation/widgets/emoji_selector.dart';
 import 'package:reallystick/core/presentation/widgets/multi_language_input_field.dart';
 import 'package:reallystick/core/presentation/widgets/multi_unit_select_dropdown.dart';
 import 'package:reallystick/core/ui/extensions.dart';
@@ -46,46 +44,46 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
   Map<String, String> _descriptionControllerForHabitToMergeWith = {};
 
   String? _selectedCategoryIdForCurrentHabit;
-  IconData? _iconForCurrentHabit;
+  String? _iconForCurrentHabit;
   String? _selectedCategoryIdForHabitToMergeWith;
-  IconData? _iconForHabitToMergeWith;
+  String? _iconForHabitToMergeWith;
   String? _selectedHabitToMergeOnId;
   HashSet<String> _selectedUnitIdsForCurrentHabit = HashSet();
   HashSet<String> _selectedUnitIdsForHabitToMergeWith = HashSet();
 
-  _pickIcon(bool forCurrentHabit) async {
-    IconPickerIcon? icon = await showIconPicker(
-      context,
-      configuration: SinglePickerConfiguration(
-        iconPackModes: [IconPack.material],
+  void _showEmojiPicker(
+      BuildContext context, String userLocale, bool forCurrentHabit) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => CustomEmojiSelector(
+        userLocale: userLocale,
+        onEmojiSelected: (category, emoji) {
+          if (mounted) {
+            if (forCurrentHabit) {
+              BlocProvider.of<HabitReviewFormBloc>(context).add(
+                HabitReviewFormIconChangedEvent(emoji.emoji),
+              );
+            } else {
+              BlocProvider.of<HabitMergeFormBloc>(context).add(
+                HabitMergeFormIconChangedEvent(emoji.emoji),
+              );
+            }
+          }
+
+          if (forCurrentHabit) {
+            setState(() {
+              _iconForCurrentHabit = emoji.emoji;
+            });
+          } else {
+            setState(() {
+              _iconForHabitToMergeWith = emoji.emoji;
+            });
+          }
+
+          Navigator.pop(context);
+        },
       ),
     );
-
-    if (mounted) {
-      if (forCurrentHabit) {
-        BlocProvider.of<HabitReviewFormBloc>(context).add(
-          HabitReviewFormIconChangedEvent(
-              icon != null ? icon.data.codePoint.toString() : ""),
-        );
-      } else {
-        BlocProvider.of<HabitMergeFormBloc>(context).add(
-          HabitMergeFormIconChangedEvent(
-              icon != null ? icon.data.codePoint.toString() : ""),
-        );
-      }
-    }
-
-    final newIconData = icon?.data;
-
-    if (forCurrentHabit) {
-      setState(() {
-        _iconForCurrentHabit = newIconData;
-      });
-    } else {
-      setState(() {
-        _iconForHabitToMergeWith = newIconData;
-      });
-    }
   }
 
   void _saveHabit() {
@@ -101,9 +99,7 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
     habitFormBloc.add(HabitReviewFormDescriptionChangedEvent(
         _descriptionControllerForCurrentHabit));
     habitFormBloc.add(HabitReviewFormIconChangedEvent(
-        _iconForCurrentHabit != null
-            ? _iconForCurrentHabit!.codePoint.toString()
-            : ""));
+        _iconForCurrentHabit != null ? _iconForCurrentHabit! : ""));
 
     // Allow time for the validation states to update
     Future.delayed(
@@ -116,7 +112,7 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
             longName: _longNameControllerForCurrentHabit,
             description: _descriptionControllerForCurrentHabit,
             categoryId: _selectedCategoryIdForCurrentHabit ?? "",
-            icon: _iconForCurrentHabit?.codePoint ?? 0,
+            icon: _iconForCurrentHabit ?? "",
             unitIds: _selectedUnitIdsForCurrentHabit,
           );
 
@@ -142,10 +138,8 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
         _longNameControllerForHabitToMergeWith));
     habitFormBloc.add(HabitMergeFormDescriptionChangedEvent(
         _descriptionControllerForHabitToMergeWith));
-    habitFormBloc.add(HabitMergeFormIconChangedEvent(
-        _iconForHabitToMergeWith != null
-            ? _iconForHabitToMergeWith!.codePoint.toString()
-            : ""));
+    habitFormBloc
+        .add(HabitMergeFormIconChangedEvent(_iconForHabitToMergeWith ?? ""));
 
     // Allow time for the validation states to update
     Future.delayed(
@@ -159,7 +153,7 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
             longName: _longNameControllerForHabitToMergeWith,
             description: _descriptionControllerForHabitToMergeWith,
             categoryId: _selectedCategoryIdForHabitToMergeWith ?? "",
-            icon: _iconForHabitToMergeWith?.codePoint ?? 0,
+            icon: _iconForHabitToMergeWith ?? "",
             unitIds: _selectedUnitIdsForHabitToMergeWith,
           );
 
@@ -186,8 +180,7 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
         _descriptionControllerForCurrentHabit = habit.description;
         _selectedCategoryIdForCurrentHabit = habit.categoryId;
         _selectedUnitIdsForCurrentHabit = habit.unitIds;
-        _iconForCurrentHabit =
-            getIconData(iconDataString: habit.icon.substring(10));
+        _iconForCurrentHabit = habit.icon;
       });
     }
   }
@@ -205,8 +198,7 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
         _selectedHabitToMergeOnId = newHabitToMergeWithId;
         _selectedCategoryIdForHabitToMergeWith = habitToMergeWith.categoryId;
         _selectedUnitIdsForHabitToMergeWith = habitToMergeWith.unitIds;
-        _iconForHabitToMergeWith =
-            getIconData(iconDataString: habitToMergeWith.icon.substring(10));
+        _iconForHabitToMergeWith = habitToMergeWith.icon;
       });
     } else {
       setState(() {
@@ -536,15 +528,22 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
                           Row(
                             children: [
                               CustomElevatedButtonFormField(
-                                onPressed: () => _pickIcon(true),
-                                iconData: Icons.select_all,
+                                onPressed: () => _showEmojiPicker(
+                                  context,
+                                  userLocale,
+                                  true,
+                                ),
+                                iconData: Icons.emoji_emotions,
                                 label: AppLocalizations.of(context)!.icon,
                                 errorText:
                                     displayIconErrorMessageForCurrentHabit,
                               ),
                               const SizedBox(width: 16.0),
                               if (_iconForCurrentHabit != null)
-                                Icon(_iconForCurrentHabit, size: 36),
+                                Text(
+                                  _iconForCurrentHabit!,
+                                  style: TextStyle(fontSize: 24),
+                                ),
                             ],
                           ),
                         ],
@@ -703,15 +702,22 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
                             Row(
                               children: [
                                 CustomElevatedButtonFormField(
-                                  onPressed: () => _pickIcon(true),
-                                  iconData: Icons.select_all,
+                                  onPressed: () => _showEmojiPicker(
+                                    context,
+                                    userLocale,
+                                    false,
+                                  ),
+                                  iconData: Icons.emoji_emotions,
                                   label: AppLocalizations.of(context)!.icon,
                                   errorText:
                                       displayIconErrorMessageForHabitToMergeWith,
                                 ),
                                 const SizedBox(width: 16.0),
                                 if (_iconForHabitToMergeWith != null)
-                                  Icon(_iconForHabitToMergeWith, size: 36),
+                                  Text(
+                                    _iconForHabitToMergeWith!,
+                                    style: TextStyle(fontSize: 24),
+                                  ),
                               ],
                             ),
                           ],

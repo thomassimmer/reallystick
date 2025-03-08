@@ -12,7 +12,7 @@ class ChallengeInitializeEvent extends ChallengeEvent {}
 class CreateChallengeEvent extends ChallengeEvent {
   final Map<String, String> name;
   final Map<String, String> description;
-  final int icon;
+  final String icon;
   final DateTime? startDate;
 
   const CreateChallengeEvent({
@@ -35,7 +35,7 @@ class UpdateChallengeEvent extends ChallengeEvent {
   final String challengeId;
   final Map<String, String> name;
   final Map<String, String> description;
-  final int icon;
+  final String icon;
   final DateTime? startDate;
 
   const UpdateChallengeEvent({

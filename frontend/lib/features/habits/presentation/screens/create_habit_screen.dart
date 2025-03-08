@@ -3,8 +3,6 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_iconpicker/Models/configuration.dart';
-import 'package:flutter_iconpicker/flutter_iconpicker.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reallystick/core/messages/message.dart';
 import 'package:reallystick/core/messages/message_mapper.dart';
@@ -12,6 +10,7 @@ import 'package:reallystick/core/presentation/widgets/custom_app_bar.dart';
 import 'package:reallystick/core/presentation/widgets/custom_dropdown_button_form_field.dart';
 import 'package:reallystick/core/presentation/widgets/custom_elevated_button_form_field.dart';
 import 'package:reallystick/core/presentation/widgets/custom_text_field.dart';
+import 'package:reallystick/core/presentation/widgets/emoji_selector.dart';
 import 'package:reallystick/core/presentation/widgets/multi_unit_select_dropdown.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/habits/domain/entities/habit_category.dart';
@@ -35,27 +34,28 @@ class CreateHabitScreenState extends State<CreateHabitScreen> {
   final TextEditingController _descriptionController = TextEditingController();
 
   String? _selectedCategoryId;
-  IconData? _icon;
+  String? _icon;
   HashSet<String> _selectedUnitIds = HashSet();
 
-  _pickIcon() async {
-    IconPickerIcon? icon = await showIconPicker(
-      context,
-      configuration: SinglePickerConfiguration(
-        iconPackModes: [IconPack.material],
+  void _showEmojiPicker(BuildContext context, String userLocale) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => CustomEmojiSelector(
+        userLocale: userLocale,
+        onEmojiSelected: (category, emoji) {
+          if (mounted) {
+            BlocProvider.of<HabitCreationFormBloc>(context).add(
+              HabitCreationFormIconChangedEvent(emoji.emoji),
+            );
+          }
+
+          setState(() {
+            _icon = emoji.emoji;
+          });
+          Navigator.pop(context);
+        },
       ),
     );
-
-    if (mounted) {
-      BlocProvider.of<HabitCreationFormBloc>(context).add(
-        HabitCreationFormIconChangedEvent(
-            icon != null ? icon.data.codePoint.toString() : ""),
-      );
-    }
-
-    setState(() {
-      _icon = icon?.data;
-    });
   }
 
   void _createHabit(String locale) {
@@ -70,8 +70,7 @@ class CreateHabitScreenState extends State<CreateHabitScreen> {
         .add(HabitCreationFormLongNameChangedEvent(_longNameController.text));
     habitFormBloc.add(
         HabitCreationFormDescriptionChangedEvent(_descriptionController.text));
-    habitFormBloc.add(HabitCreationFormIconChangedEvent(
-        _icon != null ? _icon!.codePoint.toString() : ""));
+    habitFormBloc.add(HabitCreationFormIconChangedEvent(_icon ?? ""));
 
     // Allow time for the validation states to update
     Future.delayed(
@@ -83,7 +82,7 @@ class CreateHabitScreenState extends State<CreateHabitScreen> {
             longName: _longNameController.text,
             description: _descriptionController.text,
             categoryId: _selectedCategoryId ?? "",
-            icon: _icon?.codePoint ?? 0,
+            icon: _icon ?? "",
             locale: locale,
             unitIds: _selectedUnitIds,
           );
@@ -294,13 +293,18 @@ class CreateHabitScreenState extends State<CreateHabitScreen> {
                               Row(
                                 children: [
                                   CustomElevatedButtonFormField(
-                                    onPressed: _pickIcon,
-                                    iconData: Icons.select_all,
+                                    onPressed: () =>
+                                        _showEmojiPicker(context, userLocale),
+                                    iconData: Icons.emoji_emotions,
                                     label: AppLocalizations.of(context)!.icon,
                                     errorText: displayIconErrorMessage,
                                   ),
                                   const SizedBox(width: 16.0),
-                                  if (_icon != null) Icon(_icon, size: 36),
+                                  if (_icon != null)
+                                    Text(
+                                      _icon!,
+                                      style: TextStyle(fontSize: 24),
+                                    ),
                                 ],
                               ),
                             ],

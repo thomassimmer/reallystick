@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:reallystick/core/constants/icons.dart';
 import 'package:reallystick/core/constants/screen_size.dart';
 import 'package:reallystick/core/ui/colors.dart';
 import 'package:reallystick/features/habits/domain/entities/habit.dart';
@@ -80,10 +79,9 @@ class HabitWidget extends StatelessWidget {
                               children: [
                                 Padding(
                                   padding: const EdgeInsets.only(right: 16.0),
-                                  child: getIconWidget(
-                                    iconString: habit.icon,
-                                    size: 30,
-                                    color: habitColor,
+                                  child: Text(
+                                    habit.icon,
+                                    style: TextStyle(fontSize: 25),
                                   ),
                                 ),
                                 Text(

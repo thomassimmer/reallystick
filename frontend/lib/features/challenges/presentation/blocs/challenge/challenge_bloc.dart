@@ -199,7 +199,7 @@ class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
     final resultCreateChallengeUsecase = await createChallengeUsecase.call(
       name: event.name,
       description: event.description,
-      icon: "material::${event.icon.toString()}",
+      icon: event.icon,
       startDate: event.startDate,
     );
 
@@ -271,7 +271,7 @@ class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
       challengeId: event.challengeId,
       name: event.name,
       description: event.description,
-      icon: "material::${event.icon.toString()}",
+      icon: event.icon,
       startDate: event.startDate,
     );
 

@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_iconpicker/Models/configuration.dart';
-import 'package:flutter_iconpicker/flutter_iconpicker.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:reallystick/core/messages/message.dart';
 import 'package:reallystick/core/messages/message_mapper.dart';
 import 'package:reallystick/core/presentation/widgets/custom_app_bar.dart';
 import 'package:reallystick/core/presentation/widgets/custom_elevated_button_form_field.dart';
+import 'package:reallystick/core/presentation/widgets/emoji_selector.dart';
 import 'package:reallystick/core/presentation/widgets/multi_language_input_field.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_bloc.dart';
@@ -28,27 +27,22 @@ class CreateChallengeScreenState extends State<CreateChallengeScreen> {
   Map<String, String> _nameControllerForChallenge = {};
   Map<String, String> _descriptionControllerForChallenge = {};
   bool _isFixedDatesEnabled = true;
-  IconData? _icon;
+  String? _icon;
   DateTime _startDateTime = DateTime.now();
 
-  _pickIcon() async {
-    IconPickerIcon? icon = await showIconPicker(
-      context,
-      configuration: SinglePickerConfiguration(
-        iconPackModes: [IconPack.material],
+  void _showEmojiPicker(BuildContext context, String userLocale) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => CustomEmojiSelector(
+        userLocale: userLocale,
+        onEmojiSelected: (category, emoji) {
+          setState(() {
+            _icon = emoji.emoji;
+          });
+          Navigator.pop(context);
+        },
       ),
     );
-
-    if (mounted) {
-      BlocProvider.of<ChallengeCreationFormBloc>(context).add(
-        ChallengeCreationFormIconChangedEvent(
-            icon != null ? icon.data.codePoint.toString() : ""),
-      );
-    }
-
-    setState(() {
-      _icon = icon?.data;
-    });
   }
 
   void _createChallenge(String locale) {
@@ -59,8 +53,7 @@ class CreateChallengeScreenState extends State<CreateChallengeScreen> {
         ChallengeCreationFormNameChangedEvent(_nameControllerForChallenge));
     challengeFormBloc.add(ChallengeCreationFormDescriptionChangedEvent(
         _descriptionControllerForChallenge));
-    challengeFormBloc.add(ChallengeCreationFormIconChangedEvent(
-        _icon != null ? _icon!.codePoint.toString() : ""));
+    challengeFormBloc.add(ChallengeCreationFormIconChangedEvent(_icon ?? ""));
     challengeFormBloc.add(ChallengeCreationFormStartDateChangedEvent(
         _isFixedDatesEnabled ? _startDateTime : null));
 
@@ -72,7 +65,7 @@ class CreateChallengeScreenState extends State<CreateChallengeScreen> {
           final newChallengeEvent = CreateChallengeEvent(
             name: _nameControllerForChallenge,
             description: _descriptionControllerForChallenge,
-            icon: _icon?.codePoint ?? 0,
+            icon: _icon ?? "",
             startDate: _isFixedDatesEnabled ? _startDateTime : null,
           );
 
@@ -344,13 +337,18 @@ class CreateChallengeScreenState extends State<CreateChallengeScreen> {
                               Row(
                                 children: [
                                   CustomElevatedButtonFormField(
-                                    onPressed: _pickIcon,
-                                    iconData: Icons.select_all,
+                                    onPressed: () =>
+                                        _showEmojiPicker(context, userLocale),
+                                    iconData: Icons.emoji_emotions,
                                     label: AppLocalizations.of(context)!.icon,
                                     errorText: displayIconErrorMessage,
                                   ),
                                   const SizedBox(width: 16.0),
-                                  if (_icon != null) Icon(_icon, size: 36),
+                                  if (_icon != null)
+                                    Text(
+                                      _icon!,
+                                      style: TextStyle(fontSize: 24),
+                                    ),
                                 ],
                               ),
                             ],

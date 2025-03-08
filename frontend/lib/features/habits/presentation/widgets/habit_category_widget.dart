@@ -31,35 +31,6 @@ class HabitCategoryWidget extends StatelessWidget {
       profileState.profile!.locale,
     );
 
-    //                  Row(
-    //   children: [
-    //     Padding(
-    //         padding: const EdgeInsets.only(right: 16.0),
-    //         child: getIconWidget(
-    //           iconString: category.icon,
-    //           size: 25,
-    //           color: context.colors.text,
-    //         )),
-    //     Expanded(
-    //       child: Text(
-    //         categoryName,
-    //         style: const TextStyle(
-    //           fontSize: 18,
-    //           fontWeight: FontWeight.w500,
-    //         ),
-    //       ),
-    //     ),
-    //   ],
-    // ),
-
-// Container(
-//                   margin: const EdgeInsets.only(bottom: 16),
-//                   decoration: BoxDecoration(
-//                     border: Border.all(color: Colors.grey, width: 0.5),
-//                     borderRadius: BorderRadius.circular(8),
-//                   ),
-//                   child:
-
     return SliverList(
       delegate: SliverChildListDelegate(
         [

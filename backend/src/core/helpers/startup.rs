@@ -252,7 +252,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
             HabitCategory {
                 id: Uuid::new_v4(),
                 name: json!(HashMap::from([("en", "Health"), ("fr", "Santé")])).to_string(),
-                icon: "material::58117".to_string(),
+                icon: "🏥".to_string(),
                 created_at: Utc::now(),
             },
         ),
@@ -265,7 +265,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
                     ("fr", "Apprentissage des langues")
                 ]))
                 .to_string(),
-                icon: "material::58214".to_string(),
+                icon: "🗣️".to_string(),
                 created_at: Utc::now(),
             },
         ),
@@ -275,7 +275,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
                 id: Uuid::new_v4(),
                 name: json!(HashMap::from([("en", "Lifestyle"), ("fr", "Style de vie")]))
                     .to_string(),
-                icon: "material::58735".to_string(),
+                icon: "😎".to_string(),
                 created_at: Utc::now(),
             },
         ),
@@ -284,7 +284,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
             HabitCategory {
                 id: Uuid::new_v4(),
                 name: json!(HashMap::from([("en", "Sport"), ("fr", "Sport")])).to_string(),
-                icon: "material::57997".to_string(),
+                icon: "💪".to_string(),
                 created_at: Utc::now(),
             },
         ),
@@ -293,7 +293,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
             HabitCategory {
                 id: Uuid::new_v4(),
                 name: json!(HashMap::from([("en", "Finance"), ("fr", "Finance")])).to_string(),
-                icon: "material::57522".to_string(),
+                icon: "🏦".to_string(),
                 created_at: Utc::now(),
             },
         ),
@@ -322,7 +322,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
                 .to_string(),
                 reviewed: true,
                 created_at: Utc::now(),
-                icon: "material::58823".to_string(),
+                icon: "🚭".to_string(),
                 unit_ids: json!(vec![units.get("no_unit").unwrap().id]).to_string(),
             },
         ),
@@ -351,7 +351,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
                 .to_string(),
                 reviewed: true,
                 created_at: Utc::now(),
-                icon: "web::https://flagcdn.com/w320/gb.png".to_string(),
+                icon: "🇬🇧".to_string(),
                 unit_ids: json!(vec![
                     units.get("hour").unwrap().id,
                     units.get("minute").unwrap().id
@@ -384,7 +384,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
                 .to_string(),
                 reviewed: true,
                 created_at: Utc::now(),
-                icon: "web::https://flagcdn.com/w320/fr.png".to_string(),
+                icon: "🇫🇷".to_string(),
                 unit_ids: json!(vec![
                     units.get("hour").unwrap().id,
                     units.get("minute").unwrap().id
@@ -417,7 +417,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
                 .to_string(),
                 reviewed: true,
                 created_at: Utc::now(),
-                icon: "material::58856".to_string(),
+                icon: "🎮".to_string(),
                 unit_ids: json!(vec![
                     units.get("hour").unwrap().id,
                     units.get("minute").unwrap().id
@@ -446,7 +446,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
                 .to_string(),
                 reviewed: true,
                 created_at: Utc::now(),
-                icon: "material::58364".to_string(),
+                icon: "⚖️".to_string(),
                 unit_ids: json!(vec![
                     units.get("kilogram").unwrap().id,
                     units.get("gram").unwrap().id,
@@ -480,7 +480,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
                 .to_string(),
                 reviewed: true,
                 created_at: Utc::now(),
-                icon: "material::57997".to_string(),
+                icon: "🏋️‍♀️".to_string(),
                 unit_ids: json!(vec![
                     units.get("hour").unwrap().id,
                     units.get("minute").unwrap().id
@@ -513,7 +513,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
                 .to_string(),
                 reviewed: true,
                 created_at: Utc::now(),
-                icon: "material::57997".to_string(),
+                icon: "🏋️‍♀️".to_string(),
                 unit_ids: json!(vec![units.get("no_unit").unwrap().id]).to_string(),
             },
         ),
@@ -542,7 +542,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
                 .to_string(),
                 reviewed: true,
                 created_at: Utc::now(),
-                icon: "material::57997".to_string(),
+                icon: "🏋️‍♀️".to_string(),
                 unit_ids: json!(vec![units.get("no_unit").unwrap().id]).to_string(),
             },
         ),
@@ -574,7 +574,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
                 .to_string(),
                 reviewed: true,
                 created_at: Utc::now(),
-                icon: "material::58707".to_string(),
+                icon: "🏋️‍♀️".to_string(),
                 unit_ids: json!(vec![units.get("no_unit").unwrap().id]).to_string(),
             },
         ),

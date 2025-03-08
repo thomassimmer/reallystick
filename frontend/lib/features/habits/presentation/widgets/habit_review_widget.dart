@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:reallystick/core/constants/icons.dart';
 import 'package:reallystick/core/constants/screen_size.dart';
 import 'package:reallystick/core/presentation/widgets/icon_with_warning.dart';
-import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/habits/domain/entities/habit.dart';
 import 'package:reallystick/features/habits/presentation/helpers/translations.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
@@ -57,10 +55,11 @@ class HabitReviewWidget extends StatelessWidget {
                       // Habit icon
                       Padding(
                         padding: const EdgeInsets.only(right: 16.0),
-                        child: getIconWidget(
-                          iconString: habit.icon,
-                          size: 30,
-                          color: context.colors.text,
+                        child: Text(
+                          habit.icon,
+                          style: TextStyle(
+                            fontSize: 25,
+                          ),
                         ),
                       ),
 

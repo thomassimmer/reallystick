@@ -16,7 +16,7 @@ class CreateHabitEvent extends HabitEvent {
   final String longName;
   final String description;
   final String categoryId;
-  final int icon;
+  final String icon;
   final String locale;
   final HashSet<String> unitIds;
 
@@ -48,7 +48,7 @@ class UpdateHabitEvent extends HabitEvent {
   final Map<String, String> longName;
   final Map<String, String> description;
   final String categoryId;
-  final int icon;
+  final String icon;
   final HashSet<String> unitIds;
 
   const UpdateHabitEvent({
@@ -80,7 +80,7 @@ class MergeHabitsEvent extends HabitEvent {
   final Map<String, String> longName;
   final Map<String, String> description;
   final String categoryId;
-  final int icon;
+  final String icon;
   final HashSet<String> unitIds;
 
   const MergeHabitsEvent({

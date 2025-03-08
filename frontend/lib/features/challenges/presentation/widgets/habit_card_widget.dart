@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
-import 'package:reallystick/core/constants/icons.dart';
 import 'package:reallystick/core/constants/screen_size.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/habits/domain/entities/habit.dart';
@@ -74,11 +73,7 @@ class HabitCardWidget extends StatelessWidget {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Icon(
-                      getIconData(iconDataString: habit.icon.substring(10)),
-                      color: context.colors.text,
-                      size: 20,
-                    ),
+                    Text(habit.icon, style: TextStyle(fontSize: 25)),
                     SizedBox(width: 10),
                     Text(
                       getRightTranslationFromJson(
