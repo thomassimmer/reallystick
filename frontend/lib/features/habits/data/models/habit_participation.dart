@@ -7,6 +7,9 @@ class HabitParticipationDataModel extends Equatable {
   final String habitId;
   final String color;
   final bool toGain;
+  final bool notificationsReminderEnabled;
+  final String? reminderTime;
+  final String? reminderBody;
 
   const HabitParticipationDataModel({
     required this.id,
@@ -14,6 +17,9 @@ class HabitParticipationDataModel extends Equatable {
     required this.habitId,
     required this.color,
     required this.toGain,
+    required this.notificationsReminderEnabled,
+    required this.reminderTime,
+    required this.reminderBody,
   });
 
   factory HabitParticipationDataModel.fromJson(Map<String, dynamic> json) {
@@ -23,6 +29,10 @@ class HabitParticipationDataModel extends Equatable {
       habitId: json['habit_id'] as String,
       color: json['color'] as String,
       toGain: json['to_gain'] as bool,
+      notificationsReminderEnabled:
+          json['notifications_reminder_enabled'] as bool,
+      reminderTime: json['reminder_time'] as String?,
+      reminderBody: json['reminder_body'] as String?,
     );
   }
 
@@ -32,6 +42,9 @@ class HabitParticipationDataModel extends Equatable {
         habitId: habitId,
         color: color,
         toGain: toGain,
+        notificationsReminderEnabled: notificationsReminderEnabled,
+        reminderTime: reminderTime,
+        reminderBody: reminderBody,
       );
 
   @override
@@ -41,5 +54,6 @@ class HabitParticipationDataModel extends Equatable {
         habitId,
         color,
         toGain,
+        reminderBody,
       ];
 }

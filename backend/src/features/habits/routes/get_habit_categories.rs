@@ -6,6 +6,7 @@ use crate::{
 };
 use actix_web::{get, web::Data, HttpResponse, Responder};
 use sqlx::PgPool;
+use tracing::error;
 
 #[get("/")]
 pub async fn get_habit_categories(pool: Data<PgPool>) -> impl Responder {
@@ -20,7 +21,7 @@ pub async fn get_habit_categories(pool: Data<PgPool>) -> impl Responder {
                 .collect(),
         }),
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response())
         }
     }

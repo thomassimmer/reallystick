@@ -11,6 +11,7 @@ use actix_web::{
     HttpResponse, Responder,
 };
 use sqlx::PgPool;
+use tracing::error;
 
 #[delete("/")]
 pub async fn delete_all_notifications(
@@ -20,7 +21,7 @@ pub async fn delete_all_notifications(
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::DatabaseConnection.to_response());
         }
@@ -30,12 +31,12 @@ pub async fn delete_all_notifications(
         helpers::notification::delete_user_notifications(&mut *transaction, request_claims.user_id)
             .await
     {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response());
     }
 
     if let Err(e) = transaction.commit().await {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::DatabaseTransaction.to_response());
     }

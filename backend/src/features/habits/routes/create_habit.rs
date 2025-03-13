@@ -16,6 +16,7 @@ use actix_web::{
 use chrono::Utc;
 use serde_json::json;
 use sqlx::PgPool;
+use tracing::error;
 use uuid::Uuid;
 
 #[post("/")]
@@ -23,7 +24,7 @@ pub async fn create_habit(pool: Data<PgPool>, body: Json<HabitCreateRequest>) ->
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::DatabaseConnection.to_response());
         }
@@ -37,7 +38,7 @@ pub async fn create_habit(pool: Data<PgPool>, body: Json<HabitCreateRequest>) ->
             }
         },
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response());
         }
     };
@@ -50,7 +51,7 @@ pub async fn create_habit(pool: Data<PgPool>, body: Json<HabitCreateRequest>) ->
                 }
             }
             Err(e) => {
-                eprintln!("Error: {}", e);
+                error!("Error: {}", e);
                 return HttpResponse::InternalServerError()
                     .json(AppError::DatabaseQuery.to_response());
             }
@@ -72,7 +73,7 @@ pub async fn create_habit(pool: Data<PgPool>, body: Json<HabitCreateRequest>) ->
     let create_habit_result = habit::create_habit(&mut *transaction, &habit).await;
 
     if let Err(e) = transaction.commit().await {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::DatabaseTransaction.to_response());
     }
@@ -83,7 +84,7 @@ pub async fn create_habit(pool: Data<PgPool>, body: Json<HabitCreateRequest>) ->
             habit: Some(habit.to_habit_data()),
         }),
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             HttpResponse::InternalServerError().json(AppError::HabitCreation.to_response())
         }
     }

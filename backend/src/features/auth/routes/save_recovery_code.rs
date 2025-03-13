@@ -6,6 +6,7 @@ use actix_web::{
 use argon2::{password_hash::SaltString, Argon2, PasswordHasher};
 use rand::rngs::OsRng;
 use sqlx::PgPool;
+use tracing::error;
 use uuid::Uuid;
 
 use crate::{
@@ -38,7 +39,7 @@ pub async fn save_recovery_code(
         delete_recovery_code_for_user(request_claims.user_id, &mut *transaction).await;
 
     if let Err(e) = delete_current_recovery_code_result {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::RecoveryCodeDeletion.to_response());
     }
@@ -48,7 +49,7 @@ pub async fn save_recovery_code(
     let hashed_code = match argon2.hash_password(body.recovery_code.as_bytes(), &salt) {
         Ok(hash) => hash.to_string(),
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::RecoveryCodeHashCreation.to_response());
         }
@@ -68,13 +69,13 @@ pub async fn save_recovery_code(
         recovery_code::create_recovery_code(&new_recovery_code, &mut *transaction).await;
 
     if let Err(e) = create_recovery_code_result {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::RecoveryCodeCreation.to_response());
     }
 
     if let Err(e) = transaction.commit().await {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::DatabaseTransaction.to_response());
     }

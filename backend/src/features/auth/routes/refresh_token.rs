@@ -19,6 +19,7 @@ use crate::{
 use actix_web::{post, web, HttpRequest, HttpResponse, Responder};
 use jsonwebtoken::{decode, DecodingKey, Validation};
 use sqlx::PgPool;
+use tracing::error;
 use uuid::Uuid;
 
 #[post("/refresh-token")]
@@ -43,7 +44,7 @@ pub async fn refresh_token(
     let token_data = decode::<Claims>(&refresh_token, &decoding_key, &Validation::default());
 
     if let Err(e) = token_data {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::Unauthorized().json(AppError::InvalidRefreshToken.to_response());
     }
 
@@ -66,7 +67,7 @@ pub async fn refresh_token(
             if now() > expires_at {
                 // Remove user session / token
                 if let Err(e) = delete_token(claims.jti, &mut *transaction).await {
-                    eprintln!("Error: {}", e);
+                    error!("Error: {}", e);
                     return HttpResponse::InternalServerError()
                         .json(AppError::DatabaseTransaction.to_response());
                 }
@@ -85,7 +86,7 @@ pub async fn refresh_token(
     // Remove token and create a new one so the user never has to
     // connect again, unless after 7 days of inactivity.
     if let Err(e) = delete_token(claims.jti, &mut *transaction).await {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::DatabaseTransaction.to_response());
     }
@@ -100,7 +101,7 @@ pub async fn refresh_token(
             }
         },
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::DatabaseTransaction.to_response());
         }
@@ -133,7 +134,7 @@ pub async fn refresh_token(
     )
     .await
     {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::DatabaseTransaction.to_response());
     }
@@ -141,7 +142,7 @@ pub async fn refresh_token(
     cached_tokens.update_or_insert_key(new_jti, now()).await;
 
     if let Err(e) = transaction.commit().await {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::DatabaseTransaction.to_response());
     }

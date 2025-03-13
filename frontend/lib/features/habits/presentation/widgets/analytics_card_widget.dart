@@ -8,11 +8,11 @@ class AnalyticsCardWidget extends StatefulWidget {
   final Color color;
 
   const AnalyticsCardWidget({
-    Key? key,
+    super.key,
     required this.analyticsCardInfo,
     required this.userLocale,
     required this.color,
-  }) : super(key: key);
+  });
 
   @override
   State<AnalyticsCardWidget> createState() => _AnalyticsCardWidgetState();

@@ -14,6 +14,7 @@ use actix_web::{
     HttpResponse, Responder,
 };
 use sqlx::PgPool;
+use tracing::error;
 
 #[get("/")]
 pub async fn get_private_discussions(
@@ -23,7 +24,7 @@ pub async fn get_private_discussions(
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::DatabaseConnection.to_response());
         }
@@ -38,7 +39,7 @@ pub async fn get_private_discussions(
         {
             Ok(r) => r,
             Err(e) => {
-                eprintln!("Error: {}", e);
+                error!("Error: {}", e);
                 return HttpResponse::InternalServerError()
                     .json(AppError::DatabaseQuery.to_response());
             }
@@ -55,7 +56,7 @@ pub async fn get_private_discussions(
     {
         Ok(r) => r,
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response());
         }
     };
@@ -69,7 +70,7 @@ pub async fn get_private_discussions(
     {
         Ok(r) => r,
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response());
         }
     };
@@ -82,7 +83,7 @@ pub async fn get_private_discussions(
     {
         Ok(r) => r,
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response());
         }
     };
@@ -96,13 +97,13 @@ pub async fn get_private_discussions(
     {
         Ok(r) => r,
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response());
         }
     };
 
     if let Err(e) = transaction.commit().await {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::DatabaseTransaction.to_response());
     }

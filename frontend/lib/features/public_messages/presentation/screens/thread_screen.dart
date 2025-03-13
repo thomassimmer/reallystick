@@ -32,11 +32,11 @@ class ThreadScreen extends StatefulWidget {
   final String? challengeId;
 
   const ThreadScreen({
-    Key? key,
+    super.key,
     required this.threadId,
     required this.habitId,
     required this.challengeId,
-  }) : super(key: key);
+  });
 
   @override
   ThreadScreenState createState() => ThreadScreenState();

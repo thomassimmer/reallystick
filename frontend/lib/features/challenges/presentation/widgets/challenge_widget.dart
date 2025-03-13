@@ -21,11 +21,11 @@ class ChallengeWidget extends StatelessWidget {
   final List<ChallengeDailyTracking> challengeDailyTrackings;
 
   const ChallengeWidget({
-    Key? key,
+    super.key,
     required this.challenge,
     required this.challengeParticipation,
     required this.challengeDailyTrackings,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

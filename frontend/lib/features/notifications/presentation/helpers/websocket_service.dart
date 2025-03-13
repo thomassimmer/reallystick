@@ -23,7 +23,7 @@ class WebSocketService {
 
   /// Connect to WebSocket
   void connect() async {
-    if (_isConnected || _channel != null) {
+    if (_isConnected || _channel != null || _isReconnecting) {
       return; // Prevent opening multiple connections
     }
 
@@ -44,6 +44,7 @@ class WebSocketService {
     } else {
       print("No token found. Retrying.");
       _handleReconnect();
+      return;
     }
 
     try {
@@ -52,23 +53,28 @@ class WebSocketService {
 
       _channel = WebSocketChannel.connect(uri);
       await _channel!.ready;
-
-      _isConnected = true;
-      _connectionController.add(true); // Notify about successful connection
-
-      // Listen for incoming messages
-      _webSocketSubscription = _channel!.stream.listen(
-        (message) {
-          _messageController.add(message);
-        },
-        onError: (error) => _handleReconnect(),
-        onDone: () => _handleReconnect(),
-        cancelOnError: true,
-      );
     } catch (e) {
       print("WebSocket connection error: $e");
       _handleReconnect();
+      return;
     }
+
+    _isConnected = true;
+    _connectionController.add(true); // Notify about successful connection
+
+    // Listen for incoming messages
+    _webSocketSubscription = _channel!.stream.listen(
+      (message) {
+        _messageController.add(message);
+      },
+      onError: (error) {
+        _handleReconnect();
+      },
+      onDone: () {
+        _handleReconnect();
+      },
+      cancelOnError: true,
+    );
   }
 
   /// Handle WebSocket Reconnection
@@ -92,9 +98,9 @@ class WebSocketService {
       }
 
       await _initializeWebSocket();
-
-      _isReconnecting = false;
     }
+
+    _isReconnecting = false;
   }
 
   /// Disconnect WebSocket

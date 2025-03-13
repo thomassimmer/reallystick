@@ -10,13 +10,13 @@ class CustomMessageInput extends StatefulWidget {
   final bool isEditing;
 
   const CustomMessageInput({
-    Key? key,
+    super.key,
     required this.contentController,
     required this.recipientUsername,
     required this.onSendMessage,
     this.onEditMessage,
     this.isEditing = false,
-  }) : super(key: key);
+  });
 
   @override
   CustomMessageInputState createState() => CustomMessageInputState();

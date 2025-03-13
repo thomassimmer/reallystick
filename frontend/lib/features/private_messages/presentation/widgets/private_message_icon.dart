@@ -7,9 +7,9 @@ class PrivateMessageIcon extends StatelessWidget {
   final IconData iconData;
 
   const PrivateMessageIcon({
-    Key? key,
+    super.key,
     required this.iconData,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

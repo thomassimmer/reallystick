@@ -33,7 +33,7 @@ class HabitCreationFormBloc
           state.longName,
           state.description,
           state.icon,
-          ...state.unitIds.values.toList()
+          ...state.unitIds.values
         ]),
       ),
     );
@@ -52,7 +52,7 @@ class HabitCreationFormBloc
           state.longName,
           state.description,
           state.icon,
-          ...state.unitIds.values.toList()
+          ...state.unitIds.values
         ]),
       ),
     );
@@ -71,7 +71,7 @@ class HabitCreationFormBloc
           longName,
           state.description,
           state.icon,
-          ...state.unitIds.values.toList()
+          ...state.unitIds.values
         ]),
       ),
     );
@@ -90,7 +90,7 @@ class HabitCreationFormBloc
           state.longName,
           description,
           state.icon,
-          ...state.unitIds.values.toList()
+          ...state.unitIds.values
         ]),
       ),
     );
@@ -109,7 +109,7 @@ class HabitCreationFormBloc
           state.longName,
           state.description,
           icon,
-          ...state.unitIds.values.toList()
+          ...state.unitIds.values
         ]),
       ),
     );
@@ -132,7 +132,7 @@ class HabitCreationFormBloc
           state.longName,
           state.description,
           state.icon,
-          ...unitIdsMap.values.toList()
+          ...unitIdsMap.values
         ]),
       ),
     );

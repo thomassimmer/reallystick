@@ -9,10 +9,10 @@ class LastActivityWidget extends StatefulWidget {
   final String userLocale;
 
   const LastActivityWidget({
-    Key? key,
+    super.key,
     required this.habitDailyTrackings,
     required this.userLocale,
-  }) : super(key: key);
+  });
 
   @override
   State<LastActivityWidget> createState() => _LastActivityWidgetState();

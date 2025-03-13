@@ -11,6 +11,7 @@ use actix_web::{
     HttpResponse, Responder,
 };
 use sqlx::PgPool;
+use tracing::error;
 
 #[get("/{habit_id}")]
 pub async fn get_habit(pool: Data<PgPool>, params: Path<GetHabitParams>) -> impl Responder {
@@ -25,7 +26,7 @@ pub async fn get_habit(pool: Data<PgPool>, params: Path<GetHabitParams>) -> impl
             None => HttpResponse::NotFound().json(AppError::HabitNotFound.to_response()),
         },
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response())
         }
     }

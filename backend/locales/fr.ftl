@@ -8,3 +8,4 @@ user-liked-your-message-title = Quelqu'un a aimé votre message
 user-liked-your-message-body = { $username } vient juste d'aimer votre message.
 user-replied-to-your-message-title = Quelqu'un a répondu à votre message
 user-replied-to-your-message-body = { $username } vient juste de répondre à votre message.
+reminder-title = Rappel

@@ -13,6 +13,7 @@ use actix_web::{
     HttpResponse, Responder,
 };
 use sqlx::PgPool;
+use tracing::error;
 
 #[get("/{challenge_id}")]
 pub async fn get_challenge(pool: Data<PgPool>, params: Path<GetChallengeParams>) -> impl Responder {
@@ -27,7 +28,7 @@ pub async fn get_challenge(pool: Data<PgPool>, params: Path<GetChallengeParams>)
             None => HttpResponse::NotFound().json(AppError::ChallengeNotFound.to_response()),
         },
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response())
         }
     }

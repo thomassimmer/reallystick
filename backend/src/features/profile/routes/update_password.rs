@@ -6,6 +6,7 @@ use actix_web::{
 use argon2::{password_hash::SaltString, Argon2, PasswordHasher};
 use rand::rngs::OsRng;
 use sqlx::PgPool;
+use tracing::error;
 
 use crate::{
     core::{constants::errors::AppError, structs::responses::GenericResponse},
@@ -32,7 +33,7 @@ pub async fn update_password(
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::DatabaseConnection.to_response());
         }
@@ -76,7 +77,7 @@ pub async fn update_password(
     let password_hash = match argon2.hash_password(body.new_password.as_bytes(), &salt) {
         Ok(hash) => hash.to_string(),
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError().json(AppError::PasswordHash.to_response());
         }
     };
@@ -98,7 +99,7 @@ pub async fn update_password(
     .await;
 
     if let Err(e) = transaction.commit().await {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::DatabaseTransaction.to_response());
     }
@@ -109,7 +110,7 @@ pub async fn update_password(
             user: request_user.to_user_data(),
         }),
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             HttpResponse::InternalServerError().json(AppError::UserUpdate.to_response())
         }
     }

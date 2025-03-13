@@ -31,12 +31,12 @@ class HabitMergeFormBloc
         habitToMergeOn: habit,
         isValid: Formz.validate([
           habit,
-          ...state.shortName.values.toList(),
-          ...state.longName.values.toList(),
-          ...state.description.values.toList(),
+          ...state.shortName.values,
+          ...state.longName.values,
+          ...state.description.values,
           state.icon,
           state.habitCategory,
-          ...state.unitIds.values.toList(),
+          ...state.unitIds.values,
         ]),
       ),
     );
@@ -51,12 +51,12 @@ class HabitMergeFormBloc
         habitCategory: habitCategory,
         isValid: Formz.validate([
           habitCategory,
-          ...state.shortName.values.toList(),
-          ...state.longName.values.toList(),
-          ...state.description.values.toList(),
+          ...state.shortName.values,
+          ...state.longName.values,
+          ...state.description.values,
           state.icon,
           state.habitToMergeOn,
-          ...state.unitIds.values.toList(),
+          ...state.unitIds.values,
         ]),
       ),
     );
@@ -79,13 +79,13 @@ class HabitMergeFormBloc
       state.copyWith(
         shortName: shortNameMap,
         isValid: Formz.validate([
-          ...state.shortName.values.toList(),
-          ...state.longName.values.toList(),
-          ...state.description.values.toList(),
+          ...state.shortName.values,
+          ...state.longName.values,
+          ...state.description.values,
           state.icon,
           state.habitCategory,
           state.habitToMergeOn,
-          ...state.unitIds.values.toList(),
+          ...state.unitIds.values,
         ]),
       ),
     );
@@ -108,13 +108,13 @@ class HabitMergeFormBloc
       state.copyWith(
         longName: longNameMap,
         isValid: Formz.validate([
-          ...state.shortName.values.toList(),
-          ...state.longName.values.toList(),
-          ...state.description.values.toList(),
+          ...state.shortName.values,
+          ...state.longName.values,
+          ...state.description.values,
           state.icon,
           state.habitCategory,
           state.habitToMergeOn,
-          ...state.unitIds.values.toList(),
+          ...state.unitIds.values,
         ]),
       ),
     );
@@ -137,13 +137,13 @@ class HabitMergeFormBloc
       state.copyWith(
         description: descriptionMap,
         isValid: Formz.validate([
-          ...state.shortName.values.toList(),
-          ...state.longName.values.toList(),
-          ...state.description.values.toList(),
+          ...state.shortName.values,
+          ...state.longName.values,
+          ...state.description.values,
           state.icon,
           state.habitCategory,
           state.habitToMergeOn,
-          ...state.unitIds.values.toList(),
+          ...state.unitIds.values,
         ]),
       ),
     );
@@ -158,12 +158,12 @@ class HabitMergeFormBloc
         icon: icon,
         isValid: Formz.validate([
           state.habitCategory,
-          ...state.shortName.values.toList(),
-          ...state.longName.values.toList(),
-          ...state.description.values.toList(),
+          ...state.shortName.values,
+          ...state.longName.values,
+          ...state.description.values,
           icon,
           state.habitToMergeOn,
-          ...state.unitIds.values.toList(),
+          ...state.unitIds.values,
         ]),
       ),
     );
@@ -182,11 +182,11 @@ class HabitMergeFormBloc
         unitIds: unitIdsMap,
         isValid: Formz.validate([
           state.habitCategory,
-          ...state.shortName.values.toList(),
-          ...state.longName.values.toList(),
-          ...state.description.values.toList(),
+          ...state.shortName.values,
+          ...state.longName.values,
+          ...state.description.values,
           state.icon,
-          ...unitIdsMap.values.toList()
+          ...unitIdsMap.values
         ]),
       ),
     );

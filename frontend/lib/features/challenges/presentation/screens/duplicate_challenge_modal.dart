@@ -12,9 +12,9 @@ class DuplicateChallengeModal extends StatelessWidget {
   final String challengeId;
 
   const DuplicateChallengeModal({
-    Key? key,
+    super.key,
     required this.challengeId,
-  }) : super(key: key);
+  });
 
   void duplicateChallenge(BuildContext context) {
     context

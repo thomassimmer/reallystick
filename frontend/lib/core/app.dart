@@ -37,7 +37,9 @@ import 'package:reallystick/features/users/presentation/blocs/user/user_bloc.dar
 import 'package:universal_io/io.dart';
 
 class ReallyStickApp extends StatefulWidget {
-  ReallyStickApp({Key? key}) : super(key: key);
+  ReallyStickApp({
+    super.key,
+  });
 
   @override
   State<ReallyStickApp> createState() => ReallyStickAppState();

@@ -14,6 +14,7 @@ use actix_web::{
     HttpResponse, Responder,
 };
 use sqlx::PgPool;
+use tracing::error;
 
 #[get("/")]
 pub async fn get_habit_daily_trackings(
@@ -33,7 +34,7 @@ pub async fn get_habit_daily_trackings(
                 .collect(),
         }),
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response())
         }
     }

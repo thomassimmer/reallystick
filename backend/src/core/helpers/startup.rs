@@ -6,6 +6,7 @@ use chrono::{Duration, Utc};
 use rand::rngs::OsRng;
 use serde_json::json;
 use sqlx::PgPool;
+use tracing::error;
 use uuid::Uuid;
 
 use crate::features::habits::helpers::habit::create_habit;
@@ -44,6 +45,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
         password: password_hash,
         locale: "fr".to_string(),
         theme: "light".to_string(),
+        timezone: "America/New_York".to_string(),
         is_admin: true,
         private_key_encrypted: None,
         salt_used_to_derive_key_from_password: None,
@@ -594,7 +596,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
             created_at: Utc::now(),
             notifications_reminder_enabled: false,
             reminder_time: None,
-            timezone: None,
+            reminder_body: None,
         },
         HabitParticipation {
             id: Uuid::new_v4(),
@@ -605,7 +607,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
             created_at: Utc::now(),
             notifications_reminder_enabled: false,
             reminder_time: None,
-            timezone: None,
+            reminder_body: None,
         },
         HabitParticipation {
             id: Uuid::new_v4(),
@@ -616,7 +618,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
             created_at: Utc::now(),
             notifications_reminder_enabled: false,
             reminder_time: None,
-            timezone: None,
+            reminder_body: None,
         },
         HabitParticipation {
             id: Uuid::new_v4(),
@@ -627,7 +629,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
             created_at: Utc::now(),
             notifications_reminder_enabled: false,
             reminder_time: None,
-            timezone: None,
+            reminder_body: None,
         },
     ];
 
@@ -763,7 +765,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
     }
 
     if let Err(e) = transaction.commit().await {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
     }
 
     Ok(())

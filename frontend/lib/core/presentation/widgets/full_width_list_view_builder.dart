@@ -10,7 +10,7 @@ class FullWidthListViewBuilder extends StatelessWidget {
   final bool shrinkWrap;
 
   const FullWidthListViewBuilder({
-    Key? key,
+    super.key,
     required this.itemBuilder,
     required this.itemCount,
     this.maxContentWidth = 700, // Set max width for content
@@ -18,7 +18,7 @@ class FullWidthListViewBuilder extends StatelessWidget {
     this.controller, // Scroll controller
     this.physics, // Scroll physics
     this.shrinkWrap = false, // Default behavior
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

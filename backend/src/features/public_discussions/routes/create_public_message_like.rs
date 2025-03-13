@@ -30,6 +30,7 @@ use actix_web::{
 use fluent::FluentArgs;
 use redis::Client;
 use sqlx::PgPool;
+use tracing::error;
 use uuid::Uuid;
 
 #[post("/")]
@@ -44,14 +45,15 @@ pub async fn create_public_message_like(
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::DatabaseConnection.to_response());
         }
     };
 
     // Check if message exists
-    let mut public_message = match get_public_message_by_id(&mut *transaction, body.message_id).await
+    let mut public_message = match get_public_message_by_id(&mut *transaction, body.message_id)
+        .await
     {
         Ok(r) => match r {
             Some(r) => r,
@@ -61,7 +63,7 @@ pub async fn create_public_message_like(
             }
         },
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response());
         }
     };
@@ -78,7 +80,7 @@ pub async fn create_public_message_like(
             .await;
 
     if let Err(e) = create_public_message_like_result {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::PublicMessageLikeCreation.to_response());
     }
@@ -89,7 +91,7 @@ pub async fn create_public_message_like(
         update_public_message_like_count(&mut *transaction, &public_message).await;
 
     if let Err(e) = update_public_message_result {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::PublicMessageUpdate.to_response());
     }
@@ -123,7 +125,7 @@ pub async fn create_public_message_like(
                 &mut *transaction,
                 public_message.creator,
                 &translator.translate(&creator.locale, "user-liked-your-message-title", None),
-                &translator.translate(&creator.locale, "user-liked-your-message-body", Some(&args)),
+                &translator.translate(&creator.locale, "user-liked-your-message-body", Some(args)),
                 redis_client,
                 "public_message_liked",
                 Some(url),
@@ -133,7 +135,7 @@ pub async fn create_public_message_like(
     }
 
     if let Err(e) = transaction.commit().await {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::DatabaseTransaction.to_response());
     }

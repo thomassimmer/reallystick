@@ -11,6 +11,7 @@ use actix_web::{
     HttpResponse, Responder,
 };
 use sqlx::PgPool;
+use tracing::error;
 
 #[get("/me")]
 pub async fn get_profile_information(
@@ -28,7 +29,7 @@ pub async fn get_profile_information(
             None => HttpResponse::NotFound().json(AppError::UserNotFound.to_response()),
         },
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             HttpResponse::InternalServerError().json(AppError::UserUpdate.to_response())
         }
     }

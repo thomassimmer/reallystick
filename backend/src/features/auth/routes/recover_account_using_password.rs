@@ -15,6 +15,7 @@ use crate::{
 use actix_web::{post, web, HttpRequest, HttpResponse, Responder};
 use argon2::{Argon2, PasswordHash, PasswordVerifier};
 use sqlx::PgPool;
+use tracing::error;
 
 #[post("/recover-using-password")]
 pub async fn recover_account_using_password(
@@ -26,7 +27,7 @@ pub async fn recover_account_using_password(
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::DatabaseConnection.to_response());
         }
@@ -48,7 +49,7 @@ pub async fn recover_account_using_password(
             }
         }
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response());
         }
     };
@@ -75,7 +76,7 @@ pub async fn recover_account_using_password(
             }
         },
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::DatabaseTransaction.to_response());
         }
@@ -108,7 +109,7 @@ pub async fn recover_account_using_password(
     let delete_result = delete_user_tokens(user.id, &mut *transaction).await;
 
     if let Err(e) = delete_result {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError().json(AppError::UserTokenDeletion.to_response());
     }
 
@@ -126,7 +127,7 @@ pub async fn recover_account_using_password(
     {
         Ok((access_token, refresh_token)) => (access_token, refresh_token),
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::TokenGeneration.to_response());
         }
@@ -151,12 +152,12 @@ pub async fn recover_account_using_password(
     .await;
 
     if let Err(e) = updated_user_result {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError().json(AppError::UserUpdate.to_response());
     }
 
     if let Err(e) = transaction.commit().await {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::DatabaseTransaction.to_response());
     }

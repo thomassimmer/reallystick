@@ -16,6 +16,7 @@ use actix_web::{
     HttpResponse, Responder,
 };
 use sqlx::PgPool;
+use tracing::error;
 
 #[delete("/{habit_category_id}")]
 pub async fn delete_habit_category(
@@ -30,7 +31,7 @@ pub async fn delete_habit_category(
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::DatabaseConnection.to_response());
         }
@@ -40,7 +41,7 @@ pub async fn delete_habit_category(
         delete_habit_category_by_id(&mut *transaction, params.habit_category_id).await;
 
     if let Err(e) = transaction.commit().await {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::DatabaseTransaction.to_response());
     }
@@ -57,7 +58,7 @@ pub async fn delete_habit_category(
             }
         }
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             HttpResponse::InternalServerError().json(AppError::HabitCategoryDelete.to_response())
         }
     }

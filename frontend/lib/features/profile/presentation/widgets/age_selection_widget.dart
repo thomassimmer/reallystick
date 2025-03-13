@@ -8,8 +8,7 @@ class AgeSelectionWidget extends StatelessWidget {
   final void Function(BuildContext context, Profile profile) updateProfile;
 
   const AgeSelectionWidget(
-      {Key? key, required this.profile, required this.updateProfile})
-      : super(key: key);
+      {super.key, required this.profile, required this.updateProfile});
 
   List<String> generateAgeCategories() {
     List<String> categories = [];

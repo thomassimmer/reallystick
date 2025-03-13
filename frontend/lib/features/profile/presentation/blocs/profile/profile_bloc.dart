@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:get_it/get_it.dart';
 import 'package:reallystick/core/messages/message.dart';
 import 'package:reallystick/core/utils/recovery_code_generator.dart';
@@ -171,6 +172,19 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState>
                 shouldReloadData: true,
               ),
             );
+
+            final String currentTimeZone =
+                await FlutterTimezone.getLocalTimezone();
+
+            if (profile.timezone != currentTimeZone) {
+              Profile newProfile = profile.copyWith();
+              newProfile.timezone = currentTimeZone;
+
+              add(ProfileUpdateEvent(
+                newProfile: newProfile,
+                displayNotification: false,
+              ));
+            }
           },
         );
       },
@@ -207,17 +221,19 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState>
           );
         }
       },
-      (profile) => emit(
-        ProfileAuthenticated(
-          profile: profile,
-          devices: currentState.devices,
-          statistics: currentState.statistics,
-          shouldReloadData: false,
-          message: event.displayNotification
-              ? SuccessMessage('profileUpdateSuccessful')
-              : null,
-        ),
-      ),
+      (profile) {
+        emit(
+          ProfileAuthenticated(
+            profile: profile,
+            devices: currentState.devices,
+            statistics: currentState.statistics,
+            shouldReloadData: false,
+            message: event.displayNotification
+                ? SuccessMessage('profileUpdateSuccessful')
+                : null,
+          ),
+        );
+      },
     );
   }
 

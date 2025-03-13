@@ -14,6 +14,7 @@ use actix_web::{
     HttpResponse, Responder,
 };
 use sqlx::PgPool;
+use tracing::error;
 
 #[get("/replies/{message_id}")]
 pub async fn get_replies(
@@ -23,7 +24,7 @@ pub async fn get_replies(
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::DatabaseConnection.to_response());
         }
@@ -38,7 +39,7 @@ pub async fn get_replies(
             }
         }
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response());
         }
     };
@@ -47,7 +48,7 @@ pub async fn get_replies(
         public_message::get_replies(&mut *transaction, params.message_id).await;
 
     if let Err(e) = transaction.commit().await {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::DatabaseTransaction.to_response());
     }
@@ -61,7 +62,7 @@ pub async fn get_replies(
                 .collect(),
         }),
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             HttpResponse::InternalServerError().json(AppError::PublicMessageCreation.to_response())
         }
     }

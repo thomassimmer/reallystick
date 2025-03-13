@@ -2,6 +2,7 @@ use clap::Parser;
 use reallystick::configuration::get_configuration;
 use reallystick::core::helpers::startup::{populate_database, reset_database};
 use reallystick::startup::get_connection_pool;
+use tracing::error;
 
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
@@ -20,7 +21,7 @@ async fn main() {
         "reset" => {
             println!("Resetting the database...");
             if let Err(e) = reset_database(&pool).await {
-                eprintln!("Failed to reset the database: {}", e);
+                error!("Failed to reset the database: {}", e);
             } else {
                 println!("Database successfully reset.");
             }
@@ -28,11 +29,11 @@ async fn main() {
         "populate" => {
             println!("Populating the database...");
             if let Err(e) = populate_database(&pool).await {
-                eprintln!("Failed to populate the database: {}", e);
+                error!("Failed to populate the database: {}", e);
             } else {
                 println!("Database successfully populated.");
             }
         }
-        _ => eprintln!("Unknown action: {}", action),
+        _ => error!("Unknown action: {}", action),
     }
 }

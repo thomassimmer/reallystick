@@ -6,10 +6,10 @@ class IconWithWarning extends StatelessWidget {
   final bool shouldBeWarning;
 
   const IconWithWarning({
-    Key? key,
+    super.key,
     required this.iconData,
     required this.shouldBeWarning,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -2,6 +2,7 @@ use actix_web::{post, web, HttpRequest, HttpResponse, Responder};
 use argon2::{password_hash::SaltString, Argon2, PasswordHasher};
 use rand::rngs::OsRng;
 use sqlx::PgPool;
+use tracing::error;
 use uuid::Uuid;
 
 use crate::{
@@ -35,7 +36,7 @@ pub async fn register_user(
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::DatabaseConnection.to_response());
         }
@@ -58,7 +59,7 @@ pub async fn register_user(
             }
         }
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response());
         }
     }
@@ -79,7 +80,7 @@ pub async fn register_user(
     let password_hash = match argon2.hash_password(body.password.as_bytes(), &salt) {
         Ok(hash) => hash.to_string(),
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError().json(AppError::PasswordHash.to_response());
         }
     };
@@ -90,6 +91,7 @@ pub async fn register_user(
         password: password_hash,
         locale: body.locale,
         theme: body.theme,
+        timezone: body.timezone,
         is_admin: false,
         otp_verified: false,
         otp_base32: None,
@@ -125,7 +127,7 @@ pub async fn register_user(
     let insert_result = create_user(&mut *transaction, new_user.clone()).await;
 
     if let Err(e) = insert_result {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError().json(GenericResponse {
             code: "USER_INSERT".to_string(),
             message: "Failed to insert user into the database".to_string(),
@@ -146,14 +148,14 @@ pub async fn register_user(
     {
         Ok((access_token, refresh_token)) => (access_token, refresh_token),
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::TokenGeneration.to_response());
         }
     };
 
     if let Err(e) = transaction.commit().await {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::DatabaseTransaction.to_response());
     }

@@ -20,10 +20,10 @@ class ListDailyTrackingsModal extends StatefulWidget {
   final DateTime datetime;
 
   const ListDailyTrackingsModal({
-    Key? key,
+    super.key,
     required this.habitId,
     required this.datetime,
-  }) : super(key: key);
+  });
 
   @override
   ListDailyTrackingsModalState createState() => ListDailyTrackingsModalState();

@@ -24,8 +24,8 @@ use actix_web::{
 use chrono::Utc;
 use fluent::FluentArgs;
 use redis::Client;
-
 use sqlx::PgPool;
+use tracing::error;
 use uuid::Uuid;
 
 #[post("/")]
@@ -40,7 +40,7 @@ pub async fn create_challenge_participation(
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::DatabaseConnection.to_response());
         }
@@ -54,7 +54,7 @@ pub async fn create_challenge_participation(
             }
         },
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response());
         }
     };
@@ -68,7 +68,7 @@ pub async fn create_challenge_participation(
         created_at: Utc::now(),
         notifications_reminder_enabled: false,
         reminder_time: None,
-        timezone: None,
+        reminder_body: None,
     };
 
     let create_challenge_participation_result =
@@ -79,7 +79,7 @@ pub async fn create_challenge_participation(
         .await;
 
     if let Err(e) = create_challenge_participation_result {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::ChallengeParticipationCreation.to_response());
     }
@@ -106,7 +106,7 @@ pub async fn create_challenge_participation(
                 &translator.translate(
                     &creator.locale,
                     "user-joined-your-challenge-body",
-                    Some(&args),
+                    Some(args),
                 ),
                 redis_client,
                 "challenge_joined",
@@ -117,7 +117,7 @@ pub async fn create_challenge_participation(
     }
 
     if let Err(e) = transaction.commit().await {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::DatabaseTransaction.to_response());
     }

@@ -4,6 +4,7 @@ use actix_web::{
     HttpResponse, Responder,
 };
 use sqlx::PgPool;
+use tracing::error;
 
 use crate::{
     core::constants::errors::AppError,
@@ -21,7 +22,7 @@ pub async fn mark_notification_as_seen(
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::DatabaseConnection.to_response());
         }
@@ -30,12 +31,12 @@ pub async fn mark_notification_as_seen(
     if let Err(e) =
         helpers::notification::mark_notification_as_seen(&mut *transaction, params.id).await
     {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response());
     }
 
     if let Err(e) = transaction.commit().await {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::DatabaseTransaction.to_response());
     }

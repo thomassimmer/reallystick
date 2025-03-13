@@ -22,6 +22,7 @@ use actix_web::{
 };
 use serde_json::json;
 use sqlx::PgPool;
+use tracing::error;
 
 #[post("/merge/{habit_to_delete_id}/{habit_to_merge_on_id}")]
 pub async fn merge_habits(
@@ -37,35 +38,38 @@ pub async fn merge_habits(
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::DatabaseConnection.to_response());
         }
     };
 
-    let habit_to_delete = match get_habit_by_id(&mut *transaction, params.habit_to_delete_id).await {
-        Ok(r) => match r {
-            Some(habit) => habit,
-            None => return HttpResponse::NotFound().json(AppError::HabitNotFound.to_response()),
-        },
-        Err(e) => {
-            eprintln!("Error: {}", e);
-            return HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response());
-        }
-    };
-
-    let mut habit_to_merge_on = match get_habit_by_id(&mut *transaction, params.habit_to_merge_on_id)
-        .await
+    let habit_to_delete = match get_habit_by_id(&mut *transaction, params.habit_to_delete_id).await
     {
         Ok(r) => match r {
             Some(habit) => habit,
             None => return HttpResponse::NotFound().json(AppError::HabitNotFound.to_response()),
         },
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response());
         }
     };
+
+    let mut habit_to_merge_on =
+        match get_habit_by_id(&mut *transaction, params.habit_to_merge_on_id).await {
+            Ok(r) => match r {
+                Some(habit) => habit,
+                None => {
+                    return HttpResponse::NotFound().json(AppError::HabitNotFound.to_response())
+                }
+            },
+            Err(e) => {
+                error!("Error: {}", e);
+                return HttpResponse::InternalServerError()
+                    .json(AppError::DatabaseQuery.to_response());
+            }
+        };
 
     let category = match get_habit_category_by_id(&mut *transaction, body.category_id).await {
         Ok(r) => match r {
@@ -75,7 +79,7 @@ pub async fn merge_habits(
             }
         },
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response());
         }
     };
@@ -90,7 +94,7 @@ pub async fn merge_habits(
     let update_habit_result = habit::update_habit(&mut *transaction, &habit_to_merge_on).await;
 
     if let Err(e) = update_habit_result {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError().json(AppError::HabitUpdate.to_response());
     }
 
@@ -102,7 +106,7 @@ pub async fn merge_habits(
     .await;
 
     if let Err(e) = replace_habit_daily_trackings_result {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError().json(AppError::HabitUpdate.to_response());
     }
 
@@ -135,7 +139,7 @@ pub async fn merge_habits(
                                 .await;
 
                             if let Err(e) = replace_habit_participations_result {
-                                eprintln!("Error: {}", e);
+                                error!("Error: {}", e);
                                 return HttpResponse::InternalServerError()
                                     .json(AppError::HabitUpdate.to_response());
                             }
@@ -148,14 +152,14 @@ pub async fn merge_habits(
                                 .await;
 
                             if let Err(e) = delete_habit_participation_result {
-                                eprintln!("Error: {}", e);
+                                error!("Error: {}", e);
                                 return HttpResponse::InternalServerError()
                                     .json(AppError::HabitUpdate.to_response());
                             }
                         }
                     }
                     Err(e) => {
-                        eprintln!("Error: {}", e);
+                        error!("Error: {}", e);
                         return HttpResponse::InternalServerError()
                             .json(AppError::HabitUpdate.to_response());
                     }
@@ -163,20 +167,21 @@ pub async fn merge_habits(
             }
         }
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError().json(AppError::HabitUpdate.to_response());
         }
     }
 
-    let delete_habit_result = habit::delete_habit_by_id(&mut *transaction, habit_to_delete.id).await;
+    let delete_habit_result =
+        habit::delete_habit_by_id(&mut *transaction, habit_to_delete.id).await;
 
     if let Err(e) = delete_habit_result {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError().json(AppError::HabitUpdate.to_response());
     }
 
     if let Err(e) = transaction.commit().await {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::DatabaseTransaction.to_response());
     }

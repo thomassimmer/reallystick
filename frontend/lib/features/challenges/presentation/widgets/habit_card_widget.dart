@@ -16,12 +16,12 @@ class HabitCardWidget extends StatelessWidget {
   final bool hasParticipation;
 
   const HabitCardWidget({
-    Key? key,
+    super.key,
     required this.habit,
     required this.userLocale,
     required this.color,
     required this.hasParticipation,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

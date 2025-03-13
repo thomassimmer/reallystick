@@ -3,6 +3,7 @@ class Profile {
   String username;
   String locale;
   String theme;
+  String timezone;
   String? otpBase32;
   String? otpAuthUrl;
   bool otpVerified;
@@ -37,6 +38,7 @@ class Profile {
     required this.username,
     required this.locale,
     required this.theme,
+    required this.timezone,
     required this.otpBase32,
     required this.otpAuthUrl,
     required this.otpVerified,
@@ -70,6 +72,7 @@ class Profile {
     String? username,
     String? locale,
     String? theme,
+    String? timezone,
     String? otpBase32,
     String? otpAuthUrl,
     bool? otpVerified,
@@ -102,6 +105,7 @@ class Profile {
       username: username ?? this.username,
       locale: locale ?? this.locale,
       theme: theme ?? this.theme,
+      timezone: timezone ?? this.timezone,
       otpBase32: otpBase32 ?? this.otpBase32,
       otpAuthUrl: otpAuthUrl ?? this.otpAuthUrl,
       otpVerified: otpVerified ?? this.otpVerified,

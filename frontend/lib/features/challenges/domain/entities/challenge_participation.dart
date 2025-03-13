@@ -4,6 +4,9 @@ class ChallengeParticipation {
   String challengeId;
   String color;
   DateTime startDate;
+  bool notificationsReminderEnabled;
+  String? reminderTime;
+  String? reminderBody;
 
   ChallengeParticipation({
     required this.id,
@@ -11,5 +14,8 @@ class ChallengeParticipation {
     required this.challengeId,
     required this.color,
     required this.startDate,
+    required this.notificationsReminderEnabled,
+    required this.reminderTime,
+    required this.reminderBody,
   });
 }

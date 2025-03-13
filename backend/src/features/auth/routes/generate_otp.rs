@@ -1,6 +1,7 @@
 use crate::features::auth::structs::responses::GenerateOtpResponse;
 use crate::features::profile::helpers::profile::get_user_by_id;
 use crate::{core::constants::errors::AppError, features::auth::structs::models::Claims};
+use tracing::error;
 
 use actix_web::{
     get,
@@ -18,7 +19,7 @@ pub async fn generate(pool: web::Data<PgPool>, request_claims: ReqData<Claims>) 
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::DatabaseConnection.to_response());
         }
@@ -75,7 +76,7 @@ pub async fn generate(pool: web::Data<PgPool>, request_claims: ReqData<Claims>) 
     .await;
 
     if let Err(e) = transaction.commit().await {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::DatabaseTransaction.to_response());
     }
@@ -87,7 +88,7 @@ pub async fn generate(pool: web::Data<PgPool>, request_claims: ReqData<Claims>) 
             otp_auth_url: otp_auth_url.to_owned(),
         }),
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             HttpResponse::InternalServerError().json(AppError::UserUpdate.to_response())
         }
     }

@@ -19,6 +19,7 @@ use actix_web::{
     HttpResponse, Responder,
 };
 use sqlx::PgPool;
+use tracing::error;
 
 #[put("/{habit_daily_tracking_id}")]
 pub async fn update_habit_daily_tracking(
@@ -29,7 +30,7 @@ pub async fn update_habit_daily_tracking(
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::DatabaseConnection.to_response());
         }
@@ -47,7 +48,7 @@ pub async fn update_habit_daily_tracking(
             }
         },
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response());
         }
     };
@@ -59,7 +60,7 @@ pub async fn update_habit_daily_tracking(
             }
         }
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response());
         }
     }
@@ -71,7 +72,7 @@ pub async fn update_habit_daily_tracking(
             }
         }
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response());
         }
     }
@@ -88,7 +89,7 @@ pub async fn update_habit_daily_tracking(
             .await;
 
     if let Err(e) = transaction.commit().await {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::DatabaseTransaction.to_response());
     }
@@ -99,7 +100,7 @@ pub async fn update_habit_daily_tracking(
             habit_daily_tracking: Some(habit_daily_tracking.to_habit_daily_tracking_data()),
         }),
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             HttpResponse::InternalServerError()
                 .json(AppError::HabitDailyTrackingUpdate.to_response())
         }

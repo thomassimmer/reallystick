@@ -291,6 +291,7 @@ pub mod features {
         pub mod helpers {
             pub mod notification;
             pub mod redis_handler;
+            pub mod reminders;
         }
 
         pub mod routes {

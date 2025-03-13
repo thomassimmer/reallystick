@@ -12,10 +12,10 @@ class HabitCategoryReviewWidget extends StatelessWidget {
   final HabitCategory category;
 
   const HabitCategoryReviewWidget({
-    Key? key,
+    super.key,
     required this.habits,
     required this.category,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

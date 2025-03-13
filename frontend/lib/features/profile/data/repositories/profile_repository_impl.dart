@@ -65,6 +65,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
         UpdateProfileRequestModel(
           locale: profile.locale,
           theme: profile.theme,
+          timezone: profile.timezone,
           hasSeenQuestions: profile.hasSeenQuestions,
           ageCategory: profile.ageCategory,
           gender: profile.gender,

@@ -15,8 +15,8 @@ import 'package:reallystick/features/public_messages/presentation/widgets/messag
 
 class LikedMessagesScreen extends StatefulWidget {
   const LikedMessagesScreen({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   LikedMessagesScreenState createState() => LikedMessagesScreenState();

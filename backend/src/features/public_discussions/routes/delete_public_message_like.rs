@@ -20,6 +20,7 @@ use actix_web::{
     HttpResponse, Responder,
 };
 use sqlx::PgPool;
+use tracing::error;
 
 #[delete("/{message_id}")]
 pub async fn delete_public_message_like(
@@ -30,7 +31,7 @@ pub async fn delete_public_message_like(
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::DatabaseConnection.to_response());
         }
@@ -48,7 +49,7 @@ pub async fn delete_public_message_like(
             }
         },
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response());
         }
     };
@@ -69,7 +70,7 @@ pub async fn delete_public_message_like(
             }
         },
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response());
         }
     };
@@ -79,7 +80,7 @@ pub async fn delete_public_message_like(
             .await;
 
     if let Err(e) = delete_public_message_result {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::PublicMessageLikeDeletion.to_response());
     }
@@ -90,13 +91,13 @@ pub async fn delete_public_message_like(
         update_public_message_like_count(&mut *transaction, &public_message).await;
 
     if let Err(e) = update_public_message_result {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::PublicMessageUpdate.to_response());
     }
 
     if let Err(e) = transaction.commit().await {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::DatabaseTransaction.to_response());
     }

@@ -19,6 +19,7 @@ use actix_web::{
     HttpResponse, Responder,
 };
 use sqlx::PgPool;
+use tracing::error;
 
 #[put("/{challenge_participation_id}")]
 pub async fn update_challenge_participation(
@@ -30,7 +31,7 @@ pub async fn update_challenge_participation(
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::DatabaseConnection.to_response());
         }
@@ -57,7 +58,7 @@ pub async fn update_challenge_participation(
             }
         },
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response());
         }
     };
@@ -66,7 +67,7 @@ pub async fn update_challenge_participation(
     challenge_participation.start_date = body.start_date;
     challenge_participation.notifications_reminder_enabled = body.notifications_reminder_enabled;
     challenge_participation.reminder_time = body.reminder_time;
-    challenge_participation.timezone = body.timezone.clone();
+    challenge_participation.reminder_body = body.reminder_body.clone();
 
     let update_challenge_participation_result =
         challenge_participation::update_challenge_participation(
@@ -76,7 +77,7 @@ pub async fn update_challenge_participation(
         .await;
 
     if let Err(e) = transaction.commit().await {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::DatabaseTransaction.to_response());
     }
@@ -89,7 +90,7 @@ pub async fn update_challenge_participation(
             ),
         }),
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             HttpResponse::InternalServerError()
                 .json(AppError::ChallengeParticipationUpdate.to_response())
         }

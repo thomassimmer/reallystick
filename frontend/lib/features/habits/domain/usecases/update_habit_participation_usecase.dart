@@ -12,11 +12,17 @@ class UpdateHabitParticipationUsecase {
     required String habitParticipationId,
     required String color,
     required bool toGain,
+    required bool notificationsReminderEnabled,
+    required String? reminderTime,
+    required String? reminderBody,
   }) async {
     return await habitParticipationRepository.updateHabitParticipation(
       habitParticipationId: habitParticipationId,
       color: color,
       toGain: toGain,
+      notificationsReminderEnabled: notificationsReminderEnabled,
+      reminderTime: reminderTime,
+      reminderBody: reminderBody,
     );
   }
 }

@@ -18,6 +18,7 @@ use actix_web::{
 };
 use serde_json::json;
 use sqlx::PgPool;
+use tracing::error;
 
 #[put("/{challenge_id}")]
 pub async fn update_challenge(
@@ -29,7 +30,7 @@ pub async fn update_challenge(
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::DatabaseConnection.to_response());
         }
@@ -51,7 +52,7 @@ pub async fn update_challenge(
             }
         },
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response());
         }
     };
@@ -64,7 +65,7 @@ pub async fn update_challenge(
     let update_challenge_result = challenge::update_challenge(&mut *transaction, &challenge).await;
 
     if let Err(e) = transaction.commit().await {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::DatabaseTransaction.to_response());
     }
@@ -75,7 +76,7 @@ pub async fn update_challenge(
             challenge: Some(challenge.to_challenge_data()),
         }),
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             HttpResponse::InternalServerError().json(AppError::ChallengeUpdate.to_response())
         }
     }

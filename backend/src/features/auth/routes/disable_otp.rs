@@ -1,6 +1,7 @@
 use crate::features::auth::structs::responses::DisableOtpResponse;
 use crate::features::profile::helpers::profile::get_user_by_id;
 use crate::{core::constants::errors::AppError, features::auth::structs::models::Claims};
+use tracing::error;
 
 use actix_web::{
     get,
@@ -15,7 +16,7 @@ async fn disable(pool: web::Data<PgPool>, request_claims: ReqData<Claims>) -> im
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::DatabaseConnection.to_response());
         }
@@ -50,7 +51,7 @@ async fn disable(pool: web::Data<PgPool>, request_claims: ReqData<Claims>) -> im
     .await;
 
     if let Err(e) = transaction.commit().await {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::DatabaseTransaction.to_response());
     }
@@ -61,7 +62,7 @@ async fn disable(pool: web::Data<PgPool>, request_claims: ReqData<Claims>) -> im
             two_fa_enabled: false,
         }),
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             HttpResponse::InternalServerError().json(AppError::UserUpdate.to_response())
         }
     }

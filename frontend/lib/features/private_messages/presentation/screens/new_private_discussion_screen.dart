@@ -21,9 +21,9 @@ class NewPrivateDiscussionScreen extends StatefulWidget {
   final String recipientId;
 
   const NewPrivateDiscussionScreen({
-    Key? key,
+    super.key,
     required this.recipientId,
-  }) : super(key: key);
+  });
 
   @override
   NewPrivateDiscussionScreenState createState() =>

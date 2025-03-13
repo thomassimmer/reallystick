@@ -88,8 +88,9 @@ E: Executor<'a, Database = Postgres>,
             notifications_for_public_message_liked_enabled = $18,
             notifications_for_public_message_replies_enabled = $19,
             notifications_user_joined_your_challenge_enabled = $20,
-            notifications_user_duplicated_your_challenge_enabled = $21
-        WHERE id = $22
+            notifications_user_duplicated_your_challenge_enabled = $21,
+            timezone = $22
+        WHERE id = $23
         "#,
         user.username,
         user.locale,
@@ -112,6 +113,7 @@ E: Executor<'a, Database = Postgres>,
         user.notifications_for_public_message_replies_enabled, 
         user.notifications_user_joined_your_challenge_enabled, 
         user.notifications_user_duplicated_your_challenge_enabled, 
+        user.timezone,
         user.id,
     )
     .execute(executor)

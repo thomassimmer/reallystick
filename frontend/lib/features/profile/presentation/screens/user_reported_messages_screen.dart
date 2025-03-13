@@ -16,8 +16,8 @@ import 'package:reallystick/features/public_messages/presentation/widgets/messag
 
 class UserReportedMessagesScreen extends StatefulWidget {
   const UserReportedMessagesScreen({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   UserReportedMessagesScreenState createState() =>

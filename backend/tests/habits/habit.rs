@@ -490,6 +490,7 @@ pub async fn user_can_get_habit_statistics() {
         .set_json(UserUpdateRequest {
             locale: "fr".to_string(),
             theme: "light".to_string(),
+            timezone: "America/New_York".to_string(),
             has_seen_questions: true,
             age_category: Some("20-25".to_string()),
             gender: Some("male".to_string()),
@@ -591,6 +592,7 @@ pub async fn user_can_get_habit_statistics() {
         .set_json(UserUpdateRequest {
             locale: "fr".to_string(),
             theme: "light".to_string(),
+            timezone: "America/New_York".to_string(),
             has_seen_questions: true,
             age_category: Some("25-30".to_string()),
             gender: Some("female".to_string()),

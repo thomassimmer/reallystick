@@ -105,6 +105,9 @@ class HabitParticipationRepositoryImpl implements HabitParticipationRepository {
     required String habitParticipationId,
     required String color,
     required bool toGain,
+    required bool notificationsReminderEnabled,
+    required String? reminderTime,
+    required String? reminderBody,
   }) async {
     try {
       final habitParticipationDataModel =
@@ -113,6 +116,9 @@ class HabitParticipationRepositoryImpl implements HabitParticipationRepository {
         HabitParticipationUpdateRequestModel(
           color: color,
           toGain: toGain,
+          notificationsReminderEnabled: notificationsReminderEnabled,
+          reminderTime: reminderTime,
+          reminderBody: reminderBody,
         ),
       );
 

@@ -17,6 +17,7 @@ use actix_web::{
     HttpResponse, Responder,
 };
 use sqlx::PgPool;
+use tracing::error;
 
 #[get("/")]
 pub async fn get_devices(
@@ -27,7 +28,7 @@ pub async fn get_devices(
     let tokens = get_user_tokens(claims.user_id, &**pool).await;
 
     if let Err(e) = tokens {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response());
     }
 

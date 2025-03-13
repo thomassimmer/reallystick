@@ -4,6 +4,7 @@ use actix_web::{
     HttpResponse, Responder,
 };
 use sqlx::PgPool;
+use tracing::error;
 
 use crate::{
     core::constants::errors::AppError,
@@ -38,7 +39,7 @@ pub async fn save_keys(
             None => return HttpResponse::NotFound().json(AppError::UserNotFound.to_response()),
         },
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError().json(AppError::UserUpdate.to_response());
         }
     };
@@ -55,12 +56,12 @@ pub async fn save_keys(
     let save_keys_result = update_user_keys(&mut *transaction, &request_user).await;
 
     if let Err(e) = save_keys_result {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError().json(AppError::UserUpdate.to_response());
     }
 
     if let Err(e) = transaction.commit().await {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::DatabaseTransaction.to_response());
     }

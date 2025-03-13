@@ -16,6 +16,7 @@ use actix_web::{
 use redis::{AsyncCommands, Client};
 use serde_json::json;
 use sqlx::PgPool;
+use tracing::error;
 
 #[post("/me")]
 pub async fn post_profile_information(
@@ -27,7 +28,7 @@ pub async fn post_profile_information(
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::DatabaseConnection.to_response());
         }
@@ -39,13 +40,14 @@ pub async fn post_profile_information(
             None => return HttpResponse::NotFound().json(AppError::UserNotFound.to_response()),
         },
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError().json(AppError::UserUpdate.to_response());
         }
     };
 
     request_user.locale = body.locale.clone();
     request_user.theme = body.theme.clone();
+    request_user.timezone = body.timezone.clone();
     request_user.age_category = body.age_category.clone();
     request_user.gender = body.gender.clone();
     request_user.continent = body.continent.clone();
@@ -73,12 +75,12 @@ pub async fn post_profile_information(
     let updated_user_result = update_user(&mut *transaction, &request_user).await;
 
     if let Err(e) = updated_user_result {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError().json(AppError::UserUpdate.to_response());
     }
 
     if let Err(e) = transaction.commit().await {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::DatabaseTransaction.to_response());
     }
@@ -95,11 +97,11 @@ pub async fn post_profile_information(
                 )
                 .await;
             if let Err(e) = result {
-                eprintln!("Error: {}", e);
+                error!("Error: {}", e);
             }
         }
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
         }
     }
 

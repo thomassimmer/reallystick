@@ -15,6 +15,7 @@ use actix_web::{
     HttpResponse, Responder,
 };
 use sqlx::PgPool;
+use tracing::error;
 
 #[get("/parents/{message_id}")]
 pub async fn get_message_parents(
@@ -24,7 +25,7 @@ pub async fn get_message_parents(
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::DatabaseConnection.to_response());
         }
@@ -40,7 +41,7 @@ pub async fn get_message_parents(
             }
         },
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response());
         }
     };
@@ -57,7 +58,7 @@ pub async fn get_message_parents(
                 }
             },
             Err(e) => {
-                eprintln!("Error: {}", e);
+                error!("Error: {}", e);
                 return HttpResponse::InternalServerError()
                     .json(AppError::DatabaseQuery.to_response());
             }
@@ -67,7 +68,7 @@ pub async fn get_message_parents(
     }
 
     if let Err(e) = transaction.commit().await {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::DatabaseTransaction.to_response());
     }

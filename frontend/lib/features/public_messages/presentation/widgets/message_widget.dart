@@ -32,14 +32,14 @@ class MessageWidget extends StatelessWidget {
   final bool withReplies;
 
   const MessageWidget({
-    Key? key,
+    super.key,
     required this.threadId,
     required this.messageId,
     required this.color,
     required this.habitId,
     required this.challengeId,
     required this.withReplies,
-  }) : super(key: key);
+  });
 
   void _likeMessage(
       BuildContext context, bool hasLikedMessage, PublicMessage message) {

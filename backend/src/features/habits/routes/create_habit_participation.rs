@@ -19,6 +19,7 @@ use actix_web::{
 };
 use chrono::Utc;
 use sqlx::PgPool;
+use tracing::error;
 use uuid::Uuid;
 
 #[post("/")]
@@ -30,7 +31,7 @@ pub async fn create_habit_participation(
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::DatabaseConnection.to_response());
         }
@@ -42,7 +43,7 @@ pub async fn create_habit_participation(
             None => return HttpResponse::NotFound().json(AppError::HabitNotFound.to_response()),
         },
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response());
         }
     };
@@ -56,7 +57,7 @@ pub async fn create_habit_participation(
         created_at: Utc::now(),
         notifications_reminder_enabled: false,
         reminder_time: None,
-        timezone: None,
+        reminder_body: None,
     };
 
     let create_habit_participation_result =
@@ -64,7 +65,7 @@ pub async fn create_habit_participation(
             .await;
 
     if let Err(e) = transaction.commit().await {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::DatabaseTransaction.to_response());
     }
@@ -75,7 +76,7 @@ pub async fn create_habit_participation(
             habit_participation: Some(habit_participation.to_habit_participation_data()),
         }),
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             HttpResponse::InternalServerError()
                 .json(AppError::HabitParticipationCreation.to_response())
         }

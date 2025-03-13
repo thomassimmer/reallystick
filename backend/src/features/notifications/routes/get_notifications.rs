@@ -14,13 +14,14 @@ use actix_web::{
     HttpResponse, Responder,
 };
 use sqlx::PgPool;
+use tracing::error;
 
 #[get("/")]
 pub async fn get_notifications(claims: ReqData<Claims>, pool: web::Data<PgPool>) -> impl Responder {
     let notifications = match get_user_notifications(&**pool, claims.user_id).await {
         Ok(r) => r,
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response());
         }
     };

@@ -101,14 +101,14 @@ where
             to_gain = $2,
             notifications_reminder_enabled = $3,
             reminder_time = $4,
-            timezone = $5
+            reminder_body = $5
         WHERE id = $6
         "#,
         habit_participation.color,
         habit_participation.to_gain,
         habit_participation.notifications_reminder_enabled,
         habit_participation.reminder_time,
-        habit_participation.timezone,
+        habit_participation.reminder_body,
         habit_participation.id
     )
     .execute(executor)
@@ -134,7 +134,7 @@ where
             created_at,
             notifications_reminder_enabled,
             reminder_time,
-            timezone
+            reminder_body
         )
         VALUES ( $1, $2, $3, $4, $5, $6, $7, $8, $9 )
         "#,
@@ -146,7 +146,7 @@ where
         habit_participation.created_at,
         habit_participation.notifications_reminder_enabled,
         habit_participation.reminder_time,
-        habit_participation.timezone,
+        habit_participation.reminder_body,
     )
     .execute(executor)
     .await
@@ -208,4 +208,31 @@ where
     .await?;
 
     Ok(row.count.unwrap_or(0))
+}
+
+pub async fn get_habit_participants_to_send_reminder_notification<'a, E>(
+    executor: E,
+) -> Result<Vec<(Uuid, Uuid, Option<String>)>, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
+    let results = sqlx::query!(
+        r#"
+        SELECT hp.user_id, hp.habit_id, hp.reminder_body
+        FROM habit_participations hp
+        JOIN users u ON hp.user_id = u.id
+        WHERE 
+            u.timezone IS NOT NULL 
+            AND u.timezone <> ''
+            AND DATE_TRUNC('minute', NOW() AT TIME ZONE u.timezone)::TIME = DATE_TRUNC('minute', hp.reminder_time)
+            AND hp.notifications_reminder_enabled = true
+        "#,
+    )
+    .fetch_all(executor)
+    .await?;
+
+    Ok(results
+        .iter()
+        .map(|a| (a.user_id, a.habit_id, a.reminder_body.clone()))
+        .collect())
 }

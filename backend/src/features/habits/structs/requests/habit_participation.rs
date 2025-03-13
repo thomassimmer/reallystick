@@ -18,7 +18,7 @@ pub struct HabitParticipationUpdateRequest {
     pub to_gain: bool,
     pub notifications_reminder_enabled: bool,
     pub reminder_time: Option<NaiveTime>,
-    pub timezone: Option<String>,
+    pub reminder_body: Option<String>,
 }
 
 #[derive(Deserialize)]

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class StatusWidget extends StatelessWidget {
   final bool isSeen;
 
-  const StatusWidget({Key? key, required this.isSeen}) : super(key: key);
+  const StatusWidget({super.key, required this.isSeen});
 
   @override
   Widget build(BuildContext context) {

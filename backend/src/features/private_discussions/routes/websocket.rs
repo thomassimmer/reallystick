@@ -7,7 +7,7 @@ use actix_ws::{self};
 use chrono::{DateTime, Utc};
 use jsonwebtoken::{decode, DecodingKey, Validation};
 use sqlx::PgPool;
-use tracing::info;
+use tracing::{debug, error, info};
 use uuid::Uuid;
 
 use crate::core::constants::errors::AppError;
@@ -42,7 +42,7 @@ async fn broadcast_ws(
             token_data.claims
         }
         Err(error) => {
-            eprintln!("Error: {}", error);
+            error!("Error: {}", error);
             return HttpResponse::Unauthorized().json(AppError::InvalidAccessToken.to_response());
         }
     };
@@ -50,7 +50,7 @@ async fn broadcast_ws(
     let (res, mut session, _msg_stream) = match actix_ws::handle(&req, stream) {
         Ok(r) => r,
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::Unauthorized()
                 .json(AppError::FailedToCreateSocketSession.to_response());
         }
@@ -62,7 +62,7 @@ async fn broadcast_ws(
             return HttpResponse::Unauthorized().json(AppError::UserTokenNotFound.to_response());
         }
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::DatabaseConnection.to_response());
         }
@@ -88,13 +88,13 @@ async fn broadcast_ws(
         loop {
             interval.tick().await;
 
-            info!("Sent a ping to {}.", request_claims.username);
+            debug!("Sent a ping to {}.", request_claims.username);
 
             if session.ping(b"").await.is_err() {
                 break;
             }
 
-            info!("Received a pong from {}.", request_claims.username);
+            debug!("Received a pong from {}.", request_claims.username);
         }
 
         channels_data

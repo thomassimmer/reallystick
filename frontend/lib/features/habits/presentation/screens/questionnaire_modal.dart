@@ -22,8 +22,7 @@ class QuestionnaireModal extends StatefulWidget {
   final Profile profile;
 
   const QuestionnaireModal(
-      {Key? key, required this.scrollController, required this.profile})
-      : super(key: key);
+      {super.key, required this.scrollController, required this.profile});
 
   @override
   QuestionnaireModalState createState() => QuestionnaireModalState();

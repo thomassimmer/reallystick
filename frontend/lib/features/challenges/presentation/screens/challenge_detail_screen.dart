@@ -9,6 +9,7 @@ import 'package:reallystick/core/presentation/widgets/custom_app_bar.dart';
 import 'package:reallystick/core/presentation/widgets/full_width_list_view.dart';
 import 'package:reallystick/core/ui/colors.dart';
 import 'package:reallystick/core/ui/extensions.dart';
+import 'package:reallystick/features/challenges/domain/entities/challenge_participation.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_bloc.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_events.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_states.dart';
@@ -19,6 +20,7 @@ import 'package:reallystick/features/challenges/presentation/widgets/analytics_c
 import 'package:reallystick/features/challenges/presentation/widgets/daily_tracking_carousel_with_start_date_widget.dart';
 import 'package:reallystick/features/challenges/presentation/widgets/daily_tracking_carousel_without_start_date_widget.dart';
 import 'package:reallystick/features/challenges/presentation/widgets/list_of_concerned_habits.dart';
+import 'package:reallystick/features/challenges/presentation/widgets/set_reminder_modal.dart';
 import 'package:reallystick/features/habits/presentation/helpers/translations.dart';
 import 'package:reallystick/features/habits/presentation/screens/color_picker_modal.dart';
 import 'package:reallystick/features/habits/presentation/widgets/add_activity_button.dart';
@@ -33,9 +35,9 @@ class ChallengeDetailsScreen extends StatefulWidget {
   final String challengeId;
 
   const ChallengeDetailsScreen({
-    Key? key,
+    super.key,
     required this.challengeId,
-  }) : super(key: key);
+  });
 
   @override
   ChallengeDetailsScreenState createState() => ChallengeDetailsScreenState();
@@ -85,7 +87,7 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
     context.read<ChallengeBloc>().add(deleteChallengeEvent);
   }
 
-  void _openColorPicker(String challengeParticipationId) async {
+  void _openColorPicker(ChallengeParticipation challengeParticipation) async {
     await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -100,9 +102,14 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
           onColorSelected: (selectedColor) {
             final updateChallengeParticipationEvent =
                 UpdateChallengeParticipationEvent(
-              challengeParticipationId: challengeParticipationId,
+              challengeParticipationId: challengeParticipation.id,
               color: selectedColor.toShortString(),
-              startDate: DateTime.now(), // TODO : Modal to create
+              startDate: DateTime
+                  .now(), // TODO : Modal to create if user started this challenge before
+              notificationsReminderEnabled:
+                  challengeParticipation.notificationsReminderEnabled,
+              reminderTime: challengeParticipation.reminderTime,
+              reminderBody: challengeParticipation.reminderBody,
             );
             context
                 .read<ChallengeBloc>()
@@ -110,6 +117,42 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
 
             Navigator.of(context).pop();
           },
+        );
+      },
+    );
+  }
+
+  void _showNotificationsReminderBottomSheet({
+    required ChallengeParticipation challengeParticipation,
+    required String challengeLongName,
+  }) {
+    showModalBottomSheet(
+      context: context,
+      isDismissible: true,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
+      ),
+      constraints: BoxConstraints(
+        maxWidth: 700,
+      ),
+      builder: (BuildContext context) {
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom:
+                MediaQuery.of(context).viewInsets.bottom, // Adjust for keyboard
+            left: 16.0,
+            right: 16.0,
+            top: 16.0,
+          ),
+          child: Wrap(
+            children: [
+              SetReminderModal(
+                challengeParticipation: challengeParticipation,
+                challengeLongName: challengeLongName,
+              )
+            ],
+          ),
         );
       },
     );
@@ -239,29 +282,13 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
 
           return Scaffold(
             appBar: CustomAppBar(
-              title: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 16.0),
-                    child: Text(
-                      challenge.icon,
-                      style: TextStyle(
-                        fontSize: 25,
-                      ),
-                    ),
-                  ),
-                  Flexible(
-                    child: Text(
-                      name,
-                      style: context.typographies.headingSmall.copyWith(
-                        color: challengeColor,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                    ),
-                  ),
-                ],
+              title: Text(
+                name,
+                style: context.typographies.headingSmall.copyWith(
+                  color: challengeColor,
+                ),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
               ),
               actions: [
                 if (challenge.creator == profileState.profile.id ||
@@ -272,7 +299,7 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
                       if (value == 'quit') {
                         _quitChallenge(challengeParticipation!.id);
                       } else if (value == 'change_color') {
-                        _openColorPicker(challengeParticipation!.id);
+                        _openColorPicker(challengeParticipation!);
                       } else if (value == 'update') {
                         context.goNamed(
                           'updateChallenge',
@@ -290,6 +317,11 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
                         _shareChallenge();
                       } else if (value == 'duplicate') {
                         _openDuplicateChallengeModal();
+                      } else if (value == 'set_reminder') {
+                        _showNotificationsReminderBottomSheet(
+                          challengeParticipation: challengeParticipation!,
+                          challengeLongName: name,
+                        );
                       }
                     },
                     itemBuilder: (BuildContext context) => [
@@ -303,6 +335,11 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
                           value: 'change_color',
                           child:
                               Text(AppLocalizations.of(context)!.changeColor),
+                        ),
+                        PopupMenuItem(
+                          value: 'set_reminder',
+                          child:
+                              Text(AppLocalizations.of(context)!.notifications),
                         ),
                         PopupMenuItem(
                           value: 'share',
@@ -335,9 +372,8 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
                 ? AddActivityButton(
                     action: _showAddDailyTrackingBottomSheet,
                     color: challengeColor,
-                    label:
-                        null //AppLocalizations.of(context)!.addDailyObjective,
-                    )
+                    label: null,
+                  )
                 : challengeParticipation == null
                     ? FloatingActionButton.extended(
                         onPressed: _joinChallenge,
@@ -352,8 +388,7 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
             body: RefreshIndicator(
               onRefresh: _pullRefresh,
               child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
+                padding: const EdgeInsets.symmetric(vertical: 16),
                 child: FullWidthListView(
                   children: [
                     Container(
@@ -365,8 +400,15 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
                       child: Padding(
                           padding: const EdgeInsets.all(15.0),
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
+                              Text(
+                                challenge.icon,
+                                style: TextStyle(
+                                  fontSize: 25,
+                                ),
+                              ),
+                              SizedBox(height: 8),
                               if (challengeStatistics != null) ...[
                                 Text(
                                   challenge.startDate == null
@@ -390,7 +432,9 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
                               Text(
                                 description,
                                 style: TextStyle(
-                                    color: context.colors.textOnPrimary),
+                                  color: context.colors.textOnPrimary,
+                                ),
+                                textAlign: TextAlign.center,
                               ),
                             ],
                           )),

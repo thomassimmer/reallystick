@@ -26,6 +26,7 @@ use reallystick::{
     },
 };
 use sqlx::{migrate, Connection, Executor, PgConnection, PgPool, Pool, Postgres};
+use tracing::error;
 use uuid::Uuid;
 
 pub async fn spawn_app(
@@ -96,6 +97,7 @@ async fn configure_database(config: &DatabaseSettings) -> Pool<Postgres> {
         password: password_hash,
         locale: "fr".to_string(),
         theme: "light".to_string(),
+        timezone: "America/New_York".to_string(),
         is_admin: true,
         otp_verified: false,
         otp_base32: None,
@@ -137,7 +139,7 @@ async fn configure_database(config: &DatabaseSettings) -> Pool<Postgres> {
         .expect("Failed to create database.");
 
     if let Err(e) = result {
-        eprintln!("{}", e);
+        error!("{}", e);
     }
 
     connection_pool

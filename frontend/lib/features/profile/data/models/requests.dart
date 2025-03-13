@@ -1,6 +1,7 @@
 class UpdateProfileRequestModel {
   final String locale;
   final String theme;
+  final String timezone;
   final bool hasSeenQuestions;
   final String? ageCategory;
   final String? gender;
@@ -24,6 +25,7 @@ class UpdateProfileRequestModel {
   const UpdateProfileRequestModel({
     required this.locale,
     required this.theme,
+    required this.timezone,
     required this.hasSeenQuestions,
     this.ageCategory,
     this.gender,
@@ -48,6 +50,7 @@ class UpdateProfileRequestModel {
     return {
       'locale': locale,
       'theme': theme,
+      'timezone': timezone,
       'has_seen_questions': hasSeenQuestions,
       'age_category': ageCategory,
       'gender': gender,

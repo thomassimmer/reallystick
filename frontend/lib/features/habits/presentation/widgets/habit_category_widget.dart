@@ -16,12 +16,12 @@ class HabitCategoryWidget extends StatelessWidget {
   final List<HabitParticipation> habitParticipations;
 
   const HabitCategoryWidget({
-    Key? key,
+    super.key,
     required this.habits,
     required this.category,
     required this.habitDailyTrackings,
     required this.habitParticipations,
-  }) : super(key: key);
+  });
 
   @override
   SliverList build(BuildContext context) {

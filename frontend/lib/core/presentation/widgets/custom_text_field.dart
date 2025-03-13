@@ -33,8 +33,8 @@ class CustomTextField extends StatefulWidget {
     this.onFieldSubmitted,
     this.inputFormatters,
     this.enabled,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   CustomTextFieldState createState() => CustomTextFieldState();

@@ -4,7 +4,7 @@ use redis::Client;
 use serde_json::{json, Value};
 use sqlx::{Pool, Postgres};
 use tokio::sync::Mutex;
-use tracing::info;
+use tracing::{error, info};
 
 use crate::{
     core::structs::redis_messages::{
@@ -47,7 +47,7 @@ pub async fn handle_redis_messages(
     pub_sub.subscribe("challenge_joined").unwrap();
     pub_sub.subscribe("challenge_duplicated").unwrap();
 
-    println!("Listening for notifications...");
+    info!("Listening for notifications...");
 
     while let Ok(msg) = pub_sub.get_message() {
         let payload: String = msg.get_payload().unwrap();
@@ -135,7 +135,7 @@ pub async fn handle_notification(
                     let user = match get_user_by_id(&*connection_pool, event.recipient).await {
                         Ok(Some(u)) => u,
                         Err(e) => {
-                            eprintln!("Error: {}", e);
+                            error!("Error: {}", e);
                             return;
                         }
                         _ => return,
@@ -144,7 +144,7 @@ pub async fn handle_notification(
                     let tokens = match get_user_tokens(event.recipient, &*connection_pool).await {
                         Ok(r) => r,
                         Err(e) => {
-                            eprintln!("Error: {}", e);
+                            error!("Error: {}", e);
                             return;
                         }
                     };
@@ -174,7 +174,7 @@ pub async fn handle_notification(
                             );
 
                             if let Err(e) = session.text(json.to_string()).await {
-                                eprintln!("Error: {}", e);
+                                error!("Error: {}", e);
                                 channels_data
                                     .remove_key(event.recipient, token_id, *session_uuid)
                                     .await;
@@ -225,7 +225,7 @@ pub async fn handle_notification(
                                 if token.is_mobile == Some(true) && token.browser.is_none() {
                                     if let Some(fcm_token) = token.fcm_token {
                                         send_push_notification(
-                                            token_manager.clone(),
+                                            &token_manager,
                                             fcm_token,
                                             title,
                                             body,
@@ -241,13 +241,13 @@ pub async fn handle_notification(
             }
         }
         Err(e) => {
-            eprintln!("❌ Failed to deserialize message: {}", e);
+            error!("❌ Failed to deserialize message: {}", e);
         }
     }
 }
 
 pub async fn send_push_notification(
-    token_manager: Arc<Mutex<TokenManager>>,
+    token_manager: &Arc<Mutex<TokenManager>>,
     fcm_token: String,
     title: String,
     body: String,
@@ -266,7 +266,7 @@ pub async fn send_push_notification(
         &fcm_token,
         Some(notification),
         payload,
-        &token_manager,
+        token_manager,
         "reallystick-d807d",
     )
     .await

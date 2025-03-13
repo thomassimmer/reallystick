@@ -7,6 +7,7 @@ pub struct UserRegisterRequest {
     pub password: String,
     pub locale: String,
     pub theme: String,
+    pub timezone: String,
     pub public_key: String,
     pub private_key_encrypted: String,
     pub salt_used_to_derive_key_from_password: String,

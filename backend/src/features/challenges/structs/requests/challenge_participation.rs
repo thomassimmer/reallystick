@@ -18,7 +18,7 @@ pub struct ChallengeParticipationUpdateRequest {
     pub start_date: DateTime<Utc>,
     pub notifications_reminder_enabled: bool,
     pub reminder_time: Option<NaiveTime>, // UTC
-    pub timezone: Option<String>,
+    pub reminder_body: Option<String>,
 }
 
 #[derive(Deserialize)]

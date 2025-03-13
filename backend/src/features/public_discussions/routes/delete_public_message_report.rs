@@ -17,6 +17,7 @@ use actix_web::{
     HttpResponse, Responder,
 };
 use sqlx::PgPool;
+use tracing::error;
 
 #[delete("/{message_report_id}")]
 pub async fn delete_public_message_report(
@@ -27,7 +28,7 @@ pub async fn delete_public_message_report(
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::DatabaseConnection.to_response());
         }
@@ -48,7 +49,7 @@ pub async fn delete_public_message_report(
             }
         },
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response());
         }
     };
@@ -60,7 +61,7 @@ pub async fn delete_public_message_report(
     .await;
 
     if let Err(e) = transaction.commit().await {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::DatabaseTransaction.to_response());
     }
@@ -71,7 +72,7 @@ pub async fn delete_public_message_report(
             message_report: None,
         }),
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             HttpResponse::InternalServerError()
                 .json(AppError::PublicMessageReportDeletion.to_response())
         }

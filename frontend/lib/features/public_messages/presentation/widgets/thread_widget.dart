@@ -16,12 +16,12 @@ class ThreadWidget extends StatelessWidget {
   final String? challengeId;
 
   const ThreadWidget({
-    Key? key,
+    super.key,
     required this.thread,
     required this.color,
     required this.habitId,
     required this.challengeId,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

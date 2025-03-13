@@ -4,6 +4,7 @@ use actix_web::{
     HttpResponse, Responder,
 };
 use sqlx::PgPool;
+use tracing::error;
 
 use crate::{
     core::{constants::errors::AppError, structs::responses::StatisticsResponse},
@@ -49,7 +50,7 @@ pub async fn statistics(
     let user_count = get_user_count(&**pool)
         .await
         .map_err(|e| {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::DatabaseConnection.to_response());
         })
@@ -57,7 +58,7 @@ pub async fn statistics(
     let user_token_count = get_user_token_count(&**pool)
         .await
         .map_err(|e| {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::DatabaseConnection.to_response());
         })
@@ -65,7 +66,7 @@ pub async fn statistics(
     let habit_count = get_habit_count(&**pool)
         .await
         .map_err(|e| {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::DatabaseConnection.to_response());
         })
@@ -73,7 +74,7 @@ pub async fn statistics(
     let habit_category_count = get_habit_category_count(&**pool)
         .await
         .map_err(|e| {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::DatabaseConnection.to_response());
         })
@@ -81,7 +82,7 @@ pub async fn statistics(
     let habit_participation_count = get_habit_participation_count(&**pool)
         .await
         .map_err(|e| {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::DatabaseConnection.to_response());
         })
@@ -89,7 +90,7 @@ pub async fn statistics(
     let habit_daily_tracking_count = get_habit_daily_tracking_count(&**pool)
         .await
         .map_err(|e| {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::DatabaseConnection.to_response());
         })
@@ -97,7 +98,7 @@ pub async fn statistics(
     let challenge_count = get_challenge_count(&**pool)
         .await
         .map_err(|e| {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::DatabaseConnection.to_response());
         })
@@ -105,7 +106,7 @@ pub async fn statistics(
     let challenge_participation_count = get_challenge_participation_count(&**pool)
         .await
         .map_err(|e| {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::DatabaseConnection.to_response());
         })
@@ -113,7 +114,7 @@ pub async fn statistics(
     let challenge_daily_tracking_count = get_challenge_daily_tracking_count(&**pool)
         .await
         .map_err(|e| {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::DatabaseConnection.to_response());
         })
@@ -121,7 +122,7 @@ pub async fn statistics(
     let unit_count = get_unit_count(&**pool)
         .await
         .map_err(|e| {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::DatabaseConnection.to_response());
         })
@@ -129,7 +130,7 @@ pub async fn statistics(
     let notification_count = get_notification_count(&**pool)
         .await
         .map_err(|e| {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::DatabaseConnection.to_response());
         })
@@ -137,7 +138,7 @@ pub async fn statistics(
     let private_discussion_count = get_private_discussion_count(&**pool)
         .await
         .map_err(|e| {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::DatabaseConnection.to_response());
         })
@@ -145,7 +146,7 @@ pub async fn statistics(
     let private_message_count = get_private_message_count(&**pool)
         .await
         .map_err(|e| {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::DatabaseConnection.to_response());
         })
@@ -153,7 +154,7 @@ pub async fn statistics(
     let public_message_count = get_public_message_count(&**pool)
         .await
         .map_err(|e| {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::DatabaseConnection.to_response());
         })
@@ -161,7 +162,7 @@ pub async fn statistics(
     let public_message_like_count = get_public_message_like_count(&**pool)
         .await
         .map_err(|e| {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::DatabaseConnection.to_response());
         })
@@ -169,7 +170,7 @@ pub async fn statistics(
     let public_message_report_count = get_public_message_report_count(&**pool)
         .await
         .map_err(|e| {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::DatabaseConnection.to_response());
         })

@@ -10,8 +10,8 @@ import 'package:reallystick/features/profile/presentation/blocs/profile/profile_
 
 class StatisticsScreen extends StatefulWidget {
   const StatisticsScreen({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   StatisticsScreenState createState() => StatisticsScreenState();

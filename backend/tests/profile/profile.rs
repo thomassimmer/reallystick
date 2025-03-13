@@ -53,6 +53,7 @@ pub async fn user_can_update_profile() {
         .set_json(UserUpdateRequest {
             locale: "fr".to_string(),
             theme: "light".to_string(),
+            timezone: "America/New_York".to_string(),
             age_category: Some("20-25".to_string()),
             gender: Some("male".to_string()),
             continent: Some("europe".to_string()),

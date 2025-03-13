@@ -12,11 +12,17 @@ class UpdateChallengeParticipationUsecase {
     required String challengeParticipationId,
     required String color,
     required DateTime startDate,
+    required bool notificationsReminderEnabled,
+    required String? reminderTime,
+    required String? reminderBody,
   }) async {
     return await challengeParticipationRepository.updateChallengeParticipation(
       challengeParticipationId: challengeParticipationId,
       color: color,
       startDate: startDate,
+      notificationsReminderEnabled: notificationsReminderEnabled,
+      reminderTime: reminderTime,
+      reminderBody: reminderBody,
     );
   }
 }

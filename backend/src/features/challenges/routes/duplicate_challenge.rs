@@ -32,6 +32,7 @@ use actix_web::{
 use fluent::FluentArgs;
 use redis::Client;
 use sqlx::PgPool;
+use tracing::error;
 use uuid::Uuid;
 
 #[get("/duplicate/{challenge_id}")]
@@ -46,7 +47,7 @@ pub async fn duplicate_challenge(
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::DatabaseConnection.to_response());
         }
@@ -62,7 +63,7 @@ pub async fn duplicate_challenge(
             }
         },
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response());
         }
     };
@@ -82,7 +83,7 @@ pub async fn duplicate_challenge(
         challenge::create_challenge(&mut *transaction, &challenge_to_create).await;
 
     if let Err(e) = create_challenge_result {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError().json(AppError::ChallengeCreation.to_response());
     }
 
@@ -92,7 +93,7 @@ pub async fn duplicate_challenge(
     let challenge_daily_tracking_to_duplicate = match get_challenge_daily_trackings_result {
         Ok(challenge_daily_tracking) => challenge_daily_tracking,
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response());
         }
     };
@@ -120,7 +121,7 @@ pub async fn duplicate_challenge(
             .await;
 
     if let Err(e) = create_challenge_daily_tracking_result {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::ChallengeDailyTrackingCreation.to_response());
     }
@@ -151,7 +152,7 @@ pub async fn duplicate_challenge(
                 &translator.translate(
                     &creator.locale,
                     "user-duplicated-your-challenge-body",
-                    Some(&args),
+                    Some(args),
                 ),
                 redis_client,
                 "challenge_duplicated",
@@ -162,7 +163,7 @@ pub async fn duplicate_challenge(
     }
 
     if let Err(e) = transaction.commit().await {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::DatabaseTransaction.to_response());
     }

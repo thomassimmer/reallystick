@@ -5,6 +5,7 @@ use crate::features::auth::structs::models::{Claims, TokenCache};
 use actix_web::web::ReqData;
 use actix_web::{get, web, HttpResponse, Responder};
 use sqlx::PgPool;
+use tracing::error;
 
 #[get("")]
 pub async fn log_user_out(
@@ -13,7 +14,7 @@ pub async fn log_user_out(
     cached_tokens: web::Data<TokenCache>,
 ) -> impl Responder {
     if let Err(e) = delete_token(request_claims.jti, &**pool).await {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::DatabaseTransaction.to_response());
     }

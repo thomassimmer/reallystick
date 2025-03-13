@@ -15,8 +15,8 @@ import 'package:reallystick/features/public_messages/presentation/widgets/messag
 
 class WrittenMessagesScreen extends StatefulWidget {
   const WrittenMessagesScreen({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   WrittenMessagesScreenState createState() => WrittenMessagesScreenState();

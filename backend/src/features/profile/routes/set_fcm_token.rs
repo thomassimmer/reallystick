@@ -19,6 +19,7 @@ use actix_web::{
 use redis::{AsyncCommands, Client};
 use serde_json::json;
 use sqlx::PgPool;
+use tracing::error;
 
 #[post("/save-fcm-token")]
 pub async fn set_fcm_token(
@@ -30,7 +31,7 @@ pub async fn set_fcm_token(
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::DatabaseConnection.to_response());
         }
@@ -51,7 +52,7 @@ pub async fn set_fcm_token(
             }
         },
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::DatabaseConnection.to_response());
         }
@@ -62,12 +63,12 @@ pub async fn set_fcm_token(
     let updated_token_result = update_token(token.clone(), &mut *transaction).await;
 
     if let Err(e) = updated_token_result {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError().json(AppError::UserUpdate.to_response());
     }
 
     if let Err(e) = transaction.commit().await {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::DatabaseTransaction.to_response());
     }
@@ -85,11 +86,11 @@ pub async fn set_fcm_token(
                 )
                 .await;
             if let Err(e) = result {
-                eprintln!("Error: {}", e);
+                error!("Error: {}", e);
             }
         }
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
         }
     }
 

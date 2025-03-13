@@ -14,13 +14,13 @@ class MultiUnitSelectDropdown extends StatefulWidget {
   final Function(HashSet<String>) onUnitsChanged;
 
   const MultiUnitSelectDropdown({
-    Key? key,
+    super.key,
     required this.options,
     this.initialSelectedValues = const [],
     required this.userLocale,
     required this.errors,
     required this.onUnitsChanged,
-  }) : super(key: key);
+  });
 
   @override
   MultiUnitSelectDropdownState createState() => MultiUnitSelectDropdownState();

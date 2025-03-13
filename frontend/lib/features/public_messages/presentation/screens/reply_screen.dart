@@ -36,12 +36,12 @@ class ReplyScreen extends StatefulWidget {
   final String? challengeId;
 
   const ReplyScreen({
-    Key? key,
+    super.key,
     required this.threadId,
     required this.messageId,
     required this.habitId,
     required this.challengeId,
-  }) : super(key: key);
+  });
 
   @override
   ReplyScreenState createState() => ReplyScreenState();

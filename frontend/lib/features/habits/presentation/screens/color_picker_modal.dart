@@ -5,9 +5,9 @@ class ColorPickerModal extends StatelessWidget {
   final void Function(AppColor selectedColor) onColorSelected;
 
   const ColorPickerModal({
-    Key? key,
+    super.key,
     required this.onColorSelected,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

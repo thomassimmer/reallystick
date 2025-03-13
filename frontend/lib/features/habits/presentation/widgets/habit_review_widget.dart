@@ -11,9 +11,9 @@ class HabitReviewWidget extends StatelessWidget {
   final Habit habit;
 
   const HabitReviewWidget({
-    Key? key,
+    super.key,
     required this.habit,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

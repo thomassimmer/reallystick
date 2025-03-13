@@ -16,6 +16,7 @@ use actix_web::{
     HttpResponse, Responder,
 };
 use sqlx::PgPool;
+use tracing::error;
 
 #[put("/{habit_participation_id}")]
 pub async fn update_habit_participation(
@@ -26,7 +27,7 @@ pub async fn update_habit_participation(
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::DatabaseConnection.to_response());
         }
@@ -44,7 +45,7 @@ pub async fn update_habit_participation(
             }
         },
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response());
         }
     };
@@ -53,14 +54,14 @@ pub async fn update_habit_participation(
     habit_participation.to_gain = body.to_gain;
     habit_participation.notifications_reminder_enabled = body.notifications_reminder_enabled;
     habit_participation.reminder_time = body.reminder_time;
-    habit_participation.timezone = body.timezone.clone();
+    habit_participation.reminder_body = body.reminder_body.clone();
 
     let update_habit_participation_result =
         habit_participation::update_habit_participation(&mut *transaction, &habit_participation)
             .await;
 
     if let Err(e) = transaction.commit().await {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::DatabaseTransaction.to_response());
     }
@@ -71,7 +72,7 @@ pub async fn update_habit_participation(
             habit_participation: Some(habit_participation.to_habit_participation_data()),
         }),
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             HttpResponse::InternalServerError()
                 .json(AppError::HabitParticipationUpdate.to_response())
         }

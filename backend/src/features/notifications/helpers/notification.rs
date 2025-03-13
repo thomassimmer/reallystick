@@ -2,6 +2,7 @@ use actix_web::web::Data;
 use redis::{AsyncCommands, Client};
 use serde_json::json;
 use sqlx::{postgres::PgQueryResult, Executor, Postgres};
+use tracing::error;
 use uuid::Uuid;
 
 use crate::{
@@ -154,15 +155,15 @@ pub async fn generate_notification<'a, E>(
                     )
                     .await;
                 if let Err(e) = result {
-                    eprintln!("Error: {}", e);
+                    error!("Error: {}", e);
                 }
             }
             Err(e) => {
-                eprintln!("Error: {}", e);
+                error!("Error: {}", e);
             }
         },
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
         }
     }
 }

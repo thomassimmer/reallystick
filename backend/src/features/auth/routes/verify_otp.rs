@@ -9,9 +9,9 @@ use actix_web::{
     web::{self, ReqData},
     HttpResponse, Responder,
 };
-
 use sqlx::PgPool;
 use totp_rs::{Algorithm, Secret, TOTP};
+use tracing::error;
 
 #[post("/verify")]
 pub async fn verify(
@@ -22,7 +22,7 @@ pub async fn verify(
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::DatabaseConnection.to_response());
         }
@@ -69,7 +69,7 @@ pub async fn verify(
     .await;
 
     if let Err(e) = transaction.commit().await {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::DatabaseTransaction.to_response());
     }
@@ -80,7 +80,7 @@ pub async fn verify(
             otp_verified: true,
         }),
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             HttpResponse::InternalServerError().json(AppError::UserUpdate.to_response())
         }
     }

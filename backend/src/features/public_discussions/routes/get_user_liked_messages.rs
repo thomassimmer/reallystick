@@ -14,6 +14,7 @@ use actix_web::{
     HttpResponse, Responder,
 };
 use sqlx::PgPool;
+use tracing::error;
 
 #[get("/liked/")]
 pub async fn get_user_liked_messages(
@@ -32,7 +33,7 @@ pub async fn get_user_liked_messages(
                 .collect(),
         }),
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             HttpResponse::InternalServerError().json(AppError::PublicMessageCreation.to_response())
         }
     }

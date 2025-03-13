@@ -19,6 +19,7 @@ use actix_web::{
     HttpResponse, Responder,
 };
 use sqlx::PgPool;
+use tracing::error;
 
 #[delete("/")]
 pub async fn delete_public_message(
@@ -31,7 +32,7 @@ pub async fn delete_public_message(
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::DatabaseConnection.to_response());
         }
@@ -49,7 +50,7 @@ pub async fn delete_public_message(
             }
         },
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response());
         }
     };
@@ -73,7 +74,7 @@ pub async fn delete_public_message(
         public_message::delete_public_message(&mut *transaction, &public_message).await;
 
     if let Err(e) = delete_public_message_result {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::PublicMessageDeletion.to_response());
     }
@@ -88,7 +89,7 @@ pub async fn delete_public_message(
                 update_public_message_reply_count(&mut *transaction, &message).await;
 
             if let Err(e) = update_public_message_result {
-                eprintln!("Error: {}", e);
+                error!("Error: {}", e);
                 return HttpResponse::InternalServerError()
                     .json(AppError::PublicMessageUpdate.to_response());
             }
@@ -96,7 +97,7 @@ pub async fn delete_public_message(
     }
 
     if let Err(e) = transaction.commit().await {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::DatabaseTransaction.to_response());
     }

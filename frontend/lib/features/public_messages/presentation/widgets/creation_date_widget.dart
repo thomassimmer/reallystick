@@ -9,10 +9,10 @@ class DateWidget extends StatefulWidget {
   final String userLocale;
 
   const DateWidget({
-    Key? key,
+    super.key,
     required this.datetime,
     required this.userLocale,
-  }) : super(key: key);
+  });
 
   @override
   State<DateWidget> createState() => _DateWidgetState();

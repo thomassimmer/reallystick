@@ -32,7 +32,7 @@ class ChallengeUpdateFormBloc
       state.copyWith(
         name: nameMap,
         isValid: Formz.validate([
-          ...state.description.values.toList(),
+          ...state.description.values,
           state.icon,
           state.startDate,
         ]),
@@ -57,7 +57,7 @@ class ChallengeUpdateFormBloc
       state.copyWith(
         description: descriptionMap,
         isValid: Formz.validate([
-          ...state.name.values.toList(),
+          ...state.name.values,
           state.icon,
           state.startDate,
         ]),
@@ -73,8 +73,8 @@ class ChallengeUpdateFormBloc
       state.copyWith(
         icon: icon,
         isValid: Formz.validate([
-          ...state.name.values.toList(),
-          ...state.description.values.toList(),
+          ...state.name.values,
+          ...state.description.values,
           state.startDate,
         ]),
       ),
@@ -89,8 +89,8 @@ class ChallengeUpdateFormBloc
       state.copyWith(
         startDate: startDate,
         isValid: Formz.validate([
-          ...state.name.values.toList(),
-          ...state.description.values.toList(),
+          ...state.name.values,
+          ...state.description.values,
           state.icon,
         ]),
       ),

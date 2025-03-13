@@ -25,13 +25,12 @@ class DailyTrackingCarouselWithStartDateWidget extends StatefulWidget {
   final bool displayTitle;
 
   DailyTrackingCarouselWithStartDateWidget(
-      {Key? key,
+      {super.key,
       required this.challengeId,
       required this.challengeDailyTrackings,
       required this.challengeColor,
       required this.canOpenDayBoxes,
-      required this.displayTitle})
-      : super(key: key);
+      required this.displayTitle});
 
   @override
   DailyTrackingCarouselWithStartDateWidgetState createState() =>

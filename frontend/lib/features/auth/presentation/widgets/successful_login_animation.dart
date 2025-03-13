@@ -6,10 +6,10 @@ class SuccessfulLoginAnimation extends StatefulWidget {
   final VoidCallback? onAnimationComplete;
 
   const SuccessfulLoginAnimation({
-    Key? key,
+    super.key,
     required this.isVisible,
     this.onAnimationComplete,
-  }) : super(key: key);
+  });
 
   @override
   SuccessfulLoginAnimationState createState() =>

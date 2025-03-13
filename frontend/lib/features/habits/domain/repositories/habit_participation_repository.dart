@@ -18,6 +18,9 @@ abstract class HabitParticipationRepository {
     required String habitParticipationId,
     required String color,
     required bool toGain,
+    required bool notificationsReminderEnabled,
+    required String? reminderTime,
+    required String? reminderBody,
   });
   Future<Either<DomainError, void>> deleteHabitParticipation({
     required String habitParticipationId,

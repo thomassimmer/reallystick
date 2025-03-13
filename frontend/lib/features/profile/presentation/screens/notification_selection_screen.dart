@@ -105,7 +105,7 @@ class NotificationSelectionScreen extends StatelessWidget {
                   : null,
             ),
           );
-        }).toList(),
+        }),
       ],
     );
   }

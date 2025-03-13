@@ -2,14 +2,17 @@
 
 use std::fs::File;
 use std::net::TcpListener;
+use std::time::Duration;
 
 use crate::configuration::{DatabaseSettings, Settings};
+use crate::core::helpers::translation::Translator;
 use crate::core::middlewares::token_validator::TokenValidator;
 use crate::core::routes::health_check::health_check;
 
 use crate::core::routes::statistics::statistics;
 use crate::features::auth::structs::models::TokenCache;
 use crate::features::notifications::helpers::redis_handler::handle_redis_messages;
+use crate::features::notifications::helpers::reminders::send_reminder_notifications;
 use crate::features::oauth_fcm::token_manager::create_shared_token_manager;
 use crate::features::private_discussions::routes::websocket::broadcast_ws;
 use crate::features::private_discussions::structs::models::channels_data::ChannelsData;
@@ -27,6 +30,7 @@ use redis::Client;
 use sqlx::postgres::PgPoolOptions;
 use sqlx::{PgPool, Pool, Postgres};
 use tokio::task;
+use tokio::time::interval;
 
 pub fn run(listener: TcpListener, configuration: Settings) -> Result<Server, std::io::Error> {
     let connection_pool = get_connection_pool(&configuration.database);
@@ -45,6 +49,11 @@ pub fn run(listener: TcpListener, configuration: Settings) -> Result<Server, std
     let connection_pool_for_redis_handler = connection_pool.clone();
     let channels_data_for_redis_handler = channels_data.clone();
     let users_data_for_redis_handler = users_data.clone();
+    let shared_token_manager_for_redis_handler = shared_token_manager.clone();
+
+    let connection_pool_for_reminder_handler = connection_pool.clone();
+    let users_data_for_reminder_handler = users_data.clone();
+    let shared_token_manager_for_reminder_handler = shared_token_manager.clone();
 
     task::spawn(async move {
         handle_redis_messages(
@@ -52,9 +61,31 @@ pub fn run(listener: TcpListener, configuration: Settings) -> Result<Server, std
             connection_pool_for_redis_handler,
             channels_data_for_redis_handler,
             users_data_for_redis_handler,
-            shared_token_manager,
+            shared_token_manager_for_redis_handler,
         )
         .await;
+    });
+
+    task::spawn(async move {
+        let mut interval = interval(Duration::from_secs(60));
+        let translator = Translator::new();
+
+        loop {
+            interval.tick().await;
+
+            let connection_pool_for_reminder_handler = connection_pool_for_reminder_handler.clone();
+            let users_data_for_reminder_handler = users_data_for_reminder_handler.clone();
+            let shared_token_manager_for_reminder_handler =
+                shared_token_manager_for_reminder_handler.clone();
+
+            send_reminder_notifications(
+                connection_pool_for_reminder_handler,
+                users_data_for_reminder_handler,
+                shared_token_manager_for_reminder_handler,
+                &translator,
+            )
+            .await;
+        }
     });
 
     let server = HttpServer::new(move || {

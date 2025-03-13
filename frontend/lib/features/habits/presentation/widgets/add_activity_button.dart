@@ -10,8 +10,8 @@ class AddActivityButton extends StatelessWidget {
     required this.action,
     this.color,
     required this.label,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

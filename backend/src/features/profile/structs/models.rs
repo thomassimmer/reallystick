@@ -16,6 +16,7 @@ pub struct User {
     pub password: String, // case sensitive
     pub locale: String,
     pub theme: String,
+    pub timezone: String,
 
     pub is_admin: bool,
 
@@ -59,6 +60,7 @@ impl User {
             username: self.username.to_owned(),
             locale: self.locale.to_owned(),
             theme: self.theme.to_owned(),
+            timezone: self.timezone.to_owned(),
             is_admin: self.is_admin,
             public_key: self.public_key.to_owned(),
             private_key_encrypted: self.private_key_encrypted.to_owned(),
@@ -123,6 +125,7 @@ pub struct UserData {
     pub username: String,
     pub locale: String,
     pub theme: String,
+    pub timezone: String,
 
     pub is_admin: bool,
 

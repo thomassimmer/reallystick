@@ -603,6 +603,9 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
       habitParticipationId: event.habitParticipationId,
       color: event.color,
       toGain: true,
+      notificationsReminderEnabled: event.notificationsReminderEnabled,
+      reminderTime: event.reminderTime,
+      reminderBody: event.reminderBody,
     );
 
     resultUpdateHabitParticipationUsecase.fold(

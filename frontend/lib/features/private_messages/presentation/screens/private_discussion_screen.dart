@@ -32,9 +32,9 @@ class PrivateDiscussionScreen extends StatefulWidget {
   final String discussionId;
 
   const PrivateDiscussionScreen({
-    Key? key,
+    super.key,
     required this.discussionId,
-  }) : super(key: key);
+  });
 
   @override
   PrivateDiscussionScreenState createState() => PrivateDiscussionScreenState();

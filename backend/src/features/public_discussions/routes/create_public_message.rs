@@ -31,6 +31,7 @@ use actix_web::{
 use fluent::FluentArgs;
 use redis::Client;
 use sqlx::PgPool;
+use tracing::error;
 use uuid::Uuid;
 
 #[post("/")]
@@ -45,7 +46,7 @@ pub async fn create_public_message(
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::DatabaseConnection.to_response());
         }
@@ -71,7 +72,7 @@ pub async fn create_public_message(
                 }
             }
             Err(e) => {
-                eprintln!("Error: {}", e);
+                error!("Error: {}", e);
                 return HttpResponse::InternalServerError()
                     .json(AppError::DatabaseQuery.to_response());
             }
@@ -88,7 +89,7 @@ pub async fn create_public_message(
                 }
             }
             Err(e) => {
-                eprintln!("Error: {}", e);
+                error!("Error: {}", e);
                 return HttpResponse::InternalServerError()
                     .json(AppError::DatabaseQuery.to_response());
             }
@@ -107,7 +108,7 @@ pub async fn create_public_message(
                     }
                 },
                 Err(e) => {
-                    eprintln!("Error: {}", e);
+                    error!("Error: {}", e);
                     return HttpResponse::InternalServerError()
                         .json(AppError::DatabaseQuery.to_response());
                 }
@@ -149,7 +150,7 @@ pub async fn create_public_message(
         public_message::create_public_message(&mut *transaction, &new_public_message).await;
 
     if let Err(e) = create_public_message_result {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::PublicMessageCreation.to_response());
     }
@@ -161,7 +162,7 @@ pub async fn create_public_message(
             update_public_message_reply_count(&mut *transaction, &message).await;
 
         if let Err(e) = update_public_message_result {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::PublicMessageUpdate.to_response());
         }
@@ -190,7 +191,7 @@ pub async fn create_public_message(
                     &translator.translate(
                         &creator.locale,
                         "user-replied-to-your-message-body",
-                        Some(&args),
+                        Some(args),
                     ),
                     redis_client,
                     "public_message_replied",
@@ -202,7 +203,7 @@ pub async fn create_public_message(
     }
 
     if let Err(e) = transaction.commit().await {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::DatabaseTransaction.to_response());
     }

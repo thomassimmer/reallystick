@@ -517,6 +517,9 @@ class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
       challengeParticipationId: event.challengeParticipationId,
       color: event.color,
       startDate: event.startDate,
+      notificationsReminderEnabled: event.notificationsReminderEnabled,
+      reminderTime: event.reminderTime,
+      reminderBody: event.reminderBody,
     );
 
     resultUpdateChallengeParticipationUsecase.fold(

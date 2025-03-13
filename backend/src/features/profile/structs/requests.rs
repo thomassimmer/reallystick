@@ -5,6 +5,7 @@ use uuid::Uuid;
 pub struct UserUpdateRequest {
     pub locale: String,
     pub theme: String,
+    pub timezone: String,
 
     pub has_seen_questions: bool,
     pub age_category: Option<String>,

@@ -1,6 +1,6 @@
-use std::collections::HashSet;
-
 use sqlx::{postgres::PgQueryResult, Executor, PgPool, Postgres};
+use std::collections::HashSet;
+use tracing::error;
 use uuid::Uuid;
 
 use crate::features::challenges::structs::models::{
@@ -306,7 +306,7 @@ pub async fn fetch_challenge_statistics(
     .await?;
 
     if let Err(e) = transaction.commit().await {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return Err(e);
     }
 

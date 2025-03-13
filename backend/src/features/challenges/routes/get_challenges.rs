@@ -11,6 +11,7 @@ use actix_web::{
     HttpResponse, Responder,
 };
 use sqlx::PgPool;
+use tracing::error;
 
 #[get("/")]
 pub async fn get_challenges(pool: Data<PgPool>, request_claims: ReqData<Claims>) -> impl Responder {
@@ -27,7 +28,7 @@ pub async fn get_challenges(pool: Data<PgPool>, request_claims: ReqData<Claims>)
             challenges: challenges.iter().map(|h| h.to_challenge_data()).collect(),
         }),
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response())
         }
     }

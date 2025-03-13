@@ -5,10 +5,10 @@ class FullWidthColumn extends StatelessWidget {
   final double maxContentWidth;
 
   const FullWidthColumn({
-    Key? key,
+    super.key,
     required this.children,
     this.maxContentWidth = 700,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

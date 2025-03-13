@@ -18,6 +18,7 @@ use actix_web::{
     HttpResponse, Responder,
 };
 use sqlx::PgPool;
+use tracing::error;
 
 #[get("/")]
 pub async fn get_public_messages(
@@ -29,7 +30,7 @@ pub async fn get_public_messages(
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::DatabaseConnection.to_response());
         }
@@ -55,7 +56,7 @@ pub async fn get_public_messages(
                 }
             }
             Err(e) => {
-                eprintln!("Error: {}", e);
+                error!("Error: {}", e);
                 return HttpResponse::InternalServerError()
                     .json(AppError::DatabaseQuery.to_response());
             }
@@ -72,7 +73,7 @@ pub async fn get_public_messages(
                 }
             }
             Err(e) => {
-                eprintln!("Error: {}", e);
+                error!("Error: {}", e);
                 return HttpResponse::InternalServerError()
                     .json(AppError::DatabaseQuery.to_response());
             }
@@ -80,7 +81,8 @@ pub async fn get_public_messages(
     }
 
     let get_messages_result = if let Some(challenge_id) = params.challenge_id {
-        public_message::get_first_public_messages_of_challenge(&mut *transaction, challenge_id).await
+        public_message::get_first_public_messages_of_challenge(&mut *transaction, challenge_id)
+            .await
     } else if let Some(habit_id) = params.habit_id {
         public_message::get_first_public_messages_of_habit(&mut *transaction, habit_id).await
     } else {
@@ -88,7 +90,7 @@ pub async fn get_public_messages(
     };
 
     if let Err(e) = transaction.commit().await {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::DatabaseTransaction.to_response());
     }
@@ -102,7 +104,7 @@ pub async fn get_public_messages(
                 .collect(),
         }),
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             HttpResponse::InternalServerError().json(AppError::PublicMessageCreation.to_response())
         }
     }

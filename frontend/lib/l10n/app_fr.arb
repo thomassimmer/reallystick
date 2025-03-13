@@ -91,6 +91,22 @@
   "dateTimeIsInThePastError": "La date ne peut pas être dans le passé.",
   "dayOfProgram": "Jour dans le programme",
   "defaultError": "Une erreur s'est produite. Veuillez réessayer.",
+  "defaultReminderChallenge": "N'oublie pas de faire ton défi : {challenge}",
+  "@defaultReminderChallenge": {
+    "placeholders": {
+      "challenge": {
+        "type": "String"
+      }
+    }
+  },
+  "defaultReminderHabit": "N'oublie pas de suivre ton habitude : {habit}",
+  "@defaultReminderHabit": {
+    "placeholders": {
+      "habit": {
+        "type": "String"
+      }
+    }
+  },
   "delete": "Supprimer",
   "deleteAccount": "Supprimer mon compte",
   "deleteChallenge": "Supprimer ce défi",
@@ -134,6 +150,7 @@
     }
   },
   "enable": "Activer",
+  "enableNotificationsReminder": "Activer les notifications de rappel",
   "endDate": "Date de fin",
   "enterOneTimePassword": "Entrez le code à 6 chiffres généré par votre application pour confirmer votre authentification.",
   "enterPassword": "Entrez votre mot de passe.",

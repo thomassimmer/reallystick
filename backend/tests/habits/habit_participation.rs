@@ -68,7 +68,7 @@ pub async fn user_updates_a_habit_participation(
             to_gain: false,
             notifications_reminder_enabled: false,
             reminder_time: None,
-            timezone: None,
+            reminder_body: None,
         })
         .to_request();
     let response = test::call_service(&app, req).await;

@@ -5,8 +5,7 @@ import 'package:reallystick/features/users/domain/entities/user_public_data.dart
 class NewDiscussionWithUserWidget extends StatelessWidget {
   final UserPublicData user;
 
-  const NewDiscussionWithUserWidget({Key? key, required this.user})
-      : super(key: key);
+  const NewDiscussionWithUserWidget({super.key, required this.user});
 
   @override
   Widget build(BuildContext context) {

@@ -19,11 +19,11 @@ class HabitWidget extends StatelessWidget {
   final List<HabitDailyTracking> habitDailyTrackings;
 
   const HabitWidget({
-    Key? key,
+    super.key,
     required this.habit,
     required this.habitParticipation,
     required this.habitDailyTrackings,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

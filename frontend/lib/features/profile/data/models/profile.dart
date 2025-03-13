@@ -6,6 +6,7 @@ class ProfileDataModel extends Equatable {
   final String username;
   final String locale;
   final String theme;
+  final String timezone;
   final String? otpBase32;
   final String? otpAuthUrl;
   final bool otpVerified;
@@ -40,6 +41,7 @@ class ProfileDataModel extends Equatable {
     required this.username,
     required this.locale,
     required this.theme,
+    required this.timezone,
     required this.otpBase32,
     required this.otpAuthUrl,
     required this.otpVerified,
@@ -74,6 +76,7 @@ class ProfileDataModel extends Equatable {
         username: json['username'] as String,
         locale: json['locale'] as String,
         theme: json['theme'] as String,
+        timezone: json['timezone'] as String,
         otpBase32: json['otp_base32'] as String?,
         otpAuthUrl: json['otp_auth_url'] as String?,
         otpVerified: json['otp_verified'] as bool,
@@ -114,6 +117,7 @@ class ProfileDataModel extends Equatable {
         username: username,
         locale: locale,
         theme: theme,
+        timezone: timezone,
         otpBase32: otpBase32,
         otpAuthUrl: otpAuthUrl,
         otpVerified: otpVerified,
@@ -153,6 +157,7 @@ class ProfileDataModel extends Equatable {
         username,
         locale,
         theme,
+        timezone,
         otpBase32,
         otpAuthUrl,
         otpVerified,

@@ -4,6 +4,7 @@ use crate::{
 };
 use actix_web::{get, web::Data, HttpResponse, Responder};
 use sqlx::PgPool;
+use tracing::error;
 
 #[get("/")]
 pub async fn get_units(pool: Data<PgPool>) -> impl Responder {
@@ -15,7 +16,7 @@ pub async fn get_units(pool: Data<PgPool>) -> impl Responder {
             units: units.iter().map(|h| h.to_unit_data()).collect(),
         }),
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response())
         }
     }

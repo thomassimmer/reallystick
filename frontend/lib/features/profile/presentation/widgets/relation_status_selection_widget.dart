@@ -9,8 +9,7 @@ class RelationStatusSelectionWidget extends StatelessWidget {
   final void Function(BuildContext context, Profile profile) updateProfile;
 
   const RelationStatusSelectionWidget(
-      {Key? key, required this.profile, required this.updateProfile})
-      : super(key: key);
+      {super.key, required this.profile, required this.updateProfile});
 
   @override
   Widget build(BuildContext context) {

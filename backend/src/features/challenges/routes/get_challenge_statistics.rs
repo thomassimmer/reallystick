@@ -1,5 +1,6 @@
 use actix_web::{get, web::Data, HttpResponse, Responder};
 use sqlx::PgPool;
+use tracing::error;
 
 use crate::{
     core::constants::errors::AppError,
@@ -23,7 +24,7 @@ pub async fn get_challenge_statistics(
                 cache.update(new_data).await;
             }
             Err(err) => {
-                eprintln!("Error: {}", err);
+                error!("Error: {}", err);
                 return HttpResponse::InternalServerError()
                     .json(AppError::DatabaseTransaction.to_response());
             }

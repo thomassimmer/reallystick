@@ -31,6 +31,7 @@ use fluent::FluentArgs;
 use redis::{AsyncCommands, Client};
 use serde_json::json;
 use sqlx::PgPool;
+use tracing::error;
 use uuid::Uuid;
 
 #[post("/")]
@@ -45,7 +46,7 @@ pub async fn create_private_message(
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::DatabaseConnection.to_response());
         }
@@ -60,7 +61,7 @@ pub async fn create_private_message(
             }
         }
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response());
         }
     };
@@ -90,7 +91,7 @@ pub async fn create_private_message(
         private_message::create_private_message(&mut *transaction, &private_message).await;
 
     if let Err(e) = create_private_message_result {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::PrivateMessageCreation.to_response());
     }
@@ -104,7 +105,7 @@ pub async fn create_private_message(
     {
         Ok(r) => r,
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response());
         }
     };
@@ -125,7 +126,7 @@ pub async fn create_private_message(
                 )
                 .await;
             if let Err(e) = result {
-                eprintln!("Error: {}", e);
+                error!("Error: {}", e);
             }
 
             if let Some(recipient_participation) = recipients.iter().next() {
@@ -159,7 +160,7 @@ pub async fn create_private_message(
                                 body: Some(translator.translate(
                                     &recipient.locale,
                                     "message-created-body",
-                                    Some(&args),
+                                    Some(args),
                                 )),
                                 url: Some(url),
                             })
@@ -167,18 +168,18 @@ pub async fn create_private_message(
                         )
                         .await;
                     if let Err(e) = result {
-                        eprintln!("Error: {}", e);
+                        error!("Error: {}", e);
                     }
                 }
             }
         }
         Err(e) => {
-            eprintln!("Error: {}", e);
+            error!("Error: {}", e);
         }
     }
 
     if let Err(e) = transaction.commit().await {
-        eprintln!("Error: {}", e);
+        error!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::DatabaseTransaction.to_response());
     }

@@ -5,10 +5,10 @@ class FullWidthScrollView extends StatelessWidget {
   final double maxContentWidth;
 
   const FullWidthScrollView({
-    Key? key,
+    super.key,
     required this.slivers,
     this.maxContentWidth = 700, // Max width constraint for content
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

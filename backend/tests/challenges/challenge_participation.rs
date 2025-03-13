@@ -68,7 +68,7 @@ pub async fn user_updates_a_challenge_participation(
             start_date: Utc::now() + Duration::new(24 * 3600 * 2, 0),
             notifications_reminder_enabled: false,
             reminder_time: None,
-            timezone: None,
+            reminder_body: None,
         })
         .to_request();
     let response = test::call_service(&app, req).await;

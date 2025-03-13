@@ -23,13 +23,12 @@ class DailyTrackingCarouselWidget extends StatefulWidget {
   final bool displayTitle;
 
   DailyTrackingCarouselWidget(
-      {Key? key,
+      {super.key,
       required this.habit,
       required this.habitDailyTrackings,
       required this.habitColor,
       required this.canOpenDayBoxes,
-      required this.displayTitle})
-      : super(key: key);
+      required this.displayTitle});
 
   @override
   DailyTrackingCarouselWidgetState createState() =>

@@ -207,10 +207,16 @@ class DeleteHabitParticipationEvent extends HabitEvent {
 class UpdateHabitParticipationEvent extends HabitEvent {
   final String habitParticipationId;
   final String color;
+  final bool notificationsReminderEnabled;
+  final String? reminderTime;
+  final String? reminderBody;
 
   const UpdateHabitParticipationEvent({
     required this.habitParticipationId,
     required this.color,
+    required this.notificationsReminderEnabled,
+    required this.reminderTime,
+    required this.reminderBody,
   });
 
   @override

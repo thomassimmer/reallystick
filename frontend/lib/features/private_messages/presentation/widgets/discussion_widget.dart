@@ -13,8 +13,7 @@ import 'package:reallystick/features/users/presentation/blocs/user/user_states.d
 class DiscussionWidget extends StatelessWidget {
   final PrivateDiscussion discussion;
 
-  const DiscussionWidget({Key? key, required this.discussion})
-      : super(key: key);
+  const DiscussionWidget({super.key, required this.discussion});
 
   @override
   Widget build(BuildContext context) {

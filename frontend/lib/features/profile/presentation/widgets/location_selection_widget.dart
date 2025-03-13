@@ -13,10 +13,10 @@ class LocationSelectionWidget extends StatefulWidget {
   final void Function(BuildContext context, Profile profile) updateProfile;
 
   const LocationSelectionWidget({
-    Key? key,
+    super.key,
     required this.profile,
     required this.updateProfile,
-  }) : super(key: key);
+  });
 
   @override
   LocationSelectionState createState() => LocationSelectionState();
@@ -40,7 +40,8 @@ class LocationSelectionState extends State<LocationSelectionWidget> {
 
     result.fold(
       (error) {
-        GlobalSnackBar.show(context: context, message: ErrorMessage(error.messageKey));
+        GlobalSnackBar.show(
+            context: context, message: ErrorMessage(error.messageKey));
       },
       (newCountries) {
         List<String> newRegions =

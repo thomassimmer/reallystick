@@ -109,6 +109,9 @@ class ChallengeParticipationRepositoryImpl
     required String challengeParticipationId,
     required String color,
     required DateTime startDate,
+    required bool notificationsReminderEnabled,
+    required String? reminderTime,
+    required String? reminderBody,
   }) async {
     try {
       final challengeParticipationDataModel =
@@ -117,6 +120,9 @@ class ChallengeParticipationRepositoryImpl
         ChallengeParticipationUpdateRequestModel(
           color: color,
           startDate: startDate,
+          notificationsReminderEnabled: notificationsReminderEnabled,
+          reminderTime: reminderTime,
+          reminderBody: reminderBody,
         ),
       );
 

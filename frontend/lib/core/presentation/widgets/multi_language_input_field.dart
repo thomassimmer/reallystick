@@ -9,12 +9,12 @@ class MultiLanguageInputField extends StatefulWidget {
   final Map<String, String?> errors;
 
   const MultiLanguageInputField({
-    Key? key,
+    super.key,
     required this.initialTranslations,
     required this.onTranslationsChanged,
     required this.label,
     required this.errors,
-  }) : super(key: key);
+  });
 
   @override
   MultiLanguageInputFieldState createState() => MultiLanguageInputFieldState();
@@ -76,7 +76,7 @@ class MultiLanguageInputFieldState extends State<MultiLanguageInputField> {
               ),
             );
           },
-        ).toList()
+        )
       ],
     );
   }

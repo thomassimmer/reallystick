@@ -14,6 +14,7 @@ use futures_util::future::LocalBoxFuture;
 use sqlx::PgPool;
 use std::future::{ready, Ready};
 use std::rc::Rc;
+use tracing::error;
 
 pub struct TokenValidator {}
 
@@ -97,7 +98,7 @@ where
                                     }
                                 }
                                 Err(e) => {
-                                    eprintln!("Error: {}", e);
+                                    error!("Error: {}", e);
                                     return Ok(req.into_response(
                                         HttpResponse::InternalServerError()
                                             .json(AppError::DatabaseQuery.to_response())
@@ -116,7 +117,7 @@ where
                     Ok(res.map_into_left_body())
                 }
                 Err(e) => {
-                    eprintln!("Error: {}", e);
+                    error!("Error: {}", e);
                     Ok(req.into_response(
                         HttpResponse::Unauthorized()
                             .json(AppError::InvalidAccessToken.to_response())

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 
 class Background extends StatelessWidget {
-  const Background({Key? key}) : super(key: key);
+  const Background({Key? key});
 
   @override
   Widget build(BuildContext context) {

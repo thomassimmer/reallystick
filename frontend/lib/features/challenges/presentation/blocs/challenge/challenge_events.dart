@@ -198,11 +198,17 @@ class UpdateChallengeParticipationEvent extends ChallengeEvent {
   final String challengeParticipationId;
   final String color;
   final DateTime startDate;
+  final bool notificationsReminderEnabled;
+  final String? reminderTime;
+  final String? reminderBody;
 
   const UpdateChallengeParticipationEvent({
     required this.challengeParticipationId,
     required this.color,
     required this.startDate,
+    required this.notificationsReminderEnabled,
+    required this.reminderTime,
+    required this.reminderBody,
   });
 
   @override
@@ -210,6 +216,8 @@ class UpdateChallengeParticipationEvent extends ChallengeEvent {
         challengeParticipationId,
         color,
         startDate,
+        notificationsReminderEnabled,
+        reminderTime,
       ];
 }
 
