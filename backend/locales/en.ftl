@@ -8,4 +8,4 @@ user-liked-your-message-title = New like
 user-liked-your-message-body = { $username } just liked your message.
 user-replied-to-your-message-title = New reply
 user-replied-to-your-message-body = { $username } just replied to your message.
-reminder-title = Remindeer
+reminder-title = Reminder

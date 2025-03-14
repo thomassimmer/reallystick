@@ -111,16 +111,21 @@ class SetReminderModalState extends State<SetReminderModal> {
             },
             child: Text(
               DateFormat.Hm(userLocale).format(reminderTime),
-              style: context.typographies.body,
+              style: context.typographies.body.copyWith(
+                color: notificationsReminderEnabled
+                    ? context.colors.primary
+                    : context.colors.hint,
+              ),
             ),
           ),
           const SizedBox(height: 16),
           CustomTextField(
             initialValue: reminderBody,
+            enabled: notificationsReminderEnabled,
             maxLines: null,
             minLines: 3,
             keyboardType: TextInputType.multiline,
-            label: AppLocalizations.of(context)!.note,
+            label: AppLocalizations.of(context)!.message,
             onChanged: (value) {
               setState(() {
                 reminderBody = value;
