@@ -126,7 +126,6 @@ class RootScreenState extends State<RootScreen> {
                           'Really',
                           style: context.typographies.headingSmall.copyWith(
                             color: context.colors.background,
-                            fontWeight: FontWeight.w600,
                           ),
                         ),
                         Text(

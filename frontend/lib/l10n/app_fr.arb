@@ -112,7 +112,7 @@
   "deleteChallenge": "Supprimer ce défi",
   "deleteMessage": "Supprimer ce message",
   "description": "Description",
-  "devices": "Mes appareils",
+  "devices": "Appareils",
   "deviceInfo": "{isMobile, select, true {Appareil mobile} false {Ordinateur} other {Inconnu}}{os, select, null {. } other { exécutant {os}. }}{browser, select, null {Application} other {Navigateur : {browser}}}. {model, select, null {} other {Modèle: {model}.}}",
   "@deviceInfo": {
     "placeholders": {

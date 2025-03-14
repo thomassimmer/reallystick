@@ -47,6 +47,10 @@ class ProfileScreen extends StatelessWidget {
                     'reported-messages'),
               ]),
               _buildSection(context, AppLocalizations.of(context)!.account, [
+                _buildCardTile(
+                    context,
+                    AppLocalizations.of(context)!.profileInformation,
+                    'profile-information'),
                 _buildCardTile(context, AppLocalizations.of(context)!.language,
                     'language'),
                 _buildCardTile(
@@ -68,9 +72,7 @@ class ProfileScreen extends StatelessWidget {
                 _buildCardTile(context, AppLocalizations.of(context)!.twoFA,
                     'two-factor-authentication'),
                 _buildCardTile(
-                    context,
-                    AppLocalizations.of(context)!.profileInformation,
-                    'profile-information'),
+                    context, AppLocalizations.of(context)!.devices, 'devices'),
               ]),
               if (userIsAdmin)
                 _buildSection(context, AppLocalizations.of(context)!.admin, [
@@ -84,10 +86,8 @@ class ProfileScreen extends StatelessWidget {
                       AppLocalizations.of(context)!.statistics, 'statistics'),
                 ]),
               _buildSection(context, AppLocalizations.of(context)!.other, [
-                _buildCardTile(
-                    context, AppLocalizations.of(context)!.devices, 'devices'),
-                _buildCardTile(
-                    context, AppLocalizations.of(context)!.about, 'about'),
+                // _buildCardTile(
+                //     context, AppLocalizations.of(context)!.about, 'about'),
               ]),
               _buildActionButtons(context),
               SizedBox(height: 20),

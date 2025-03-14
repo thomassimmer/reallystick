@@ -25,7 +25,7 @@
   "category": "Category",
   "changeColor": "Change color",
   "changePassword": "Change Password",
-  "changeRecoveryCode": "Changer Recovery Code",
+  "changeRecoveryCode": "Change Recovery Code",
   "challengeCreated": "Your challenge was successfully created.",
   "challengeDuplicated": "This challenge was successfully copied.",
   "challengeDailyTracking": "Daily Objectives",
@@ -112,7 +112,7 @@
   "deleteChallenge": "Delete challenge",
   "deleteMessage": "Delete Message",
   "description": "Description",
-  "devices": "My devices",
+  "devices": "Devices",
   "deviceInfo": "{isMobile, select, true {Mobile device} false {Computer} other {Unknown}}{os, select, null {. } other { running on {os}. }}{browser, select, null {App} other {Browser: {browser}}}. {model, select, null {} other {Model: {model}.}}",
   "@deviceInfo": {
     "placeholders": {
