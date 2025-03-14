@@ -6,6 +6,8 @@ import 'package:reallystick/core/presentation/widgets/custom_app_bar.dart';
 import 'package:reallystick/core/presentation/widgets/full_width_scroll_view.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/habits/domain/entities/habit_category.dart';
+import 'package:reallystick/features/habits/domain/entities/habit_daily_tracking.dart';
+import 'package:reallystick/features/habits/domain/entities/habit_participation.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_events.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_states.dart';
@@ -197,6 +199,12 @@ class HabitsScreenState extends State<HabitsScreen> {
                           profileState.profile.locale,
                         );
 
+                        final sortedHabitParticipations =
+                            getParticipationsOrderedByLatestTracking(
+                          habitParticipations,
+                          habitDailyTrackings,
+                        );
+
                         return [
                           SliverAppBar(
                             title: Row(
@@ -212,7 +220,7 @@ class HabitsScreenState extends State<HabitsScreen> {
                                   child: Text(
                                     categoryName,
                                     style: const TextStyle(
-                                      fontSize: 18,
+                                      fontSize: 20,
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
@@ -224,7 +232,7 @@ class HabitsScreenState extends State<HabitsScreen> {
                             delegate: SliverChildBuilderDelegate(
                               (context, index) {
                                 final habitParticipation =
-                                    habitParticipations[index];
+                                    sortedHabitParticipations[index];
                                 final habit = habitState
                                     .habits[habitParticipation.habitId]!;
                                 final habitDailyTrackingsForThisHabit =
@@ -239,7 +247,7 @@ class HabitsScreenState extends State<HabitsScreen> {
                                       habitDailyTrackingsForThisHabit,
                                 );
                               },
-                              childCount: habitParticipations.length,
+                              childCount: sortedHabitParticipations.length,
                             ),
                           )
                         ];
@@ -368,5 +376,37 @@ class HabitsScreenState extends State<HabitsScreen> {
     }
 
     return [...sortedCategories];
+  }
+
+  List<HabitParticipation> getParticipationsOrderedByLatestTracking(
+      List<HabitParticipation> habitParticipations,
+      List<HabitDailyTracking> habitDailyTrackings) {
+    // Step 1: Map each habitParticipation to the latest tracking date
+    final participationToLatestDate = <String, DateTime>{};
+
+    for (final tracking in habitDailyTrackings) {
+      final participation = habitParticipations
+          .where((hp) => hp.habitId == tracking.habitId)
+          .toList()
+          .firstOrNull;
+
+      if (participation != null) {
+        final currentLatest = participationToLatestDate[participation.id];
+        if (currentLatest == null || tracking.datetime.isAfter(currentLatest)) {
+          participationToLatestDate[participation.id] = tracking.datetime;
+        }
+      }
+    }
+
+    // Step 2: Sort the habit participations by the latest tracking date
+    habitParticipations.sort((a, b) {
+      final dateA = participationToLatestDate[a.id] ??
+          DateTime.fromMillisecondsSinceEpoch(0);
+      final dateB = participationToLatestDate[b.id] ??
+          DateTime.fromMillisecondsSinceEpoch(0);
+      return dateB.compareTo(dateA); // Descending order
+    });
+
+    return habitParticipations;
   }
 }
