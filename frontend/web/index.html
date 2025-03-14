@@ -1,19 +1,6 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <!--
-    If you are serving your web app in a path other than the root, change the
-    href value below to reflect the base path you are serving from.
-
-    The path provided below has to start and end with a slash "/" in order for
-    it to work correctly.
-
-    For more details:
-    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
-
-    This is a placeholder for base href that will be replaced by the value of
-    the `--base-href` argument provided to `flutter build`.
-  -->
     <base href="$FLUTTER_BASE_HREF" />
 
     <meta charset="UTF-8" />
@@ -32,8 +19,51 @@
 
     <title>ReallyStick</title>
     <link rel="manifest" href="site.webmanifest" />
+
+    <style>
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: rgb(68, 138, 255);
+        color: #ffffff;
+        font-family: "Courier New", Courier, monospace;
+      }
+
+      .loader-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+      }
+
+      .butterfly {
+        position: absolute;
+        animation: pulseOut 2.5s infinite ease-in-out;
+      }
+
+      @keyframes pulseOut {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.2);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+    </style>
   </head>
   <body>
+    <div class="loader-container">
+      <img src="favicon.svg" class="butterfly" width="200" />
+    </div>
+
     <script src="flutter_bootstrap.js" async></script>
   </body>
 </html>
