@@ -138,12 +138,18 @@ class UnauthenticatedHomeScreenState extends State<UnauthenticatedHomeScreen>
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.keyboard_arrow_down,
-                            size: 40, color: Colors.white),
+                        Icon(
+                          Icons.keyboard_arrow_down,
+                          size: 40,
+                          color: context.colors.background,
+                        ),
                         Transform.translate(
                           offset: Offset(0, -30),
-                          child: Icon(Icons.keyboard_arrow_down,
-                              size: 35, color: Colors.white),
+                          child: Icon(
+                            Icons.keyboard_arrow_down,
+                            size: 35,
+                            color: context.colors.background,
+                          ),
                         ),
                       ],
                     ),
@@ -170,12 +176,18 @@ class UnauthenticatedHomeScreenState extends State<UnauthenticatedHomeScreen>
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.keyboard_arrow_up,
-                            size: 35, color: Colors.white),
+                        Icon(
+                          Icons.keyboard_arrow_up,
+                          size: 35,
+                          color: context.colors.background,
+                        ),
                         Transform.translate(
                           offset: Offset(0, -30),
-                          child: Icon(Icons.keyboard_arrow_up,
-                              size: 40, color: Colors.white),
+                          child: Icon(
+                            Icons.keyboard_arrow_up,
+                            size: 40,
+                            color: context.colors.background,
+                          ),
                         )
                       ],
                     ),

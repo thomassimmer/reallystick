@@ -16,25 +16,31 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: preferredSize.height,
-      padding: const EdgeInsets.symmetric(vertical: verticalPadding),
-      child: AppBar(
-        title: title != null
-            ? Align(
-                alignment: Alignment.centerLeft,
-                child: title,
-              )
-            : null,
-        centerTitle: centerTitle,
-        actions: actions
-            ?.map((action) => Align(
-                  alignment: Alignment.centerRight,
-                  child: action,
-                ))
-            .toList(),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
+    return AppBar(
+      automaticallyImplyLeading: false,
+      flexibleSpace: Center(
+        child: Container(
+          height: preferredSize.height,
+          padding: const EdgeInsets.symmetric(vertical: verticalPadding),
+          constraints: const BoxConstraints(maxWidth: 700),
+          child: AppBar(
+            title: title != null
+                ? Align(
+                    alignment: Alignment.centerLeft,
+                    child: title,
+                  )
+                : null,
+            centerTitle: centerTitle,
+            actions: actions
+                ?.map((action) => Align(
+                      alignment: Alignment.centerRight,
+                      child: action,
+                    ))
+                .toList(),
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+          ),
+        ),
       ),
     );
   }
