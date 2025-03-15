@@ -14,6 +14,7 @@ pub struct ChallengeParticipation {
     pub notifications_reminder_enabled: bool,
     pub reminder_time: Option<NaiveTime>, // UTC
     pub reminder_body: Option<String>,
+    pub finished: bool,
 }
 
 #[derive(Serialize, Debug, Deserialize, Clone)]
@@ -26,6 +27,7 @@ pub struct ChallengeParticipationData {
     pub notifications_reminder_enabled: bool,
     pub reminder_time: Option<NaiveTime>,
     pub reminder_body: Option<String>,
+    pub finished: bool,
 }
 
 impl ChallengeParticipation {
@@ -39,6 +41,7 @@ impl ChallengeParticipation {
             notifications_reminder_enabled: self.notifications_reminder_enabled,
             reminder_time: self.reminder_time,
             reminder_body: self.reminder_body.to_owned(),
+            finished: self.finished,
         }
     }
 }

@@ -18,6 +18,7 @@ pub enum AppError {
     ChallengeDailyTrackingUpdate,
     ChallengeDelete,
     ChallengeNotFound,
+    ChallengeParticipationAlreadyExisting,
     ChallengeParticipationCreation,
     ChallengeParticipationDelete,
     ChallengeParticipationNotFound,
@@ -148,6 +149,10 @@ impl AppError {
             AppError::ChallengeNotFound => GenericResponse {
                 code: "CHALLENGE_NOT_FOUND".to_string(),
                 message: "The challenge requested does not exist".to_string(),
+            },
+            AppError::ChallengeParticipationAlreadyExisting => GenericResponse {
+                code: "CHALLENGE_PARTICIPATION_ALREADY_EXISTING".to_string(),
+                message: "You already have an ongoing participation existing for this challenge".to_string(),
             },
             AppError::ChallengeParticipationCreation => GenericResponse {
                 code: "CHALLENGE_PARTICIPATION_NOT_CREATED".to_string(),

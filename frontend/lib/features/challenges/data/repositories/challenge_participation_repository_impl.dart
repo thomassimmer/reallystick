@@ -112,6 +112,7 @@ class ChallengeParticipationRepositoryImpl
     required bool notificationsReminderEnabled,
     required String? reminderTime,
     required String? reminderBody,
+    required bool finished,
   }) async {
     try {
       final challengeParticipationDataModel =
@@ -123,6 +124,7 @@ class ChallengeParticipationRepositoryImpl
           notificationsReminderEnabled: notificationsReminderEnabled,
           reminderTime: reminderTime,
           reminderBody: reminderBody,
+          finished: finished,
         ),
       );
 

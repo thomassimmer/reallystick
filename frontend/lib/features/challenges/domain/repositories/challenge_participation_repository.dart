@@ -23,6 +23,7 @@ abstract class ChallengeParticipationRepository {
     required bool notificationsReminderEnabled,
     required String? reminderTime,
     required String? reminderBody,
+    required bool finished,
   });
   Future<Either<DomainError, void>> deleteChallengeParticipation({
     required String challengeParticipationId,

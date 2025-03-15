@@ -10,6 +10,7 @@ class ChallengeParticipationDataModel extends Equatable {
   final bool notificationsReminderEnabled;
   final String? reminderTime;
   final String? reminderBody;
+  final bool finished;
 
   const ChallengeParticipationDataModel({
     required this.id,
@@ -20,6 +21,7 @@ class ChallengeParticipationDataModel extends Equatable {
     required this.notificationsReminderEnabled,
     required this.reminderTime,
     required this.reminderBody,
+    required this.finished,
   });
 
   factory ChallengeParticipationDataModel.fromJson(Map<String, dynamic> json) {
@@ -33,6 +35,7 @@ class ChallengeParticipationDataModel extends Equatable {
           json['notifications_reminder_enabled'] as bool,
       reminderTime: json['reminder_time'] as String?,
       reminderBody: json['reminder_body'] as String?,
+      finished: json['finished'] as bool,
     );
   }
 
@@ -45,6 +48,7 @@ class ChallengeParticipationDataModel extends Equatable {
         notificationsReminderEnabled: notificationsReminderEnabled,
         reminderTime: reminderTime,
         reminderBody: reminderBody,
+        finished: finished,
       );
 
   @override
@@ -57,5 +61,6 @@ class ChallengeParticipationDataModel extends Equatable {
         notificationsReminderEnabled,
         reminderTime,
         reminderBody,
+        finished,
       ];
 }

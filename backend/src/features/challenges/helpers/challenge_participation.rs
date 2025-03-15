@@ -43,7 +43,7 @@ where
     .await
 }
 
-pub async fn get_challenge_participation_for_user_and_challenge<'a, E>(
+pub async fn get_ongoing_challenge_participation_for_user_and_challenge<'a, E>(
     executor: E,
     user_id: Uuid,
     challenge_id: Uuid,
@@ -56,7 +56,10 @@ where
         r#"
         SELECT *
         from challenge_participations
-        WHERE user_id = $1 AND challenge_id = $2
+        WHERE
+            user_id = $1
+            AND challenge_id = $2
+            AND finished = false
         "#,
         user_id,
         challenge_id
@@ -101,14 +104,16 @@ where
             start_date = $2,
             notifications_reminder_enabled = $3,
             reminder_time = $4,
-            reminder_body = $5
-        WHERE id = $6
+            reminder_body = $5,
+            finished = $6
+        WHERE id = $7
         "#,
         challenge_participation.color,
         challenge_participation.start_date,
         challenge_participation.notifications_reminder_enabled,
         challenge_participation.reminder_time,
         challenge_participation.reminder_body,
+        challenge_participation.finished,
         challenge_participation.id
     )
     .execute(executor)
@@ -134,9 +139,10 @@ where
             created_at,
             notifications_reminder_enabled,
             reminder_time,
-            reminder_body
+            reminder_body,
+            finished
         )
-        VALUES ( $1, $2, $3, $4, $5, $6, $7, $8, $9 )
+        VALUES ( $1, $2, $3, $4, $5, $6, $7, $8, $9, $10 )
         "#,
         challenge_participation.id,
         challenge_participation.user_id,
@@ -146,7 +152,8 @@ where
         challenge_participation.created_at,
         challenge_participation.notifications_reminder_enabled,
         challenge_participation.reminder_time,
-        challenge_participation.reminder_body
+        challenge_participation.reminder_body,
+        challenge_participation.finished
     )
     .execute(executor)
     .await

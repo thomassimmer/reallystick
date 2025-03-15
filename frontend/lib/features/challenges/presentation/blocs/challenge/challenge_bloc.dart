@@ -520,6 +520,7 @@ class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
       notificationsReminderEnabled: event.notificationsReminderEnabled,
       reminderTime: event.reminderTime,
       reminderBody: event.reminderBody,
+      finished: event.finished,
     );
 
     resultUpdateChallengeParticipationUsecase.fold(

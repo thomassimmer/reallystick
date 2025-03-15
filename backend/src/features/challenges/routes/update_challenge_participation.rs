@@ -68,6 +68,7 @@ pub async fn update_challenge_participation(
     challenge_participation.notifications_reminder_enabled = body.notifications_reminder_enabled;
     challenge_participation.reminder_time = body.reminder_time;
     challenge_participation.reminder_body = body.reminder_body.clone();
+    challenge_participation.finished = body.finished;
 
     let update_challenge_participation_result =
         challenge_participation::update_challenge_participation(

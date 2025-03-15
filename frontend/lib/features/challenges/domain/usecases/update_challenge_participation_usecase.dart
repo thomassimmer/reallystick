@@ -15,6 +15,7 @@ class UpdateChallengeParticipationUsecase {
     required bool notificationsReminderEnabled,
     required String? reminderTime,
     required String? reminderBody,
+    required bool finished,
   }) async {
     return await challengeParticipationRepository.updateChallengeParticipation(
       challengeParticipationId: challengeParticipationId,
@@ -23,6 +24,7 @@ class UpdateChallengeParticipationUsecase {
       notificationsReminderEnabled: notificationsReminderEnabled,
       reminderTime: reminderTime,
       reminderBody: reminderBody,
+      finished: finished,
     );
   }
 }

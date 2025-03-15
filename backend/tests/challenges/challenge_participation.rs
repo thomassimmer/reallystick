@@ -69,6 +69,7 @@ pub async fn user_updates_a_challenge_participation(
             notifications_reminder_enabled: false,
             reminder_time: None,
             reminder_body: None,
+            finished: false,
         })
         .to_request();
     let response = test::call_service(&app, req).await;

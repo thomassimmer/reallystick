@@ -110,6 +110,7 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
                   challengeParticipation.notificationsReminderEnabled,
               reminderTime: challengeParticipation.reminderTime,
               reminderBody: challengeParticipation.reminderBody,
+              finished: challengeParticipation.finished,
             );
             context
                 .read<ChallengeBloc>()

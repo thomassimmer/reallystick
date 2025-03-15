@@ -19,6 +19,7 @@ pub struct ChallengeParticipationUpdateRequest {
     pub notifications_reminder_enabled: bool,
     pub reminder_time: Option<NaiveTime>, // UTC
     pub reminder_body: Option<String>,
+    pub finished: bool,
 }
 
 #[derive(Deserialize)]

@@ -5,7 +5,12 @@ use crate::{
     features::{
         auth::structs::models::Claims,
         challenges::{
-            helpers::{challenge::get_challenge_by_id, challenge_participation},
+            helpers::{
+                challenge::get_challenge_by_id,
+                challenge_participation::{
+                    self, get_ongoing_challenge_participation_for_user_and_challenge,
+                },
+            },
             structs::{
                 models::challenge_participation::ChallengeParticipation,
                 requests::challenge_participation::ChallengeParticipationCreateRequest,
@@ -59,6 +64,25 @@ pub async fn create_challenge_participation(
         }
     };
 
+    match get_ongoing_challenge_participation_for_user_and_challenge(
+        &mut *transaction,
+        request_claims.user_id,
+        body.challenge_id,
+    )
+    .await
+    {
+        Ok(r) => {
+            if r.is_some() {
+                return HttpResponse::BadRequest()
+                    .json(AppError::ChallengeParticipationAlreadyExisting.to_response());
+            }
+        }
+        Err(e) => {
+            error!("Error: {}", e);
+            return HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response());
+        }
+    }
+
     let challenge_participation = ChallengeParticipation {
         id: Uuid::new_v4(),
         user_id: request_claims.user_id,
@@ -69,6 +93,7 @@ pub async fn create_challenge_participation(
         notifications_reminder_enabled: false,
         reminder_time: None,
         reminder_body: None,
+        finished: false,
     };
 
     let create_challenge_participation_result =

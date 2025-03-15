@@ -4,6 +4,7 @@ class ChallengeParticipationUpdateRequestModel {
   final bool notificationsReminderEnabled;
   final String? reminderTime;
   final String? reminderBody;
+  final bool finished;
 
   const ChallengeParticipationUpdateRequestModel({
     required this.color,
@@ -11,6 +12,7 @@ class ChallengeParticipationUpdateRequestModel {
     required this.notificationsReminderEnabled,
     required this.reminderTime,
     required this.reminderBody,
+    required this.finished,
   });
 
   Map<String, dynamic> toJson() {
@@ -20,6 +22,7 @@ class ChallengeParticipationUpdateRequestModel {
       'notifications_reminder_enabled': notificationsReminderEnabled,
       'reminder_time': reminderTime,
       'reminder_body': reminderBody,
+      'finished': finished,
     };
   }
 }

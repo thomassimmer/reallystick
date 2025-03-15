@@ -7,6 +7,7 @@ class ChallengeParticipation {
   bool notificationsReminderEnabled;
   String? reminderTime;
   String? reminderBody;
+  bool finished;
 
   ChallengeParticipation({
     required this.id,
@@ -17,5 +18,6 @@ class ChallengeParticipation {
     required this.notificationsReminderEnabled,
     required this.reminderTime,
     required this.reminderBody,
+    required this.finished,
   });
 }
