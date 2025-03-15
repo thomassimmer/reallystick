@@ -9,7 +9,10 @@ use crate::{
             },
             structs::{requests::RecoverAccountUsingPasswordRequest, responses::UserLoginResponse},
         },
-        profile::helpers::{device_info::get_user_agent, profile::get_user_by_username},
+        profile::helpers::{
+            device_info::get_user_agent,
+            profile::{get_user_by_username, update_user},
+        },
     },
 };
 use actix_web::{post, web, HttpRequest, HttpResponse, Responder};
@@ -119,7 +122,7 @@ pub async fn recover_account_using_password(
         secret.as_bytes(),
         user.id,
         user.is_admin,
-        user.username,
+        user.username.clone(),
         parsed_device_info,
         &mut *transaction,
     )
@@ -137,19 +140,7 @@ pub async fn recover_account_using_password(
     user.otp_auth_url = None;
     user.otp_base32 = None;
 
-    let updated_user_result = sqlx::query_scalar!(
-        r#"
-                UPDATE users
-                SET otp_verified = $1, otp_auth_url = $2, otp_base32 = $3
-                WHERE id = $4
-                "#,
-        user.otp_verified,
-        user.otp_auth_url,
-        user.otp_base32,
-        user.id
-    )
-    .fetch_optional(&mut *transaction)
-    .await;
+    let updated_user_result = update_user(&mut *transaction, &user).await;
 
     if let Err(e) = updated_user_result {
         error!("Error: {}", e);

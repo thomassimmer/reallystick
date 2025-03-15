@@ -18,7 +18,7 @@ use crate::{
             structs::models::Claims,
         },
         profile::{
-            helpers::profile::get_user_by_id,
+            helpers::profile::{get_user_by_id, update_user},
             structs::{requests::UpdateUserPasswordRequest, responses::UserResponse},
         },
     },
@@ -44,8 +44,9 @@ pub async fn update_password(
             Some(user) => user,
             None => return HttpResponse::NotFound().json(AppError::UserNotFound.to_response()),
         },
-        Err(_) => {
-            return HttpResponse::InternalServerError().json(AppError::UserUpdate.to_response())
+        Err(e) => {
+            error!("Error: {}", e);
+            return HttpResponse::InternalServerError().json(AppError::UserUpdate.to_response());
         }
     };
 
@@ -85,18 +86,7 @@ pub async fn update_password(
     request_user.password = password_hash;
     request_user.password_is_expired = false;
 
-    let updated_user_result = sqlx::query!(
-        r#"
-        UPDATE users
-        SET password = $1, password_is_expired = $2
-        WHERE id = $3
-        "#,
-        request_user.password,
-        request_user.password_is_expired,
-        request_user.id
-    )
-    .fetch_optional(&mut *transaction)
-    .await;
+    let updated_user_result = update_user(&mut *transaction, &request_user).await;
 
     if let Err(e) = transaction.commit().await {
         error!("Error: {}", e);

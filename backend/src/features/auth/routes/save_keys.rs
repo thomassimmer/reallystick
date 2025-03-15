@@ -27,9 +27,10 @@ pub async fn save_keys(
 
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
-        Err(_) => {
+        Err(e) => {
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError()
-                .json(AppError::DatabaseConnection.to_response())
+                .json(AppError::DatabaseConnection.to_response());
         }
     };
 

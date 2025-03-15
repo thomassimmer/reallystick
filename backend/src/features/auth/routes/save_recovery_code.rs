@@ -29,7 +29,8 @@ pub async fn save_recovery_code(
 ) -> impl Responder {
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
-        Err(_) => {
+        Err(e) => {
+            error!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::DatabaseConnection.to_response())
         }

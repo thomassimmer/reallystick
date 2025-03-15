@@ -10,7 +10,10 @@ use crate::{
                 requests::RecoverAccountWithout2FAEnabledRequest, responses::UserLoginResponse,
             },
         },
-        profile::helpers::{device_info::get_user_agent, profile::get_user_by_username},
+        profile::helpers::{
+            device_info::get_user_agent,
+            profile::{get_user_by_username, update_user},
+        },
     },
 };
 use actix_web::{post, web, HttpRequest, HttpResponse, Responder};
@@ -107,7 +110,7 @@ pub async fn recover_account_without_2fa_enabled(
         secret.as_bytes(),
         user.id,
         user.is_admin,
-        user.username,
+        user.username.clone(),
         parsed_device_info,
         &mut *transaction,
     )
@@ -123,17 +126,7 @@ pub async fn recover_account_without_2fa_enabled(
 
     user.password_is_expired = true;
 
-    let updated_user_result = sqlx::query_scalar!(
-        r#"
-        UPDATE users
-        SET password_is_expired = $1
-        WHERE id = $2
-        "#,
-        user.password_is_expired,
-        user.id
-    )
-    .fetch_optional(&mut *transaction)
-    .await;
+    let updated_user_result = update_user(&mut *transaction, &user).await;
 
     if let Err(e) = updated_user_result {
         error!("Error: {}", e);

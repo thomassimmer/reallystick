@@ -1,4 +1,4 @@
-use crate::features::profile::helpers::profile::get_user_by_id;
+use crate::features::profile::helpers::profile::{get_user_by_id, update_user};
 use crate::{core::constants::errors::AppError, features::auth::structs::models::Claims};
 
 use crate::features::auth::structs::requests::VerifyOtpRequest;
@@ -33,8 +33,9 @@ pub async fn verify(
             Some(user) => user,
             None => return HttpResponse::NotFound().json(AppError::UserNotFound.to_response()),
         },
-        Err(_) => {
-            return HttpResponse::InternalServerError().json(AppError::UserUpdate.to_response())
+        Err(e) => {
+            error!("Error: {}", e);
+            return HttpResponse::InternalServerError().json(AppError::UserUpdate.to_response());
         }
     };
 
@@ -56,17 +57,7 @@ pub async fn verify(
 
     request_user.otp_verified = true;
 
-    let updated_user_result = sqlx::query_scalar!(
-        r#"
-        UPDATE users
-        SET otp_verified = $1
-        WHERE id = $2
-        "#,
-        request_user.otp_verified,
-        request_user.id
-    )
-    .fetch_optional(&mut *transaction)
-    .await;
+    let updated_user_result = update_user(&mut *transaction, &request_user).await;
 
     if let Err(e) = transaction.commit().await {
         error!("Error: {}", e);

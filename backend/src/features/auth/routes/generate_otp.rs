@@ -1,5 +1,5 @@
 use crate::features::auth::structs::responses::GenerateOtpResponse;
-use crate::features::profile::helpers::profile::get_user_by_id;
+use crate::features::profile::helpers::profile::{get_user_by_id, update_user};
 use crate::{core::constants::errors::AppError, features::auth::structs::models::Claims};
 use tracing::error;
 
@@ -30,8 +30,9 @@ pub async fn generate(pool: web::Data<PgPool>, request_claims: ReqData<Claims>) 
             Some(user) => user,
             None => return HttpResponse::NotFound().json(AppError::UserNotFound.to_response()),
         },
-        Err(_) => {
-            return HttpResponse::InternalServerError().json(AppError::UserUpdate.to_response())
+        Err(e) => {
+            error!("Error: {}", e);
+            return HttpResponse::InternalServerError().json(AppError::UserUpdate.to_response());
         }
     };
 
@@ -61,19 +62,7 @@ pub async fn generate(pool: web::Data<PgPool>, request_claims: ReqData<Claims>) 
     request_user.otp_auth_url = Some(otp_auth_url.to_owned());
     request_user.otp_verified = false;
 
-    let updated_user_result = sqlx::query!(
-        r#"
-        UPDATE users
-        SET otp_base32 = $1, otp_auth_url = $2, otp_verified = $3
-        WHERE id = $4
-        "#,
-        request_user.otp_base32,
-        request_user.otp_auth_url,
-        request_user.otp_verified,
-        request_user.id
-    )
-    .fetch_optional(&mut *transaction)
-    .await;
+    let updated_user_result = update_user(&mut *transaction, &request_user).await;
 
     if let Err(e) = transaction.commit().await {
         error!("Error: {}", e);
