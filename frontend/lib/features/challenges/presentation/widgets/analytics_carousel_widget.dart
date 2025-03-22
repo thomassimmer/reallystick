@@ -51,78 +51,108 @@ class AnalyticsCarouselWidget extends StatelessWidget {
         final topLevelsOfEducationText =
             computeTopLevelsOfEducationText(context, challengeStatistic);
 
-        analyticsCards.add(
-          AnalyticsCardInfo(
-            title: AppLocalizations.of(context)!.topAgesCardTitle,
-            icon: Icons.cake,
-            text: topAgesText,
-          ),
-        );
-        analyticsCards.add(
-          AnalyticsCardInfo(
-            title: AppLocalizations.of(context)!.topCountriesCardTitle,
-            icon: Icons.flag,
-            text: topCountriesText,
-          ),
-        );
-        analyticsCards.add(
-          AnalyticsCardInfo(
-            title: AppLocalizations.of(context)!.topRegionsCardTitle,
-            icon: Icons.public,
-            text: topRegionsText,
-          ),
-        );
-        analyticsCards.add(
-          AnalyticsCardInfo(
-            title: AppLocalizations.of(context)!.topHasChildrenCardTitle,
-            icon: Icons.escalator_warning,
-            text: topHasChildrenText,
-          ),
-        );
-        analyticsCards.add(
-          AnalyticsCardInfo(
-            title: AppLocalizations.of(context)!.topLivesInUrbanAreaCardTitle,
-            icon: Icons.location_city,
-            text: topLivesInUrbanAreaText,
-          ),
-        );
-        analyticsCards.add(
-          AnalyticsCardInfo(
-            title: AppLocalizations.of(context)!.topGenderCardTitle,
-            icon: Icons.wc,
-            text: topGenderText,
-          ),
-        );
-        analyticsCards.add(
-          AnalyticsCardInfo(
-            title: AppLocalizations.of(context)!.topActivityCardTitle,
-            icon: Icons.work,
-            text: topActivitiesText,
-          ),
-        );
-        analyticsCards.add(
-          AnalyticsCardInfo(
-            title:
-                AppLocalizations.of(context)!.topFinancialSituationsCardTitle,
-            icon: Icons.account_balance_wallet,
-            text: topFinancialSituationsText,
-          ),
-        );
-        analyticsCards.add(
-          AnalyticsCardInfo(
-            title:
-                AppLocalizations.of(context)!.topRelationshipStatusesCardTitle,
-            icon: Icons.favorite,
-            text: topRelationshipStatusesText,
-          ),
-        );
-        analyticsCards.add(
-          AnalyticsCardInfo(
-            title: AppLocalizations.of(context)!.topLevelsOfEducationCardTitle,
-            icon: Icons.school,
-            text: topLevelsOfEducationText,
-          ),
-        );
+        if (topAgesText.isNotEmpty) {
+          analyticsCards.add(
+            AnalyticsCardInfo(
+              title: AppLocalizations.of(context)!.topAgesCardTitle,
+              icon: Icons.cake,
+              text: topAgesText,
+            ),
+          );
+        }
+
+        if (topCountriesText.isNotEmpty) {
+          analyticsCards.add(
+            AnalyticsCardInfo(
+              title: AppLocalizations.of(context)!.topCountriesCardTitle,
+              icon: Icons.flag,
+              text: topCountriesText,
+            ),
+          );
+        }
+
+        if (topRegionsText.isNotEmpty) {
+          analyticsCards.add(
+            AnalyticsCardInfo(
+              title: AppLocalizations.of(context)!.topRegionsCardTitle,
+              icon: Icons.public,
+              text: topRegionsText,
+            ),
+          );
+        }
+
+        if (topHasChildrenText.isNotEmpty) {
+          analyticsCards.add(
+            AnalyticsCardInfo(
+              title: AppLocalizations.of(context)!.topHasChildrenCardTitle,
+              icon: Icons.escalator_warning,
+              text: topHasChildrenText,
+            ),
+          );
+        }
+
+        if (topLivesInUrbanAreaText.isNotEmpty) {
+          analyticsCards.add(
+            AnalyticsCardInfo(
+              title: AppLocalizations.of(context)!.topLivesInUrbanAreaCardTitle,
+              icon: Icons.location_city,
+              text: topLivesInUrbanAreaText,
+            ),
+          );
+        }
+
+        if (topGenderText.isNotEmpty) {
+          analyticsCards.add(
+            AnalyticsCardInfo(
+              title: AppLocalizations.of(context)!.topGenderCardTitle,
+              icon: Icons.wc,
+              text: topGenderText,
+            ),
+          );
+        }
+
+        if (topActivitiesText.isNotEmpty) {
+          analyticsCards.add(
+            AnalyticsCardInfo(
+              title: AppLocalizations.of(context)!.topActivityCardTitle,
+              icon: Icons.work,
+              text: topActivitiesText,
+            ),
+          );
+        }
+
+        if (topFinancialSituationsText.isNotEmpty) {
+          analyticsCards.add(
+            AnalyticsCardInfo(
+              title:
+                  AppLocalizations.of(context)!.topFinancialSituationsCardTitle,
+              icon: Icons.account_balance_wallet,
+              text: topFinancialSituationsText,
+            ),
+          );
+        }
+
+        if (topRelationshipStatusesText.isNotEmpty) {
+          analyticsCards.add(
+            AnalyticsCardInfo(
+              title: AppLocalizations.of(context)!
+                  .topRelationshipStatusesCardTitle,
+              icon: Icons.favorite,
+              text: topRelationshipStatusesText,
+            ),
+          );
+        }
+
+        if (topLevelsOfEducationText.isNotEmpty) {
+          analyticsCards.add(
+            AnalyticsCardInfo(
+              title:
+                  AppLocalizations.of(context)!.topLevelsOfEducationCardTitle,
+              icon: Icons.school,
+              text: topLevelsOfEducationText,
+            ),
+          );
+        }
 
         analyticsCards.shuffle();
 

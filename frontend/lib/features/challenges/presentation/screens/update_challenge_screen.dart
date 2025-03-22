@@ -126,7 +126,10 @@ class UpdateChallengeScreenState extends State<UpdateChallengeScreen> {
             if (newChallenge != null) {
               context.goNamed(
                 'challengeDetails',
-                pathParameters: {'challengeId': newChallenge.id},
+                pathParameters: {
+                  'challengeId': newChallenge.id,
+                  'challengeParticipationId': 'null',
+                },
               );
             }
           }

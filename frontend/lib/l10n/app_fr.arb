@@ -23,11 +23,13 @@
   "blockThisUser": "Bloquer cet utilisateur",
   "cancel": "Annuler",
   "category": "Catégorie",
+  "changeChallengeParticipationStartDate": "Changer la date de début de participation",
   "changeColor": "Changer la couleur",
   "changePassword": "Changer mon mot de passe",
   "changeRecoveryCode": "Changer mon code de récupération",
   "challengeCreated": "Votre défi a été créé avec succès",
   "challengeDuplicated": "Ce défi a été copié avec succès.",
+  "challengeFinished": "Défi terminé",
   "challengeDailyTracking": "Objectifs journaliers",
   "challengeDailyTrackingCreated": "Votre objectif journalier a été créé avec succès.",
   "challengeDailyTrackingDeleted": "Votre objectif journalier a été supprimé avec succès.",
@@ -110,8 +112,17 @@
   "delete": "Supprimer",
   "deleteAccount": "Supprimer mon compte",
   "deleteChallenge": "Supprimer ce défi",
+  "deleteChallengeParticipation": "Supprimer cette participation",
   "deleteMessage": "Supprimer ce message",
   "description": "Description",
+  "descriptionWithTwoPoints": "Description : {description}",
+  "@descriptionWithTwoPoints": {
+    "placeholders": {
+      "description": {
+        "type": "String"
+      }
+    }
+  },
   "devices": "Appareils",
   "deviceInfo": "{isMobile, select, true {Appareil mobile} false {Ordinateur} other {Inconnu}}{os, select, null {. } other { exécutant {os}. }}{browser, select, null {Application} other {Navigateur : {browser}}}. {model, select, null {} other {Modèle: {model}.}}",
   "@deviceInfo": {
@@ -163,6 +174,7 @@
   "female": "Femme",
   "females": "Femmes",
   "financialSituation": "Situation financière",
+  "finished": "Terminé",
   "fixedDates": "Dates fixes",
   "forbiddenError": "Vous n'êtes pas autorisé à effectuer cette action.",
   "gender": "Sexe",
@@ -223,6 +235,14 @@
     "placeholders": {
       "count": {
         "type": "int"
+      }
+    }
+  },
+  "joinedOn": "Rejoint le : {startDate}",
+  "@joinedOn": {
+    "placeholders": {
+      "startDate": {
+        "type": "String"
       }
     }
   },
@@ -297,14 +317,14 @@
   "longName": "Nom (version longue)",
   "male": "Homme",
   "males": "Hommes",
+  "markedAsFinishedChallenges": "Défis terminés",
+  "markChallengeAsFinished": "Vous avez terminé ce défi, félicitations !\nMarquez le comme terminé pour pouvoir le recommencer plus tard sans perdre les détails de cette participation.",
   "mergeHabit": "Fusionner les habitudes",
   "message": "Message",
   "messages": "Messages",
   "messageDeletedError": "Ce message a été supprimé.",
   "messageNotFoundError": "Ce message n'a pas été trouvé.",
   "missingDateTimeError": "La date ne peut pas être laissée vide.",
-  "myChallenges": "Mes Défis",
-  "myHabits": "Mes Habitudes",
   "newDiscussion": "Nouvelle Discussion",
   "newPassword": "Nouveau mot de passe",
   "next": "Suivant",
@@ -353,9 +373,10 @@
       }
     }
   },
+  "ongoingChallenges": "Défis en cours",
   "other": "Autre",
   "otherChallenges": "Autres défis",
-  "participatedChallenges": "Mes autres défis",
+  "participateAgain": "Participer à nouveau",
   "password": "Mot de passe",
   "passwordForgotten": "Vous avez oublié votre mot de passe ?",
   "passwordMustBeChangedError": "Votre mot de passe doit être changé pour pouvoir vous connecter.",

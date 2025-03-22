@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:reallystick/core/presentation/widgets/custom_app_bar.dart';
 import 'package:reallystick/core/presentation/widgets/full_width_scroll_view.dart';
 import 'package:reallystick/core/ui/extensions.dart';
+import 'package:reallystick/features/challenges/domain/entities/challenge_participation.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_bloc.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_events.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_states.dart';
@@ -18,6 +19,10 @@ class ChallengesScreen extends StatefulWidget {
 }
 
 class ChallengesScreenState extends State<ChallengesScreen> {
+  bool _isCreatedChallengesExpanded = true;
+  bool _isOngoingChallengesExpanded = true;
+  bool _isMarkedAsFinishedChallengesExpanded = true;
+
   void onRetry() {
     BlocProvider.of<ChallengeBloc>(context).add(ChallengeInitializeEvent());
   }
@@ -44,18 +49,22 @@ class ChallengesScreenState extends State<ChallengesScreen> {
                   !challenge.deleted)
               .toList();
 
-          final participatedChallenges = challenges
-              .where((challenge) =>
-                  challenge.creator != profileState.profile.id &&
-                  challengeState.challengeParticipations
-                      .where((cp) => cp.challengeId == challenge.id)
-                      .isNotEmpty)
-              .toList();
+          List<ChallengeParticipation> markedAsFinishedParticipations = [];
+          List<ChallengeParticipation> ongoingParticipations = [];
+
+          for (final challengeParticipation
+              in challengeState.challengeParticipations) {
+            if (challengeParticipation.finished) {
+              markedAsFinishedParticipations.add(challengeParticipation);
+            } else {
+              ongoingParticipations.add(challengeParticipation);
+            }
+          }
 
           return Scaffold(
             appBar: CustomAppBar(
               title: Text(
-                AppLocalizations.of(context)!.myChallenges,
+                AppLocalizations.of(context)!.challenges,
                 style: context.typographies.heading,
               ),
               centerTitle: false,
@@ -78,106 +87,209 @@ class ChallengesScreenState extends State<ChallengesScreen> {
             body: RefreshIndicator(
               onRefresh: _pullRefresh,
               child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 4),
+                padding: const EdgeInsets.symmetric(vertical: 4),
                 child: FullWidthScrollView(
                   slivers: [
                     if (createdChallenges.isNotEmpty ||
-                        participatedChallenges.isNotEmpty) ...[
-                      if (createdChallenges.isNotEmpty) ...[
+                        ongoingParticipations.isNotEmpty ||
+                        markedAsFinishedParticipations.isNotEmpty) ...[
+                      if (ongoingParticipations.isNotEmpty) ...[
                         SliverAppBar(
-                          title: Row(
-                            children: [
-                              Text(
-                                AppLocalizations.of(context)!.createdChallenges,
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w500,
+                          pinned: true,
+                          backgroundColor: context.colors.background,
+                          title: InkWell(
+                            onTap: () {
+                              setState(() {
+                                _isOngoingChallengesExpanded =
+                                    !_isOngoingChallengesExpanded;
+                              });
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  AppLocalizations.of(context)!
+                                      .ongoingChallenges,
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w500,
+                                  ),
                                 ),
-                              ),
-                            ],
+                                Icon(
+                                  _isOngoingChallengesExpanded
+                                      ? Icons.expand_less
+                                      : Icons.expand_more,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                        SliverList(
-                          delegate: SliverChildBuilderDelegate(
-                            (context, index) {
-                              final challenge = createdChallenges[index];
+                        SliverToBoxAdapter(
+                          child: AnimatedCrossFade(
+                            duration: const Duration(milliseconds: 500),
+                            crossFadeState: _isOngoingChallengesExpanded
+                                ? CrossFadeState.showFirst
+                                : CrossFadeState.showSecond,
+                            firstChild: ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: ongoingParticipations.length,
+                              itemBuilder: (context, index) {
+                                final challengeParticipation =
+                                    ongoingParticipations[index];
+                                final challenge = challengeState.challenges[
+                                    challengeParticipation.challengeId]!;
 
-                              final challengeParticipation = challengeState
-                                  .challengeParticipations
-                                  .where((challengeParticipation) =>
-                                      challengeParticipation.challengeId ==
-                                      challenge.id)
-                                  .firstOrNull;
+                                var challengeDailyTrackings = challengeState
+                                    .challengeDailyTrackings[challenge.id];
 
-                              var challengeDailyTrackings = challengeState
-                                  .challengeDailyTrackings[challenge.id];
+                                if (challengeDailyTrackings == null) {
+                                  BlocProvider.of<ChallengeBloc>(context).add(
+                                    GetChallengeDailyTrackingsEvent(
+                                      challengeId: challenge.id,
+                                    ),
+                                  );
+                                  challengeDailyTrackings = [];
+                                }
 
-                              if (challengeDailyTrackings == null) {
-                                BlocProvider.of<ChallengeBloc>(context).add(
-                                  GetChallengeDailyTrackingsEvent(
-                                      challengeId: challenge.id),
+                                return ChallengeWidget(
+                                  challenge: challenge,
+                                  challengeParticipation:
+                                      challengeParticipation,
+                                  challengeDailyTrackings:
+                                      challengeDailyTrackings,
                                 );
-                                challengeDailyTrackings = [];
-                              }
-
-                              return ChallengeWidget(
-                                challenge: challenge,
-                                challengeParticipation: challengeParticipation,
-                                challengeDailyTrackings:
-                                    challengeDailyTrackings,
-                              );
-                            },
-                            childCount: createdChallenges.length,
+                              },
+                            ),
+                            secondChild: Container(),
                           ),
                         ),
                       ],
-                      if (participatedChallenges.isNotEmpty) ...[
+                      if (createdChallenges.isNotEmpty) ...[
                         SliverAppBar(
-                          title: Row(
-                            children: [
-                              Text(
-                                AppLocalizations.of(context)!
-                                    .participatedChallenges,
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w500,
+                          pinned: true,
+                          backgroundColor: context.colors.background,
+                          title: InkWell(
+                            onTap: () {
+                              setState(() {
+                                _isCreatedChallengesExpanded =
+                                    !_isCreatedChallengesExpanded;
+                              });
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  AppLocalizations.of(context)!
+                                      .createdChallenges,
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w500,
+                                  ),
                                 ),
-                              ),
-                            ],
+                                Icon(
+                                  _isCreatedChallengesExpanded
+                                      ? Icons.expand_less
+                                      : Icons.expand_more,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                        SliverList(
-                          delegate: SliverChildBuilderDelegate(
-                            (context, index) {
-                              final challenge = participatedChallenges[index];
+                        SliverToBoxAdapter(
+                          child: AnimatedCrossFade(
+                            duration: const Duration(milliseconds: 500),
+                            crossFadeState: _isCreatedChallengesExpanded
+                                ? CrossFadeState.showFirst
+                                : CrossFadeState.showSecond,
+                            firstChild: ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: createdChallenges.length,
+                              itemBuilder: (context, index) {
+                                final challenge = createdChallenges[index];
 
-                              final challengeParticipation = challengeState
-                                  .challengeParticipations
-                                  .where((challengeParticipation) =>
-                                      challengeParticipation.challengeId ==
-                                      challenge.id)
-                                  .firstOrNull;
-
-                              var challengeDailyTrackings = challengeState
-                                  .challengeDailyTrackings[challenge.id];
-
-                              if (challengeDailyTrackings == null) {
-                                BlocProvider.of<ChallengeBloc>(context).add(
-                                  GetChallengeDailyTrackingsEvent(
-                                      challengeId: challenge.id),
+                                return ChallengeWidget(
+                                  challenge: challenge,
+                                  challengeParticipation: null,
+                                  challengeDailyTrackings: [],
                                 );
-                                challengeDailyTrackings = [];
-                              }
-
-                              return ChallengeWidget(
-                                challenge: challenge,
-                                challengeParticipation: challengeParticipation,
-                                challengeDailyTrackings:
-                                    challengeDailyTrackings,
-                              );
+                              },
+                            ),
+                            secondChild: Container(),
+                          ),
+                        ),
+                      ],
+                      if (markedAsFinishedParticipations.isNotEmpty) ...[
+                        SliverAppBar(
+                          pinned: true,
+                          backgroundColor: context.colors.background,
+                          title: InkWell(
+                            onTap: () {
+                              setState(() {
+                                _isMarkedAsFinishedChallengesExpanded =
+                                    !_isMarkedAsFinishedChallengesExpanded;
+                              });
                             },
-                            childCount: participatedChallenges.length,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  AppLocalizations.of(context)!
+                                      .markedAsFinishedChallenges,
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                Icon(
+                                  _isMarkedAsFinishedChallengesExpanded
+                                      ? Icons.expand_less
+                                      : Icons.expand_more,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        SliverToBoxAdapter(
+                          child: AnimatedCrossFade(
+                            duration: const Duration(milliseconds: 500),
+                            crossFadeState:
+                                _isMarkedAsFinishedChallengesExpanded
+                                    ? CrossFadeState.showFirst
+                                    : CrossFadeState.showSecond,
+                            firstChild: ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: markedAsFinishedParticipations.length,
+                              itemBuilder: (context, index) {
+                                final challengeParticipation =
+                                    markedAsFinishedParticipations[index];
+                                final challenge = challengeState.challenges[
+                                    challengeParticipation.challengeId]!;
+
+                                var challengeDailyTrackings = challengeState
+                                    .challengeDailyTrackings[challenge.id];
+
+                                if (challengeDailyTrackings == null) {
+                                  BlocProvider.of<ChallengeBloc>(context).add(
+                                    GetChallengeDailyTrackingsEvent(
+                                      challengeId: challenge.id,
+                                    ),
+                                  );
+                                  challengeDailyTrackings = [];
+                                }
+
+                                return ChallengeWidget(
+                                  challenge: challenge,
+                                  challengeParticipation:
+                                      challengeParticipation,
+                                  challengeDailyTrackings:
+                                      challengeDailyTrackings,
+                                );
+                              },
+                            ),
+                            secondChild: Container(),
                           ),
                         ),
                       ],

@@ -211,6 +211,7 @@ where
             AND u.timezone <> ''
             AND DATE_TRUNC('minute', NOW() AT TIME ZONE u.timezone)::TIME = DATE_TRUNC('minute', cp.reminder_time)
             AND cp.notifications_reminder_enabled = true
+            AND cp.finished = false
         "#,
     )
     .fetch_all(executor)

@@ -35,7 +35,10 @@ class DuplicateChallengeModal extends StatelessWidget {
             if (newChallenge != null) {
               context.pushNamed(
                 'challengeDetails',
-                pathParameters: {'challengeId': newChallenge.id},
+                pathParameters: {
+                  'challengeId': newChallenge.id,
+                  'challengeParticipationId': 'null',
+                },
               );
             }
           }

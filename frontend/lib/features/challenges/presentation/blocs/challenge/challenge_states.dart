@@ -35,6 +35,7 @@ class ChallengesLoaded extends ChallengeState {
   final Map<String, ChallengeStatistic> challengeStatistics;
   final Challenge? newlyCreatedChallenge;
   final Challenge? newlyUpdatedChallenge;
+  final ChallengeParticipation? newlyCreatedChallengeParticipation;
   final String? notFoundChallenge;
 
   const ChallengesLoaded({
@@ -45,6 +46,7 @@ class ChallengesLoaded extends ChallengeState {
     required this.challengeStatistics,
     this.newlyCreatedChallenge,
     this.newlyUpdatedChallenge,
+    this.newlyCreatedChallengeParticipation,
     this.notFoundChallenge,
   });
 
@@ -57,6 +59,7 @@ class ChallengesLoaded extends ChallengeState {
         challengeStatistics,
         newlyCreatedChallenge,
         newlyUpdatedChallenge,
+        newlyCreatedChallengeParticipation,
         notFoundChallenge,
       ];
 }

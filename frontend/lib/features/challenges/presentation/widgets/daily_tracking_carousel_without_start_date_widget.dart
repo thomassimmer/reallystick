@@ -6,6 +6,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:reallystick/core/constants/dates.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/challenges/domain/entities/challenge_daily_tracking.dart';
+import 'package:reallystick/features/challenges/domain/entities/challenge_participation.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_bloc.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_states.dart';
 import 'package:reallystick/features/challenges/presentation/helpers/challenge_result.dart';
@@ -17,19 +18,22 @@ import 'package:reallystick/features/profile/presentation/blocs/profile/profile_
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
 
 class DailyTrackingCarouselWithoutStartDateWidget extends StatefulWidget {
+  final ChallengeParticipation? challengeParticipation;
   final String challengeId;
   final List<ChallengeDailyTracking> challengeDailyTrackings;
   final Color challengeColor;
   final bool canOpenDayBoxes;
   final bool displayTitle;
 
-  DailyTrackingCarouselWithoutStartDateWidget(
-      {super.key,
-      required this.challengeId,
-      required this.challengeDailyTrackings,
-      required this.challengeColor,
-      required this.canOpenDayBoxes,
-      required this.displayTitle});
+  DailyTrackingCarouselWithoutStartDateWidget({
+    super.key,
+    required this.challengeParticipation,
+    required this.challengeId,
+    required this.challengeDailyTrackings,
+    required this.challengeColor,
+    required this.canOpenDayBoxes,
+    required this.displayTitle,
+  });
 
   @override
   DailyTrackingCarouselWithoutStartDateWidgetState createState() =>
@@ -121,10 +125,6 @@ class DailyTrackingCarouselWithoutStartDateWidgetState
     if (profileState is ProfileAuthenticated &&
         challengeState is ChallengesLoaded &&
         habitState is HabitsLoaded) {
-      final challengeParticipation = challengeState.challengeParticipations
-          .where((cp) => cp.challengeId == widget.challengeId)
-          .firstOrNull;
-
       final today = DateTime.now();
       final numberOfDays = (widget.challengeDailyTrackings.isNotEmpty
               ? widget.challengeDailyTrackings
@@ -133,7 +133,7 @@ class DailyTrackingCarouselWithoutStartDateWidgetState
               : 0) +
           1;
 
-      final startDate = challengeParticipation?.startDate ?? today;
+      final startDate = widget.challengeParticipation?.startDate ?? today;
 
       lastDays = List.generate(
         numberOfDays,
@@ -207,7 +207,7 @@ class DailyTrackingCarouselWithoutStartDateWidgetState
                               int dayIndex = indexWithDatetime.$1;
                               DateTime datetime = indexWithDatetime.$2;
 
-                              bool? dailyObjectivesDone = true;
+                              bool? dailyObjectivesDone;
 
                               final now = DateTime.now();
                               final normalizedToday = DateTime(
@@ -221,11 +221,16 @@ class DailyTrackingCarouselWithoutStartDateWidgetState
                                 datetime.day,
                               );
 
-                              if (normalizedDatetime.isAfter(normalizedToday)) {
-                                dailyObjectivesDone = null;
-                              } else {
+                              if (normalizedDatetime
+                                          .compareTo(normalizedToday) <=
+                                      0 &&
+                                  widget.challengeParticipation != null) {
                                 final challengeDailyTrackinsOnThisDate =
                                     challengeDailyTrackingsPerDay[datetime]!;
+
+                                if (challengeDailyTrackinsOnThisDate.isEmpty) {
+                                  dailyObjectivesDone = true;
+                                }
 
                                 for (final cdt
                                     in challengeDailyTrackinsOnThisDate) {
@@ -233,15 +238,13 @@ class DailyTrackingCarouselWithoutStartDateWidgetState
                                       .add(Duration(days: cdt.dayOfProgram));
 
                                   List<HabitDailyTracking>
-                                      habitDailyTrackingsOnThatDay =
-                                      challengeParticipation != null
-                                          ? habitState.habitDailyTrackings
-                                              .where((hdt) =>
-                                                  hdt.datetime.isSameDate(
-                                                      challengeDailyTrackingDate) &&
-                                                  hdt.habitId == cdt.habitId)
-                                              .toList()
-                                          : [];
+                                      habitDailyTrackingsOnThatDay = habitState
+                                          .habitDailyTrackings
+                                          .where((hdt) =>
+                                              hdt.datetime.isSameDate(
+                                                  challengeDailyTrackingDate) &&
+                                              hdt.habitId == cdt.habitId)
+                                          .toList();
 
                                   dailyObjectivesDone =
                                       checkIfDailyObjectiveWasDone(

@@ -292,7 +292,8 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
                             ),
                             SizedBox(height: 8),
                             Text(
-                              description,
+                              AppLocalizations.of(context)!
+                                  .descriptionWithTwoPoints(description),
                               style: TextStyle(color: Colors.white),
                               textAlign: TextAlign.center,
                             ),

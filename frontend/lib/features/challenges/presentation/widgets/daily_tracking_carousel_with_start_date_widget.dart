@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:reallystick/core/constants/dates.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/challenges/domain/entities/challenge_daily_tracking.dart';
+import 'package:reallystick/features/challenges/domain/entities/challenge_participation.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_bloc.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_states.dart';
 import 'package:reallystick/features/challenges/presentation/helpers/challenge_result.dart';
@@ -18,19 +19,22 @@ import 'package:reallystick/features/profile/presentation/blocs/profile/profile_
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
 
 class DailyTrackingCarouselWithStartDateWidget extends StatefulWidget {
+  final ChallengeParticipation? challengeParticipation;
   final String challengeId;
   final List<ChallengeDailyTracking> challengeDailyTrackings;
   final Color challengeColor;
   final bool canOpenDayBoxes;
   final bool displayTitle;
 
-  DailyTrackingCarouselWithStartDateWidget(
-      {super.key,
-      required this.challengeId,
-      required this.challengeDailyTrackings,
-      required this.challengeColor,
-      required this.canOpenDayBoxes,
-      required this.displayTitle});
+  DailyTrackingCarouselWithStartDateWidget({
+    super.key,
+    required this.challengeParticipation,
+    required this.challengeId,
+    required this.challengeDailyTrackings,
+    required this.challengeColor,
+    required this.canOpenDayBoxes,
+    required this.displayTitle,
+  });
 
   @override
   DailyTrackingCarouselWithStartDateWidgetState createState() =>
@@ -125,9 +129,6 @@ class DailyTrackingCarouselWithStartDateWidgetState
         habitState is HabitsLoaded) {
       final userLocale = profileState.profile.locale;
       final challenge = challengeState.challenges[widget.challengeId]!;
-      final challengeParticipation = challengeState.challengeParticipations
-          .where((cp) => cp.challengeId == widget.challengeId)
-          .firstOrNull;
 
       final now = DateTime.now();
       final normalizedToday = DateTime(
@@ -257,7 +258,7 @@ class DailyTrackingCarouselWithStartDateWidgetState
                                 );
                               }
 
-                              bool? dailyObjectivesDone = true;
+                              bool? dailyObjectivesDone;
 
                               final normalizedDatetime = DateTime(
                                 datetime.year,
@@ -265,9 +266,10 @@ class DailyTrackingCarouselWithStartDateWidgetState
                                 datetime.day,
                               );
 
-                              if (normalizedDatetime.isAfter(normalizedToday)) {
-                                dailyObjectivesDone = null;
-                              } else {
+                              if (normalizedDatetime
+                                          .compareTo(normalizedToday) <=
+                                      0 &&
+                                  widget.challengeParticipation != null) {
                                 final challengeDailyTrackinsOnThisDate =
                                     challengeDailyTrackingsPerDay[datetime]!;
 
@@ -277,15 +279,13 @@ class DailyTrackingCarouselWithStartDateWidgetState
                                       .add(Duration(days: cdt.dayOfProgram));
 
                                   List<HabitDailyTracking>
-                                      habitDailyTrackingsOnThatDay =
-                                      challengeParticipation != null
-                                          ? habitState.habitDailyTrackings
-                                              .where((hdt) =>
-                                                  hdt.datetime.isSameDate(
-                                                      challengeDailyTrackingDate) &&
-                                                  hdt.habitId == cdt.habitId)
-                                              .toList()
-                                          : [];
+                                      habitDailyTrackingsOnThatDay = habitState
+                                          .habitDailyTrackings
+                                          .where((hdt) =>
+                                              hdt.datetime.isSameDate(
+                                                  challengeDailyTrackingDate) &&
+                                              hdt.habitId == cdt.habitId)
+                                          .toList();
 
                                   dailyObjectivesDone =
                                       checkIfDailyObjectiveWasDone(

@@ -4,6 +4,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:reallystick/core/messages/message.dart';
 import 'package:reallystick/core/presentation/screens/loading_screen.dart';
 import 'package:reallystick/core/presentation/widgets/custom_app_bar.dart';
 import 'package:reallystick/core/presentation/widgets/full_width_list_view.dart';
@@ -13,9 +14,12 @@ import 'package:reallystick/features/challenges/domain/entities/challenge_partic
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_bloc.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_events.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_states.dart';
+import 'package:reallystick/features/challenges/presentation/helpers/challenge_date.dart';
 import 'package:reallystick/features/challenges/presentation/screens/add_daily_tracking_modal.dart';
 import 'package:reallystick/features/challenges/presentation/screens/challenge_not_found_screen.dart';
+import 'package:reallystick/features/challenges/presentation/screens/change_participation_start_date_modal.dart';
 import 'package:reallystick/features/challenges/presentation/screens/duplicate_challenge_modal.dart';
+import 'package:reallystick/features/challenges/presentation/screens/finish_challenge_modal.dart';
 import 'package:reallystick/features/challenges/presentation/widgets/analytics_carousel_widget.dart';
 import 'package:reallystick/features/challenges/presentation/widgets/daily_tracking_carousel_with_start_date_widget.dart';
 import 'package:reallystick/features/challenges/presentation/widgets/daily_tracking_carousel_without_start_date_widget.dart';
@@ -33,10 +37,12 @@ import 'package:share_plus/share_plus.dart';
 
 class ChallengeDetailsScreen extends StatefulWidget {
   final String challengeId;
+  final String? challengeParticipationId;
 
   const ChallengeDetailsScreen({
     super.key,
     required this.challengeId,
+    required this.challengeParticipationId,
   });
 
   @override
@@ -177,10 +183,60 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
     );
   }
 
+  void _openFinishChallengeModal({
+    required ChallengeParticipation challengeParticipation,
+  }) async {
+    await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
+      ),
+      constraints: BoxConstraints(
+        maxWidth: 700,
+      ),
+      builder: (BuildContext context) {
+        return FinishChallengeModal(
+          challengeId: widget.challengeId,
+          challengeParticipation: challengeParticipation,
+        );
+      },
+    );
+  }
+
+  void _openChangeChallengeParticipationStartDateModal({
+    required ChallengeParticipation challengeParticipation,
+  }) async {
+    await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
+      ),
+      constraints: BoxConstraints(
+        maxWidth: 700,
+      ),
+      builder: (BuildContext context) {
+        return ChangeParticipationStartDateModal(
+          challengeId: widget.challengeId,
+          challengeParticipation: challengeParticipation,
+        );
+      },
+    );
+  }
+
   void _joinChallenge() {
     final createChallengeParticipationEvent = CreateChallengeParticipationEvent(
       challengeId: widget.challengeId,
-      startDate: DateTime.now(), // TODO : Modal to create
+      startDate: DateTime.now(),
+    );
+    context.read<ChallengeBloc>().add(createChallengeParticipationEvent);
+  }
+
+  void _participateInChallengeAgain() {
+    final createChallengeParticipationEvent = CreateChallengeParticipationEvent(
+      challengeId: widget.challengeId,
+      startDate: DateTime.now(),
     );
     context.read<ChallengeBloc>().add(createChallengeParticipationEvent);
   }
@@ -188,7 +244,10 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
   void _shareChallenge() async {
     final String relativeUri = context.namedLocation(
       'challengeDetails',
-      pathParameters: {'challengeId': widget.challengeId},
+      pathParameters: {
+        'challengeId': widget.challengeId,
+        'challengeParticipationId': 'null'
+      },
     );
 
     final String baseUrl = dotenv.env['API_BASE_URL'] ?? "";
@@ -229,262 +288,363 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Builder(
-      builder: (context) {
-        final profileState = context.watch<ProfileBloc>().state;
-        final challengeState = context.watch<ChallengeBloc>().state;
+    return BlocListener<ChallengeBloc, ChallengeState>(
+      listener: (context, state) {
+        if (state is ChallengesLoaded && state.message is SuccessMessage) {
+          final message = state.message as SuccessMessage;
 
-        if (profileState is ProfileAuthenticated &&
-            challengeState is ChallengesLoaded) {
-          final userLocale = profileState.profile.locale;
+          if (message.messageKey == "challengeParticipationCreated") {
+            final newChallengeParticipation =
+                state.newlyCreatedChallengeParticipation;
 
-          final challenge = challengeState.challenges[widget.challengeId];
-
-          if (challenge == null) {
-            if (challengeState.notFoundChallenge == widget.challengeId) {
-              return ChallengeNotFoundScreen();
-            } else {
-              context
-                  .read<ChallengeBloc>()
-                  .add(GetChallengeEvent(challengeId: widget.challengeId));
-              return LoadingScreen();
+            if (newChallengeParticipation != null) {
+              context.goNamed(
+                'challengeDetails',
+                pathParameters: {
+                  'challengeId': widget.challengeId,
+                  'challengeParticipationId': newChallengeParticipation.id,
+                },
+              );
             }
           }
-
-          final challengeParticipation = challengeState.challengeParticipations
-              .where((hp) => hp.challengeId == widget.challengeId)
-              .firstOrNull;
-          var challengeDailyTrackings =
-              challengeState.challengeDailyTrackings[widget.challengeId];
-
-          if (challengeDailyTrackings == null) {
-            BlocProvider.of<ChallengeBloc>(context).add(
-              GetChallengeDailyTrackingsEvent(challengeId: widget.challengeId),
-            );
-            challengeDailyTrackings = [];
-          }
-
-          final name = getRightTranslationFromJson(
-            challenge.name,
-            userLocale,
-          );
-
-          final description = getRightTranslationFromJson(
-            challenge.description,
-            userLocale,
-          );
-
-          final challengeColor = AppColorExtension.fromString(
-            challengeParticipation != null ? challengeParticipation.color : "",
-          ).color;
-
-          final challengeStatistics =
-              challengeState.challengeStatistics[widget.challengeId];
-
-          return Scaffold(
-            appBar: CustomAppBar(
-              title: Text(
-                name,
-                style: context.typographies.headingSmall.copyWith(
-                  color: challengeColor,
-                ),
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
-              ),
-              actions: [
-                if (challenge.creator == profileState.profile.id ||
-                    challengeParticipation != null)
-                  PopupMenuButton<String>(
-                    color: context.colors.backgroundDark,
-                    onSelected: (value) async {
-                      if (value == 'quit') {
-                        _quitChallenge(challengeParticipation!.id);
-                      } else if (value == 'change_color') {
-                        _openColorPicker(challengeParticipation!);
-                      } else if (value == 'update') {
-                        context.goNamed(
-                          'updateChallenge',
-                          pathParameters: {'challengeId': challenge.id},
-                        );
-                      } else if (value == 'delete') {
-                        _deleteChallenge(
-                          challenge.id,
-                          challengeParticipation?.id,
-                        );
-                        context.goNamed(
-                          'challenges',
-                        );
-                      } else if (value == 'share') {
-                        _shareChallenge();
-                      } else if (value == 'duplicate') {
-                        _openDuplicateChallengeModal();
-                      } else if (value == 'set_reminder') {
-                        _showNotificationsReminderBottomSheet(
-                          challengeParticipation: challengeParticipation!,
-                          challengeLongName: name,
-                        );
-                      }
-                    },
-                    itemBuilder: (BuildContext context) => [
-                      if (challengeParticipation != null) ...[
-                        PopupMenuItem(
-                          value: 'quit',
-                          child: Text(
-                              AppLocalizations.of(context)!.quitThisChallenge),
-                        ),
-                        PopupMenuItem(
-                          value: 'change_color',
-                          child:
-                              Text(AppLocalizations.of(context)!.changeColor),
-                        ),
-                        PopupMenuItem(
-                          value: 'set_reminder',
-                          child:
-                              Text(AppLocalizations.of(context)!.notifications),
-                        ),
-                        PopupMenuItem(
-                          value: 'share',
-                          child: Text(AppLocalizations.of(context)!.share),
-                        ),
-                      ],
-                      PopupMenuItem(
-                        value: "duplicate",
-                        child: Text(AppLocalizations.of(context)!.duplicate),
-                      ),
-                      if (challenge.creator == profileState.profile.id) ...[
-                        PopupMenuItem(
-                          value: 'update',
-                          child:
-                              Text(AppLocalizations.of(context)!.editChallenge),
-                        ),
-                        PopupMenuItem(
-                          value: 'delete',
-                          child: Text(
-                              AppLocalizations.of(context)!.deleteChallenge),
-                        ),
-                      ]
-                    ],
-                  ),
-              ],
-            ),
-            floatingActionButton: challenge.creator ==
-                        profileState.profile.id &&
-                    challengeParticipation != null
-                ? AddActivityButton(
-                    action: _showAddDailyTrackingBottomSheet,
-                    color: challengeColor,
-                    label: null,
-                  )
-                : challengeParticipation == null
-                    ? FloatingActionButton.extended(
-                        onPressed: _joinChallenge,
-                        icon: Icon(Icons.login),
-                        label: Text(
-                            AppLocalizations.of(context)!.joinThisChallenge),
-                        backgroundColor: context.colors.primary,
-                        extendedTextStyle: TextStyle(
-                            letterSpacing: 1, fontFamily: 'Montserrat'),
-                      )
-                    : null,
-            body: RefreshIndicator(
-              onRefresh: _pullRefresh,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                child: FullWidthListView(
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        color: challengeColor.withAlpha(155),
-                        border: Border.all(width: 1, color: challengeColor),
-                        borderRadius: BorderRadius.circular(16.0),
-                      ),
-                      child: Padding(
-                          padding: const EdgeInsets.all(15.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text(
-                                challenge.icon,
-                                style: TextStyle(
-                                  fontSize: 25,
-                                ),
-                              ),
-                              SizedBox(height: 8),
-                              if (challengeStatistics != null) ...[
-                                Text(
-                                  challenge.startDate == null
-                                      ? AppLocalizations.of(context)!.createdBy(
-                                          challengeStatistics.creatorUsername,
-                                        )
-                                      : AppLocalizations.of(context)!
-                                          .createdByStartsOn(
-                                          challengeStatistics.creatorUsername,
-                                          DateFormat.yMMMd(
-                                                  userLocale.toString())
-                                              .format(challenge.startDate!),
-                                        ),
-                                  style: TextStyle(
-                                      color: context.colors.textOnPrimary),
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                ),
-                                SizedBox(height: 16),
-                              ],
-                              Text(
-                                description,
-                                style: TextStyle(
-                                  color: context.colors.textOnPrimary,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
-                          )),
-                    ),
-                    SizedBox(height: 30),
-                    ListOfConcernedHabits(
-                      challengeColor: challengeColor,
-                      challengeId: widget.challengeId,
-                    ),
-                    SizedBox(height: 30),
-                    AnalyticsCarouselWidget(
-                      challengeColor: challengeColor,
-                      challengeId: challenge.id,
-                    ),
-                    SizedBox(height: 30),
-                    if (challenge.creator == profileState.profile.id ||
-                        challengeParticipation != null) ...[
-                      challenge.startDate != null
-                          ? DailyTrackingCarouselWithStartDateWidget(
-                              challengeDailyTrackings: challengeDailyTrackings,
-                              challengeColor: challengeColor,
-                              challengeId: widget.challengeId,
-                              canOpenDayBoxes: true,
-                              displayTitle: true,
-                            )
-                          : DailyTrackingCarouselWithoutStartDateWidget(
-                              challengeDailyTrackings: challengeDailyTrackings,
-                              challengeColor: challengeColor,
-                              challengeId: widget.challengeId,
-                              canOpenDayBoxes: true,
-                              displayTitle: true,
-                            ),
-                      SizedBox(height: 30),
-                    ],
-                    DiscussionListWidget(
-                      color: challengeColor,
-                      habitId: null,
-                      challengeId: widget.challengeId,
-                    ),
-                    SizedBox(height: 72),
-                  ],
-                ),
-              ),
-            ),
-          );
-        } else {
-          return SizedBox.shrink();
         }
       },
+      child: Builder(
+        builder: (context) {
+          final profileState = context.watch<ProfileBloc>().state;
+          final challengeState = context.watch<ChallengeBloc>().state;
+
+          if (profileState is ProfileAuthenticated &&
+              challengeState is ChallengesLoaded) {
+            final userLocale = profileState.profile.locale;
+
+            final challenge = challengeState.challenges[widget.challengeId];
+
+            if (challenge == null) {
+              if (challengeState.notFoundChallenge == widget.challengeId) {
+                return ChallengeNotFoundScreen();
+              } else {
+                context
+                    .read<ChallengeBloc>()
+                    .add(GetChallengeEvent(challengeId: widget.challengeId));
+                return LoadingScreen();
+              }
+            }
+
+            ChallengeParticipation? challengeParticipation;
+
+            // If a participation id was passed, use it, otherwise take the last participation
+            if (widget.challengeParticipationId != null) {
+              challengeParticipation = challengeState.challengeParticipations
+                  .where((hp) => hp.id == widget.challengeParticipationId)
+                  .firstOrNull;
+            } else {
+              final ongoingChallengeParticipationsForThisChallenge =
+                  challengeState.challengeParticipations
+                      .where((hp) =>
+                          hp.challengeId == widget.challengeId && !hp.finished)
+                      .toList();
+
+              challengeParticipation =
+                  ongoingChallengeParticipationsForThisChallenge.firstOrNull;
+            }
+
+            var challengeDailyTrackings =
+                challengeState.challengeDailyTrackings[widget.challengeId];
+
+            if (challengeDailyTrackings == null) {
+              BlocProvider.of<ChallengeBloc>(context).add(
+                GetChallengeDailyTrackingsEvent(
+                    challengeId: widget.challengeId),
+              );
+              challengeDailyTrackings = [];
+            }
+
+            final name = getRightTranslationFromJson(
+              challenge.name,
+              userLocale,
+            );
+
+            final description = getRightTranslationFromJson(
+              challenge.description,
+              userLocale,
+            );
+
+            final challengeColor = AppColorExtension.fromString(
+              challengeParticipation != null
+                  ? challengeParticipation.color
+                  : "",
+            ).color;
+
+            final challengeStatistics =
+                challengeState.challengeStatistics[widget.challengeId];
+
+            if (challengeParticipation != null) {
+              final finished = checkIfChallengeIsFinished(
+                challengeDailyTrackings: challengeDailyTrackings,
+                challengeStartDate: challenge.startDate,
+                challengeParticipation: challengeParticipation,
+              );
+
+              if (finished && !challengeParticipation.finished) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  _openFinishChallengeModal(
+                      challengeParticipation: challengeParticipation!);
+                });
+              }
+            }
+
+            return Scaffold(
+              appBar: CustomAppBar(
+                title: Text(
+                  name,
+                  style: context.typographies.headingSmall.copyWith(
+                    color: challengeColor,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                ),
+                actions: [
+                  if (challenge.creator == profileState.profile.id ||
+                      challengeParticipation != null)
+                    PopupMenuButton<String>(
+                      color: context.colors.backgroundDark,
+                      onSelected: (value) async {
+                        if (value == 'quit') {
+                          _quitChallenge(challengeParticipation!.id);
+                        } else if (value == 'change_color') {
+                          _openColorPicker(challengeParticipation!);
+                        } else if (value == 'update') {
+                          context.goNamed(
+                            'updateChallenge',
+                            pathParameters: {'challengeId': challenge.id},
+                          );
+                        } else if (value == 'delete') {
+                          _deleteChallenge(
+                            challenge.id,
+                            challengeParticipation?.id,
+                          );
+                          context.goNamed(
+                            'challenges',
+                          );
+                        } else if (value == 'share') {
+                          _shareChallenge();
+                        } else if (value == 'duplicate') {
+                          _openDuplicateChallengeModal();
+                        } else if (value == 'set_reminder') {
+                          _showNotificationsReminderBottomSheet(
+                            challengeParticipation: challengeParticipation!,
+                            challengeLongName: name,
+                          );
+                        } else if (value == 'change_participation_start_date') {
+                          _openChangeChallengeParticipationStartDateModal(
+                            challengeParticipation: challengeParticipation!,
+                          );
+                        } else if (value == "start_again") {
+                          _participateInChallengeAgain();
+                        }
+                      },
+                      itemBuilder: (BuildContext context) => [
+                        if (challengeParticipation != null) ...[
+                          if (challengeParticipation.finished)
+                            PopupMenuItem(
+                              value: 'start_again',
+                              child: Text(AppLocalizations.of(context)!
+                                  .participateAgain),
+                            ),
+                          PopupMenuItem(
+                            value: 'quit',
+                            child: Text(
+                              challengeParticipation.finished
+                                  ? AppLocalizations.of(context)!
+                                      .deleteChallengeParticipation
+                                  : AppLocalizations.of(context)!
+                                      .quitThisChallenge,
+                            ),
+                          ),
+                          if (!challengeParticipation.finished)
+                            PopupMenuItem(
+                              value: 'change_participation_start_date',
+                              child: Text(
+                                AppLocalizations.of(context)!
+                                    .changeChallengeParticipationStartDate,
+                              ),
+                            ),
+                          PopupMenuItem(
+                            value: 'change_color',
+                            child:
+                                Text(AppLocalizations.of(context)!.changeColor),
+                          ),
+                          PopupMenuItem(
+                            value: 'set_reminder',
+                            child: Text(
+                                AppLocalizations.of(context)!.notifications),
+                          ),
+                          PopupMenuItem(
+                            value: 'share',
+                            child: Text(AppLocalizations.of(context)!.share),
+                          ),
+                        ],
+                        PopupMenuItem(
+                          value: "duplicate",
+                          child: Text(AppLocalizations.of(context)!.duplicate),
+                        ),
+                        if (challenge.creator == profileState.profile.id) ...[
+                          PopupMenuItem(
+                            value: 'update',
+                            child: Text(
+                                AppLocalizations.of(context)!.editChallenge),
+                          ),
+                          PopupMenuItem(
+                            value: 'delete',
+                            child: Text(
+                                AppLocalizations.of(context)!.deleteChallenge),
+                          ),
+                        ]
+                      ],
+                    ),
+                ],
+              ),
+              floatingActionButton: challenge.creator ==
+                          profileState.profile.id &&
+                      challengeParticipation != null
+                  ? AddActivityButton(
+                      action: _showAddDailyTrackingBottomSheet,
+                      color: challengeColor,
+                      label: null,
+                    )
+                  : challengeParticipation == null
+                      ? FloatingActionButton.extended(
+                          onPressed: _joinChallenge,
+                          icon: Icon(Icons.login),
+                          label: Text(
+                              AppLocalizations.of(context)!.joinThisChallenge),
+                          backgroundColor: context.colors.primary,
+                          extendedTextStyle: TextStyle(
+                              letterSpacing: 1, fontFamily: 'Montserrat'),
+                        )
+                      : null,
+              body: RefreshIndicator(
+                onRefresh: _pullRefresh,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  child: FullWidthListView(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          color: challengeColor.withAlpha(155),
+                          border: Border.all(width: 1, color: challengeColor),
+                          borderRadius: BorderRadius.circular(16.0),
+                        ),
+                        child: Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  challenge.icon,
+                                  style: TextStyle(
+                                    fontSize: 25,
+                                  ),
+                                ),
+                                SizedBox(height: 8),
+                                if (challengeStatistics != null) ...[
+                                  Text(
+                                    challenge.startDate == null
+                                        ? AppLocalizations.of(context)!
+                                            .createdBy(
+                                            challengeStatistics.creatorUsername,
+                                          )
+                                        : AppLocalizations.of(context)!
+                                            .createdByStartsOn(
+                                            challengeStatistics.creatorUsername,
+                                            DateFormat.yMMMd(
+                                                    userLocale.toString())
+                                                .format(challenge.startDate!),
+                                          ),
+                                    style: TextStyle(
+                                        color: context.colors.textOnPrimary),
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                  ),
+                                  SizedBox(height: 16),
+                                ],
+                                if (challengeParticipation != null) ...[
+                                  Text(
+                                    AppLocalizations.of(context)!.joinedOn(
+                                      DateFormat.yMMMd(userLocale.toString())
+                                          .format(
+                                        challengeParticipation.startDate,
+                                      ),
+                                    ),
+                                    style: TextStyle(
+                                        color: context.colors.textOnPrimary),
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                  ),
+                                  SizedBox(height: 16),
+                                ],
+                                Text(
+                                  AppLocalizations.of(context)!
+                                      .descriptionWithTwoPoints(description),
+                                  style: TextStyle(
+                                    color: context.colors.textOnPrimary,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            )),
+                      ),
+                      SizedBox(height: 30),
+                      ListOfConcernedHabits(
+                        challengeColor: challengeColor,
+                        challengeId: widget.challengeId,
+                      ),
+                      SizedBox(height: 30),
+                      AnalyticsCarouselWidget(
+                        challengeColor: challengeColor,
+                        challengeId: challenge.id,
+                      ),
+                      SizedBox(height: 30),
+                      if (challenge.creator == profileState.profile.id ||
+                          challengeParticipation != null) ...[
+                        challenge.startDate != null
+                            ? DailyTrackingCarouselWithStartDateWidget(
+                                challengeParticipation: challengeParticipation,
+                                challengeDailyTrackings:
+                                    challengeDailyTrackings,
+                                challengeColor: challengeColor,
+                                challengeId: widget.challengeId,
+                                canOpenDayBoxes: true,
+                                displayTitle: true,
+                              )
+                            : DailyTrackingCarouselWithoutStartDateWidget(
+                                challengeParticipation: challengeParticipation,
+                                challengeDailyTrackings:
+                                    challengeDailyTrackings,
+                                challengeColor: challengeColor,
+                                challengeId: widget.challengeId,
+                                canOpenDayBoxes: true,
+                                displayTitle: true,
+                              ),
+                        SizedBox(height: 30),
+                      ],
+                      DiscussionListWidget(
+                        color: challengeColor,
+                        habitId: null,
+                        challengeId: widget.challengeId,
+                      ),
+                      SizedBox(height: 72),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          } else {
+            return SizedBox.shrink();
+          }
+        },
+      ),
     );
   }
 }

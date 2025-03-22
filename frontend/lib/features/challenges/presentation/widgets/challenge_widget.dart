@@ -10,6 +10,7 @@ import 'package:reallystick/features/challenges/domain/entities/challenge_daily_
 import 'package:reallystick/features/challenges/domain/entities/challenge_participation.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_bloc.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_states.dart';
+import 'package:reallystick/features/challenges/presentation/helpers/challenge_date.dart';
 import 'package:reallystick/features/challenges/presentation/widgets/daily_tracking_carousel_with_start_date_widget.dart';
 import 'package:reallystick/features/challenges/presentation/widgets/daily_tracking_carousel_without_start_date_widget.dart';
 import 'package:reallystick/features/habits/presentation/helpers/translations.dart';
@@ -48,12 +49,22 @@ class ChallengeWidget extends StatelessWidget {
 
           final bool isLargeScreen = checkIfLargeScreen(context);
 
+          final bool finished = checkIfChallengeIsFinished(
+            challengeDailyTrackings: challengeDailyTrackings,
+            challengeStartDate: challenge.startDate,
+            challengeParticipation: challengeParticipation,
+          );
+
           return !challenge.deleted
               ? InkWell(
                   onTap: () {
                     context.goNamed(
                       'challengeDetails',
-                      pathParameters: {'challengeId': challenge.id},
+                      pathParameters: {
+                        'challengeId': challenge.id,
+                        'challengeParticipationId':
+                            challengeParticipation?.id ?? "null",
+                      },
                     );
                   },
                   borderRadius: BorderRadius.circular(10.0),
@@ -63,52 +74,115 @@ class ChallengeWidget extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                     margin: const EdgeInsets.all(8),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                    child: Column(
+                      children: [
+                        if (finished)
+                          Center(
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 4, horizontal: 8),
+                              decoration: BoxDecoration(
+                                border: Border(
+                                  left: BorderSide(color: Colors.green),
+                                  right: BorderSide(color: Colors.green),
+                                  bottom: BorderSide(color: Colors.green),
+                                ),
+                                borderRadius: BorderRadius.only(
+                                    bottomLeft: Radius.circular(8.0),
+                                    bottomRight: Radius.circular(8.0)),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.green.withAlpha(50),
+                                    blurRadius: 6,
+                                  ),
+                                ],
+                              ),
+                              child:
+                                  Text(AppLocalizations.of(context)!.finished),
+                            ),
+                          ),
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(
+                            16.0,
+                            finished ? 0.0 : 16.0,
+                            16.0,
+                            16.0,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              Column(
+                              Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Row(
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(right: 16.0),
-                                        child: Text(
-                                          challenge.icon,
-                                          style: TextStyle(
-                                            fontSize: 25,
+                                      Row(
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                right: 16.0),
+                                            child: Text(
+                                              challenge.icon,
+                                              style: TextStyle(
+                                                fontSize: 25,
+                                              ),
+                                            ),
                                           ),
-                                        ),
+                                          Text(
+                                            name,
+                                            style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w500,
+                                              color: challengeColor,
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                      Text(
-                                        name,
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w500,
-                                          color: challengeColor,
+                                      if (challengeParticipation != null) ...[
+                                        SizedBox(height: 10),
+                                        Text(
+                                          "${AppLocalizations.of(context)!.challengeParticipationStartDate} ${DateFormat.yMMMd().format(challengeParticipation!.startDate)}",
                                         ),
-                                      ),
+                                        SizedBox(height: 20),
+                                      ],
                                     ],
                                   ),
-                                  if (challengeParticipation != null) ...[
-                                    SizedBox(height: 10),
-                                    Text(
-                                      "${AppLocalizations.of(context)!.challengeParticipationStartDate} ${DateFormat.yMMMd().format(challengeParticipation!.startDate)}",
-                                    ),
-                                    SizedBox(height: 20),
+                                  if (isLargeScreen &&
+                                      challengeParticipation != null) ...[
+                                    Spacer(),
+                                    challenge.startDate != null
+                                        ? DailyTrackingCarouselWithStartDateWidget(
+                                            challengeParticipation:
+                                                challengeParticipation,
+                                            challengeId: challenge.id,
+                                            challengeDailyTrackings:
+                                                challengeDailyTrackings,
+                                            challengeColor: challengeColor,
+                                            canOpenDayBoxes: false,
+                                            displayTitle: false,
+                                          )
+                                        : DailyTrackingCarouselWithoutStartDateWidget(
+                                            challengeParticipation:
+                                                challengeParticipation,
+                                            challengeId: challenge.id,
+                                            challengeDailyTrackings:
+                                                challengeDailyTrackings,
+                                            challengeColor: challengeColor,
+                                            canOpenDayBoxes: false,
+                                            displayTitle: false,
+                                          ),
                                   ],
                                 ],
                               ),
-                              if (isLargeScreen) ...[
-                                Spacer(),
+                              if (!isLargeScreen &&
+                                  challengeParticipation != null) ...[
+                                const SizedBox(height: 8),
                                 challenge.startDate != null
                                     ? DailyTrackingCarouselWithStartDateWidget(
+                                        challengeParticipation:
+                                            challengeParticipation,
                                         challengeId: challenge.id,
                                         challengeDailyTrackings:
                                             challengeDailyTrackings,
@@ -117,6 +191,8 @@ class ChallengeWidget extends StatelessWidget {
                                         displayTitle: false,
                                       )
                                     : DailyTrackingCarouselWithoutStartDateWidget(
+                                        challengeParticipation:
+                                            challengeParticipation,
                                         challengeId: challenge.id,
                                         challengeDailyTrackings:
                                             challengeDailyTrackings,
@@ -127,28 +203,8 @@ class ChallengeWidget extends StatelessWidget {
                               ],
                             ],
                           ),
-                          if (!isLargeScreen) ...[
-                            const SizedBox(height: 8),
-                            challenge.startDate != null
-                                ? DailyTrackingCarouselWithStartDateWidget(
-                                    challengeId: challenge.id,
-                                    challengeDailyTrackings:
-                                        challengeDailyTrackings,
-                                    challengeColor: challengeColor,
-                                    canOpenDayBoxes: false,
-                                    displayTitle: false,
-                                  )
-                                : DailyTrackingCarouselWithoutStartDateWidget(
-                                    challengeId: challenge.id,
-                                    challengeDailyTrackings:
-                                        challengeDailyTrackings,
-                                    challengeColor: challengeColor,
-                                    canOpenDayBoxes: false,
-                                    displayTitle: false,
-                                  ),
-                          ],
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 )

@@ -23,11 +23,13 @@
   "blockThisUser": "Block this user",
   "cancel": "Cancel",
   "category": "Category",
+  "changeChallengeParticipationStartDate": "Change participation start date",
   "changeColor": "Change color",
   "changePassword": "Change Password",
   "changeRecoveryCode": "Change Recovery Code",
   "challengeCreated": "Your challenge was successfully created.",
   "challengeDuplicated": "This challenge was successfully copied.",
+  "challengeFinished": "Challenge finished",
   "challengeDailyTracking": "Daily Objectives",
   "challengeDailyTrackingCreated": "This daily objective was successfully created.",
   "challengeDailyTrackingDeleted": "This daily objective was successfully deleted.",
@@ -79,7 +81,7 @@
       }
     }
   },
-  "createdChallenges": "Challenges I created",
+  "createdChallenges": "Created challenges",
   "createChallenge": "Create challenge",
   "createHabit": "Create habit",
   "createANewChallenge": "Create a New Challenge",
@@ -110,8 +112,17 @@
   "delete": "Delete",
   "deleteAccount": "Delete account",
   "deleteChallenge": "Delete challenge",
+  "deleteChallengeParticipation": "Delete this participation",
   "deleteMessage": "Delete Message",
   "description": "Description",
+  "descriptionWithTwoPoints": "Description: {description}",
+  "@descriptionWithTwoPoints": {
+    "placeholders": {
+      "description": {
+        "type": "String"
+      }
+    }
+  },
   "devices": "Devices",
   "deviceInfo": "{isMobile, select, true {Mobile device} false {Computer} other {Unknown}}{os, select, null {. } other { running on {os}. }}{browser, select, null {App} other {Browser: {browser}}}. {model, select, null {} other {Model: {model}.}}",
   "@deviceInfo": {
@@ -163,6 +174,7 @@
   "female": "Female",
   "females": "Females",
   "financialSituation": "Financial situation",
+  "finished": "Finished",
   "fixedDates": "Fixed dates",
   "forbiddenError": "You are not authorized to perform this action.",
   "gender": "Gender",
@@ -172,7 +184,7 @@
   "habit": "Habit",
   "habitDailyTracking": "Daily Tracking",
   "habits": "Habits",
-  "habitsConcerned": "Habits concerned",
+  "habitsConcerned": "Habits Concerned",
   "habitsNotMergedError": "These two habits could not be merged.",
   "habitCategoryNotFoundError": "This habit category does not exist.",
   "habitCreated": "Your habit was successfully created.",
@@ -223,6 +235,14 @@
     "placeholders": {
       "count": {
         "type": "int"
+      }
+    }
+  },
+  "joinedOn": "Joined on: {startDate}",
+  "@joinedOn": {
+    "placeholders": {
+      "startDate": {
+        "type": "String"
       }
     }
   },
@@ -297,14 +317,14 @@
   "longName": "Long name",
   "male": "Male",
   "males": "Males",
+  "markedAsFinishedChallenges": "Finished challenges",
+  "markChallengeAsFinished": "You arrived at the end of this challenge, congratulations!\nMark it as finished to do it again later without losing the details of this participation.",
   "mergeHabit": "Merge Habit",
   "message": "Message",
   "messages": "Messages",
   "messageDeletedError": "This message has been deleted.",
   "messageNotFoundError": "Message not found.",
   "missingDateTimeError": "The date can't be left empty.",
-  "myChallenges": "My Challenges",
-  "myHabits": "My Habits",
   "newDiscussion": "New Discussion",
   "newPassword": "New password",
   "next": "Next",
@@ -353,9 +373,10 @@
       }
     }
   },
+  "ongoingChallenges": "Ongoing challenges",
   "other": "Other",
   "otherChallenges": "Other challenges",
-  "participatedChallenges": "My other challenges",
+  "participateAgain": "Participate again",
   "password": "Password",
   "passwordForgotten": "Forgot your password?",
   "passwordMustBeChangedError": "You need to change your password to log in.",

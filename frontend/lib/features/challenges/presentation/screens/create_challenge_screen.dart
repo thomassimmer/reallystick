@@ -93,7 +93,10 @@ class CreateChallengeScreenState extends State<CreateChallengeScreen> {
             if (newChallenge != null) {
               context.goNamed(
                 'challengeDetails',
-                pathParameters: {'challengeId': newChallenge.id},
+                pathParameters: {
+                  'challengeId': newChallenge.id,
+                  'challengeParticipationId': 'null'
+                },
               );
             }
           }

@@ -191,13 +191,18 @@ class AppRouter {
                 },
               ),
               GoRoute(
-                path: ':challengeId',
+                path: ':challengeId/:challengeParticipationId',
                 name: 'challengeDetails',
                 builder: (context, state) {
                   final challengeId = state.pathParameters['challengeId']!;
+                  final challengeParticipationId =
+                      state.pathParameters['challengeParticipationId']!;
 
                   return ChallengeDetailsScreen(
                     challengeId: challengeId,
+                    challengeParticipationId: challengeParticipationId == 'null'
+                        ? null
+                        : challengeParticipationId,
                   );
                 },
                 routes: [

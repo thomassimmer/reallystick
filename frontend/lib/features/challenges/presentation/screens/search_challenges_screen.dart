@@ -117,7 +117,10 @@ class SearchChallengesScreenState extends State<SearchChallengesScreen> {
                       onTap: () {
                         context.pushNamed(
                           'challengeDetails',
-                          pathParameters: {'challengeId': challenge.id},
+                          pathParameters: {
+                            'challengeId': challenge.id,
+                            'challengeParticipationId': 'null',
+                          },
                         );
                       },
                     );

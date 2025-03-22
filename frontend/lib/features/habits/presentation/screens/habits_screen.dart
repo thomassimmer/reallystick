@@ -27,6 +27,7 @@ class HabitsScreen extends StatefulWidget {
 
 class HabitsScreenState extends State<HabitsScreen> {
   bool _isModalShown = false;
+  Map<String, bool> _categoriesExpansion = {};
 
   void _showQuestionnaireBottomSheet(ProfileAuthenticated state) {
     setState(() {
@@ -106,9 +107,20 @@ class HabitsScreenState extends State<HabitsScreen> {
         !_isModalShown) {
       // Delay modal presentation to avoid lifecycle conflicts
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) {
-          _showQuestionnaireBottomSheet(profileState);
-        }
+        _showQuestionnaireBottomSheet(profileState);
+      });
+    }
+
+    final habitState = context.watch<HabitBloc>().state;
+    if (habitState is HabitsLoaded) {
+      Map<String, bool> newCategoriesExpansion = {};
+
+      for (final categoryId in habitState.habitCategories.keys) {
+        newCategoriesExpansion[categoryId] = true;
+      }
+
+      setState(() {
+        _categoriesExpansion = newCategoriesExpansion;
       });
     }
   }
@@ -140,7 +152,7 @@ class HabitsScreenState extends State<HabitsScreen> {
             return Scaffold(
               appBar: CustomAppBar(
                 title: Text(
-                  AppLocalizations.of(context)!.myHabits,
+                  AppLocalizations.of(context)!.habits,
                   style: context.typographies.heading,
                 ),
                 centerTitle: false,
@@ -207,49 +219,78 @@ class HabitsScreenState extends State<HabitsScreen> {
 
                         return [
                           SliverAppBar(
-                            title: Row(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 16.0),
-                                  child: Text(
-                                    habitCategory.icon,
-                                    style: TextStyle(fontSize: 25),
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Text(
-                                    categoryName,
-                                    style: const TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w500,
+                            pinned: true,
+                            backgroundColor: context.colors.background,
+                            title: InkWell(
+                              borderRadius: BorderRadius.circular(10.0),
+                              onTap: () {
+                                setState(() {
+                                  _categoriesExpansion[habitCategory.id] =
+                                      !_categoriesExpansion[habitCategory.id]!;
+                                });
+                              },
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 16.0),
+                                    child: Text(
+                                      habitCategory.icon,
+                                      style: TextStyle(fontSize: 25),
                                     ),
                                   ),
-                                ),
-                              ],
+                                  Expanded(
+                                    child: Text(
+                                      categoryName,
+                                      style: const TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ),
+                                  Icon(
+                                    _categoriesExpansion[habitCategory.id]!
+                                        ? Icons.expand_less
+                                        : Icons.expand_more,
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                          SliverList(
-                            delegate: SliverChildBuilderDelegate(
-                              (context, index) {
-                                final habitParticipation =
-                                    sortedHabitParticipations[index];
-                                final habit = habitState
-                                    .habits[habitParticipation.habitId]!;
-                                final habitDailyTrackingsForThisHabit =
-                                    habitDailyTrackings
-                                        .where((hdt) => hdt.habitId == habit.id)
-                                        .toList();
+                          SliverToBoxAdapter(
+                            child: AnimatedCrossFade(
+                              duration: const Duration(milliseconds: 500),
+                              crossFadeState:
+                                  _categoriesExpansion[habitCategory.id]!
+                                      ? CrossFadeState.showFirst
+                                      : CrossFadeState.showSecond,
+                              firstChild: ListView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: sortedHabitParticipations.length,
+                                itemBuilder: (context, index) {
+                                  final habitParticipation =
+                                      sortedHabitParticipations[index];
+                                  final habit = habitState
+                                      .habits[habitParticipation.habitId]!;
+                                  final habitDailyTrackingsForThisHabit =
+                                      habitDailyTrackings
+                                          .where(
+                                              (hdt) => hdt.habitId == habit.id)
+                                          .toList();
 
-                                return HabitWidget(
-                                  habit: habit,
-                                  habitParticipation: habitParticipation,
-                                  habitDailyTrackings:
-                                      habitDailyTrackingsForThisHabit,
-                                );
-                              },
-                              childCount: sortedHabitParticipations.length,
+                                  return HabitWidget(
+                                    habit: habit,
+                                    habitParticipation: habitParticipation,
+                                    habitDailyTrackings:
+                                        habitDailyTrackingsForThisHabit,
+                                  );
+                                },
+                              ),
+                              secondChild: SizedBox.shrink(),
                             ),
-                          )
+                          ),
                         ];
                       }),
                     ] else ...[

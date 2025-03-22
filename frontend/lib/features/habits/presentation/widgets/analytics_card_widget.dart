@@ -71,7 +71,7 @@ class _AnalyticsCardWidgetState extends State<AnalyticsCardWidget> {
         boxShadow: [
           BoxShadow(
             color: widget.color.withValues(alpha: 0.2),
-            blurRadius: 10,
+            blurRadius: 5,
           ),
         ],
         borderRadius: BorderRadius.circular(16),

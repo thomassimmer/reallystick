@@ -501,6 +501,7 @@ class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
             challengeParticipations: currentState.challengeParticipations,
             challenges: currentState.challenges,
             challengeStatistics: currentState.challengeStatistics,
+            newlyCreatedChallengeParticipation: challengeParticipation,
             message: SuccessMessage("challengeParticipationCreated"),
           ),
         );

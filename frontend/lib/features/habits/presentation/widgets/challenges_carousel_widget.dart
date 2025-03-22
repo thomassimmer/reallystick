@@ -76,7 +76,7 @@ class ChallengesCarouselWidget extends StatelessWidget {
           SizedBox(height: 10),
           if (challenges.isNotEmpty) ...[
             SizedBox(
-              height: 95,
+              height: 100,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemCount: challenges.length,
@@ -110,7 +110,10 @@ class ChallengesCarouselWidget extends StatelessWidget {
                       onTap: () {
                         context.pushNamed(
                           'challengeDetails',
-                          pathParameters: {'challengeId': challenge.id},
+                          pathParameters: {
+                            'challengeId': challenge.id,
+                            'challengeParticipationId': 'null'
+                          },
                         );
                       },
                       child: Padding(
