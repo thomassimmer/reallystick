@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -43,15 +44,9 @@ class DailyTrackingCarouselWidgetState
   void initState() {
     super.initState();
 
-    // Ensure that the scroll happens after layout is complete
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // Check if the controller has clients and if the scroll position is at the top
       Future.delayed(Duration(milliseconds: 50), () {
-        if (scrollController.hasClients &&
-            scrollController.position.minScrollExtent ==
-                scrollController.offset) {
-          scrollController.jumpTo(scrollController.position.maxScrollExtent);
-        }
+        _scrollToBottom();
       });
     });
   }
@@ -60,6 +55,14 @@ class DailyTrackingCarouselWidgetState
   void dispose() {
     scrollController.dispose();
     super.dispose();
+  }
+
+  void _scrollToBottom() {
+    if (scrollController.hasClients) {
+      scrollController.jumpTo(scrollController.position.maxScrollExtent);
+    } else {
+      Timer(Duration(milliseconds: 400), () => _scrollToBottom());
+    }
   }
 
   void _openDailyTrackings({required DateTime datetime}) {
@@ -97,7 +100,12 @@ class DailyTrackingCarouselWidgetState
 
     final today = DateTime.now();
 
-    final firstDayWithActivity = widget.habitDailyTrackings.firstOrNull;
+    final firstActivity = widget.habitDailyTrackings
+      ..sort((a, b) => a.datetime.compareTo(b.datetime));
+
+    final firstDayWithActivity =
+        firstActivity.isNotEmpty ? firstActivity.first : null;
+
     final daysSinceFirstActivity = firstDayWithActivity != null
         ? today.difference(firstDayWithActivity.datetime).inDays
         : 0;
@@ -221,26 +229,28 @@ class DailyTrackingCarouselWidgetState
                   itemCount: weeks.length,
                   itemBuilder: (context, weekIndex) {
                     final week = weeks[weekIndex];
+
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 4.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: week.map((datetime) {
-                          final totalQuantity =
-                              aggregatedQuantities[datetime] ?? 0.0;
-                          final normalizedOpacity = maxQuantity == minQuantity
-                              ? 0.1
-                              : 0.1 +
-                                  ((totalQuantity - minQuantity) /
-                                      (maxQuantity - minQuantity) *
-                                      0.9);
-                          final hasActivity =
-                              (aggregatedQuantities[datetime] ?? 0.0) > 0;
-                          final border = hasActivity
-                              ? Border.all(color: widget.habitColor, width: 1)
-                              : null;
+                        children: week.map(
+                          (datetime) {
+                            final totalQuantity =
+                                aggregatedQuantities[datetime] ?? 0.0;
+                            final normalizedOpacity = maxQuantity == minQuantity
+                                ? 0.1
+                                : 0.1 +
+                                    ((totalQuantity - minQuantity) /
+                                        (maxQuantity - minQuantity) *
+                                        0.9);
+                            final hasActivity =
+                                (aggregatedQuantities[datetime] ?? 0.0) > 0;
+                            final border = hasActivity
+                                ? Border.all(color: widget.habitColor, width: 1)
+                                : null;
 
-                          return Padding(
+                            return Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 4.0),
                               child: widget.canOpenDayBoxes
@@ -270,8 +280,10 @@ class DailyTrackingCarouselWidgetState
                                         border: border,
                                         borderRadius: BorderRadius.circular(4),
                                       ),
-                                    ));
-                        }).toList(),
+                                    ),
+                            );
+                          },
+                        ).toList(),
                       ),
                     );
                   },

@@ -6,8 +6,6 @@ import 'package:reallystick/core/ui/colors.dart';
 import 'package:reallystick/features/habits/domain/entities/habit.dart';
 import 'package:reallystick/features/habits/domain/entities/habit_daily_tracking.dart';
 import 'package:reallystick/features/habits/domain/entities/habit_participation.dart';
-import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.dart';
-import 'package:reallystick/features/habits/presentation/blocs/habit/habit_states.dart';
 import 'package:reallystick/features/habits/presentation/helpers/translations.dart';
 import 'package:reallystick/features/habits/presentation/widgets/daily_tracking_carousel_widget.dart';
 import 'package:reallystick/features/habits/presentation/widgets/last_activity_widget.dart';
@@ -30,107 +28,102 @@ class HabitWidget extends StatelessWidget {
     return Builder(
       builder: (context) {
         final profileState = context.watch<ProfileBloc>().state;
-        final habitState = context.watch<HabitBloc>().state;
 
-        if (habitState is HabitsLoaded) {
-          final userLocale = profileState.profile!.locale;
+        final userLocale = profileState.profile!.locale;
 
-          final shortName = getRightTranslationFromJson(
-            habit.shortName,
-            userLocale,
-          );
+        final shortName = getRightTranslationFromJson(
+          habit.shortName,
+          userLocale,
+        );
 
-          final longName = getRightTranslationFromJson(
-            habit.longName,
-            userLocale,
-          );
+        final longName = getRightTranslationFromJson(
+          habit.longName,
+          userLocale,
+        );
 
-          final bool isLargeScreen = checkIfLargeScreen(context);
+        final bool isLargeScreen = checkIfLargeScreen(context);
 
-          final habitColor =
-              AppColorExtension.fromString(habitParticipation.color).color;
+        final habitColor =
+            AppColorExtension.fromString(habitParticipation.color).color;
 
-          return InkWell(
-            onTap: () {
-              context.goNamed(
-                'habitDetails',
-                pathParameters: {'habitId': habit.id},
-              );
-            },
-            borderRadius: BorderRadius.circular(10.0),
-            child: Card(
-              elevation: 2,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              margin: const EdgeInsets.all(8),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 16.0),
-                                  child: Text(
-                                    habit.icon,
-                                    style: TextStyle(fontSize: 25),
-                                  ),
+        return InkWell(
+          onTap: () {
+            context.goNamed(
+              'habitDetails',
+              pathParameters: {'habitId': habit.id},
+            );
+          },
+          borderRadius: BorderRadius.circular(10.0),
+          child: Card(
+            elevation: 2,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            margin: const EdgeInsets.all(8),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(right: 16.0),
+                                child: Text(
+                                  habit.icon,
+                                  style: TextStyle(fontSize: 25),
                                 ),
-                                Text(
-                                  isLargeScreen ? longName : shortName,
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w500,
-                                    color: habitColor,
-                                  ),
+                              ),
+                              Text(
+                                isLargeScreen ? longName : shortName,
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500,
+                                  color: habitColor,
                                 ),
-                              ],
-                            ),
-                            const SizedBox(height: 8),
-                            LastActivityWidget(
-                              habitDailyTrackings: habitDailyTrackings,
-                              userLocale: userLocale,
-                            ),
-                          ],
-                        ),
-                        if (isLargeScreen) ...[
-                          Spacer(),
-                          DailyTrackingCarouselWidget(
-                            habit: habit,
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          LastActivityWidget(
                             habitDailyTrackings: habitDailyTrackings,
-                            habitColor: habitColor,
-                            canOpenDayBoxes: false,
-                            displayTitle: false,
+                            userLocale: userLocale,
                           ),
                         ],
-                      ],
-                    ),
-                    if (!isLargeScreen) ...[
-                      const SizedBox(height: 16),
-                      DailyTrackingCarouselWidget(
-                        habit: habit,
-                        habitDailyTrackings: habitDailyTrackings,
-                        habitColor: habitColor,
-                        canOpenDayBoxes: false,
-                        displayTitle: false,
                       ),
+                      if (isLargeScreen) ...[
+                        Spacer(),
+                        DailyTrackingCarouselWidget(
+                          habit: habit,
+                          habitDailyTrackings: habitDailyTrackings,
+                          habitColor: habitColor,
+                          canOpenDayBoxes: false,
+                          displayTitle: false,
+                        ),
+                      ],
                     ],
+                  ),
+                  if (!isLargeScreen) ...[
+                    const SizedBox(height: 16),
+                    DailyTrackingCarouselWidget(
+                      habit: habit,
+                      habitDailyTrackings: habitDailyTrackings,
+                      habitColor: habitColor,
+                      canOpenDayBoxes: false,
+                      displayTitle: false,
+                    ),
                   ],
-                ),
+                ],
               ),
             ),
-          );
-        } else {
-          return SizedBox.shrink();
-        }
+          ),
+        );
       },
     );
   }

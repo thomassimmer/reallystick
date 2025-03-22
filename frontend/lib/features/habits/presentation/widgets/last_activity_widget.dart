@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:reallystick/features/habits/domain/entities/habit_daily_tracking.dart';
@@ -26,41 +27,68 @@ class _LastActivityWidgetState extends State<LastActivityWidget> {
   void initState() {
     super.initState();
 
+    _sortHabitDailyTrackings();
+    _setupTimer();
+  }
+
+  @override
+  void didUpdateWidget(covariant LastActivityWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    // Check if the new habitDailyTrackings is different from the old one
+    if (!listEquals(
+        oldWidget.habitDailyTrackings, widget.habitDailyTrackings)) {
+      _sortHabitDailyTrackings();
+      _setupTimer();
+      setState(() {});
+    }
+  }
+
+  void _sortHabitDailyTrackings() {
     widget.habitDailyTrackings.sort((a, b) => b.datetime.compareTo(a.datetime));
     _lastActivityDateTime = widget.habitDailyTrackings.isNotEmpty
         ? widget.habitDailyTrackings.first.datetime
         : null;
+  }
 
-    // Only set up the timer if there's a valid last activity datetime
+  void _setupTimer() {
+    _timer?.cancel(); // Cancel any existing timer
+
     if (_lastActivityDateTime != null) {
-      // Calculate the time difference between the current time and the last activity
       final now = DateTime.now();
       final difference = now.difference(_lastActivityDateTime!);
 
-      // Check the time difference and set the appropriate timer interval
       if (difference.inSeconds < 60) {
-        // Less than 1 minute ago - refresh every second
-        _timer = Timer.periodic(Duration(seconds: 1), (_) {
-          setState(() {});
-        });
+        _timer = Timer.periodic(
+          Duration(seconds: 1),
+          (_) {
+            setState(() {});
+            _setupTimer();
+          },
+        );
       } else if (difference.inMinutes < 60) {
-        // Less than 1 hour ago - refresh every minute
-        _timer = Timer.periodic(Duration(minutes: 1), (_) {
-          setState(() {});
-        });
+        _timer = Timer.periodic(
+          Duration(minutes: 1),
+          (_) {
+            setState(() {});
+            _setupTimer();
+          },
+        );
       } else {
-        _timer = Timer.periodic(Duration(minutes: 5), (_) {
-          setState(() {});
-        });
+        _timer = Timer.periodic(
+          Duration(minutes: 5),
+          (_) {
+            setState(() {});
+            _setupTimer();
+          },
+        );
       }
     }
   }
 
   @override
   void dispose() {
-    if (_timer != null && _timer!.isActive) {
-      _timer!.cancel(); // Cancel the timer when the widget is disposed
-    }
+    _timer?.cancel();
     super.dispose();
   }
 
@@ -87,10 +115,11 @@ class _LastActivityWidgetState extends State<LastActivityWidget> {
   }
 
   String getLastActivityText() {
+    final localizations = AppLocalizations.of(context)!;
     if (_lastActivityDateTime == null) {
-      return AppLocalizations.of(context)!.noActivityRecordedYet;
+      return localizations.noActivityRecordedYet;
     }
-    return "${AppLocalizations.of(context)!.lastActivity} ${formatTimeElapsed(context, _lastActivityDateTime!)}";
+    return "${localizations.lastActivity} ${formatTimeElapsed(context, _lastActivityDateTime!)}";
   }
 
   @override

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -51,33 +52,41 @@ class DailyTrackingCarouselWithStartDateWidgetState
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Future.delayed(Duration(milliseconds: 50), () {
-        if (scrollController.hasClients) {
-          _scrollToToday();
-        }
-      });
-    });
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) {
+        Future.delayed(
+          Duration(milliseconds: 50),
+          () {
+            _scrollToToday();
+          },
+        );
+      },
+    );
   }
 
   void _scrollToToday() {
-    final now = DateTime.now();
-    final normalizedToday = DateTime(now.year, now.month, now.day);
+    if (scrollController.hasClients) {
+      final now = DateTime.now();
+      final normalizedToday = DateTime(now.year, now.month, now.day);
 
-    // Find index of today in `lastDays`
-    final todayIndex =
-        lastDays.indexWhere((date) => date.isSameDate(normalizedToday));
+      // Find index of today in `lastDays`
+      final todayIndex =
+          lastDays.indexWhere((date) => date.isSameDate(normalizedToday));
 
-    if (todayIndex != -1) {
-      double offset =
-          (dayBoxSize + 8.0) * (todayIndex ~/ 7); // Scroll to the right week
-      scrollController.animateTo(
-        offset,
-        duration: Duration(milliseconds: 300),
-        curve: Curves.easeOut,
-      );
-    } else if (lastDays.isNotEmpty && normalizedToday.isAfter(lastDays.last)) {
-      scrollController.jumpTo(scrollController.position.maxScrollExtent);
+      if (todayIndex != -1) {
+        double offset =
+            (dayBoxSize + 8.0) * (todayIndex ~/ 7); // Scroll to the right week
+        scrollController.animateTo(
+          offset,
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      } else if (lastDays.isNotEmpty &&
+          normalizedToday.isAfter(lastDays.last)) {
+        scrollController.jumpTo(scrollController.position.maxScrollExtent);
+      }
+    } else {
+      Timer(Duration(milliseconds: 400), () => _scrollToToday());
     }
   }
 

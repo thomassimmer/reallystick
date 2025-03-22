@@ -7,6 +7,7 @@ import 'package:reallystick/core/ui/colors.dart';
 import 'package:reallystick/features/auth/domain/errors/domain_error.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_bloc.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_events.dart';
+import 'package:reallystick/features/habits/domain/entities/habit_daily_tracking.dart';
 import 'package:reallystick/features/habits/domain/usecases/create_habit_daily_tracking_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/create_habit_participation_usecase.dart';
 import 'package:reallystick/features/habits/domain/usecases/create_habit_usecase.dart';
@@ -375,18 +376,22 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
             }
           }
         }
-        for (var habitDailyTracking in currentState.habitDailyTrackings) {
-          if (habitDailyTracking.habitId == event.habitToDeleteId) {
-            habitDailyTracking.habitId = event.habitToMergeOnId;
+
+        final newHabitDailyTrackings =
+            currentState.habitDailyTrackings.map((hdt) {
+          if (hdt.habitId == event.habitToDeleteId) {
+            return hdt.copyWith(habitId: event.habitToMergeOnId);
           }
-        }
+          return hdt;
+        }).toList();
+
         currentState.habits.remove(event.habitToDeleteId);
         currentState.habits[habit.id] = habit;
 
         emit(
           HabitsLoaded(
             habitCategories: currentState.habitCategories,
-            habitDailyTrackings: currentState.habitDailyTrackings,
+            habitDailyTrackings: newHabitDailyTrackings,
             habitParticipations: currentState.habitParticipations,
             habits: currentState.habits,
             units: currentState.units,
@@ -402,6 +407,7 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
   Future<void> createHabitDailyTracking(
       CreateHabitDailyTrackingEvent event, Emitter<HabitState> emit) async {
     final currentState = state as HabitsLoaded;
+
     final resultCreateHabitDailyTrackingUsecase =
         await createHabitDailyTrackingUsecase.call(
       datetime: event.datetime,
@@ -433,11 +439,14 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
         }
       },
       (habitDailyTracking) {
-        currentState.habitDailyTrackings.add(habitDailyTracking);
+        final newHabitDailyTrackings =
+            List<HabitDailyTracking>.from(currentState.habitDailyTrackings)
+              ..add(habitDailyTracking);
+
         emit(
           HabitsLoaded(
             habitCategories: currentState.habitCategories,
-            habitDailyTrackings: currentState.habitDailyTrackings,
+            habitDailyTrackings: newHabitDailyTrackings,
             habitParticipations: currentState.habitParticipations,
             habits: currentState.habits,
             units: currentState.units,

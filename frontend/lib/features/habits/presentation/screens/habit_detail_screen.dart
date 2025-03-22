@@ -169,174 +169,167 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Builder(
-      builder: (context) {
-        final profileState = context.watch<ProfileBloc>().state;
-        final habitState = context.watch<HabitBloc>().state;
+    final profileState = context.watch<ProfileBloc>().state;
+    final habitState = context.watch<HabitBloc>().state;
 
-        if (profileState is ProfileAuthenticated &&
-            habitState is HabitsLoaded) {
-          final userLocale = profileState.profile.locale;
+    if (profileState is ProfileAuthenticated && habitState is HabitsLoaded) {
+      final userLocale = profileState.profile.locale;
 
-          final habit = habitState.habits[widget.habitId]!;
-          final habitParticipation = habitState.habitParticipations
-              .where((hp) => hp.habitId == widget.habitId)
-              .firstOrNull;
-          final habitDailyTrackings = habitState.habitDailyTrackings
-              .where((hdt) => hdt.habitId == widget.habitId)
-              .toList();
+      final habit = habitState.habits[widget.habitId]!;
+      final habitParticipation = habitState.habitParticipations
+          .where((hp) => hp.habitId == widget.habitId)
+          .firstOrNull;
+      final habitDailyTrackings = habitState.habitDailyTrackings
+          .where((hdt) => hdt.habitId == widget.habitId)
+          .toList();
 
-          final shortName = getRightTranslationFromJson(
-            habit.shortName,
-            userLocale,
-          );
+      final shortName = getRightTranslationFromJson(
+        habit.shortName,
+        userLocale,
+      );
 
-          final longName = getRightTranslationFromJson(
-            habit.longName,
-            userLocale,
-          );
+      final longName = getRightTranslationFromJson(
+        habit.longName,
+        userLocale,
+      );
 
-          final description = getRightTranslationFromJson(
-            habit.description,
-            userLocale,
-          );
+      final description = getRightTranslationFromJson(
+        habit.description,
+        userLocale,
+      );
 
-          final bool isLargeScreen = checkIfLargeScreen(context);
+      final bool isLargeScreen = checkIfLargeScreen(context);
 
-          final habitColor = AppColorExtension.fromString(
-            habitParticipation != null ? habitParticipation.color : "",
-          ).color;
+      final habitColor = AppColorExtension.fromString(
+        habitParticipation != null ? habitParticipation.color : "",
+      ).color;
 
-          return Scaffold(
-            appBar: CustomAppBar(
-              title: Text(
-                isLargeScreen ? longName : shortName,
-                style: context.typographies.heading.copyWith(
-                  color: habitColor,
-                ),
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
-              ),
-              actions: [
-                if (habitParticipation != null)
-                  PopupMenuButton<String>(
-                    color: context.colors.backgroundDark,
-                    onSelected: (value) async {
-                      if (value == 'quit') {
-                        _quitHabit(habitParticipation.id);
-                      } else if (value == 'change_color') {
-                        _openColorPicker(habitParticipation);
-                      } else if (value == 'set_reminder') {
-                        _showNotificationsReminderBottomSheet(
-                          habitParticipation: habitParticipation,
-                          habitLongName: longName,
-                        );
-                      }
-                    },
-                    itemBuilder: (BuildContext context) => [
-                      PopupMenuItem(
-                        value: 'quit',
-                        child:
-                            Text(AppLocalizations.of(context)!.quitThisHabit),
-                      ),
-                      PopupMenuItem(
-                        value: 'change_color',
-                        child: Text(AppLocalizations.of(context)!.changeColor),
-                      ),
-                      PopupMenuItem(
-                        value: 'set_reminder',
-                        child:
-                            Text(AppLocalizations.of(context)!.notifications),
-                      ),
-                    ],
+      return Scaffold(
+        appBar: CustomAppBar(
+          title: Text(
+            isLargeScreen ? longName : shortName,
+            style: context.typographies.heading.copyWith(
+              color: habitColor,
+            ),
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+          ),
+          actions: [
+            if (habitParticipation != null)
+              PopupMenuButton<String>(
+                color: context.colors.backgroundDark,
+                onSelected: (value) async {
+                  if (value == 'quit') {
+                    _quitHabit(habitParticipation.id);
+                  } else if (value == 'change_color') {
+                    _openColorPicker(habitParticipation);
+                  } else if (value == 'set_reminder') {
+                    _showNotificationsReminderBottomSheet(
+                      habitParticipation: habitParticipation,
+                      habitLongName: longName,
+                    );
+                  }
+                },
+                itemBuilder: (BuildContext context) => [
+                  PopupMenuItem(
+                    value: 'quit',
+                    child: Text(AppLocalizations.of(context)!.quitThisHabit),
                   ),
+                  PopupMenuItem(
+                    value: 'change_color',
+                    child: Text(AppLocalizations.of(context)!.changeColor),
+                  ),
+                  PopupMenuItem(
+                    value: 'set_reminder',
+                    child: Text(AppLocalizations.of(context)!.notifications),
+                  ),
+                ],
+              ),
+          ],
+        ),
+        floatingActionButton: habitParticipation != null
+            ? AddActivityButton(
+                action: _showAddDailyTrackingBottomSheet,
+                color: habitColor,
+                label: null,
+              )
+            : FloatingActionButton.extended(
+                onPressed: _startTrackingThisHabit,
+                icon: Icon(Icons.login),
+                label:
+                    Text(AppLocalizations.of(context)!.startTrackingThisHabit),
+                backgroundColor: context.colors.primary,
+                extendedTextStyle:
+                    TextStyle(letterSpacing: 1, fontFamily: 'Montserrat'),
+              ),
+        body: RefreshIndicator(
+          onRefresh: _pullRefresh,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            child: FullWidthListView(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: habitColor.withAlpha(155),
+                    border: Border.all(width: 1, color: habitColor),
+                    borderRadius: BorderRadius.circular(16.0),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          habit.icon,
+                          style: TextStyle(
+                            fontSize: 25,
+                          ),
+                        ),
+                        SizedBox(height: 8),
+                        Text(
+                          AppLocalizations.of(context)!
+                              .descriptionWithTwoPoints(description),
+                          style: TextStyle(color: Colors.white),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(height: 40),
+                AnalyticsCarouselWidget(
+                  habitColor: habitColor,
+                  habitId: habit.id,
+                ),
+                SizedBox(height: 40),
+                if (habitParticipation != null) ...[
+                  DailyTrackingCarouselWidget(
+                    habitDailyTrackings: habitDailyTrackings,
+                    habitColor: habitColor,
+                    habit: habit,
+                    canOpenDayBoxes: true,
+                    displayTitle: true,
+                  ),
+                  SizedBox(height: 16),
+                ],
+                ChallengesCarouselWidget(
+                  habitColor: habitColor,
+                  habitId: widget.habitId,
+                ),
+                SizedBox(height: 40),
+                DiscussionListWidget(
+                  color: habitColor,
+                  habitId: widget.habitId,
+                  challengeId: null,
+                ),
+                SizedBox(height: 72),
               ],
             ),
-            floatingActionButton: habitParticipation != null
-                ? AddActivityButton(
-                    action: _showAddDailyTrackingBottomSheet,
-                    color: habitColor,
-                    label: null,
-                  )
-                : FloatingActionButton.extended(
-                    onPressed: _startTrackingThisHabit,
-                    icon: Icon(Icons.login),
-                    label: Text(
-                        AppLocalizations.of(context)!.startTrackingThisHabit),
-                    backgroundColor: context.colors.primary,
-                    extendedTextStyle:
-                        TextStyle(letterSpacing: 1, fontFamily: 'Montserrat'),
-                  ),
-            body: RefreshIndicator(
-              onRefresh: _pullRefresh,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                child: FullWidthListView(
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        color: habitColor.withAlpha(155),
-                        border: Border.all(width: 1, color: habitColor),
-                        borderRadius: BorderRadius.circular(16.0),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              habit.icon,
-                              style: TextStyle(
-                                fontSize: 25,
-                              ),
-                            ),
-                            SizedBox(height: 8),
-                            Text(
-                              AppLocalizations.of(context)!
-                                  .descriptionWithTwoPoints(description),
-                              style: TextStyle(color: Colors.white),
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 40),
-                    AnalyticsCarouselWidget(
-                      habitColor: habitColor,
-                      habitId: habit.id,
-                    ),
-                    SizedBox(height: 40),
-                    if (habitParticipation != null) ...[
-                      DailyTrackingCarouselWidget(
-                        habitDailyTrackings: habitDailyTrackings,
-                        habitColor: habitColor,
-                        habit: habit,
-                        canOpenDayBoxes: true,
-                        displayTitle: true,
-                      ),
-                      SizedBox(height: 16),
-                    ],
-                    ChallengesCarouselWidget(
-                      habitColor: habitColor,
-                      habitId: widget.habitId,
-                    ),
-                    SizedBox(height: 40),
-                    DiscussionListWidget(
-                      color: habitColor,
-                      habitId: widget.habitId,
-                      challengeId: null,
-                    ),
-                    SizedBox(height: 72),
-                  ],
-                ),
-              ),
-            ),
-          );
-        } else {
-          return SizedBox.shrink();
-        }
-      },
-    );
+          ),
+        ),
+      );
+    } else {
+      return SizedBox.shrink();
+    }
   }
 }

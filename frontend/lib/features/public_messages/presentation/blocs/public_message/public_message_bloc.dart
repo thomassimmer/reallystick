@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:reallystick/core/messages/message.dart';
@@ -80,7 +81,10 @@ class PublicMessageBloc extends Bloc<PublicMessageEvent, PublicMessageState> {
           userReports: [],
           allReports: [],
         )) {
-    on<PublicMessageInitializeEvent>(initialize);
+    on<PublicMessageInitializeEvent>(
+      initialize,
+      transformer: sequential(),
+    );
     on<CreatePublicMessageEvent>(createPublicMessage);
     on<UpdatePublicMessageEvent>(updatePublicMessage);
     on<DeletePublicMessageEvent>(deletePublicMessage);
