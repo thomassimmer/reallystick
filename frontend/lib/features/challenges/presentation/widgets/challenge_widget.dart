@@ -156,7 +156,7 @@ class ChallengeWidget extends StatelessWidget {
                                         ? DailyTrackingCarouselWithStartDateWidget(
                                             challengeParticipation:
                                                 challengeParticipation,
-                                            challengeId: challenge.id,
+                                            challenge: challenge,
                                             challengeDailyTrackings:
                                                 challengeDailyTrackings,
                                             challengeColor: challengeColor,
@@ -166,7 +166,7 @@ class ChallengeWidget extends StatelessWidget {
                                         : DailyTrackingCarouselWithoutStartDateWidget(
                                             challengeParticipation:
                                                 challengeParticipation,
-                                            challengeId: challenge.id,
+                                            challenge: challenge,
                                             challengeDailyTrackings:
                                                 challengeDailyTrackings,
                                             challengeColor: challengeColor,
@@ -183,7 +183,7 @@ class ChallengeWidget extends StatelessWidget {
                                     ? DailyTrackingCarouselWithStartDateWidget(
                                         challengeParticipation:
                                             challengeParticipation,
-                                        challengeId: challenge.id,
+                                        challenge: challenge,
                                         challengeDailyTrackings:
                                             challengeDailyTrackings,
                                         challengeColor: challengeColor,
@@ -193,7 +193,7 @@ class ChallengeWidget extends StatelessWidget {
                                     : DailyTrackingCarouselWithoutStartDateWidget(
                                         challengeParticipation:
                                             challengeParticipation,
-                                        challengeId: challenge.id,
+                                        challenge: challenge,
                                         challengeDailyTrackings:
                                             challengeDailyTrackings,
                                         challengeColor: challengeColor,

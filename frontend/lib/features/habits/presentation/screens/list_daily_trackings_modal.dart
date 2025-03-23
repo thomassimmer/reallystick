@@ -82,91 +82,110 @@ class ListDailyTrackingsModalState extends State<ListDailyTrackingsModal> {
       return Padding(
         padding:
             EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-        child: Wrap(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              AppLocalizations.of(context)!.allActivitiesOnThisDay,
+              AppLocalizations.of(context)!.allActivitiesOnThisDay(dailyTrackings.length),
               textAlign: TextAlign.center,
               style: context.typographies.headingSmall,
             ),
             SizedBox(height: 32),
-            ListView.builder(
-              shrinkWrap: true,
-              itemCount: dailyTrackings.length,
-              itemBuilder: (context, index) {
-                final dailyTracking = dailyTrackings[index];
-                final unit = habitState.units[dailyTracking.unitId]!;
-                final weightUnit =
-                    habitState.units[dailyTracking.weightUnitId]!;
+            ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: 35.0,
+                maxHeight: 400,
+              ),
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: dailyTrackings.length,
+                itemBuilder: (context, index) {
+                  final dailyTracking = dailyTrackings[index];
+                  final unit = habitState.units[dailyTracking.unitId]!;
+                  final weightUnit =
+                      habitState.units[dailyTracking.weightUnitId]!;
 
-                final shouldDisplaySportSpecificInputsResult =
-                    shouldDisplaySportSpecificInputs(
-                        habit, habitState.habitCategories);
+                  final shouldDisplaySportSpecificInputsResult =
+                      shouldDisplaySportSpecificInputs(
+                          habit, habitState.habitCategories);
 
-                return GestureDetector(
-                  onTap: () => _openDailyTrackingUpdateModal(
-                    habitDailyTracking: dailyTracking,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.all(16),
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Align(
-                            alignment: Alignment.topLeft,
-                            child: Row(
-                              children: [
-                                Text(
-                                  DateFormat('HH:mm')
-                                      .format(dailyTracking.datetime),
-                                  style: context.typographies.bodyLarge,
-                                ),
-                                if (dailyTracking.quantityOfSet > 1) ...[
-                                  Text(
-                                    "     ${AppLocalizations.of(context)!.quantityPerSet} : ${dailyTracking.quantityPerSet}",
-                                    style: context.typographies.bodyLarge,
-                                  ),
-                                ] else ...[
-                                  Text(
-                                    "     ${AppLocalizations.of(context)!.quantity} : ${dailyTracking.quantityPerSet}",
-                                    style: context.typographies.bodyLarge,
-                                  ),
-                                ],
-                                if (unit.shortName['en'] != '')
-                                  Text(
-                                    " ${getRightTranslationForUnitFromJson(unit.longName, dailyTracking.quantityPerSet, userLocale)}",
-                                    style: context.typographies.bodyLarge,
-                                  ),
-                                if (shouldDisplaySportSpecificInputsResult) ...[
-                                  Text(
-                                    "     ${AppLocalizations.of(context)!.quantityOfSet} : ${dailyTracking.quantityOfSet}",
-                                    style: context.typographies.bodyLarge,
-                                  ),
-                                  if (weightUnit.shortName['en'] != '')
+                  return GestureDetector(
+                    onTap: () => _openDailyTrackingUpdateModal(
+                      habitDailyTracking: dailyTracking,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                AppLocalizations.of(context)!.timeWithTime(
+                                    DateFormat('HH:mm')
+                                        .format(dailyTracking.datetime)),
+                                style: context.typographies.body,
+                              ),
+                              Row(
+                                children: [
+                                  if (dailyTracking.quantityOfSet > 1) ...[
                                     Text(
-                                      "     ${AppLocalizations.of(context)!.weight} : ${dailyTracking.weight} ${getRightTranslationForUnitFromJson(weightUnit.longName, dailyTracking.weight, userLocale)}",
-                                      style: context.typographies.bodyLarge,
+                                      AppLocalizations.of(context)!
+                                          .quantityPerSetWithQuantity(
+                                              dailyTracking.quantityPerSet),
+                                      style: context.typographies.body,
+                                    ),
+                                  ] else ...[
+                                    Text(
+                                      AppLocalizations.of(context)!
+                                          .quantityWithQuantity(
+                                              dailyTracking.quantityPerSet),
+                                      style: context.typographies.body,
+                                    ),
+                                  ],
+                                  if (unit.shortName['en'] != '')
+                                    Text(
+                                      " ${getRightTranslationForUnitFromJson(unit.longName, dailyTracking.quantityPerSet, userLocale)}",
+                                      style: context.typographies.body,
                                     ),
                                 ],
+                              ),
+                              if (shouldDisplaySportSpecificInputsResult) ...[
+                                Text(
+                                  AppLocalizations.of(context)!
+                                      .quantityOfSetWithQuantity(
+                                          dailyTracking.quantityOfSet),
+                                  style: context.typographies.body,
+                                ),
+                                if (weightUnit.shortName['en'] != '')
+                                  Text(
+                                    AppLocalizations.of(context)!
+                                        .weightWithQuantity(
+                                      dailyTracking.weight,
+                                      getRightTranslationForUnitFromJson(
+                                          weightUnit.longName,
+                                          dailyTracking.weight,
+                                          userLocale),
+                                    ),
+                                    style: context.typographies.body,
+                                  ),
                               ],
-                            ),
+                            ],
                           ),
                         ),
-                      ),
-                      if (index != dailyTrackings.length - 1)
-                        Divider(color: context.colors.text),
-                    ],
-                  ),
-                );
-              },
+                        if (index != dailyTrackings.length - 1)
+                          Divider(color: context.colors.text),
+                      ],
+                    ),
+                  );
+                },
+              ),
             ),
           ],
         ),
       );
     } else {
-      // TODO
       return SizedBox.shrink();
     }
   }

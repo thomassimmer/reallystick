@@ -13,7 +13,14 @@
   "addNewHabit": "Ajoutez une nouvelle habitude",
   "admin": "Admin",
   "ageCategory": "Catégorie d'âge",
-  "allActivitiesOnThisDay": "Toutes vos activités à cette date",
+  "allActivitiesOnThisDay": "Toutes vos activités à cette date ({count})",
+  "@allActivitiesOnThisDay": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "allHabits": "Toutes les habitudes",
   "allReportedMessages": "Tous les messages signalés",
   "analytics": "Statistiques",
@@ -396,12 +403,36 @@
   "publicMessageDeletionSuccessful": "Votre message a bien été supprimé.",
   "publicMessageReportCreationSuccessful": "Votre signalement a bien été envoyé.",
   "quantity": "Quantité",
+  "quantityWithQuantity": "Quantité : {quantity}",
+  "@quantityWithQuantity": {
+    "placeholders": {
+      "quantity": {
+        "type": "int"
+      }
+    }
+  },
   "quantityOfSet": "Nombre de set",
   "quantityOfSetIsNullError": "Le nombre de set ne peut pas être nul.",
   "quantityOfSetIsNegativeError": "Le nombre de set ne peut pas être négatif.",
+  "quantityOfSetWithQuantity": "Nombre de set : {quantity}",
+  "@quantityOfSetWithQuantity": {
+    "placeholders": {
+      "quantity": {
+        "type": "int"
+      }
+    }
+  },
   "quantityPerSet": "Nombre de répétition",
   "quantityPerSetIsNullError": "La quantité ne peut pas être vide.",
   "quantityPerSetIsNegativeError": "La quantité ne peut pas être négative.",
+  "quantityPerSetWithQuantity": "Nombre de répétition : {quantity}",
+  "@quantityPerSetWithQuantity": {
+    "placeholders": {
+      "quantity": {
+        "type": "int"
+      }
+    }
+  },
   "questionActivity": "Quelle est votre activité actuellement ?",
   "questionAge": "Quel âge avez-vous ?",
   "questionFinancialSituation": "Comment décririez-vous votre situation financière ?",
@@ -483,6 +514,14 @@
   "tapToSeeLess": "Voir moins",
   "tapForMoreDetails": "Plus de détails",
   "theme": "Thème",
+  "timeWithTime": "Heure : {time}",
+  "@timeWithTime": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "topActivityCardTitle": "Activité",
   "topAgesCardTitle": "Catégories d'âge",
   "topCountriesCardTitle": "Pays",
@@ -530,6 +569,17 @@
   "weight": "Poids",
   "weightIsNegativeError": "Le poids ne peut pas être négatif.",
   "weightUnit": "Unité de poids",
+  "weightWithQuantity": "Poids : {quantity} {unit}",
+  "@weightWithQuantity": {
+    "placeholders": {
+      "quantity": {
+        "type": "int"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
   "welcome": "Bienvenue sur ReallyStick",
   "worker": "Travailleur",
   "writtenMessages": "Messages écrits",

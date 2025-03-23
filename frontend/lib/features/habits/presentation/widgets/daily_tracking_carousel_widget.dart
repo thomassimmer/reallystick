@@ -75,20 +75,24 @@ class DailyTrackingCarouselWidgetState
       ),
       constraints: BoxConstraints(
         maxWidth: 700,
+        maxHeight: 400,
       ),
       builder: (BuildContext context) {
         return Padding(
-          padding: EdgeInsets.only(
-            bottom: max(16.0, MediaQuery.of(context).viewInsets.bottom),
-            left: 16.0,
-            right: 16.0,
-            top: 16.0,
-          ),
-          child: ListDailyTrackingsModal(
-            datetime: datetime,
-            habitId: widget.habit.id,
-          ),
-        );
+            padding: EdgeInsets.only(
+              bottom: max(16.0, MediaQuery.of(context).viewInsets.bottom),
+              left: 16.0,
+              right: 16.0,
+              top: 16.0,
+            ),
+            child: Wrap(
+              children: [
+                ListDailyTrackingsModal(
+                  datetime: datetime,
+                  habitId: widget.habit.id,
+                ),
+              ],
+            ));
       },
     );
   }

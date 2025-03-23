@@ -13,7 +13,14 @@
   "addNewHabit": "Add a New Habit",
   "admin": "Admin",
   "ageCategory": "Age category",
-  "allActivitiesOnThisDay": "All activities on this day",
+  "allActivitiesOnThisDay": "All activities on this day ({count})",
+  "@allActivitiesOnThisDay": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "allHabits": "All habits",
   "allReportedMessages": "All Reported Messages",
   "analytics": "Analytics",
@@ -397,12 +404,36 @@
   "publicMessageReportCreationSuccessful": "Your report was succesfully sent.",
   "qrCodeSecretKeyCopied": "QR code secret key copied to clipboard.",
   "quantity": "Quantity",
+  "quantityWithQuantity": "Quantity: {quantity}",
+  "@quantityWithQuantity": {
+    "placeholders": {
+      "quantity": {
+        "type": "int"
+      }
+    }
+  },
   "quantityOfSet": "Quantity of set",
   "quantityOfSetIsNullError": "The quantity of set can't be null.",
   "quantityOfSetIsNegativeError": "The quantity of set can't be negative.",
+  "quantityOfSetWithQuantity": "Quantity of set: {quantity}",
+  "@quantityOfSetWithQuantity": {
+    "placeholders": {
+      "quantity": {
+        "type": "int"
+      }
+    }
+  },
   "quantityPerSet": "Quantity per set",
   "quantityPerSetIsNullError": "The quantity can't be empty.",
   "quantityPerSetIsNegativeError": "The quantity can't be negative.",
+  "quantityPerSetWithQuantity": "Quantity per set: {quantity}",
+  "@quantityPerSetWithQuantity": {
+    "placeholders": {
+      "quantity": {
+        "type": "int"
+      }
+    }
+  },
   "questionActivity": "What is your current activity?",
   "questionAge": "How old are you?",
   "questionFinancialSituation": "How would you describe your financial situation?",
@@ -483,6 +514,14 @@
   "tapToSeeLess": "Tap to see less",
   "tapForMoreDetails": "Tap for more details",
   "theme": "Theme",
+  "timeWithTime": "Time: {time}",
+  "@timeWithTime": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "topActivityCardTitle": "Activity",
   "topAgesCardTitle": "Age categories",
   "topCountriesCardTitle": "Countries",
@@ -531,6 +570,17 @@
   "weight": "Weight",
   "weightIsNegativeError": "Weight can't be negative.",
   "weightUnit": "Weight Unit",
+  "weightWithQuantity": "Weight: {quantity} {unit}",
+  "@weightWithQuantity": {
+    "placeholders": {
+      "quantity": {
+        "type": "int"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
   "worker": "Worker",
   "writeTo": "Write to {user}...",
   "@writeTo": {

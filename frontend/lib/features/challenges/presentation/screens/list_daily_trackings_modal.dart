@@ -5,7 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:reallystick/core/constants/dates.dart';
 import 'package:reallystick/core/ui/extensions.dart';
+import 'package:reallystick/features/challenges/domain/entities/challenge.dart';
 import 'package:reallystick/features/challenges/domain/entities/challenge_daily_tracking.dart';
+import 'package:reallystick/features/challenges/domain/entities/challenge_participation.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_bloc.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_states.dart';
 import 'package:reallystick/features/challenges/presentation/helpers/challenge_result.dart';
@@ -19,12 +21,14 @@ import 'package:reallystick/features/profile/presentation/blocs/profile/profile_
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
 
 class ListDailyTrackingsModal extends StatefulWidget {
-  final String challengeId;
+  final Challenge challenge;
+  final ChallengeParticipation? challengeParticipation;
   final DateTime datetime;
 
   const ListDailyTrackingsModal({
     super.key,
-    required this.challengeId,
+    required this.challenge,
+    required this.challengeParticipation,
     required this.datetime,
   });
 
@@ -78,24 +82,22 @@ class ListDailyTrackingsModalState extends State<ListDailyTrackingsModal> {
         habitState is HabitsLoaded &&
         profileState is ProfileAuthenticated) {
       final userLocale = profileState.profile.locale;
-      final challenge = challengeState.challenges[widget.challengeId]!;
-      final challengeParticipation = challengeState.challengeParticipations
-          .where((cp) => cp.challengeId == widget.challengeId)
-          .firstOrNull;
 
       final List<ChallengeDailyTracking> dailyTrackings = challengeState
-          .challengeDailyTrackings[widget.challengeId]!
+          .challengeDailyTrackings[widget.challenge.id]!
           .where((tracking) {
-        if (challenge.startDate != null) {
-          return challenge.startDate!
+        if (widget.challenge.startDate != null) {
+          return widget.challenge.startDate!
               .add(Duration(days: tracking.dayOfProgram))
               .isSameDate(widget.datetime);
         }
-        if (challengeParticipation != null) {
-          return challengeParticipation.startDate
+
+        if (widget.challengeParticipation != null) {
+          return widget.challengeParticipation!.startDate
               .add(Duration(days: tracking.dayOfProgram))
               .isSameDate(widget.datetime);
         }
+
         return DateTime.now()
             .add(Duration(days: tracking.dayOfProgram))
             .isSameDate(widget.datetime);
@@ -107,123 +109,158 @@ class ListDailyTrackingsModalState extends State<ListDailyTrackingsModal> {
         child: Wrap(
           children: [
             Text(
-              AppLocalizations.of(context)!.allActivitiesOnThisDay,
+              AppLocalizations.of(context)!
+                  .allActivitiesOnThisDay(dailyTrackings.length),
               textAlign: TextAlign.center,
               style: context.typographies.headingSmall,
             ),
             SizedBox(height: 32),
-            ListView.builder(
-              shrinkWrap: true,
-              itemCount: dailyTrackings.length,
-              itemBuilder: (context, index) {
-                final dailyTracking = dailyTrackings[index];
-                final habit = habitState.habits[dailyTracking.habitId]!;
-                final unit = habitState.units[dailyTracking.unitId]!;
-                final weightUnit =
-                    habitState.units[dailyTracking.weightUnitId]!;
+            ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: 35.0,
+                maxHeight: 400,
+              ),
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: dailyTrackings.length,
+                itemBuilder: (context, index) {
+                  final dailyTracking = dailyTrackings[index];
+                  final habit = habitState.habits[dailyTracking.habitId]!;
+                  final unit = habitState.units[dailyTracking.unitId]!;
+                  final weightUnit =
+                      habitState.units[dailyTracking.weightUnitId]!;
 
-                final shouldDisplaySportSpecificInputsResult =
-                    shouldDisplaySportSpecificInputs(
-                  habit,
-                  habitState.habitCategories,
-                );
+                  final shouldDisplaySportSpecificInputsResult =
+                      shouldDisplaySportSpecificInputs(
+                    habit,
+                    habitState.habitCategories,
+                  );
 
-                final challengeDailyTrackingDate = (challenge.startDate != null
-                        ? challenge.startDate!
-                        : challengeParticipation != null
-                            ? challengeParticipation.startDate
-                            : DateTime.now())
-                    .add(Duration(days: dailyTracking.dayOfProgram));
+                  final challengeDailyTrackingDate =
+                      (widget.challenge.startDate != null
+                              ? widget.challenge.startDate!
+                              : widget.challengeParticipation != null
+                                  ? widget.challengeParticipation!.startDate
+                                  : DateTime.now())
+                          .add(Duration(days: dailyTracking.dayOfProgram));
 
-                List<HabitDailyTracking> habitDailyTrackingsOnThatDay =
-                    challengeParticipation != null
-                        ? habitState.habitDailyTrackings
-                            .where((hdt) =>
-                                hdt.datetime
-                                    .isSameDate(challengeDailyTrackingDate) &&
-                                hdt.habitId == dailyTracking.habitId)
-                            .toList()
-                        : [];
+                  List<HabitDailyTracking> habitDailyTrackingsOnThatDay =
+                      widget.challengeParticipation != null
+                          ? habitState.habitDailyTrackings
+                              .where((hdt) =>
+                                  hdt.datetime
+                                      .isSameDate(challengeDailyTrackingDate) &&
+                                  hdt.habitId == dailyTracking.habitId)
+                              .toList()
+                          : [];
 
-                final dailyObjectivesDone = checkIfDailyObjectiveWasDone(
-                  dailyTracking,
-                  habitDailyTrackingsOnThatDay,
-                  habitState.units,
-                );
+                  final dailyObjectivesDone = checkIfDailyObjectiveWasDone(
+                    dailyTracking,
+                    habitDailyTrackingsOnThatDay,
+                    habitState.units,
+                  );
 
-                return GestureDetector(
-                  onTap: () => _openDailyTrackingUpdateModal(
-                    challengeDailyTracking: dailyTracking,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.all(16),
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Align(
-                            alignment: Alignment.topLeft,
-                            child: Row(
-                              children: [
-                                if (dailyObjectivesDone) ...[
-                                  Icon(
-                                    Icons.check,
-                                    size: 13,
-                                    color: context.colors.success,
+                  return GestureDetector(
+                    onTap: () => _openDailyTrackingUpdateModal(
+                      challengeDailyTracking: dailyTracking,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  if (dailyObjectivesDone) ...[
+                                    Icon(
+                                      Icons.check,
+                                      size: 13,
+                                      color: context.colors.success,
+                                    ),
+                                    SizedBox(
+                                      width: 20,
+                                    ),
+                                  ],
+                                  Text(
+                                    getRightTranslationFromJson(
+                                      habit.shortName,
+                                      userLocale,
+                                    ),
+                                    style: context.typographies.body,
                                   ),
+                                ],
+                              ),
+                              Row(
+                                children: [
                                   SizedBox(
-                                    width: 20,
+                                    width: 33,
                                   ),
-                                ],
-                                Text(
-                                  "${getRightTranslationFromJson(habit.shortName, userLocale)} - ",
-                                  style: context.typographies.bodyLarge,
-                                ),
-                                if (dailyTracking.quantityOfSet > 1) ...[
-                                  Text(
-                                    "${AppLocalizations.of(context)!.quantityPerSet} : ${dailyTracking.quantityPerSet}",
-                                    style: context.typographies.bodyLarge,
-                                  ),
-                                ] else ...[
-                                  Text(
-                                    "${AppLocalizations.of(context)!.quantity} : ${dailyTracking.quantityPerSet}",
-                                    style: context.typographies.bodyLarge,
-                                  ),
-                                ],
-                                if (unit.shortName['en'] != '')
-                                  Text(
-                                    " ${getRightTranslationForUnitFromJson(unit.longName, dailyTracking.quantityPerSet, userLocale)}",
-                                    style: context.typographies.bodyLarge,
-                                  ),
-                                if (shouldDisplaySportSpecificInputsResult) ...[
-                                  Text(
-                                    "     ${AppLocalizations.of(context)!.quantityOfSet} : ${dailyTracking.quantityOfSet}",
-                                    style: context.typographies.bodyLarge,
-                                  ),
-                                  if (weightUnit.shortName['en'] != '')
+                                  if (dailyTracking.quantityOfSet > 1) ...[
                                     Text(
-                                      "     ${AppLocalizations.of(context)!.weight} : ${dailyTracking.weight} ${getRightTranslationForUnitFromJson(weightUnit.longName, dailyTracking.weight, userLocale)}",
-                                      style: context.typographies.bodyLarge,
+                                      AppLocalizations.of(context)!
+                                          .quantityPerSetWithQuantity(
+                                              dailyTracking.quantityPerSet),
+                                      style: context.typographies.body,
+                                    ),
+                                  ] else ...[
+                                    Text(
+                                      AppLocalizations.of(context)!
+                                          .quantityWithQuantity(
+                                              dailyTracking.quantityPerSet),
+                                      style: context.typographies.body,
+                                    ),
+                                  ],
+                                  if (unit.shortName['en'] != '')
+                                    Text(
+                                      " ${getRightTranslationForUnitFromJson(unit.longName, dailyTracking.quantityPerSet, userLocale)}",
+                                      style: context.typographies.body,
                                     ),
                                 ],
-                              ],
-                            ),
+                              ),
+                              Row(
+                                children: [
+                                  SizedBox(
+                                    width: 33,
+                                  ),
+                                  if (shouldDisplaySportSpecificInputsResult) ...[
+                                    Text(
+                                      AppLocalizations.of(context)!
+                                          .quantityOfSetWithQuantity(
+                                              dailyTracking.quantityOfSet),
+                                      style: context.typographies.body,
+                                    ),
+                                    if (weightUnit.shortName['en'] != '')
+                                      Text(
+                                        AppLocalizations.of(context)!
+                                            .weightWithQuantity(
+                                                dailyTracking.weight,
+                                                getRightTranslationForUnitFromJson(
+                                                    weightUnit.longName,
+                                                    dailyTracking.weight,
+                                                    userLocale)),
+                                        style: context.typographies.body,
+                                      ),
+                                  ],
+                                ],
+                              ),
+                            ],
                           ),
                         ),
-                      ),
-                      if (index != dailyTrackings.length - 1)
-                        Divider(color: context.colors.text),
-                    ],
-                  ),
-                );
-              },
+                        if (index != dailyTrackings.length - 1)
+                          Divider(color: context.colors.text),
+                      ],
+                    ),
+                  );
+                },
+              ),
             ),
           ],
         ),
       );
     } else {
-      // TODO
       return SizedBox.shrink();
     }
   }

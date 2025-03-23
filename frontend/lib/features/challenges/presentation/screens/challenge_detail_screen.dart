@@ -614,7 +614,7 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
                                 challengeDailyTrackings:
                                     challengeDailyTrackings,
                                 challengeColor: challengeColor,
-                                challengeId: widget.challengeId,
+                                challenge: challenge,
                                 canOpenDayBoxes: true,
                                 displayTitle: true,
                               )
@@ -623,7 +623,7 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
                                 challengeDailyTrackings:
                                     challengeDailyTrackings,
                                 challengeColor: challengeColor,
-                                challengeId: widget.challengeId,
+                                challenge: challenge,
                                 canOpenDayBoxes: true,
                                 displayTitle: true,
                               ),

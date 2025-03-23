@@ -7,6 +7,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:reallystick/core/constants/dates.dart';
 import 'package:reallystick/core/ui/extensions.dart';
+import 'package:reallystick/features/challenges/domain/entities/challenge.dart';
 import 'package:reallystick/features/challenges/domain/entities/challenge_daily_tracking.dart';
 import 'package:reallystick/features/challenges/domain/entities/challenge_participation.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_bloc.dart';
@@ -21,7 +22,7 @@ import 'package:reallystick/features/profile/presentation/blocs/profile/profile_
 
 class DailyTrackingCarouselWithStartDateWidget extends StatefulWidget {
   final ChallengeParticipation? challengeParticipation;
-  final String challengeId;
+  final Challenge challenge;
   final List<ChallengeDailyTracking> challengeDailyTrackings;
   final Color challengeColor;
   final bool canOpenDayBoxes;
@@ -30,7 +31,7 @@ class DailyTrackingCarouselWithStartDateWidget extends StatefulWidget {
   DailyTrackingCarouselWithStartDateWidget({
     super.key,
     required this.challengeParticipation,
-    required this.challengeId,
+    required this.challenge,
     required this.challengeDailyTrackings,
     required this.challengeColor,
     required this.canOpenDayBoxes,
@@ -106,6 +107,7 @@ class DailyTrackingCarouselWithStartDateWidgetState
       ),
       constraints: BoxConstraints(
         maxWidth: 700,
+        maxHeight: 400,
       ),
       builder: (BuildContext context) {
         return Padding(
@@ -118,9 +120,14 @@ class DailyTrackingCarouselWithStartDateWidgetState
             right: 16.0,
             top: 16.0,
           ),
-          child: ListDailyTrackingsModal(
-            datetime: datetime,
-            challengeId: widget.challengeId,
+          child: Wrap(
+            children: [
+              ListDailyTrackingsModal(
+                datetime: datetime,
+                challenge: widget.challenge,
+                challengeParticipation: widget.challengeParticipation,
+              ),
+            ],
           ),
         );
       },
@@ -137,7 +144,6 @@ class DailyTrackingCarouselWithStartDateWidgetState
         challengeState is ChallengesLoaded &&
         habitState is HabitsLoaded) {
       final userLocale = profileState.profile.locale;
-      final challenge = challengeState.challenges[widget.challengeId]!;
 
       final now = DateTime.now();
       final normalizedToday = DateTime(
@@ -153,9 +159,9 @@ class DailyTrackingCarouselWithStartDateWidgetState
               : 0) +
           1;
 
-      final startDate = challenge.startDate!;
+      final startDate = widget.challenge.startDate!;
       final endDate =
-          challenge.startDate!.add(Duration(days: numberOfDays - 1));
+          widget.challenge.startDate!.add(Duration(days: numberOfDays - 1));
 
       final firstMonday = startDate
           .subtract(Duration(days: (startDate.weekday - DateTime.monday)));
@@ -176,13 +182,9 @@ class DailyTrackingCarouselWithStartDateWidgetState
           challengeDailyTrackingsPerDay = {
         for (var date in lastDays)
           date: widget.challengeDailyTrackings.where((tracking) {
-            if (startDate
+            return startDate
                 .add(Duration(days: tracking.dayOfProgram))
-                .isSameDate(date)) {
-              return true;
-            }
-
-            return false;
+                .isSameDate(date);
           }).toList()
       };
 
