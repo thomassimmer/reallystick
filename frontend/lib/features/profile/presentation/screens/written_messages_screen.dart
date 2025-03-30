@@ -73,69 +73,77 @@ class WrittenMessagesScreenState extends State<WrittenMessagesScreen> {
       return FullWidthListView(
         children: state.writtenMessages.map(
           (message) {
-            return Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: InkWell(
-                borderRadius: BorderRadius.circular(16),
-                onTap: () => {
-                  if (message.repliesTo == null)
-                    {
-                      if (message.challengeId != null)
+            return Column(
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(16),
+                    onTap: () => {
+                      if (message.repliesTo == null)
                         {
-                          context.pushNamed(
-                            'challengeThread',
-                            pathParameters: {
-                              'challengeId': message.challengeId!,
-                              'threadId': message.threadId,
-                            },
-                          )
+                          if (message.challengeId != null)
+                            {
+                              context.pushNamed(
+                                'challengeThread',
+                                pathParameters: {
+                                  'challengeId': message.challengeId!,
+                                  'challengeParticipationId': 'null',
+                                  'threadId': message.threadId,
+                                },
+                              )
+                            }
+                          else if (message.habitId != null)
+                            {
+                              context.pushNamed(
+                                'habitThread',
+                                pathParameters: {
+                                  'habitId': message.habitId!,
+                                  'threadId': message.threadId,
+                                },
+                              )
+                            }
                         }
-                      else if (message.habitId != null)
+                      else
                         {
-                          context.pushNamed(
-                            'habitThread',
-                            pathParameters: {
-                              'habitId': message.habitId!,
-                              'threadId': message.threadId,
-                            },
-                          )
+                          if (message.challengeId != null)
+                            {
+                              context.pushNamed(
+                                'challengeThreadReply',
+                                pathParameters: {
+                                  'challengeId': message.challengeId!,
+                                  'challengeParticipationId': 'null',
+                                  'messageId': message.id,
+                                  'threadId': message.threadId,
+                                },
+                              )
+                            }
+                          else if (message.habitId != null)
+                            {
+                              context.pushNamed(
+                                'habitThreadReply',
+                                pathParameters: {
+                                  'habitId': message.habitId!,
+                                  'messageId': message.id,
+                                  'threadId': message.threadId,
+                                },
+                              )
+                            }
                         }
-                    }
-                  else
-                    {
-                      if (message.challengeId != null)
-                        {
-                          context.pushNamed(
-                            'challengeThreadReply',
-                            pathParameters: {
-                              'challengeId': message.challengeId!,
-                              'messageId': message.id,
-                              'threadId': message.threadId,
-                            },
-                          )
-                        }
-                      else if (message.habitId != null)
-                        {
-                          context.pushNamed(
-                            'habitThreadReply',
-                            pathParameters: {
-                              'habitId': message.habitId!,
-                              'messageId': message.id,
-                              'threadId': message.threadId,
-                            },
-                          )
-                        }
-                    }
-                },
-                child: MessageWidget(
-                  threadId: message.threadId,
-                  messageId: message.id,
-                  color: AppColorExtension.fromString("").color,
-                  habitId: message.habitId,
-                  challengeId: message.challengeId,
-                  withReplies: false,
+                    },
+                    child: MessageWidget(
+                      threadId: message.threadId,
+                      messageId: message.id,
+                      color: AppColorExtension.fromString("").color,
+                      habitId: message.habitId,
+                      challengeId: message.challengeId,
+                      challengeParticipationId: null,
+                      withReplies: false,
+                    ),
+                  ),
                 ),
-              ),
+                Divider()
+              ],
             );
           },
         ).toList(),

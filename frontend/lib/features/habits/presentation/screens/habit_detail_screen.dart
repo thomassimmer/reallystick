@@ -322,6 +322,7 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
                 color: habitColor,
                 habitId: widget.habitId,
                 challengeId: null,
+                challengeParticipationId: null,
               ),
               SizedBox(height: 72),
             ],

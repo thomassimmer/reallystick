@@ -29,6 +29,7 @@ class MessageWidget extends StatelessWidget {
   final Color color;
   final String? habitId;
   final String? challengeId;
+  final String? challengeParticipationId;
   final bool withReplies;
 
   const MessageWidget({
@@ -38,6 +39,7 @@ class MessageWidget extends StatelessWidget {
     required this.color,
     required this.habitId,
     required this.challengeId,
+    required this.challengeParticipationId,
     required this.withReplies,
   });
 
@@ -210,108 +212,138 @@ class MessageWidget extends StatelessWidget {
           .firstOrNull;
 
       return Padding(
-        padding: EdgeInsets.all(16),
+        padding: EdgeInsets.only(left: 8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                InkWell(
-                  onTap: () => {
-                    if (discussion != null)
-                      {
-                        context.goNamed(
-                          'discussion',
-                          pathParameters: {
-                            'discussionId': discussion.id,
-                          },
-                        )
-                      }
-                    else
-                      {
-                        context.goNamed(
-                          'newDiscussion',
-                          pathParameters: {'recipientId': message.creator},
-                        )
-                      }
-                  },
-                  child: Text(
-                    userState.users[message.creator]?.username ??
-                        AppLocalizations.of(context)!.unknown,
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                    ),
+            Container(
+              padding: withReplies ? EdgeInsets.all(16) : null,
+              decoration: withReplies
+                  ? BoxDecoration(
+                      border: Border.all(color: color),
+                      borderRadius: BorderRadius.circular(10.0),
+                      color: color.withValues(alpha: 0.2),
+                    )
+                  : null,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      InkWell(
+                        onTap: () => {
+                          if (discussion != null)
+                            {
+                              context.goNamed(
+                                'discussion',
+                                pathParameters: {
+                                  'discussionId': discussion.id,
+                                },
+                              )
+                            }
+                          else
+                            {
+                              context.goNamed(
+                                'newDiscussion',
+                                pathParameters: {
+                                  'recipientId': message.creator
+                                },
+                              )
+                            }
+                        },
+                        child: Text(
+                          userState.users[message.creator]?.username ??
+                              AppLocalizations.of(context)!.unknown,
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 10),
+                      DateWidget(
+                        datetime: message.createdAt,
+                        userLocale: userLocale,
+                      ),
+                    ],
                   ),
-                ),
-                SizedBox(width: 10),
-                DateWidget(
-                  datetime: message.createdAt,
-                  userLocale: userLocale,
-                ),
-              ],
-            ),
-            SizedBox(height: 10),
-            Text(message.content),
-            SizedBox(height: 15),
-            Row(
-              children: [
-                InkWell(
-                  onTap: () => _likeMessage(context, hasLikedMessage, message),
-                  child: Icon(
-                    hasLikedMessage ? Icons.favorite : Icons.favorite_border,
-                    color: hasLikedMessage ? context.colors.error : color,
-                    size: 15,
-                  ),
-                ),
-                SizedBox(width: 5),
-                Text(
-                  message.likeCount.toString(),
-                  style: TextStyle(
-                    color: color,
-                  ),
-                ),
-                SizedBox(width: 10),
-                Icon(
-                  Icons.comment_outlined,
-                  color: color,
-                  size: 15,
-                ),
-                SizedBox(width: 5),
-                Text(
-                  message.replyCount.toString(),
-                  style: TextStyle(
-                    color: color,
-                  ),
-                ),
-                if (message.creator == profileState.profile.id) ...[
-                  SizedBox(width: 5),
-                  InkWell(
-                    onTap: () =>
-                        _showConfirmDeleteBottomSheet(context, message),
-                    child: Icon(
-                      Icons.delete_outline,
-                      color: color,
-                      size: 15,
-                    ),
+                  SizedBox(height: 10),
+                  Text(message.content),
+                  SizedBox(height: 15),
+                  Row(
+                    children: [
+                      InkWell(
+                        onTap: () =>
+                            _likeMessage(context, hasLikedMessage, message),
+                        child: Icon(
+                          hasLikedMessage
+                              ? Icons.favorite
+                              : Icons.favorite_border,
+                          color: hasLikedMessage ? context.colors.error : color,
+                          size: 15,
+                        ),
+                      ),
+                      SizedBox(width: 10),
+                      Text(
+                        message.likeCount.toString(),
+                        style: TextStyle(
+                          color: color,
+                        ),
+                      ),
+                      SizedBox(width: 10),
+                      Icon(
+                        Icons.comment_outlined,
+                        color: color,
+                        size: 15,
+                      ),
+                      SizedBox(width: 10),
+                      Text(
+                        message.replyCount.toString(),
+                        style: TextStyle(
+                          color: color,
+                        ),
+                      ),
+                      if (message.creator == profileState.profile.id) ...[
+                        SizedBox(width: 10),
+                        InkWell(
+                          onTap: () =>
+                              _showConfirmDeleteBottomSheet(context, message),
+                          child: Icon(
+                            Icons.delete_outline,
+                            color: color,
+                            size: 15,
+                          ),
+                        ),
+                      ],
+                      Spacer(),
+                      InkWell(
+                        onTap: () =>
+                            _showAddReportBottomSheet(context, message),
+                        child: Icon(
+                          Icons.warning,
+                          color: color,
+                          size: 15,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
-                Spacer(),
-                InkWell(
-                  onTap: () => _showAddReportBottomSheet(context, message),
-                  child: Icon(
-                    Icons.warning,
-                    color: color,
-                    size: 15,
-                  ),
-                ),
-              ],
+              ),
             ),
-            if (withReplies && replies.isNotEmpty) ...[
+            if (withReplies) ...[
               SizedBox(height: 20),
+              Padding(
+                padding: EdgeInsets.all(0),
+                child: Text(
+                  AppLocalizations.of(context)!.answers,
+                  style: context.typographies.body,
+                ),
+              ),
               for (final reply in replies) ...[
+                SizedBox(height: 20),
                 Divider(color: color),
+                SizedBox(height: 20),
                 InkWell(
                   borderRadius: BorderRadius.circular(16),
                   onTap: () => {
@@ -321,6 +353,8 @@ class MessageWidget extends StatelessWidget {
                           'challengeThreadReply',
                           pathParameters: {
                             'challengeId': challengeId!,
+                            'challengeParticipationId':
+                                challengeParticipationId ?? 'null',
                             'messageId': reply.id,
                             'threadId': threadId,
                           },
@@ -343,11 +377,23 @@ class MessageWidget extends StatelessWidget {
                     messageId: reply.id,
                     habitId: habitId,
                     challengeId: challengeId,
+                    challengeParticipationId: challengeParticipationId,
                     threadId: threadId,
                     withReplies: false,
                   ),
                 ),
               ],
+              if (replies.isEmpty) ...[
+                SizedBox(height: 40),
+                Center(
+                  child: Text(
+                    AppLocalizations.of(context)!.noAnswerForThisMessageYet,
+                    style: TextStyle(
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
+              ]
             ],
           ],
         ),

@@ -14,6 +14,7 @@ class ThreadWidget extends StatelessWidget {
   final Color color;
   final String? habitId;
   final String? challengeId;
+  final String? challengeParticipationId;
 
   const ThreadWidget({
     super.key,
@@ -21,6 +22,7 @@ class ThreadWidget extends StatelessWidget {
     required this.color,
     required this.habitId,
     required this.challengeId,
+    required this.challengeParticipationId,
   });
 
   @override
@@ -43,6 +45,7 @@ class ThreadWidget extends StatelessWidget {
               'challengeThread',
               pathParameters: {
                 'challengeId': challengeId!,
+                'challengeParticipationId': challengeParticipationId ?? 'null',
                 'threadId': thread.id,
               },
             );
@@ -62,7 +65,6 @@ class ThreadWidget extends StatelessWidget {
             boxShadow: [
               BoxShadow(
                 color: color.withValues(alpha: 0.2),
-                blurRadius: 10,
               ),
             ],
             borderRadius: BorderRadius.circular(16),

@@ -634,6 +634,7 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
                       color: challengeColor,
                       habitId: null,
                       challengeId: widget.challengeId,
+                      challengeParticipationId: challengeParticipation?.id,
                     ),
                     SizedBox(height: 72),
                   ],

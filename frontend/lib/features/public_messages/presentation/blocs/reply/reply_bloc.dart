@@ -318,66 +318,87 @@ class ReplyBloc extends Bloc<ReplyEvent, ReplyState>
     );
   }
 
-  Future<void> addLike(
-      AddLikeOnReplyMessage event, Emitter<ReplyState> emit) async {
+  void addLike(
+    AddLikeOnReplyMessage event,
+    Emitter<ReplyState> emit,
+  ) {
+    if (state is! ReplyLoaded) return;
+
     final currentState = state as ReplyLoaded;
-    emit(ReplyLoading());
 
-    int replyIndex =
-        currentState.replies.indexWhere((m) => m.id == event.messageId);
+    // Create new copies of lists
+    final updatedReplies = List<PublicMessage>.from(currentState.replies);
+    final updatedParents = List<PublicMessage>.from(currentState.parents);
+    PublicMessage? updatedReply = currentState.reply;
+
+    int replyIndex = updatedReplies.indexWhere((m) => m.id == event.messageId);
     if (replyIndex != -1) {
-      currentState.replies[replyIndex].likeCount += 1;
+      updatedReplies[replyIndex] = updatedReplies[replyIndex].copyWith(
+        likeCount: updatedReplies[replyIndex].likeCount + 1,
+      );
     }
 
-    int parentIndex =
-        currentState.parents.indexWhere((m) => m.id == event.messageId);
+    int parentIndex = updatedParents.indexWhere((m) => m.id == event.messageId);
     if (parentIndex != -1) {
-      currentState.parents[parentIndex].likeCount += 1;
+      updatedParents[parentIndex] = updatedParents[parentIndex].copyWith(
+        likeCount: updatedParents[parentIndex].likeCount + 1,
+      );
     }
 
-    if (currentState.reply != null) {
-      if (currentState.reply!.id == event.messageId) {
-        currentState.reply!.likeCount += 1;
-      }
+    if (updatedReply != null && updatedReply.id == event.messageId) {
+      updatedReply =
+          updatedReply.copyWith(likeCount: updatedReply.likeCount + 1);
     }
 
     emit(
       ReplyLoaded(
-        replies: currentState.replies,
-        parents: currentState.parents,
-        reply: currentState.reply,
+        replies: updatedReplies,
+        parents: updatedParents,
+        reply: updatedReply,
       ),
     );
   }
 
-  Future<void> deleteLike(
-      DeleteLikeOnReplyMessage event, Emitter<ReplyState> emit) async {
+  void deleteLike(
+    DeleteLikeOnReplyMessage event,
+    Emitter<ReplyState> emit,
+  ) {
+    if (state is! ReplyLoaded) return;
+
     final currentState = state as ReplyLoaded;
-    emit(ReplyLoading());
 
-    int replyIndex =
-        currentState.replies.indexWhere((m) => m.id == event.messageId);
-    if (replyIndex != -1) {
-      currentState.replies[replyIndex].likeCount -= 1;
+    // Create new copies of lists
+    final updatedReplies = List<PublicMessage>.from(currentState.replies);
+    final updatedParents = List<PublicMessage>.from(currentState.parents);
+    PublicMessage? updatedReply = currentState.reply;
+
+    int replyIndex = updatedReplies.indexWhere((m) => m.id == event.messageId);
+    if (replyIndex != -1 && updatedReplies[replyIndex].likeCount > 0) {
+      updatedReplies[replyIndex] = updatedReplies[replyIndex].copyWith(
+        likeCount: updatedReplies[replyIndex].likeCount - 1,
+      );
     }
 
-    int parentIndex =
-        currentState.parents.indexWhere((m) => m.id == event.messageId);
-    if (parentIndex != -1) {
-      currentState.parents[parentIndex].likeCount -= 1;
+    int parentIndex = updatedParents.indexWhere((m) => m.id == event.messageId);
+    if (parentIndex != -1 && updatedParents[parentIndex].likeCount > 0) {
+      updatedParents[parentIndex] = updatedParents[parentIndex].copyWith(
+        likeCount: updatedParents[parentIndex].likeCount - 1,
+      );
     }
 
-    if (currentState.reply != null) {
-      if (currentState.reply!.id == event.messageId) {
-        currentState.reply!.likeCount -= 1;
-      }
+    if (updatedReply != null &&
+        updatedReply.id == event.messageId &&
+        updatedReply.likeCount > 0) {
+      updatedReply =
+          updatedReply.copyWith(likeCount: updatedReply.likeCount - 1);
     }
 
     emit(
       ReplyLoaded(
-          replies: currentState.replies,
-          parents: currentState.parents,
-          reply: currentState.reply),
+        replies: updatedReplies,
+        parents: updatedParents,
+        reply: updatedReply,
+      ),
     );
   }
 }

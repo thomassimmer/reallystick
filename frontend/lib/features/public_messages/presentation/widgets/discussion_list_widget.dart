@@ -11,11 +11,13 @@ class DiscussionListWidget extends StatefulWidget {
   final Color color;
   final String? habitId;
   final String? challengeId;
+  final String? challengeParticipationId;
 
   const DiscussionListWidget({
     required this.color,
     required this.habitId,
     required this.challengeId,
+    required this.challengeParticipationId,
   });
 
   @override
@@ -109,6 +111,7 @@ class DiscussionListState extends State<DiscussionListWidget> {
                 color: widget.color,
                 habitId: widget.habitId,
                 challengeId: widget.challengeId,
+                challengeParticipationId: widget.challengeParticipationId,
               ),
               SizedBox(height: 10),
             ],

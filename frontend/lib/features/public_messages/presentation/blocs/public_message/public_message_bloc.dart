@@ -423,7 +423,7 @@ class PublicMessageBloc extends Bloc<PublicMessageEvent, PublicMessageState> {
         }
       },
       (message) {
-        // Check if we are missing some user info
+        // Fetch missing user info
         userBloc.add(
           GetUserPublicDataEvent(
             userIds: [message.creator],
@@ -431,32 +431,27 @@ class PublicMessageBloc extends Bloc<PublicMessageEvent, PublicMessageState> {
           ),
         );
 
+        List<PublicMessage> updatedThreads = List.from(currentState.threads);
+
         if (event.repliesTo != null) {
-          replyBloc.add(
-            AddNewReplyMessage(
-              message: message,
-            ),
-          );
-          threadBloc.add(
-            AddNewThreadMessage(
-              message: message,
-            ),
-          );
+          replyBloc.add(AddNewReplyMessage(message: message));
+          threadBloc.add(AddNewThreadMessage(message: message));
 
           int replyIndex =
-              currentState.threads.indexWhere((m) => m.id == event.repliesTo);
+              updatedThreads.indexWhere((m) => m.id == event.repliesTo);
           if (replyIndex != -1) {
-            currentState.threads[replyIndex].replyCount += 1;
+            updatedThreads[replyIndex] = updatedThreads[replyIndex].copyWith(
+                replyCount: updatedThreads[replyIndex].replyCount + 1);
           }
         } else {
-          currentState.threads.add(message);
+          updatedThreads.add(message);
         }
 
         emit(
           PublicMessagesLoaded(
             challengeId: currentState.challengeId,
             habitId: currentState.habitId,
-            threads: currentState.threads,
+            threads: updatedThreads,
             likedMessages: currentState.likedMessages,
             writtenMessages: currentState.writtenMessages,
             userReportedMessages: currentState.userReportedMessages,

@@ -96,6 +96,7 @@ class ChallengesCarouselWidget extends StatelessWidget {
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),
+                      border: Border.all(width: 1, color: habitColor),
                       boxShadow: [
                         BoxShadow(
                           color: habitColor.withValues(alpha: 0.3),

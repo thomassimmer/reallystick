@@ -140,6 +140,7 @@ class AppRouter {
                       return ThreadScreen(
                         habitId: habitId,
                         challengeId: null,
+                        challengeParticipationId: null,
                         threadId: threadId,
                       );
                     },
@@ -155,6 +156,7 @@ class AppRouter {
                           return ReplyScreen(
                             habitId: habitId,
                             challengeId: null,
+                            challengeParticipationId: null,
                             messageId: messageId,
                             threadId: threadId,
                           );
@@ -211,11 +213,17 @@ class AppRouter {
                     name: 'challengeThread',
                     builder: (context, state) {
                       final challengeId = state.pathParameters['challengeId']!;
+                      final challengeParticipationId =
+                          state.pathParameters['challengeParticipationId']!;
                       final threadId = state.pathParameters['threadId']!;
 
                       return ThreadScreen(
                         habitId: null,
                         challengeId: challengeId,
+                        challengeParticipationId:
+                            challengeParticipationId == 'null'
+                                ? null
+                                : challengeParticipationId,
                         threadId: threadId,
                       );
                     },
@@ -226,12 +234,18 @@ class AppRouter {
                         builder: (context, state) {
                           final challengeId =
                               state.pathParameters['challengeId']!;
+                          final challengeParticipationId =
+                              state.pathParameters['challengeParticipationId']!;
                           final threadId = state.pathParameters['threadId']!;
                           final messageId = state.pathParameters['messageId']!;
 
                           return ReplyScreen(
                             habitId: null,
                             challengeId: challengeId,
+                            challengeParticipationId:
+                                challengeParticipationId == 'null'
+                                    ? null
+                                    : challengeParticipationId,
                             threadId: threadId,
                             messageId: messageId,
                           );

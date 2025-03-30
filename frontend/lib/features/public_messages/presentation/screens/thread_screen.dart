@@ -30,12 +30,14 @@ class ThreadScreen extends StatefulWidget {
   final String threadId;
   final String? habitId;
   final String? challengeId;
+  final String? challengeParticipationId;
 
   const ThreadScreen({
     super.key,
     required this.threadId,
     required this.habitId,
     required this.challengeId,
+    required this.challengeParticipationId,
   });
 
   @override
@@ -181,7 +183,7 @@ class ThreadScreenState extends State<ThreadScreen> {
             body: RefreshIndicator(
               onRefresh: _pullRefresh,
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                padding: const EdgeInsets.only(bottom: 16),
                 child: FullWidthColumn(
                   children: [
                     Expanded(
@@ -191,6 +193,8 @@ class ThreadScreenState extends State<ThreadScreen> {
                           color: color,
                           habitId: widget.habitId,
                           challengeId: widget.challengeId,
+                          challengeParticipationId:
+                              widget.challengeParticipationId,
                           threadId: widget.threadId,
                           withReplies: true,
                         ),

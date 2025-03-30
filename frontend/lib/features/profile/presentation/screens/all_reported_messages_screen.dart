@@ -122,99 +122,107 @@ class AllReportedMessagesScreenState extends State<AllReportedMessagesScreen> {
               return SizedBox.shrink();
             }
 
-            return Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: InkWell(
-                borderRadius: BorderRadius.circular(16),
-                onTap: () => {
-                  if (message.repliesTo == null)
-                    {
-                      if (message.challengeId != null)
+            return Column(
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(16),
+                    onTap: () => {
+                      if (message.repliesTo == null)
                         {
-                          context.pushNamed(
-                            'challengeThread',
-                            pathParameters: {
-                              'challengeId': message.challengeId!,
-                              'threadId': message.threadId,
-                            },
-                          )
+                          if (message.challengeId != null)
+                            {
+                              context.pushNamed(
+                                'challengeThread',
+                                pathParameters: {
+                                  'challengeId': message.challengeId!,
+                                  'challengeParticipationId': 'null',
+                                  'threadId': message.threadId,
+                                },
+                              )
+                            }
+                          else if (message.habitId != null)
+                            {
+                              context.pushNamed(
+                                'habitThread',
+                                pathParameters: {
+                                  'habitId': message.habitId!,
+                                  'threadId': message.threadId,
+                                },
+                              )
+                            }
                         }
-                      else if (message.habitId != null)
+                      else
                         {
-                          context.pushNamed(
-                            'habitThread',
-                            pathParameters: {
-                              'habitId': message.habitId!,
-                              'threadId': message.threadId,
-                            },
-                          )
+                          if (message.challengeId != null)
+                            {
+                              context.pushNamed(
+                                'challengeThreadReply',
+                                pathParameters: {
+                                  'challengeId': message.challengeId!,
+                                  'challengeParticipationId': 'null',
+                                  'messageId': message.id,
+                                  'threadId': message.threadId,
+                                },
+                              )
+                            }
+                          else if (message.habitId != null)
+                            {
+                              context.pushNamed(
+                                'habitThreadReply',
+                                pathParameters: {
+                                  'habitId': message.habitId!,
+                                  'messageId': message.id,
+                                  'threadId': message.threadId,
+                                },
+                              )
+                            }
                         }
-                    }
-                  else
-                    {
-                      if (message.challengeId != null)
-                        {
-                          context.pushNamed(
-                            'challengeThreadReply',
-                            pathParameters: {
-                              'challengeId': message.challengeId!,
-                              'messageId': message.id,
-                              'threadId': message.threadId,
-                            },
-                          )
-                        }
-                      else if (message.habitId != null)
-                        {
-                          context.pushNamed(
-                            'habitThreadReply',
-                            pathParameters: {
-                              'habitId': message.habitId!,
-                              'messageId': message.id,
-                              'threadId': message.threadId,
-                            },
-                          )
-                        }
-                    }
-                },
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Row(
+                    },
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        Spacer(),
-                        Padding(
-                          padding: EdgeInsets.only(right: 16, top: 16),
-                          child: InkWell(
-                            onTap: () =>
-                                _showConfirmDeleteBottomSheet(context, message),
-                            child: Icon(
-                              Icons.delete_outline,
-                              color: AppColorExtension.fromString("").color,
-                              size: 15,
+                        Row(
+                          children: [
+                            Spacer(),
+                            Padding(
+                              padding: EdgeInsets.only(right: 16, top: 16),
+                              child: InkWell(
+                                onTap: () => _showConfirmDeleteBottomSheet(
+                                    context, message),
+                                child: Icon(
+                                  Icons.delete_outline,
+                                  color: AppColorExtension.fromString("").color,
+                                  size: 15,
+                                ),
+                              ),
                             ),
+                          ],
+                        ),
+                        MessageWidget(
+                          threadId: message.threadId,
+                          messageId: message.id,
+                          color: AppColorExtension.fromString("").color,
+                          habitId: message.habitId,
+                          challengeId: message.challengeId,
+                          challengeParticipationId: null,
+                          withReplies: false,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.all(16),
+                          child: CustomTextField(
+                            enabled: false,
+                            initialValue: report.reason,
+                            label: AppLocalizations.of(context)!.reason,
                           ),
                         ),
                       ],
                     ),
-                    MessageWidget(
-                      threadId: message.threadId,
-                      messageId: message.id,
-                      color: AppColorExtension.fromString("").color,
-                      habitId: message.habitId,
-                      challengeId: message.challengeId,
-                      withReplies: false,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(16),
-                      child: CustomTextField(
-                        enabled: false,
-                        initialValue: report.reason,
-                        label: AppLocalizations.of(context)!.reason,
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
+                Divider(),
+              ],
             );
           },
         ).toList(),
