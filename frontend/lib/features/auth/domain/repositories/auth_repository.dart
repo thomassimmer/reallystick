@@ -10,6 +10,7 @@ abstract class AuthRepository {
     required String password,
     required String locale,
     required String theme,
+    required String timezone,
     required String publicKey,
     required String privateKeyEncrypted,
     required String saltUsedToDeriveKeyFromPassword,

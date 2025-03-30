@@ -104,7 +104,7 @@ class PrivateMessageWidgetState extends State<PrivateMessageWidget> {
                             fontSize: 12,
                           ),
                         ),
-                        if (widget.message.creator == profileState.profile.id)
+                        if (userIsCreator)
                           StatusWidget(isSeen: widget.message.seen)
                       ],
                     ),

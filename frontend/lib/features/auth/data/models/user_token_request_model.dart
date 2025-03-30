@@ -17,6 +17,7 @@ class RegisterUserRequestModel {
   final String password;
   final String locale;
   final String theme;
+  final String timezone;
   final String publicKey;
   final String privateKeyEncrypted;
   final String saltUsedToDeriveKeyFromPassword;
@@ -26,6 +27,7 @@ class RegisterUserRequestModel {
     required this.password,
     required this.locale,
     required this.theme,
+    required this.timezone,
     required this.publicKey,
     required this.privateKeyEncrypted,
     required this.saltUsedToDeriveKeyFromPassword,
@@ -37,6 +39,7 @@ class RegisterUserRequestModel {
       'password': password,
       'locale': locale,
       'theme': theme,
+      'timezone': timezone,
       'public_key': publicKey,
       'private_key_encrypted': privateKeyEncrypted,
       'salt_used_to_derive_key_from_password': saltUsedToDeriveKeyFromPassword,

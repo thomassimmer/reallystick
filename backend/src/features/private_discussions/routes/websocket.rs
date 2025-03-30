@@ -79,7 +79,10 @@ async fn broadcast_ws(
         )
         .await;
 
-    info!("{} just opened a websocket.", request_claims.username);
+    info!(
+        "{} just opened a websocket : {}",
+        request_claims.username, session_uuid
+    );
 
     // spawn websocket handler (and don't await it) so that the response is returned immediately
     rt::spawn(async move {
@@ -103,7 +106,10 @@ async fn broadcast_ws(
 
         let _ = session.close(None).await;
 
-        info!("{} just closed a websocket.", request_claims.username);
+        info!(
+            "{} just closed a websocket : {}",
+            request_claims.username, session_uuid
+        );
     });
 
     res

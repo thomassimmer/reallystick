@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:basic_utils/basic_utils.dart';
 import 'package:bloc/bloc.dart';
+import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:get_it/get_it.dart';
 import 'package:reallystick/core/messages/message.dart';
 import 'package:reallystick/core/utils/recovery_code_generator.dart';
@@ -174,12 +175,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       derivedKey: derivatedKeyResult.derivedKey,
     );
 
+    final String currentTimeZone = await FlutterTimezone.getLocalTimezone();
+
     final result = await signupUseCase.call(
       username: event.username,
       password: event.password,
       locale:
           Platform.localeName, // We use the device locale by default on signup
       theme: event.theme,
+      timezone: currentTimeZone,
       publicKey: publicKey,
       privateKey: privateKey,
       privateKeyEncrypted: privateKeyEncrypted,
