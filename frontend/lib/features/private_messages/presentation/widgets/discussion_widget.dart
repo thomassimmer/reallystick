@@ -54,30 +54,30 @@ class DiscussionWidget extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      userState.users[discussion.recipientId]?.username ??
-                          AppLocalizations.of(context)!.unknown,
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(height: 5),
-                    if (discussion.hasBlocked) ...[
-                      Text(AppLocalizations.of(context)!.youBlockedThisUser)
-                    ] else ...[
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
                       Text(
-                        discussion.lastMessage != null
-                            ? discussion.lastMessage!.content
-                            : "",
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 3,
+                        userState.users[discussion.recipientId]?.username ??
+                            AppLocalizations.of(context)!.unknown,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ]
-                  ],
+                      SizedBox(height: 5),
+                      if (discussion.hasBlocked) ...[
+                        Text(AppLocalizations.of(context)!.youBlockedThisUser)
+                      ] else ...[
+                        Text(
+                          discussion.lastMessage?.content ?? "",
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 3,
+                        ),
+                      ]
+                    ],
+                  ),
                 ),
                 if (discussion.unseenMessages > 0 ||
                     discussion.lastMessage != null)

@@ -87,7 +87,7 @@ class ChallengesScreenState extends State<ChallengesScreen> {
             body: RefreshIndicator(
               onRefresh: _pullRefresh,
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4),
+                padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
                 child: FullWidthScrollView(
                   slivers: [
                     if (createdChallenges.isNotEmpty ||

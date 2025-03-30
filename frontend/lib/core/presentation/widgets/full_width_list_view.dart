@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 class FullWidthListView extends StatelessWidget {
   final List<Widget> children;
   final double maxContentWidth;
+  final ScrollController? controller;
 
   const FullWidthListView({
     super.key,
     required this.children,
+    this.controller,
     this.maxContentWidth = 700, // Set max width for content
   });
 
@@ -20,6 +22,7 @@ class FullWidthListView extends StatelessWidget {
             : 16;
 
         return ListView(
+          controller: controller,
           children: children.map((child) {
             // Wrap each child with padding to apply max width constraint
             return Padding(

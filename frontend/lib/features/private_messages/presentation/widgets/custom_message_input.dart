@@ -63,6 +63,7 @@ class CustomMessageInputState extends State<CustomMessageInput> {
       textInputAction: TextInputAction.newline,
       maxLines: null,
       decoration: InputDecoration(
+        contentPadding: EdgeInsets.all(20),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20.0),
           borderSide: BorderSide(

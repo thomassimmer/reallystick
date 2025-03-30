@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:reallystick/core/messages/message.dart';
 import 'package:reallystick/core/presentation/widgets/custom_app_bar.dart';
-import 'package:reallystick/core/presentation/widgets/full_width_list_view_builder.dart';
+import 'package:reallystick/core/presentation/widgets/full_width_list_view.dart';
 import 'package:reallystick/core/presentation/widgets/global_snack_bar.dart';
 import 'package:reallystick/core/ui/colors.dart';
 import 'package:reallystick/core/ui/extensions.dart';
@@ -316,114 +316,133 @@ class PrivateDiscussionScreenState extends State<PrivateDiscussionScreen> {
             ),
           ],
         ),
-        body: Padding(
-          padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
-          child: Center(
-            child: Container(
-              constraints: BoxConstraints(
-                maxWidth: 700,
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  if (discussion.hasBlocked) ...[
-                    Text(AppLocalizations.of(context)!.youBlockedThisUser)
-                  ] else ...[
-                    Expanded(
-                      child: FullWidthListViewBuilder(
-                        controller: _scrollController,
-                        itemCount: messages.length,
-                        itemBuilder: (context, index) {
-                          final message = messages[index];
-                          return Column(
-                            children: [
-                              if (index > 0 &&
-                                  messages[index - 1]
-                                          .createdAt
-                                          .day
-                                          .compareTo(message.createdAt.day) <
-                                      0) ...[
-                                Text(
-                                  DateFormat.yMEd(userLocale)
-                                      .format(message.createdAt),
-                                  style: TextStyle(
-                                    color: context.colors.hint,
-                                    fontSize: 12,
+        body: Center(
+          child: Container(
+            constraints: BoxConstraints(
+              maxWidth: 700,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (discussion.hasBlocked) ...[
+                  Text(AppLocalizations.of(context)!.youBlockedThisUser)
+                ] else ...[
+                  Expanded(
+                    child: FullWidthListView(
+                      controller: _scrollController,
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.yellow),
+                              borderRadius: BorderRadius.circular(16),
+                              color: Colors.yellow.withValues(alpha: 0.1)),
+                          child: Padding(
+                            padding: EdgeInsets.all(16),
+                            child: Text(
+                              AppLocalizations.of(context)!
+                                  .messagesAreEncrypted,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 40),
+                        ...List.generate(
+                          messages.length,
+                          (index) {
+                            final message = messages[index];
+                            return Column(
+                              children: [
+                                if (index > 0 &&
+                                    messages[index - 1]
+                                            .createdAt
+                                            .day
+                                            .compareTo(message.createdAt.day) <
+                                        0) ...[
+                                  Text(
+                                    DateFormat.yMEd(userLocale)
+                                        .format(message.createdAt),
+                                    style: TextStyle(
+                                      color: context.colors.hint,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                  SizedBox(height: 10),
+                                ],
+                                GestureDetector(
+                                  onLongPressStart: (details) async {
+                                    final offset = details.globalPosition;
+                                    final userIsCreator = message.creator ==
+                                        profileState.profile.id;
+
+                                    if (userIsCreator) {
+                                      showMenu(
+                                        context: context,
+                                        position: RelativeRect.fromLTRB(
+                                          offset.dx,
+                                          offset.dy,
+                                          MediaQuery.of(context).size.width -
+                                              offset.dx,
+                                          MediaQuery.of(context).size.height -
+                                              offset.dy,
+                                        ),
+                                        items: [
+                                          PopupMenuItem(
+                                            value: 'update',
+                                            child: Text(
+                                                AppLocalizations.of(context)!
+                                                    .edit),
+                                          ),
+                                          PopupMenuItem(
+                                            value: 'delete',
+                                            child: Text(
+                                                AppLocalizations.of(context)!
+                                                    .delete),
+                                          ),
+                                        ],
+                                      ).then(
+                                        (value) {
+                                          if (value == 'update') {
+                                            setState(() {
+                                              _contentController.text =
+                                                  message.content;
+                                              _messageBeingEdited = message;
+                                            });
+                                          } else if (value == 'delete') {
+                                            _deleteMessage(message.id);
+                                          }
+                                        },
+                                      );
+                                    }
+                                  },
+                                  child: PrivateMessageWidget(
+                                    discussionId: widget.discussionId,
+                                    message: message,
+                                    color: AppColorExtension.fromString(
+                                            discussion.color)
+                                        .color,
+                                    userId: profileState.profile.id,
                                   ),
                                 ),
                                 SizedBox(height: 10),
                               ],
-                              GestureDetector(
-                                onLongPressStart: (details) async {
-                                  final offset = details.globalPosition;
-                                  final userIsCreator = message.creator ==
-                                      profileState.profile.id;
-
-                                  if (userIsCreator) {
-                                    showMenu(
-                                      context: context,
-                                      position: RelativeRect.fromLTRB(
-                                        offset.dx,
-                                        offset.dy,
-                                        MediaQuery.of(context).size.width -
-                                            offset.dx,
-                                        MediaQuery.of(context).size.height -
-                                            offset.dy,
-                                      ),
-                                      items: [
-                                        PopupMenuItem(
-                                          value: 'update',
-                                          child: Text(
-                                              AppLocalizations.of(context)!
-                                                  .edit),
-                                        ),
-                                        PopupMenuItem(
-                                          value: 'delete',
-                                          child: Text(
-                                              AppLocalizations.of(context)!
-                                                  .delete),
-                                        ),
-                                      ],
-                                    ).then(
-                                      (value) {
-                                        if (value == 'update') {
-                                          setState(() {
-                                            _contentController.text =
-                                                message.content;
-                                            _messageBeingEdited = message;
-                                          });
-                                        } else if (value == 'delete') {
-                                          _deleteMessage(message.id);
-                                        }
-                                      },
-                                    );
-                                  }
-                                },
-                                child: PrivateMessageWidget(
-                                  discussionId: widget.discussionId,
-                                  message: message,
-                                  color: AppColorExtension.fromString(
-                                          discussion.color)
-                                      .color,
-                                  userId: profileState.profile.id,
-                                ),
-                              ),
-                              SizedBox(height: 10),
-                            ],
-                          );
-                        },
-                      ),
+                            );
+                          },
+                        ),
+                      ],
                     ),
-                    CustomMessageInput(
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(16),
+                    child: CustomMessageInput(
                       contentController: _contentController,
                       recipientUsername: recipient.username,
                       onSendMessage: _sendMessage,
                       isEditing: _messageBeingEdited != null,
                       onEditMessage: _editMessage,
-                    )
-                  ],
+                    ),
+                  ),
                 ],
-              ),
+              ],
             ),
           ),
         ),
@@ -431,22 +450,19 @@ class PrivateDiscussionScreenState extends State<PrivateDiscussionScreen> {
     } else {
       return Scaffold(
         appBar: CustomAppBar(),
-        body: Padding(
-          padding: EdgeInsets.all(16),
-          child: Center(
-            child: Container(
-                constraints: BoxConstraints(
-                  maxWidth: 700,
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircularProgressIndicator(),
-                    SizedBox(height: 10),
-                    Text("Your messages are loading...")
-                  ],
-                )),
-          ),
+        body: Center(
+          child: Container(
+              constraints: BoxConstraints(
+                maxWidth: 700,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(),
+                  SizedBox(height: 10),
+                  Text("Your messages are loading...")
+                ],
+              )),
         ),
       );
     }

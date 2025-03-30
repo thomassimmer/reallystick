@@ -329,6 +329,7 @@
   "mergeHabit": "Merge Habit",
   "message": "Message",
   "messages": "Messages",
+  "messagesAreEncrypted": "Messages are end-to-end encrypted.\nNo one outside of this chat, not even our team, can read them.",
   "messageDeletedError": "This message has been deleted.",
   "messageNotFoundError": "Message not found.",
   "missingDateTimeError": "The date can't be left empty.",

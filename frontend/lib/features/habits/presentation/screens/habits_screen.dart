@@ -184,151 +184,160 @@ class HabitsScreenState extends State<HabitsScreen> {
                   : null,
               body: RefreshIndicator(
                 onRefresh: _pullRefresh,
-                child: FullWidthScrollView(
-                  slivers: [
-                    if (categories.isNotEmpty) ...[
-                      ...categories.expand((habitCategory) {
-                        final habitParticipations = habitState
-                            .habitParticipations
-                            .where((habitParticipation) =>
-                                habitState.habits[habitParticipation.habitId] !=
-                                    null &&
-                                habitState.habits[habitParticipation.habitId]!
-                                        .categoryId ==
-                                    habitCategory.id)
-                            .toList();
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
+                  child: FullWidthScrollView(
+                    slivers: [
+                      if (categories.isNotEmpty) ...[
+                        ...categories.expand((habitCategory) {
+                          final habitParticipations = habitState
+                              .habitParticipations
+                              .where((habitParticipation) =>
+                                  habitState
+                                          .habits[habitParticipation.habitId] !=
+                                      null &&
+                                  habitState.habits[habitParticipation.habitId]!
+                                          .categoryId ==
+                                      habitCategory.id)
+                              .toList();
 
-                        final habitDailyTrackings = habitState
-                            .habitDailyTrackings
-                            .where((habitDailyTracking) =>
-                                habitState.habits[habitDailyTracking.habitId] !=
-                                    null &&
-                                habitState.habits[habitDailyTracking.habitId]!
-                                        .categoryId ==
-                                    habitCategory.id)
-                            .toList();
+                          final habitDailyTrackings = habitState
+                              .habitDailyTrackings
+                              .where((habitDailyTracking) =>
+                                  habitState
+                                          .habits[habitDailyTracking.habitId] !=
+                                      null &&
+                                  habitState.habits[habitDailyTracking.habitId]!
+                                          .categoryId ==
+                                      habitCategory.id)
+                              .toList();
 
-                        final categoryName = getRightTranslationFromJson(
-                          habitCategory.name,
-                          profileState.profile.locale,
-                        );
+                          final categoryName = getRightTranslationFromJson(
+                            habitCategory.name,
+                            profileState.profile.locale,
+                          );
 
-                        final sortedHabitParticipations =
-                            getParticipationsOrderedByLatestTracking(
-                          habitParticipations,
-                          habitDailyTrackings,
-                        );
+                          final sortedHabitParticipations =
+                              getParticipationsOrderedByLatestTracking(
+                            habitParticipations,
+                            habitDailyTrackings,
+                          );
 
-                        return [
-                          SliverAppBar(
-                            pinned: true,
-                            backgroundColor: context.colors.background,
-                            title: InkWell(
-                              borderRadius: BorderRadius.circular(10.0),
-                              onTap: () {
-                                setState(() {
-                                  _categoriesExpansion[habitCategory.id] =
-                                      !_categoriesExpansion[habitCategory.id]!;
-                                });
-                              },
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 16.0),
-                                    child: Text(
-                                      habitCategory.icon,
-                                      style: TextStyle(fontSize: 25),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Text(
-                                      categoryName,
-                                      style: const TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w500,
+                          return [
+                            SliverAppBar(
+                              pinned: true,
+                              backgroundColor: context.colors.background,
+                              title: InkWell(
+                                borderRadius: BorderRadius.circular(10.0),
+                                onTap: () {
+                                  setState(() {
+                                    _categoriesExpansion[habitCategory.id] =
+                                        !_categoriesExpansion[
+                                            habitCategory.id]!;
+                                  });
+                                },
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(right: 16.0),
+                                      child: Text(
+                                        habitCategory.icon,
+                                        style: TextStyle(fontSize: 25),
                                       ),
                                     ),
-                                  ),
-                                  Icon(
-                                    _categoriesExpansion[habitCategory.id]!
-                                        ? Icons.expand_less
-                                        : Icons.expand_more,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          SliverToBoxAdapter(
-                            child: AnimatedCrossFade(
-                              duration: const Duration(milliseconds: 500),
-                              crossFadeState:
-                                  _categoriesExpansion[habitCategory.id]!
-                                      ? CrossFadeState.showFirst
-                                      : CrossFadeState.showSecond,
-                              firstChild: ListView.builder(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemCount: sortedHabitParticipations.length,
-                                itemBuilder: (context, index) {
-                                  final habitParticipation =
-                                      sortedHabitParticipations[index];
-                                  final habit = habitState
-                                      .habits[habitParticipation.habitId]!;
-                                  final habitDailyTrackingsForThisHabit =
-                                      habitDailyTrackings
-                                          .where(
-                                              (hdt) => hdt.habitId == habit.id)
-                                          .toList();
-
-                                  return HabitWidget(
-                                    habit: habit,
-                                    habitParticipation: habitParticipation,
-                                    habitDailyTrackings:
-                                        habitDailyTrackingsForThisHabit,
-                                  );
-                                },
-                              ),
-                              secondChild: SizedBox.shrink(),
-                            ),
-                          ),
-                        ];
-                      }),
-                    ] else ...[
-                      SliverFillRemaining(
-                        hasScrollBody: false,
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    AppLocalizations.of(context)!.noHabitsYet,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  const SizedBox(height: 24),
-                                  ElevatedButton.icon(
-                                    onPressed: () {
-                                      context.goNamed('habitSearch');
-                                    },
-                                    icon: const Icon(Icons.add),
-                                    label: Text(
-                                      AppLocalizations.of(context)!.addNewHabit,
+                                    Expanded(
+                                      child: Text(
+                                        categoryName,
+                                        style: const TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                    Icon(
+                                      _categoriesExpansion[habitCategory.id]!
+                                          ? Icons.expand_less
+                                          : Icons.expand_more,
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ],
+                            ),
+                            SliverToBoxAdapter(
+                              child: AnimatedCrossFade(
+                                duration: const Duration(milliseconds: 500),
+                                crossFadeState:
+                                    _categoriesExpansion[habitCategory.id]!
+                                        ? CrossFadeState.showFirst
+                                        : CrossFadeState.showSecond,
+                                firstChild: ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: sortedHabitParticipations.length,
+                                  itemBuilder: (context, index) {
+                                    final habitParticipation =
+                                        sortedHabitParticipations[index];
+                                    final habit = habitState
+                                        .habits[habitParticipation.habitId]!;
+                                    final habitDailyTrackingsForThisHabit =
+                                        habitDailyTrackings
+                                            .where((hdt) =>
+                                                hdt.habitId == habit.id)
+                                            .toList();
+
+                                    return HabitWidget(
+                                      habit: habit,
+                                      habitParticipation: habitParticipation,
+                                      habitDailyTrackings:
+                                          habitDailyTrackingsForThisHabit,
+                                    );
+                                  },
+                                ),
+                                secondChild: SizedBox.shrink(),
+                              ),
+                            ),
+                          ];
+                        }),
+                      ] else ...[
+                        SliverFillRemaining(
+                          hasScrollBody: false,
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      AppLocalizations.of(context)!.noHabitsYet,
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    const SizedBox(height: 24),
+                                    ElevatedButton.icon(
+                                      onPressed: () {
+                                        context.goNamed('habitSearch');
+                                      },
+                                      icon: const Icon(Icons.add),
+                                      label: Text(
+                                        AppLocalizations.of(context)!
+                                            .addNewHabit,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    ]
-                  ],
+                      ]
+                    ],
+                  ),
                 ),
               ),
             );

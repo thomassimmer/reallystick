@@ -115,8 +115,7 @@ class DiscussionListScreenState extends State<DiscussionListScreen> {
                   if (userState.user != null) ...[
                     Center(
                       child: ConstrainedBox(
-                        constraints: const BoxConstraints(
-                            maxWidth: 700), // Limit max width
+                        constraints: const BoxConstraints(maxWidth: 700),
                         child: NewDiscussionWithUserWidget(
                           user: userState.user!,
                         ),
@@ -142,7 +141,7 @@ class DiscussionListScreenState extends State<DiscussionListScreen> {
                   ),
                 ],
               ] else ...[
-                SizedBox(height: 10),
+                SizedBox(height: 20),
                 discussions.isNotEmpty
                     ? Expanded(
                         child: FullWidthScrollView(

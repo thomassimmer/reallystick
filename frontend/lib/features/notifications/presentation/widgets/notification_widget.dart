@@ -54,8 +54,9 @@ class NotificationsWidgetState extends State<NotificationsWidget> {
     return AnimatedContainer(
       duration: Duration(seconds: 2),
       curve: Curves.easeInOut,
-      padding: EdgeInsets.all(8),
-      margin: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+      margin: EdgeInsets.symmetric(
+        vertical: 4,
+      ),
       decoration: BoxDecoration(
         color: widget.notification.seen
             ? null
@@ -94,10 +95,13 @@ class NotificationsWidgetState extends State<NotificationsWidget> {
             context.go(widget.notification.url!);
           }
         },
-        trailing: IconButton(
-          icon: Icon(Icons.close),
-          onPressed: () => deleteNotification(
-            notificationId: widget.notification.id,
+        trailing: SizedBox(
+          width: 20.0,
+          child: IconButton(
+            icon: Icon(Icons.close),
+            onPressed: () => deleteNotification(
+              notificationId: widget.notification.id,
+            ),
           ),
         ),
       ),

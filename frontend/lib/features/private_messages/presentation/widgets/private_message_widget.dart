@@ -58,6 +58,10 @@ class PrivateMessageWidgetState extends State<PrivateMessageWidget> {
       return Align(
         alignment: userIsCreator ? Alignment.centerRight : Alignment.centerLeft,
         child: Container(
+          margin: EdgeInsets.only(
+            left: userIsCreator ? 80 : 0,
+            right: userIsCreator ? 0 : 80,
+          ),
           decoration: BoxDecoration(
             border: Border.all(color: widget.color.withAlpha(100)),
             boxShadow: [
@@ -71,43 +75,37 @@ class PrivateMessageWidgetState extends State<PrivateMessageWidget> {
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
+            child: Column(
+              crossAxisAlignment: userIsCreator
+                  ? CrossAxisAlignment.end
+                  : CrossAxisAlignment.start,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
+                Text(
+                  widget.message.deleted
+                      ? AppLocalizations.of(context)!.messageDeletedError
+                      : widget.message.content,
+                  maxLines: null,
+                  overflow: TextOverflow.visible,
+                  softWrap: true,
+                ),
+                SizedBox(height: 5),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text(
-                          widget.message.deleted
-                              ? AppLocalizations.of(context)!
-                                  .messageDeletedError
-                              : widget.message.content,
-                        ),
-                        const SizedBox(width: 40),
-                      ],
+                    Text(
+                      widget.message.updateAt == null
+                          ? DateFormat.Hm().format(widget.message.createdAt)
+                          : AppLocalizations.of(context)!.editedAt(
+                              DateFormat.yMEd(userLocale)
+                                  .add_Hm()
+                                  .format(widget.message.updateAt!),
+                            ),
+                      style: TextStyle(
+                        color: context.colors.hint,
+                        fontSize: 12,
+                      ),
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Text(
-                          widget.message.updateAt == null
-                              ? DateFormat.Hm().format(widget.message.createdAt)
-                              : AppLocalizations.of(context)!.editedAt(
-                                  DateFormat.yMEd(userLocale)
-                                      .add_Hm()
-                                      .format(widget.message.updateAt!)),
-                          style: TextStyle(
-                            color: context.colors.hint,
-                            fontSize: 12,
-                          ),
-                        ),
-                        if (userIsCreator)
-                          StatusWidget(isSeen: widget.message.seen)
-                      ],
-                    ),
+                    if (userIsCreator) StatusWidget(isSeen: widget.message.seen)
                   ],
                 ),
               ],

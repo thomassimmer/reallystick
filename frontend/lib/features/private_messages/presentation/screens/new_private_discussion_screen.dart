@@ -172,6 +172,20 @@ class NewPrivateDiscussionScreenState
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.yellow),
+                  borderRadius: BorderRadius.circular(16),
+                  color: Colors.yellow.withValues(alpha: 0.1)
+                ),
+                child: Padding(
+                  padding: EdgeInsets.all( 16),
+                  child: Text(
+                    AppLocalizations.of(context)!.messagesAreEncrypted,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
               Expanded(
                 child: Center(
                   child: Text(

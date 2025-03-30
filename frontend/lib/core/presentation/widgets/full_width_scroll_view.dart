@@ -23,7 +23,7 @@ class FullWidthScrollView extends StatelessWidget {
                 padding: EdgeInsets.symmetric(
                   horizontal: (constraints.maxWidth > maxContentWidth)
                       ? (constraints.maxWidth - maxContentWidth) / 2
-                      : 16, // Center other slivers
+                      : 0,
                 ),
                 sliver: sliver,
               );

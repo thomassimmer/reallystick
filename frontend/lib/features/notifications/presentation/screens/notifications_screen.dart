@@ -96,7 +96,12 @@ class NotificationsScreenState extends State<NotificationsScreen> {
                         index < notifications.length) {
                       final notification = notifications[index];
 
-                      return NotificationsWidget(notification: notification);
+                      return Stack(
+                        children: [
+                          NotificationsWidget(notification: notification),
+                          if (index != 0) Divider(),
+                        ],
+                      );
                     } else {
                       // Render no notifications message
                       return Padding(
