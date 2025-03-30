@@ -13,6 +13,7 @@ import 'package:reallystick/features/habits/domain/entities/habit_daily_tracking
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_states.dart';
 import 'package:reallystick/features/habits/presentation/screens/list_daily_trackings_modal.dart';
+import 'package:reallystick/features/habits/presentation/widgets/daily_tracking_chart.dart';
 import 'package:reallystick/features/habits/presentation/widgets/last_activity_widget.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 
@@ -39,6 +40,8 @@ class DailyTrackingCarouselWidget extends StatefulWidget {
 class DailyTrackingCarouselWidgetState
     extends State<DailyTrackingCarouselWidget> {
   ScrollController scrollController = ScrollController();
+
+  bool showChart = false;
 
   @override
   void initState() {
@@ -176,17 +179,34 @@ class DailyTrackingCarouselWidgetState
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
-                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Icon(
-                      Icons.bar_chart,
-                      size: 20,
-                      color: widget.habitColor,
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.bar_chart,
+                          size: 20,
+                          color: widget.habitColor,
+                        ),
+                        SizedBox(width: 10),
+                        Text(
+                          AppLocalizations.of(context)!.habitDailyTracking,
+                          style:
+                              TextStyle(fontSize: 20, color: widget.habitColor),
+                        ),
+                      ],
                     ),
-                    SizedBox(width: 10),
-                    Text(
-                      AppLocalizations.of(context)!.habitDailyTracking,
-                      style: TextStyle(fontSize: 20, color: widget.habitColor),
+                    IconButton(
+                      icon: Icon(
+                        showChart ? Icons.calendar_month : Icons.query_stats,
+                        color: widget.habitColor,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          showChart = !showChart;
+                        });
+                      },
                     ),
                   ],
                 ),
@@ -198,72 +218,97 @@ class DailyTrackingCarouselWidgetState
                 SizedBox(height: 10),
               ],
             ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                for (var i = 0; i < 7; i++)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                    child: SizedBox(
-                      width: dayBoxSize,
-                      child: Center(
-                        child: Text(
-                          DateFormat('E', userLocale.toString())
-                              .format(weeks[0][i]),
-                          textAlign: TextAlign.center,
-                          style: context.typographies.bodyExtraSmall
-                              .copyWith(fontSize: 10),
+          if (showChart) ...[
+            DailyTrackingChart(
+              aggregatedQuantities: aggregatedQuantities,
+              startDate: firstMonday,
+              actualNumberOfBoxesToDisplay:
+                  today.difference(firstMonday).inDays + 1,
+              habitColor: widget.habitColor,
+              userLocale: userLocale,
+              habit: widget.habit,
+            ),
+          ] else ...[
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  for (var i = 0; i < 7; i++)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                      child: SizedBox(
+                        width: dayBoxSize,
+                        child: Center(
+                          child: Text(
+                            DateFormat('E', userLocale.toString())
+                                .format(weeks[0][i]),
+                            textAlign: TextAlign.center,
+                            style: context.typographies.bodyExtraSmall
+                                .copyWith(fontSize: 10),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-              ],
+                ],
+              ),
             ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(
-                height: widget.displayTitle ? 150 : 75,
-                width: (dayBoxSize + 8.0) * 7,
-                child: ListView.builder(
-                  controller: scrollController,
-                  itemCount: weeks.length,
-                  itemBuilder: (context, weekIndex) {
-                    final week = weeks[weekIndex];
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  height: widget.displayTitle ? 150 : 75,
+                  width: (dayBoxSize + 8.0) * 7,
+                  child: ListView.builder(
+                    controller: scrollController,
+                    itemCount: weeks.length,
+                    itemBuilder: (context, weekIndex) {
+                      final week = weeks[weekIndex];
 
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: week.map(
-                          (datetime) {
-                            final totalQuantity =
-                                aggregatedQuantities[datetime] ?? 0.0;
-                            final normalizedOpacity = maxQuantity == minQuantity
-                                ? 0.1
-                                : 0.1 +
-                                    ((totalQuantity - minQuantity) /
-                                        (maxQuantity - minQuantity) *
-                                        0.9);
-                            final hasActivity =
-                                (aggregatedQuantities[datetime] ?? 0.0) > 0;
-                            final border = hasActivity
-                                ? Border.all(color: widget.habitColor, width: 1)
-                                : null;
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: week.map(
+                            (datetime) {
+                              final totalQuantity =
+                                  aggregatedQuantities[datetime] ?? 0.0;
+                              final normalizedOpacity =
+                                  maxQuantity == minQuantity
+                                      ? 0.1
+                                      : 0.1 +
+                                          ((totalQuantity - minQuantity) /
+                                              (maxQuantity - minQuantity) *
+                                              0.9);
+                              final hasActivity =
+                                  (aggregatedQuantities[datetime] ?? 0.0) > 0;
+                              final border = hasActivity
+                                  ? Border.all(
+                                      color: widget.habitColor, width: 1)
+                                  : null;
 
-                            return Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 4.0),
-                              child: widget.canOpenDayBoxes
-                                  ? GestureDetector(
-                                      onTap: widget.canOpenDayBoxes
-                                          ? () => _openDailyTrackings(
-                                              datetime: datetime)
-                                          : null,
-                                      child: Container(
+                              return Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 4.0),
+                                child: widget.canOpenDayBoxes
+                                    ? GestureDetector(
+                                        onTap: widget.canOpenDayBoxes
+                                            ? () => _openDailyTrackings(
+                                                datetime: datetime)
+                                            : null,
+                                        child: Container(
+                                          width: dayBoxSize,
+                                          height: dayBoxSize,
+                                          decoration: BoxDecoration(
+                                            color: widget.habitColor.withValues(
+                                                alpha: normalizedOpacity),
+                                            border: border,
+                                            borderRadius:
+                                                BorderRadius.circular(4),
+                                          ),
+                                        ),
+                                      )
+                                    : Container(
                                         width: dayBoxSize,
                                         height: dayBoxSize,
                                         decoration: BoxDecoration(
@@ -274,27 +319,17 @@ class DailyTrackingCarouselWidgetState
                                               BorderRadius.circular(4),
                                         ),
                                       ),
-                                    )
-                                  : Container(
-                                      width: dayBoxSize,
-                                      height: dayBoxSize,
-                                      decoration: BoxDecoration(
-                                        color: widget.habitColor.withValues(
-                                            alpha: normalizedOpacity),
-                                        border: border,
-                                        borderRadius: BorderRadius.circular(4),
-                                      ),
-                                    ),
-                            );
-                          },
-                        ).toList(),
-                      ),
-                    );
-                  },
+                              );
+                            },
+                          ).toList(),
+                        ),
+                      );
+                    },
+                  ),
                 ),
-              ),
-            ],
-          ),
+              ],
+            ),
+          ],
         ],
       );
     } else {
