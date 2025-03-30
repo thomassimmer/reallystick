@@ -39,6 +39,7 @@ class DeviceScreen extends StatelessWidget {
   void _confirmDelete(BuildContext context, String deviceId) {
     showModalBottomSheet(
       context: context,
+      backgroundColor: context.colors.background,
       builder: (BuildContext context) {
         return Container(
           padding: EdgeInsets.all(16),

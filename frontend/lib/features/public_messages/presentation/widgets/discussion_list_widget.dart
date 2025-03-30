@@ -34,6 +34,7 @@ class DiscussionListState extends State<DiscussionListWidget> {
       constraints: BoxConstraints(
         maxWidth: 700,
       ),
+      backgroundColor: context.colors.background,
       builder: (BuildContext context) {
         return Padding(
           padding: EdgeInsets.only(

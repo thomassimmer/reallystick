@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
+import 'package:reallystick/core/presentation/widgets/app_logo.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_bloc.dart';
-import 'package:reallystick/features/auth/presentation/blocs/auth/auth_events.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_states.dart';
 
 class ErrorScreen extends StatelessWidget {
@@ -16,13 +16,19 @@ class ErrorScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       return Scaffold(
-          appBar: AppBar(
-            title: Row(children: [
+        backgroundColor: context.colors.primary,
+        appBar: AppBar(
+          titleSpacing: 0,
+          title: Row(
+            children: [
               TextButton(
-                  onPressed: () {
-                    context.goNamed('home');
-                  },
-                  child: Row(children: [
+                onPressed: () {
+                  context.goNamed('home');
+                },
+                child: Row(
+                  children: [
+                    AppLogo(size: 50),
+                    SizedBox(width: 10),
                     Text(
                       'Really',
                       style: context.typographies.headingSmall.copyWith(
@@ -35,23 +41,19 @@ class ErrorScreen extends StatelessWidget {
                         color: context.colors.background,
                       ),
                     ),
-                  ])),
-              Spacer(),
-              if (state is AuthAuthenticatedState)
-                ElevatedButton(
-                  onPressed: () {
-                    BlocProvider.of<AuthBloc>(context).add(AuthLogoutEvent());
-                  },
-                  child: Text(AppLocalizations.of(context)!.logout),
+                  ],
                 ),
-            ]),
-            backgroundColor: context.colors.primary,
+              ),
+            ],
           ),
-          body: Center(
-            child: Text(error != null
-                ? error.toString()
-                : AppLocalizations.of(context)!.defaultError),
-          ));
+          backgroundColor: context.colors.primary,
+        ),
+        body: Center(
+          child: Text(error != null
+              ? error.toString()
+              : AppLocalizations.of(context)!.defaultError),
+        ),
+      );
     });
   }
 }

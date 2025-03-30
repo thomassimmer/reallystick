@@ -72,6 +72,8 @@ class RootScreenState extends State<RootScreen> {
       }
     }
 
+    final borderRadius = 30.0;
+
     return MultiBlocListener(
       listeners: [
         BlocListener<AuthBloc, AuthState>(listener: (context, state) {
@@ -233,7 +235,7 @@ class RootScreenState extends State<RootScreen> {
                         child: Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(16.0),
+                              topLeft: Radius.circular(borderRadius),
                               topRight: Radius.zero,
                               bottomLeft: Radius.zero,
                               bottomRight: Radius.zero,
@@ -288,59 +290,46 @@ class RootScreenState extends State<RootScreen> {
                             end: Alignment.bottomCenter,
                           ),
                           borderRadius: BorderRadius.only(
-                            topRight: Radius.circular(16),
-                            topLeft: Radius.circular(16),
+                            topRight: Radius.circular(borderRadius),
+                            topLeft: Radius.circular(borderRadius),
                           ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black38,
-                              spreadRadius: 0,
-                              blurRadius: 10,
+                        ),
+                        child: NavigationBar(
+                          backgroundColor: Colors.transparent,
+                          indicatorColor: context.colors.background,
+                          selectedIndex: _calculateSelectedIndex(context),
+                          onDestinationSelected: onItemTapped,
+                          destinations: <NavigationDestination>[
+                            NavigationDestination(
+                              icon: Icon(Icons.check_circle_outline),
+                              selectedIcon: Icon(Icons.check_circle),
+                              label: AppLocalizations.of(context)!.habits,
+                            ),
+                            NavigationDestination(
+                              icon: Icon(Icons.flag_outlined),
+                              selectedIcon: Icon(Icons.flag),
+                              label: AppLocalizations.of(context)!.challenges,
+                            ),
+                            NavigationDestination(
+                              icon: PrivateMessageIcon(
+                                iconData: Icons.message_outlined,
+                              ),
+                              selectedIcon: PrivateMessageIcon(
+                                iconData: Icons.message,
+                              ),
+                              label: AppLocalizations.of(context)!.messages,
+                            ),
+                            NavigationDestination(
+                              icon: IconWithWarning(
+                                  iconData: Icons.person_outline,
+                                  shouldBeWarning: shouldBeWarning),
+                              selectedIcon: IconWithWarning(
+                                iconData: Icons.person,
+                                shouldBeWarning: shouldBeWarning,
+                              ),
+                              label: AppLocalizations.of(context)!.profile,
                             ),
                           ],
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(30.0),
-                            topRight: Radius.circular(30.0),
-                          ),
-                          child: NavigationBar(
-                            backgroundColor: Colors.transparent,
-                            indicatorColor: context.colors.background,
-                            selectedIndex: _calculateSelectedIndex(context),
-                            onDestinationSelected: onItemTapped,
-                            destinations: <NavigationDestination>[
-                              NavigationDestination(
-                                icon: Icon(Icons.check_circle_outline),
-                                selectedIcon: Icon(Icons.check_circle),
-                                label: AppLocalizations.of(context)!.habits,
-                              ),
-                              NavigationDestination(
-                                icon: Icon(Icons.flag_outlined),
-                                selectedIcon: Icon(Icons.flag),
-                                label: AppLocalizations.of(context)!.challenges,
-                              ),
-                              NavigationDestination(
-                                icon: PrivateMessageIcon(
-                                  iconData: Icons.message_outlined,
-                                ),
-                                selectedIcon: PrivateMessageIcon(
-                                  iconData: Icons.message,
-                                ),
-                                label: AppLocalizations.of(context)!.messages,
-                              ),
-                              NavigationDestination(
-                                icon: IconWithWarning(
-                                    iconData: Icons.person_outline,
-                                    shouldBeWarning: shouldBeWarning),
-                                selectedIcon: IconWithWarning(
-                                  iconData: Icons.person,
-                                  shouldBeWarning: shouldBeWarning,
-                                ),
-                                label: AppLocalizations.of(context)!.profile,
-                              ),
-                            ],
-                          ),
                         ),
                       ),
                     ),

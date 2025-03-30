@@ -40,6 +40,7 @@ class CreateHabitScreenState extends State<CreateHabitScreen> {
   void _showEmojiPicker(BuildContext context, String userLocale) {
     showModalBottomSheet(
       context: context,
+      backgroundColor: context.colors.background,
       builder: (context) => CustomEmojiSelector(
         userLocale: userLocale,
         onEmojiSelected: (category, emoji) {

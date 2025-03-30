@@ -43,6 +43,7 @@ class ListDailyTrackingsModalState extends State<ListDailyTrackingsModal> {
       constraints: BoxConstraints(
         maxWidth: 700,
       ),
+      backgroundColor: context.colors.background,
       builder: (BuildContext context) {
         return Padding(
           padding: EdgeInsets.only(
@@ -86,7 +87,8 @@ class ListDailyTrackingsModalState extends State<ListDailyTrackingsModal> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              AppLocalizations.of(context)!.allActivitiesOnThisDay(dailyTrackings.length),
+              AppLocalizations.of(context)!
+                  .allActivitiesOnThisDay(dailyTrackings.length),
               textAlign: TextAlign.center,
               style: context.typographies.headingSmall,
             ),

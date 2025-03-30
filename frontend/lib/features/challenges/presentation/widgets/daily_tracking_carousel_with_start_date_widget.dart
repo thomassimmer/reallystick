@@ -109,6 +109,7 @@ class DailyTrackingCarouselWithStartDateWidgetState
         maxWidth: 700,
         maxHeight: 400,
       ),
+      backgroundColor: context.colors.background,
       builder: (BuildContext context) {
         return Padding(
           padding: EdgeInsets.only(

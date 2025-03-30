@@ -61,6 +61,7 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
       constraints: BoxConstraints(
         maxWidth: 700,
       ),
+      backgroundColor: context.colors.background,
       builder: (BuildContext context) {
         return Padding(
           padding: EdgeInsets.only(
@@ -103,6 +104,7 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
       constraints: BoxConstraints(
         maxWidth: 700,
       ),
+      backgroundColor: context.colors.background,
       builder: (BuildContext context) {
         return ColorPickerModal(
           onColorSelected: (selectedColor) {
@@ -143,6 +145,7 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
       constraints: BoxConstraints(
         maxWidth: 700,
       ),
+      backgroundColor: context.colors.background,
       builder: (BuildContext context) {
         return Padding(
           padding: EdgeInsets.only(
@@ -175,6 +178,7 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
       constraints: BoxConstraints(
         maxWidth: 700,
       ),
+      backgroundColor: context.colors.background,
       builder: (BuildContext context) {
         return DuplicateChallengeModal(
           challengeId: widget.challengeId,
@@ -195,6 +199,7 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
       constraints: BoxConstraints(
         maxWidth: 700,
       ),
+      backgroundColor: context.colors.background,
       builder: (BuildContext context) {
         return FinishChallengeModal(
           challengeId: widget.challengeId,
@@ -216,6 +221,7 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
       constraints: BoxConstraints(
         maxWidth: 700,
       ),
+      backgroundColor: context.colors.background,
       builder: (BuildContext context) {
         return ChangeParticipationStartDateModal(
           challengeId: widget.challengeId,
@@ -526,117 +532,111 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
                       : null,
               body: RefreshIndicator(
                 onRefresh: _pullRefresh,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  child: FullWidthListView(
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          color: challengeColor.withAlpha(155),
-                          border: Border.all(width: 1, color: challengeColor),
-                          borderRadius: BorderRadius.circular(16.0),
-                        ),
-                        child: Padding(
-                            padding: const EdgeInsets.all(15.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(
-                                  challenge.icon,
-                                  style: TextStyle(
-                                    fontSize: 25,
-                                  ),
+                child: FullWidthListView(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        color: challengeColor.withAlpha(155),
+                        border: Border.all(width: 1, color: challengeColor),
+                        borderRadius: BorderRadius.circular(16.0),
+                      ),
+                      child: Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                challenge.icon,
+                                style: TextStyle(
+                                  fontSize: 25,
                                 ),
-                                SizedBox(height: 8),
-                                if (challengeStatistics != null) ...[
-                                  Text(
-                                    challenge.startDate == null
-                                        ? AppLocalizations.of(context)!
-                                            .createdBy(
-                                            challengeStatistics.creatorUsername,
-                                          )
-                                        : AppLocalizations.of(context)!
-                                            .createdByStartsOn(
-                                            challengeStatistics.creatorUsername,
-                                            DateFormat.yMMMd(
-                                                    userLocale.toString())
-                                                .format(challenge.startDate!),
-                                          ),
-                                    style: TextStyle(
-                                        color: context.colors.textOnPrimary),
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 1,
-                                  ),
-                                  SizedBox(height: 16),
-                                ],
-                                if (challengeParticipation != null) ...[
-                                  Text(
-                                    AppLocalizations.of(context)!.joinedOn(
-                                      DateFormat.yMMMd(userLocale.toString())
-                                          .format(
-                                        challengeParticipation.startDate,
-                                      ),
-                                    ),
-                                    style: TextStyle(
-                                        color: context.colors.textOnPrimary),
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 1,
-                                  ),
-                                  SizedBox(height: 16),
-                                ],
-                                Text(
-                                  AppLocalizations.of(context)!
-                                      .descriptionWithTwoPoints(description),
-                                  style: TextStyle(
-                                    color: context.colors.textOnPrimary,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ],
-                            )),
-                      ),
-                      SizedBox(height: 30),
-                      ListOfConcernedHabits(
-                        challengeColor: challengeColor,
-                        challengeId: widget.challengeId,
-                      ),
-                      SizedBox(height: 30),
-                      AnalyticsCarouselWidget(
-                        challengeColor: challengeColor,
-                        challengeId: challenge.id,
-                      ),
-                      SizedBox(height: 30),
-                      if (challenge.creator == profileState.profile.id ||
-                          challengeParticipation != null) ...[
-                        challenge.startDate != null
-                            ? DailyTrackingCarouselWithStartDateWidget(
-                                challengeParticipation: challengeParticipation,
-                                challengeDailyTrackings:
-                                    challengeDailyTrackings,
-                                challengeColor: challengeColor,
-                                challenge: challenge,
-                                canOpenDayBoxes: true,
-                                displayTitle: true,
-                              )
-                            : DailyTrackingCarouselWithoutStartDateWidget(
-                                challengeParticipation: challengeParticipation,
-                                challengeDailyTrackings:
-                                    challengeDailyTrackings,
-                                challengeColor: challengeColor,
-                                challenge: challenge,
-                                canOpenDayBoxes: true,
-                                displayTitle: true,
                               ),
-                        SizedBox(height: 30),
-                      ],
-                      DiscussionListWidget(
-                        color: challengeColor,
-                        habitId: null,
-                        challengeId: widget.challengeId,
-                      ),
-                      SizedBox(height: 72),
+                              SizedBox(height: 8),
+                              if (challengeStatistics != null) ...[
+                                Text(
+                                  challenge.startDate == null
+                                      ? AppLocalizations.of(context)!.createdBy(
+                                          challengeStatistics.creatorUsername,
+                                        )
+                                      : AppLocalizations.of(context)!
+                                          .createdByStartsOn(
+                                          challengeStatistics.creatorUsername,
+                                          DateFormat.yMMMd(
+                                                  userLocale.toString())
+                                              .format(challenge.startDate!),
+                                        ),
+                                  style: TextStyle(
+                                      color: context.colors.textOnPrimary),
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                ),
+                                SizedBox(height: 16),
+                              ],
+                              if (challengeParticipation != null) ...[
+                                Text(
+                                  AppLocalizations.of(context)!.joinedOn(
+                                    DateFormat.yMMMd(userLocale.toString())
+                                        .format(
+                                      challengeParticipation.startDate,
+                                    ),
+                                  ),
+                                  style: TextStyle(
+                                      color: context.colors.textOnPrimary),
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                ),
+                                SizedBox(height: 16),
+                              ],
+                              Text(
+                                AppLocalizations.of(context)!
+                                    .descriptionWithTwoPoints(description),
+                                style: TextStyle(
+                                  color: context.colors.textOnPrimary,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          )),
+                    ),
+                    SizedBox(height: 30),
+                    ListOfConcernedHabits(
+                      challengeColor: challengeColor,
+                      challengeId: widget.challengeId,
+                    ),
+                    SizedBox(height: 30),
+                    AnalyticsCarouselWidget(
+                      challengeColor: challengeColor,
+                      challengeId: challenge.id,
+                    ),
+                    SizedBox(height: 30),
+                    if (challenge.creator == profileState.profile.id ||
+                        challengeParticipation != null) ...[
+                      challenge.startDate != null
+                          ? DailyTrackingCarouselWithStartDateWidget(
+                              challengeParticipation: challengeParticipation,
+                              challengeDailyTrackings: challengeDailyTrackings,
+                              challengeColor: challengeColor,
+                              challenge: challenge,
+                              canOpenDayBoxes: true,
+                              displayTitle: true,
+                            )
+                          : DailyTrackingCarouselWithoutStartDateWidget(
+                              challengeParticipation: challengeParticipation,
+                              challengeDailyTrackings: challengeDailyTrackings,
+                              challengeColor: challengeColor,
+                              challenge: challenge,
+                              canOpenDayBoxes: true,
+                              displayTitle: true,
+                            ),
+                      SizedBox(height: 30),
                     ],
-                  ),
+                    DiscussionListWidget(
+                      color: challengeColor,
+                      habitId: null,
+                      challengeId: widget.challengeId,
+                    ),
+                    SizedBox(height: 72),
+                  ],
                 ),
               ),
             );

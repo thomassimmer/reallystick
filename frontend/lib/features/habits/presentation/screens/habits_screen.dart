@@ -38,6 +38,7 @@ class HabitsScreenState extends State<HabitsScreen> {
       context: context,
       isDismissible: false,
       isScrollControlled: true,
+      backgroundColor: context.colors.background,
       builder: (BuildContext context) {
         return DraggableScrollableSheet(
           expand: false,
@@ -75,6 +76,7 @@ class HabitsScreenState extends State<HabitsScreen> {
       constraints: BoxConstraints(
         maxWidth: 700,
       ),
+      backgroundColor: context.colors.background,
       builder: (BuildContext context) {
         return Padding(
           padding: EdgeInsets.only(

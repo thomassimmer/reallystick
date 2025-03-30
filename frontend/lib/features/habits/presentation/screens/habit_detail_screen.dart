@@ -48,6 +48,7 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
       constraints: BoxConstraints(
         maxWidth: 700,
       ),
+      backgroundColor: context.colors.background,
       builder: (BuildContext context) {
         return Padding(
           padding: EdgeInsets.only(
@@ -79,6 +80,7 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
       constraints: BoxConstraints(
         maxWidth: 700,
       ),
+      backgroundColor: context.colors.background,
       builder: (BuildContext context) {
         return Padding(
           padding: EdgeInsets.only(
@@ -118,6 +120,7 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
       constraints: BoxConstraints(
         maxWidth: 700,
       ),
+      backgroundColor: context.colors.background,
       builder: (BuildContext context) {
         return ColorPickerModal(
           onColorSelected: (selectedColor) {
@@ -264,67 +267,64 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
               ),
         body: RefreshIndicator(
           onRefresh: _pullRefresh,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            child: FullWidthListView(
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    color: habitColor.withAlpha(155),
-                    border: Border.all(width: 1, color: habitColor),
-                    borderRadius: BorderRadius.circular(16.0),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          habit.icon,
-                          style: TextStyle(
-                            fontSize: 25,
-                          ),
+          child: FullWidthListView(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  color: habitColor.withAlpha(155),
+                  border: Border.all(width: 1, color: habitColor),
+                  borderRadius: BorderRadius.circular(16.0),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        habit.icon,
+                        style: TextStyle(
+                          fontSize: 25,
                         ),
-                        SizedBox(height: 8),
-                        Text(
-                          AppLocalizations.of(context)!
-                              .descriptionWithTwoPoints(description),
-                          style: TextStyle(color: Colors.white),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        AppLocalizations.of(context)!
+                            .descriptionWithTwoPoints(description),
+                        style: TextStyle(color: Colors.white),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
                   ),
                 ),
-                SizedBox(height: 40),
-                AnalyticsCarouselWidget(
+              ),
+              SizedBox(height: 40),
+              AnalyticsCarouselWidget(
+                habitColor: habitColor,
+                habitId: habit.id,
+              ),
+              SizedBox(height: 40),
+              if (habitParticipation != null) ...[
+                DailyTrackingCarouselWidget(
+                  habitDailyTrackings: habitDailyTrackings,
                   habitColor: habitColor,
-                  habitId: habit.id,
+                  habit: habit,
+                  canOpenDayBoxes: true,
+                  displayTitle: true,
                 ),
-                SizedBox(height: 40),
-                if (habitParticipation != null) ...[
-                  DailyTrackingCarouselWidget(
-                    habitDailyTrackings: habitDailyTrackings,
-                    habitColor: habitColor,
-                    habit: habit,
-                    canOpenDayBoxes: true,
-                    displayTitle: true,
-                  ),
-                  SizedBox(height: 16),
-                ],
-                ChallengesCarouselWidget(
-                  habitColor: habitColor,
-                  habitId: widget.habitId,
-                ),
-                SizedBox(height: 40),
-                DiscussionListWidget(
-                  color: habitColor,
-                  habitId: widget.habitId,
-                  challengeId: null,
-                ),
-                SizedBox(height: 72),
+                SizedBox(height: 16),
               ],
-            ),
+              ChallengesCarouselWidget(
+                habitColor: habitColor,
+                habitId: widget.habitId,
+              ),
+              SizedBox(height: 40),
+              DiscussionListWidget(
+                color: habitColor,
+                habitId: widget.habitId,
+                challengeId: null,
+              ),
+              SizedBox(height: 72),
+            ],
           ),
         ),
       );

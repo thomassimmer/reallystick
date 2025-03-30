@@ -160,6 +160,7 @@ class PrivateDiscussionScreenState extends State<PrivateDiscussionScreen> {
       constraints: BoxConstraints(
         maxWidth: 700,
       ),
+      backgroundColor: context.colors.background,
       builder: (BuildContext context) {
         return ColorPickerModal(
           onColorSelected: (selectedColor) {

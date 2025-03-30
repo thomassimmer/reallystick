@@ -55,6 +55,7 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
       BuildContext context, String userLocale, bool forCurrentHabit) {
     showModalBottomSheet(
       context: context,
+      backgroundColor: context.colors.background,
       builder: (context) => CustomEmojiSelector(
         userLocale: userLocale,
         onEmojiSelected: (category, emoji) {
