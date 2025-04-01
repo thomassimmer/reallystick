@@ -194,6 +194,7 @@ class ListDailyTrackingsModalState extends State<ListDailyTrackingsModal> {
                                   ),
                                 ],
                               ),
+                              SizedBox(height: 10),
                               Row(
                                 children: [
                                   SizedBox(
@@ -221,19 +222,29 @@ class ListDailyTrackingsModalState extends State<ListDailyTrackingsModal> {
                                     ),
                                 ],
                               ),
-                              Row(
-                                children: [
-                                  SizedBox(
-                                    width: 33,
+                              if (shouldDisplaySportSpecificInputsResult) ...[
+                                if (dailyTracking.quantityOfSet > 1) ...[
+                                  Row(
+                                    children: [
+                                      SizedBox(
+                                        width: 33,
+                                      ),
+                                      Text(
+                                        AppLocalizations.of(context)!
+                                            .quantityOfSetWithQuantity(
+                                                dailyTracking.quantityOfSet),
+                                        style: context.typographies.body,
+                                      ),
+                                    ],
                                   ),
-                                  if (shouldDisplaySportSpecificInputsResult) ...[
-                                    Text(
-                                      AppLocalizations.of(context)!
-                                          .quantityOfSetWithQuantity(
-                                              dailyTracking.quantityOfSet),
-                                      style: context.typographies.body,
-                                    ),
-                                    if (weightUnit.shortName['en'] != '')
+                                ],
+                                if (weightUnit.shortName['en'] != '' &&
+                                    dailyTracking.weight > 0) ...[
+                                  Row(
+                                    children: [
+                                      SizedBox(
+                                        width: 33,
+                                      ),
                                       Text(
                                         AppLocalizations.of(context)!
                                             .weightWithQuantity(
@@ -244,9 +255,25 @@ class ListDailyTrackingsModalState extends State<ListDailyTrackingsModal> {
                                                     userLocale)),
                                         style: context.typographies.body,
                                       ),
-                                  ],
+                                    ],
+                                  ),
                                 ],
-                              ),
+                              ],
+                              if (dailyTracking.note != null &&
+                                  dailyTracking.note!.isNotEmpty) ...[
+                                Row(
+                                  children: [
+                                    SizedBox(
+                                      width: 33,
+                                    ),
+                                    Text(
+                                      AppLocalizations.of(context)!
+                                          .noteWithNote(dailyTracking.note!),
+                                      style: context.typographies.body,
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ],
                           ),
                         ),

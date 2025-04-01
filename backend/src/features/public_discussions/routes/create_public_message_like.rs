@@ -110,7 +110,7 @@ pub async fn create_public_message_like(
             args.set("username", person_who_liked.username);
 
             let mut url = if let Some(challenge_id) = public_message.challenge_id {
-                format!("/challenges/{}", challenge_id)
+                format!("/challenges/{}/null", challenge_id)
             } else {
                 format!("/habits/{}", public_message.habit_id.unwrap())
             };

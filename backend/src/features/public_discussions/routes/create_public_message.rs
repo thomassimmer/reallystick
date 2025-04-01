@@ -180,6 +180,18 @@ pub async fn create_public_message(
                 let mut args = FluentArgs::new();
                 args.set("username", person_who_liked.username);
 
+                let mut url = if let Some(challenge_id) = message.challenge_id {
+                    format!("/challenges/{}/null", challenge_id)
+                } else {
+                    format!("/habits/{}", message.habit_id.unwrap())
+                };
+
+                url.push_str(&format!("/threads/{}", message.thread_id));
+
+                if let Some(replies_to) = message.replies_to {
+                    url.push_str(&format!("/reply/{}", replies_to));
+                }
+
                 generate_notification(
                     &mut *transaction,
                     message.creator,
@@ -195,7 +207,7 @@ pub async fn create_public_message(
                     ),
                     redis_client,
                     "public_message_replied",
-                    None,
+                    Some(url),
                 )
                 .await;
             }

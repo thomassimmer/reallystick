@@ -154,23 +154,34 @@ class ListDailyTrackingsModalState extends State<ListDailyTrackingsModal> {
                                 ],
                               ),
                               if (shouldDisplaySportSpecificInputsResult) ...[
-                                Text(
-                                  AppLocalizations.of(context)!
-                                      .quantityOfSetWithQuantity(
-                                          dailyTracking.quantityOfSet),
-                                  style: context.typographies.body,
-                                ),
-                                if (weightUnit.shortName['en'] != '')
-                                  Text(
-                                    AppLocalizations.of(context)!
-                                        .weightWithQuantity(
-                                      dailyTracking.weight,
-                                      getRightTranslationForUnitFromJson(
-                                          weightUnit.longName,
+                                if (dailyTracking.quantityOfSet > 1) ...[
+                                  Row(
+                                    children: [
+                                      Text(
+                                        AppLocalizations.of(context)!
+                                            .quantityOfSetWithQuantity(
+                                                dailyTracking.quantityOfSet),
+                                        style: context.typographies.body,
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                                if (weightUnit.shortName['en'] != '' &&
+                                    dailyTracking.weight > 0)
+                                  Row(
+                                    children: [
+                                      Text(
+                                        AppLocalizations.of(context)!
+                                            .weightWithQuantity(
                                           dailyTracking.weight,
-                                          userLocale),
-                                    ),
-                                    style: context.typographies.body,
+                                          getRightTranslationForUnitFromJson(
+                                              weightUnit.longName,
+                                              dailyTracking.weight,
+                                              userLocale),
+                                        ),
+                                        style: context.typographies.body,
+                                      ),
+                                    ],
                                   ),
                               ],
                             ],

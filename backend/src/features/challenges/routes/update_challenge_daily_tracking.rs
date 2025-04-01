@@ -114,7 +114,7 @@ pub async fn update_challenge_daily_tracking(
     }
 
     if let Some(note) = &body.note {
-        if note.len() > 1000 {
+        if note.len() > 10000 {
             return HttpResponse::InternalServerError()
                 .json(AppError::ChallengeDailyTrackingNoteTooLong.to_response());
         }

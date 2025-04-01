@@ -12,7 +12,7 @@ class ChallengeDailyTrackingNoteValidator
   @override
   DomainError? validator(String? value) {
     // Length check
-    if (value != null && value.length > 100) {
+    if (value != null && value.length > 10000) {
       return ChallengeDailyTrackingNoteTooLong();
     }
 

@@ -41,7 +41,7 @@
   "challengeDailyTracking": "Objectifs journaliers",
   "challengeDailyTrackingCreated": "Votre objectif journalier a été créé avec succès.",
   "challengeDailyTrackingDeleted": "Votre objectif journalier a été supprimé avec succès.",
-  "challengeDailyTrackingNoteTooLong": "La note doit faire moins de 1000 caractères.",
+  "challengeDailyTrackingNoteTooLong": "La note doit faire moins de 10 000 caractères.",
   "challengeDailyTrackingNotFoundError": "Cette activité n'existe pas.",
   "challengeDailyTrackingUpdated": "Vos changements ont bien été sauvegardés.",
   "challengeDeleted": "Votre défi a été supprimé avec succès.",
@@ -339,6 +339,14 @@
   "next": "Suivant",
   "no": "Non",
   "note": "Note",
+  "noteWithNote": "Note :\n\n{note}",
+  "@noteWithNote": {
+    "placeholders": {
+      "note": {
+        "type": "String"
+      }
+    }
+  },
   "notifications": "Notifications",
   "noAccountCreateOne": "Pas de compte ? Créez-le ici.",
   "noActivityRecordedYet": "Pas encore d'activité enregistrée.",
@@ -584,6 +592,7 @@
     }
   },
   "welcome": "Bienvenue sur ReallyStick",
+  "whatIsThis": "De quoi s'agit-il?",
   "worker": "Travailleur",
   "writtenMessages": "Messages écrits",
   "writeTo": "Écrivez à {user}...",

@@ -122,7 +122,7 @@ pub async fn create_challenge_participation(
             let mut args = FluentArgs::new();
             args.set("username", joiner.username);
 
-            let url = Some(format!("/challenges/{}", challenge.id));
+            let url = Some(format!("/challenges/{}/null", challenge.id));
 
             generate_notification(
                 &mut *transaction,

@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:reallystick/core/constants/screen_size.dart';
 import 'package:reallystick/core/presentation/screens/loading_screen.dart';
 import 'package:reallystick/core/presentation/widgets/custom_app_bar.dart';
 import 'package:reallystick/core/presentation/widgets/full_width_column.dart';
 import 'package:reallystick/core/ui/colors.dart';
+import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_bloc.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_events.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_states.dart';
 import 'package:reallystick/features/challenges/presentation/screens/challenge_not_found_screen.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_states.dart';
+import 'package:reallystick/features/habits/presentation/helpers/translations.dart';
 import 'package:reallystick/features/habits/presentation/screens/habit_not_found_screen.dart';
 import 'package:reallystick/features/private_messages/presentation/widgets/custom_message_input.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
@@ -106,6 +109,8 @@ class ThreadScreenState extends State<ThreadScreen> {
     final profileState = context.watch<ProfileBloc>().state;
     final threadState = context.watch<ThreadBloc>().state;
 
+    final bool isLargeScreen = checkIfLargeScreen(context);
+
     if (profileState is ProfileAuthenticated &&
         threadState is ThreadLoaded &&
         (threadState.threadId == null ||
@@ -130,7 +135,10 @@ class ThreadScreenState extends State<ThreadScreen> {
             challengeState is ChallengesLoaded &&
             publicMessageState is PublicMessagesLoaded &&
             habitState is HabitsLoaded) {
+          final userLocale = profileState.profile.locale;
+
           Color color = AppColorExtension.getRandomColor().color;
+          String? name;
 
           if (widget.challengeId != null) {
             final challenge = challengeState.challenges[widget.challengeId];
@@ -144,6 +152,11 @@ class ThreadScreenState extends State<ThreadScreen> {
                     .add(GetChallengeEvent(challengeId: widget.challengeId!));
                 return LoadingScreen();
               }
+            } else {
+              name = getRightTranslationFromJson(
+                challenge.name,
+                userLocale,
+              );
             }
 
             final challengeParticipation = challengeState
@@ -161,6 +174,11 @@ class ThreadScreenState extends State<ThreadScreen> {
 
             if (habit == null) {
               return HabitNotFoundScreen();
+            } else {
+              name = getRightTranslationFromJson(
+                isLargeScreen ? habit.longName : habit.shortName,
+                userLocale,
+              );
             }
 
             final habitParticipation = habitState.habitParticipations
@@ -179,7 +197,16 @@ class ThreadScreenState extends State<ThreadScreen> {
               .firstOrNull;
 
           return Scaffold(
-            appBar: CustomAppBar(),
+            appBar: CustomAppBar(
+              title: Text(
+                name ?? "",
+                style: context.typographies.headingSmall.copyWith(
+                  color: color,
+                ),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+              ),
+            ),
             body: RefreshIndicator(
               onRefresh: _pullRefresh,
               child: Padding(

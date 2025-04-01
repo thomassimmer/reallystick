@@ -139,7 +139,7 @@ pub async fn duplicate_challenge(
             let mut args = FluentArgs::new();
             args.set("username", duplicator.username);
 
-            let url = Some(format!("/challenges/{}", challenge_to_create.id));
+            let url = Some(format!("/challenges/{}/null", challenge_to_create.id));
 
             generate_notification(
                 &mut *transaction,

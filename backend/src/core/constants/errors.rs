@@ -131,7 +131,7 @@ impl AppError {
             },
             AppError::ChallengeDailyTrackingNoteTooLong => GenericResponse {
                 code: "CHALLENGE_DAILY_TRACKING_NOTE_TOO_LONG".to_string(),
-                message: "The note is too long. It has to be no more than 1000 characters."
+                message: "The note is too long. It has to be no more than 10000 characters."
                     .to_string(),
             },
             AppError::ChallengeDailyTrackingNotFound => GenericResponse {
