@@ -27,6 +27,7 @@
   "analyticsInfoTooltip": "Ces statistiques sont rafraîchies toutes les heures.",
   "answers": "Réponses",
   "atLeastOneTranslationNeededError": "Au moins une traduction est requise.",
+  "availableOnIosAndroidWebIn": "Available on iOS, Android, Web in",
   "average": "Moyen",
   "blockThisUser": "Bloquer cet utilisateur",
   "cancel": "Annuler",
@@ -92,6 +93,7 @@
   "createdChallenges": "Mes défis créés",
   "createChallenge": "Créer le défi",
   "createHabit": "Créer l'habitude",
+  "createHabitsThatStick": "Créez des habitudes qui durent",
   "createANewChallenge": "Créez un nouveau défi",
   "createANewHabit": "Créez une nouvelle habitude",
   "creatorMissingPublicKey": "Vous n'avez encore de clés secrètes. Reconnectez-vous pour en créer.",
@@ -171,6 +173,7 @@
   "enable": "Activer",
   "enableNotificationsReminder": "Activer les notifications de rappel",
   "endDate": "Date de fin",
+  "endToEndEncryptedPrivateMessages": "Messages privés chiffrés de bout-en-bout",
   "enterOneTimePassword": "Entrez le code à 6 chiffres généré par votre application pour confirmer votre authentification.",
   "enterPassword": "Entrez votre mot de passe.",
   "enterRecoveryCode": "Entrez votre code de récupération.",
@@ -237,6 +240,7 @@
   "invalidUsernameOrPasswordError": "Nom d'utilisateur ou mot de passe invalide. Veuillez réessayer.",
   "invalidUsernameOrPasswordOrRecoveryCodeError": "Nom d'utilisateur, mot de passe ou code de récupération invalide. Veuillez réessayer.",
   "invalidUsernameOrRecoveryCodeError": "Nom d'utilisateur ou code de récupération invalide. Veuillez réessayer.",
+  "joinChallengeReachYourGoals": "Rejoignez des défis,\nAtteignez vos objectifs",
   "joinThisChallenge": "Participer à ce challenge",
   "joinedByXPeople": "{count,plural, zero {Rejoint par personne} one {Rejoint par {count} personne} other {Rejoint par {count} personnes}}",
   "@joinedByXPeople": {
@@ -254,6 +258,7 @@
       }
     }
   },
+  "jumpOnTop": "Remonter en haut",
   "keepRecoveryCodeSafe": "Merci de garder ce code de récupération bien à l'abri.\n\nIl sera nécessaire si vous perdez votre mot de passe ou l'accès à votre application d'authentification.",
   "language": "Langue",
   "lastActivity": "Dernière activité :",
@@ -361,6 +366,7 @@
   "noDeviceInfo": "Aucune information sur l'appareil à afficher",
   "noDiscussionsForChallengeYet": "Il n'y a pas encore de discussion pour ce défi.\nCréez la première !",
   "noDiscussionsForHabitYet": "Il n'y a pas encore de discussion pour cette habitude.\nCréez la première !",
+  "noEmailOfIdentifiableDataRequired": "Aucune adresse e-mmail ou donnée identifiante requise",
   "noHabitsYet": "Vous n'avez pas encore d'habitude.",
   "noLikedMessages": "Vous n'avez pas encore aimé un message.",
   "noMessagesYet": "Il n'y a pas encore de message dans cette discussion.",
@@ -404,6 +410,7 @@
   "passwordUpdateSuccessful": "Votre mot de passe a bien été mis à jour",
   "peopleWithChildren": "Personnes avec enfant",
   "peopleWithoutChildren": "Personnes sans enfant",
+  "personalizedNotificationsToStayOnTrack": "Des notifications personnalisées pour rester motivé",
   "pleaseLoginOrSignUp": "Merci de vous connecter ou de vous inscrire pour continuer.",
   "poor": "Pauvre",
   "previous": "Précédent",
@@ -604,6 +611,7 @@
     }
   },
   "yes": "Oui",
+  "youAreNotAlone": "Vous n'êtes pas seuls. Discutez, échanger, grandissez.",
   "youAreNotTheCreatorOfThisChallenge": "Vous n'êtes pas le créateur de ce challenge.",
   "youBlockedThisUser": "Vous avez bloqué cet utilisateur."
 }

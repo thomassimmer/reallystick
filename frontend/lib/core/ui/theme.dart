@@ -75,6 +75,7 @@ class AppTheme extends ThemeExtension<AppTheme> {
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: styles.buttonLarge.copyWith(
+            
             backgroundColor: WidgetStateProperty.resolveWith((states) {
               return states.contains(WidgetState.disabled)
                   ? colors.disabled
@@ -85,7 +86,9 @@ class AppTheme extends ThemeExtension<AppTheme> {
                   ? colors.disabled
                   : null; // Defer to the widget's default.
             }),
+            
           ),
+          
         ),
         outlinedButtonTheme: OutlinedButtonThemeData(
           style: styles.buttonLarge.copyWith(

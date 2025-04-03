@@ -25,7 +25,6 @@ import 'package:reallystick/features/private_messages/presentation/screens/new_p
 import 'package:reallystick/features/private_messages/presentation/screens/private_discussion_screen.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
-import 'package:reallystick/features/profile/presentation/screens/about_screen.dart';
 import 'package:reallystick/features/profile/presentation/screens/all_reported_messages_screen.dart';
 import 'package:reallystick/features/profile/presentation/screens/device_screen.dart';
 import 'package:reallystick/features/profile/presentation/screens/language_selection_screen.dart';
@@ -315,11 +314,6 @@ class AppRouter {
                 path: 'recovery-code',
                 name: 'update-recovery-code',
                 builder: (context, state) => UpdateRecoveryCodeScreen(),
-              ),
-              GoRoute(
-                path: 'about',
-                name: 'about',
-                builder: (context, state) => AboutScreen(),
               ),
               GoRoute(
                 path: 'devices',

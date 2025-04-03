@@ -46,6 +46,7 @@ dependencies:
   timezone: ^0.10.0
   flutter_timezone: ^4.1.0
   fl_chart: ^0.70.2
+  smooth_page_indicator: ^1.2.1
 
 dev_dependencies:
   flutter_test:
@@ -58,7 +59,7 @@ flutter:
   uses-material-design: true
   assets:
     - .env
-    - assets/images/github-logo.png
+    - assets/images/
     - assets/ressources/countries.json
   fonts:
     - family: Montserrat

@@ -135,7 +135,9 @@ pub async fn get_private_discussions(
                     participation.and_then(|p| Some(p.color.clone())),
                     participation.and_then(|p| Some(p.has_blocked)),
                     last_message.and_then(|m| Some(m.to_private_message_data())),
-                    recipient.and_then(|r| Some(r.user_id)),
+                    recipient
+                        .and_then(|r| Some(r.user_id))
+                        .or(Some(request_claims.user_id)), // If there is no recipient, it must be a discussion with itself
                     unseen_message_for_this_discussion.unwrap_or_default(),
                 )
             })

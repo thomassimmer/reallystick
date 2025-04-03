@@ -49,10 +49,14 @@ class AppThemeStyles {
     this.buttonLarge = const ButtonStyle(
       minimumSize: WidgetStatePropertyAll(Size.zero),
       padding: WidgetStatePropertyAll(
-          EdgeInsets.symmetric(vertical: 12, horizontal: 24)),
+        EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+      ),
       shape: WidgetStatePropertyAll(
         RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(30))),
+          borderRadius: BorderRadius.all(
+            Radius.circular(8),
+          ),
+        ),
       ),
       textStyle: WidgetStatePropertyAll(
         TextStyle(
@@ -67,7 +71,11 @@ class AppThemeStyles {
       padding: WidgetStatePropertyAll(EdgeInsets.zero),
       splashFactory: NoSplash.splashFactory,
       textStyle: WidgetStatePropertyAll(
-        TextStyle(fontSize: 16, fontWeight: FontWeight.w500, height: 1),
+        TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+          height: 1,
+        ),
       ),
     ),
   });

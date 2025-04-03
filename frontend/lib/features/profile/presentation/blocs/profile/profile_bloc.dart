@@ -103,7 +103,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
+    if (state == AppLifecycleState.resumed &&
+        this.state is ProfileAuthenticated) {
       add(ProfileInitializeEvent());
     }
   }
