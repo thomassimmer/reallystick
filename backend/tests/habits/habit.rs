@@ -11,6 +11,7 @@ use reallystick::{
     features::{
         habits::structs::{
             models::{habit::HabitData, habit_statistics::HabitStatistics},
+            requests::habit::{HabitCreateRequest, HabitUpdateRequest},
             responses::habit::{HabitResponse, HabitStatisticsResponse, HabitsResponse},
         },
         profile::structs::requests::UserUpdateRequest,
@@ -50,17 +51,16 @@ pub async fn user_creates_a_habit(
         .uri("/api/habits/")
         .insert_header((header::AUTHORIZATION, format!("Bearer {}", access_token)))
         .insert_header(ContentType::json())
-        .set_json(&serde_json::json!({
-            "category_id": habit_category_id,
-            "short_name": HashMap::from([("en", "English")]),
-            "long_name": HashMap::from([("en", "Learn English")]),
-            "description": HashMap::from([(
-                "en",
-                "Our goal is to speak English fluently!"
+        .set_json(HabitCreateRequest {
+            category_id: habit_category_id,
+            name: HashMap::from([("en".to_string(), "English".to_string())]),
+            description: HashMap::from([(
+                "en".to_string(),
+                "Our goal is to speak English fluently!".to_string(),
             )]),
-            "icon": "english_icon".to_string(),
-            "unit_ids": unit_ids
-        }))
+            icon: "english_icon".to_string(),
+            unit_ids,
+        })
         .to_request();
     let response = test::call_service(&app, req).await;
 
@@ -86,18 +86,20 @@ pub async fn user_updates_a_habit(
         .uri(&format!("/api/habits/{}", habit_id))
         .insert_header((header::AUTHORIZATION, format!("Bearer {}", access_token)))
         .insert_header(ContentType::json())
-        .set_json(&serde_json::json!({
-            "category_id": habit_category_id,
-            "short_name": HashMap::from([("en", "English"), ("fr", "Anglais")]),
-            "long_name": HashMap::from([("en", "Learn English"), ("fr", "Apprenez l'anglais")]),
-            "description": HashMap::from([(
-                "en",
-                "Our goal is to speak English fluently!"
+        .set_json(HabitUpdateRequest {
+            category_id: habit_category_id,
+            name: HashMap::from([
+                ("en".to_string(), "English".to_string()),
+                ("fr".to_string(), "Anglais".to_string()),
+            ]),
+            description: HashMap::from([(
+                "en".to_string(),
+                "Our goal is to speak English fluently!".to_string(),
             )]),
-            "icon": "english_icon".to_string(),
-            "reviewed": true,
-            "unit_ids": unit_ids
-        }))
+            icon: "english_icon".to_string(),
+            reviewed: true,
+            unit_ids,
+        })
         .to_request();
     let response = test::call_service(&app, req).await;
 
@@ -109,16 +111,8 @@ pub async fn user_updates_a_habit(
     assert_eq!(response.code, "HABIT_UPDATED");
     assert!(response.habit.is_some());
     assert_eq!(
-        response.habit.clone().unwrap().short_name,
+        response.habit.clone().unwrap().name,
         json!(HashMap::from([("en", "English"), ("fr", "Anglais")])).to_string()
-    );
-    assert_eq!(
-        response.habit.unwrap().long_name,
-        json!(HashMap::from([
-            ("en", "Learn English"),
-            ("fr", "Apprenez l'anglais")
-        ]))
-        .to_string()
     );
 }
 
@@ -190,17 +184,16 @@ pub async fn user_create_two_habits_to_merge(
         .uri("/api/habits/")
         .insert_header((header::AUTHORIZATION, format!("Bearer {}", access_token)))
         .insert_header(ContentType::json())
-        .set_json(&serde_json::json!({
-            "category_id": habit_category_id,
-            "short_name": HashMap::from([("en", "Smoking")]),
-            "long_name": HashMap::from([("en", "Quit smoking")]),
-            "description": HashMap::from([(
-                "en",
-                "Our goal is to quit smoking!"
+        .set_json(HabitCreateRequest {
+            category_id: habit_category_id,
+            name: HashMap::from([("en".to_string(), "Smoking".to_string())]),
+            description: HashMap::from([(
+                "en".to_string(),
+                "Our goal is to quit smoking!".to_string(),
             )]),
-            "icon": "smoking".to_string(),
-            "unit_ids": units_ids
-        }))
+            icon: "smoking".to_string(),
+            unit_ids: HashSet::from_iter(units_ids.clone()),
+        })
         .to_request();
 
     let response = test::call_service(&app, req).await;
@@ -213,17 +206,16 @@ pub async fn user_create_two_habits_to_merge(
         .uri("/api/habits/")
         .insert_header((header::AUTHORIZATION, format!("Bearer {}", access_token)))
         .insert_header(ContentType::json())
-        .set_json(&serde_json::json!({
-            "category_id": habit_category_id,
-            "short_name": HashMap::from([("fr", "Fumer")]),
-            "long_name": HashMap::from([("fr", "Arrêter de fumer")]),
-            "description": HashMap::from([(
-                "fr",
-                "Notre but est d'arrêter de fumer !"
+        .set_json(HabitCreateRequest {
+            category_id: habit_category_id,
+            name: HashMap::from([("fr".to_string(), "Fumer".to_string())]),
+            description: HashMap::from([(
+                "fr".to_string(),
+                "Notre but est d'arrêter de fumer !".to_string(),
             )]),
-            "icon": "smoking".to_string(),
-            "unit_ids": units_ids
-        }))
+            icon: "smoking".to_string(),
+            unit_ids: HashSet::from_iter(units_ids),
+        })
         .to_request();
 
     let response = test::call_service(&app, req).await;
@@ -358,22 +350,26 @@ pub async fn normal_user_can_not_merge_two_habits() {
         ))
         .insert_header((header::AUTHORIZATION, format!("Bearer {}", access_token)))
         .insert_header(ContentType::json())
-        .set_json(&serde_json::json!({
-            "new_habit_id": first_habit_id,
-            "category_id": habit_category_id,
-            "short_name": HashMap::from([("en", "Smoking"), ("fr", "Fumer")]),
-            "long_name": HashMap::from([("en", "Quit smoking"), ("fr", "Arrêter de fumer")]),
-            "description": HashMap::from([(
-                "en",
-                "Our goal is to speak English fluently!"
-            ), (
-                "fr",
-                "Notre but est d'arrêter de fumer !"
-            )]),
-            "icon": "smoking".to_string(),
-            "reviewed": true,
-            "unit_ids": vec![unit_id]
-        }))
+        .set_json(HabitUpdateRequest {
+            category_id: habit_category_id,
+            name: HashMap::from([
+                ("en".to_string(), "Smoking".to_string()),
+                ("fr".to_string(), "Fumer".to_string()),
+            ]),
+            description: HashMap::from([
+                (
+                    "en".to_string(),
+                    "Our goal is to speak English fluently!".to_string(),
+                ),
+                (
+                    "fr".to_string(),
+                    "Notre but est d'arrêter de fumer !".to_string(),
+                ),
+            ]),
+            icon: "smoking".to_string(),
+            reviewed: true,
+            unit_ids: HashSet::from([unit_id]),
+        })
         .to_request();
 
     let response = test::call_service(&app, req).await;
@@ -413,22 +409,26 @@ pub async fn admin_user_can_merge_two_habits() {
         ))
         .insert_header((header::AUTHORIZATION, format!("Bearer {}", access_token)))
         .insert_header(ContentType::json())
-        .set_json(&serde_json::json!({
-            "new_habit_id": first_habit_id,
-            "category_id": habit_category_id,
-            "short_name": HashMap::from([("en", "Smoking"), ("fr", "Fumer")]),
-            "long_name": HashMap::from([("en", "Quit smoking"), ("fr", "Arrêter de fumer")]),
-            "description": HashMap::from([(
-                "en",
-                "Our goal is to speak English fluently!"
-            ), (
-                "fr",
-                "Notre but est d'arrêter de fumer !"
-            )]),
-            "icon": "smoking".to_string(),
-            "reviewed": true,
-            "unit_ids": vec![unit_id]
-        }))
+        .set_json(HabitUpdateRequest {
+            category_id: habit_category_id,
+            name: HashMap::from([
+                ("en".to_string(), "Smoking".to_string()),
+                ("fr".to_string(), "Fumer".to_string()),
+            ]),
+            description: HashMap::from([
+                (
+                    "en".to_string(),
+                    "Our goal is to speak English fluently!".to_string(),
+                ),
+                (
+                    "fr".to_string(),
+                    "Notre but est d'arrêter de fumer !".to_string(),
+                ),
+            ]),
+            icon: "smoking".to_string(),
+            reviewed: true,
+            unit_ids: HashSet::from([unit_id]),
+        })
         .to_request();
 
     let response = test::call_service(&app, req).await;
@@ -440,16 +440,8 @@ pub async fn admin_user_can_merge_two_habits() {
 
     assert_eq!(response.habit.clone().unwrap().id, first_habit_id);
     assert_eq!(
-        response.habit.clone().unwrap().short_name,
+        response.habit.clone().unwrap().name,
         json!(HashMap::from([("en", "Smoking"), ("fr", "Fumer")])).to_string()
-    );
-    assert_eq!(
-        response.habit.clone().unwrap().long_name,
-        json!(HashMap::from([
-            ("en", "Quit smoking"),
-            ("fr", "Arrêter de fumer")
-        ]))
-        .to_string()
     );
     assert_eq!(
         response.habit.clone().unwrap().description,

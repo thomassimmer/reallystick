@@ -60,8 +60,7 @@ pub async fn create_habit(pool: Data<PgPool>, body: Json<HabitCreateRequest>) ->
 
     let habit = Habit {
         id: Uuid::new_v4(),
-        short_name: json!(body.short_name).to_string(),
-        long_name: json!(body.long_name).to_string(),
+        name: json!(body.name).to_string(),
         description: json!(body.description).to_string(),
         category_id: category.id,
         reviewed: false,

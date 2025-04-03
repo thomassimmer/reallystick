@@ -64,10 +64,8 @@ String getTranslatedMessage(BuildContext context, Message message) {
         return localizations.habitCategoryNotFoundError;
       case 'habitDailyTrackingNotFoundError':
         return localizations.habitDailyTrackingNotFoundError;
-      case 'habitShortNameWrongSizeError':
-        return localizations.habitShortNameWrongSizeError;
-      case 'habitLongNameWrongSizeError':
-        return localizations.habitLongNameWrongSizeError;
+      case 'habitNameWrongSizeError':
+        return localizations.habitNameWrongSizeError;
       case 'habitDescriptionWrongSizeError':
         return localizations.habitDescriptionWrongSizeError;
       case 'iconNotFoundError':
@@ -126,7 +124,7 @@ String getTranslatedMessage(BuildContext context, Message message) {
     }
   } else if (message is SuccessMessage) {
     switch (message.messageKey) {
-      // Generic 
+      // Generic
       case 'connected':
         return localizations.connected;
 

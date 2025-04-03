@@ -10,8 +10,7 @@ import 'package:reallystick/features/habits/domain/entities/habit.dart';
 abstract class HabitRepository {
   Future<Either<DomainError, List<Habit>>> getHabits();
   Future<Either<DomainError, Habit>> createHabit({
-    required Map<String, String> shortName,
-    required Map<String, String> longName,
+    required Map<String, String> name,
     required Map<String, String> description,
     required String categoryId,
     required String icon,
@@ -19,8 +18,7 @@ abstract class HabitRepository {
   });
   Future<Either<DomainError, Habit>> updateHabit({
     required String habitId,
-    required Map<String, String> shortName,
-    required Map<String, String> longName,
+    required Map<String, String> name,
     required Map<String, String> description,
     required String categoryId,
     required String icon,
@@ -36,8 +34,7 @@ abstract class HabitRepository {
   Future<Either<DomainError, Habit>> mergeHabits({
     required String habitToDeleteId,
     required String habitToMergeOnId,
-    required Map<String, String> shortName,
-    required Map<String, String> longName,
+    required Map<String, String> name,
     required Map<String, String> description,
     required String categoryId,
     required String icon,

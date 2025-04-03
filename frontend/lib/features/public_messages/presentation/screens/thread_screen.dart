@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:reallystick/core/constants/screen_size.dart';
 import 'package:reallystick/core/presentation/screens/loading_screen.dart';
 import 'package:reallystick/core/presentation/widgets/custom_app_bar.dart';
 import 'package:reallystick/core/presentation/widgets/full_width_column.dart';
@@ -109,8 +108,6 @@ class ThreadScreenState extends State<ThreadScreen> {
     final profileState = context.watch<ProfileBloc>().state;
     final threadState = context.watch<ThreadBloc>().state;
 
-    final bool isLargeScreen = checkIfLargeScreen(context);
-
     if (profileState is ProfileAuthenticated &&
         threadState is ThreadLoaded &&
         (threadState.threadId == null ||
@@ -176,7 +173,7 @@ class ThreadScreenState extends State<ThreadScreen> {
               return HabitNotFoundScreen();
             } else {
               name = getRightTranslationFromJson(
-                isLargeScreen ? habit.longName : habit.shortName,
+                habit.name,
                 userLocale,
               );
             }

@@ -187,7 +187,7 @@ class ListDailyTrackingsModalState extends State<ListDailyTrackingsModal> {
                                   ],
                                   Text(
                                     getRightTranslationFromJson(
-                                      habit.shortName,
+                                      habit.name,
                                       userLocale,
                                     ),
                                     style: context.typographies.body,

@@ -85,8 +85,7 @@ pub async fn merge_habits(
     };
 
     habit_to_merge_on.category_id = category.id;
-    habit_to_merge_on.short_name = json!(body.short_name).to_string();
-    habit_to_merge_on.long_name = json!(body.long_name).to_string();
+    habit_to_merge_on.name = json!(body.name).to_string();
     habit_to_merge_on.description = json!(body.description).to_string();
     habit_to_merge_on.reviewed = body.reviewed;
     habit_to_merge_on.icon = body.icon.clone();

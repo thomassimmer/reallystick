@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:reallystick/core/constants/screen_size.dart';
 import 'package:reallystick/core/presentation/widgets/icon_with_warning.dart';
 import 'package:reallystick/features/habits/domain/entities/habit.dart';
 import 'package:reallystick/features/habits/presentation/helpers/translations.dart';
@@ -22,18 +21,10 @@ class HabitReviewWidget extends StatelessWidget {
         final profileState = context.watch<ProfileBloc>().state;
         final userLocale = profileState.profile!.locale;
 
-        final shortName = getRightTranslationFromJson(
-          habit.shortName,
+        final name = getRightTranslationFromJson(
+          habit.name,
           userLocale,
         );
-
-        final longName = getRightTranslationFromJson(
-          habit.longName,
-          userLocale,
-        );
-
-        // Define screen size breakpoint
-        final bool isLargeScreen = checkIfLargeScreen(context);
 
         return InkWell(
           onTap: () {
@@ -52,7 +43,6 @@ class HabitReviewWidget extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      // Habit icon
                       Padding(
                         padding: const EdgeInsets.only(right: 16.0),
                         child: Text(
@@ -62,18 +52,15 @@ class HabitReviewWidget extends StatelessWidget {
                           ),
                         ),
                       ),
-
-                      // Short or Long name based on screen size
                       Expanded(
                         child: Text(
-                          isLargeScreen ? longName : shortName,
+                          name,
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
-
                       IconWithWarning(
                         iconData: Icons.chevron_right,
                         shouldBeWarning: !habit.reviewed,

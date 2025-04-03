@@ -277,7 +277,7 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
                 return DropdownMenuItem(
                   value: entry.key,
                   child: Text(getRightTranslationFromJson(
-                    habit.longName,
+                    habit.name,
                     userLocale,
                   )),
                 );

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
-import 'package:reallystick/core/constants/screen_size.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/habits/domain/entities/habit.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.dart';
@@ -25,8 +24,6 @@ class HabitCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isLargeScreen = checkIfLargeScreen(context);
-
     void startTrackingThisHabit() {
       final createHabitParticipationEvent = CreateHabitParticipationEvent(
         habitId: habit.id,
@@ -77,7 +74,7 @@ class HabitCardWidget extends StatelessWidget {
                     SizedBox(width: 10),
                     Text(
                       getRightTranslationFromJson(
-                        isLargeScreen ? habit.longName : habit.shortName,
+                        habit.name,
                         userLocale,
                       ),
                       style: TextStyle(

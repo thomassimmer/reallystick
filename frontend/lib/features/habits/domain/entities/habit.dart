@@ -2,8 +2,7 @@ import 'dart:collection';
 
 class Habit {
   String id;
-  Map<String, String> shortName;
-  Map<String, String> longName;
+  Map<String, String> name;
   String categoryId;
   bool reviewed;
   Map<String, String> description;
@@ -12,8 +11,7 @@ class Habit {
 
   Habit({
     required this.id,
-    required this.shortName,
-    required this.longName,
+    required this.name,
     required this.categoryId,
     required this.reviewed,
     required this.description,

@@ -11,16 +11,14 @@ class CreateHabitUsecase {
   CreateHabitUsecase(this.habitRepository);
 
   Future<Either<DomainError, Habit>> call({
-    required Map<String, String> shortName,
-    required Map<String, String> longName,
+    required Map<String, String> name,
     required Map<String, String> description,
     required String categoryId,
     required String icon,
     required HashSet<String> unitIds,
   }) async {
     return await habitRepository.createHabit(
-      shortName: shortName,
-      longName: longName,
+      name: name,
       description: description,
       categoryId: categoryId,
       icon: icon,

@@ -52,11 +52,10 @@ class SearchHabitsScreenState extends State<SearchHabitsScreen> {
 
       // Filter habits based on the search query
       final filteredHabits = habits
-          .where((habit) =>
-              habit.shortName.values.any((name) =>
-                  name.toLowerCase().contains(searchQuery.toLowerCase())) ||
-              habit.longName.values.any((name) =>
-                  name.toLowerCase().contains(searchQuery.toLowerCase())))
+          .where(
+            (habit) => habit.name.values.any((name) =>
+                name.toLowerCase().contains(searchQuery.toLowerCase())),
+          )
           .toList();
 
       return Scaffold(
@@ -111,7 +110,7 @@ class SearchHabitsScreenState extends State<SearchHabitsScreen> {
                     return ListTile(
                       title: Text(
                         getRightTranslationFromJson(
-                          habit.longName,
+                          habit.name,
                           userLocale,
                         ),
                       ),

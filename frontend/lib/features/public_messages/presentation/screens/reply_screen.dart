@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:reallystick/core/constants/screen_size.dart';
 import 'package:reallystick/core/presentation/screens/loading_screen.dart';
 import 'package:reallystick/core/presentation/widgets/custom_app_bar.dart';
 import 'package:reallystick/core/presentation/widgets/full_width_column.dart';
@@ -116,8 +115,6 @@ class ReplyScreenState extends State<ReplyScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final bool isLargeScreen = checkIfLargeScreen(context);
-
     final profileState = context.watch<ProfileBloc>().state;
     final replyState = context.watch<ReplyBloc>().state;
 
@@ -189,7 +186,7 @@ class ReplyScreenState extends State<ReplyScreen> {
               return HabitNotFoundScreen();
             } else {
               name = getRightTranslationFromJson(
-                isLargeScreen ? habit.longName : habit.shortName,
+                habit.name,
                 userLocale,
               );
             }

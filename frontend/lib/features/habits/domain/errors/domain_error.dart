@@ -25,14 +25,9 @@ class HabitDailyTrackingNotFoundDomainError implements DomainError {
   final String messageKey = 'habitDailyTrackingNotFoundError';
 }
 
-class HabitShortNameWrongSizeError implements DomainError {
+class HabitNameWrongSizeError implements DomainError {
   @override
-  final String messageKey = 'habitShortNameWrongSizeError';
-}
-
-class HabitLongNameWrongSizeError implements DomainError {
-  @override
-  final String messageKey = 'habitLongNameWrongSizeError';
+  final String messageKey = 'habitNameWrongSizeError';
 }
 
 class HabitDescriptionWrongSizeError implements DomainError {

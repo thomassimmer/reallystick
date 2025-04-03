@@ -53,8 +53,7 @@ where
         r#"
         SELECT DISTINCT
             h.id,
-            h.short_name,
-            h.long_name,
+            h.name,
             h.category_id,
             h.reviewed,
             h.description,
@@ -83,17 +82,15 @@ where
         r#"
         UPDATE habits
         SET 
-            short_name = $1,
-            long_name = $2,
-            description = $3,
-            reviewed = $4,
-            icon = $5,
-            category_id = $6,
-            unit_ids = $7
-        WHERE id = $8
+            name = $1,
+            description = $2,
+            reviewed = $3,
+            icon = $4,
+            category_id = $5,
+            unit_ids = $6
+        WHERE id = $7
         "#,
-        habit.short_name,
-        habit.long_name,
+        habit.name,
         habit.description,
         habit.reviewed,
         habit.icon,
@@ -117,8 +114,7 @@ where
         r#"
         INSERT INTO habits (
             id,
-            short_name,
-            long_name,
+            name,
             description,
             reviewed,
             created_at,
@@ -126,11 +122,10 @@ where
             category_id,
             unit_ids
         )
-        VALUES ( $1, $2, $3, $4, $5, $6, $7, $8, $9 )
+        VALUES ( $1, $2, $3, $4, $5, $6, $7, $8 )
         "#,
         habit.id,
-        habit.short_name,
-        habit.long_name,
+        habit.name,
         habit.description,
         habit.reviewed,
         habit.created_at,

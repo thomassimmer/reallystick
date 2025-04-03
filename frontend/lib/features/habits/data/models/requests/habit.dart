@@ -1,8 +1,7 @@
 import 'dart:collection';
 
 class HabitUpdateRequestModel {
-  final Map<String, String> shortName;
-  final Map<String, String> longName;
+  final Map<String, String> name;
   final Map<String, String> description;
   final String categoryId;
   final bool reviewed;
@@ -10,8 +9,7 @@ class HabitUpdateRequestModel {
   final HashSet<String> unitIds;
 
   const HabitUpdateRequestModel({
-    required this.shortName,
-    required this.longName,
+    required this.name,
     required this.description,
     required this.categoryId,
     required this.reviewed,
@@ -21,8 +19,7 @@ class HabitUpdateRequestModel {
 
   Map<String, dynamic> toJson() {
     return {
-      'short_name': shortName,
-      'long_name': longName,
+      'name': name,
       'description': description,
       'category_id': categoryId,
       'reviewed': reviewed,
@@ -33,16 +30,14 @@ class HabitUpdateRequestModel {
 }
 
 class HabitCreateRequestModel {
-  final Map<String, String> shortName;
-  final Map<String, String> longName;
+  final Map<String, String> name;
   final Map<String, String> description;
   final String categoryId;
   final String icon;
   final HashSet<String> unitIds;
 
   const HabitCreateRequestModel({
-    required this.shortName,
-    required this.longName,
+    required this.name,
     required this.description,
     required this.categoryId,
     required this.icon,
@@ -51,8 +46,7 @@ class HabitCreateRequestModel {
 
   Map<String, dynamic> toJson() {
     return {
-      'short_name': shortName,
-      'long_name': longName,
+      'name': name,
       'description': description,
       'category_id': categoryId,
       'icon': icon,

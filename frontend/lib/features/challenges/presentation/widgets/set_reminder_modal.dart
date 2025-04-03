@@ -13,11 +13,11 @@ import 'package:reallystick/features/profile/presentation/blocs/profile/profile_
 
 class SetReminderModal extends StatefulWidget {
   final ChallengeParticipation challengeParticipation;
-  final String challengeLongName;
+  final String challengeName;
 
   const SetReminderModal({
     required this.challengeParticipation,
-    required this.challengeLongName,
+    required this.challengeName,
   });
 
   @override
@@ -41,7 +41,7 @@ class SetReminderModalState extends State<SetReminderModal> {
       reminderTime = parseTime(widget.challengeParticipation.reminderTime);
       reminderBody = widget.challengeParticipation.reminderBody ??
           AppLocalizations.of(context)!
-              .defaultReminderHabit(widget.challengeLongName);
+              .defaultReminderHabit(widget.challengeName);
     });
   }
 

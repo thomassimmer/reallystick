@@ -3,8 +3,7 @@ import 'package:formz/formz.dart';
 import 'package:reallystick/core/validators/description.dart';
 import 'package:reallystick/core/validators/habit.dart';
 import 'package:reallystick/core/validators/habit_category.dart';
-import 'package:reallystick/core/validators/habit_long_name.dart';
-import 'package:reallystick/core/validators/habit_short_name.dart';
+import 'package:reallystick/core/validators/habit_name.dart';
 import 'package:reallystick/core/validators/icon.dart';
 import 'package:reallystick/core/validators/unit.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit_merge/habit_merge_events.dart';
@@ -15,8 +14,7 @@ class HabitMergeFormBloc
   HabitMergeFormBloc() : super(const HabitMergeFormState()) {
     on<HabitMergeFormChangedEvent>(_habitChanged);
     on<HabitMergeFormCategoryChangedEvent>(_categoryChanged);
-    on<HabitMergeFormShortNameChangedEvent>(_shortNameChanged);
-    on<HabitMergeFormLongNameChangedEvent>(_longNameChanged);
+    on<HabitMergeFormNameChangedEvent>(_nameChanged);
     on<HabitMergeFormDescriptionChangedEvent>(_descriptionChanged);
     on<HabitMergeFormIconChangedEvent>(_iconChanged);
     on<HabitMergeFormUnitsChangedEvent>(_unitsChanged);
@@ -31,8 +29,7 @@ class HabitMergeFormBloc
         habitToMergeOn: habit,
         isValid: Formz.validate([
           habit,
-          ...state.shortName.values,
-          ...state.longName.values,
+          ...state.name.values,
           ...state.description.values,
           state.icon,
           state.habitCategory,
@@ -51,8 +48,7 @@ class HabitMergeFormBloc
         habitCategory: habitCategory,
         isValid: Formz.validate([
           habitCategory,
-          ...state.shortName.values,
-          ...state.longName.values,
+          ...state.name.values,
           ...state.description.values,
           state.icon,
           state.habitToMergeOn,
@@ -62,54 +58,23 @@ class HabitMergeFormBloc
     );
   }
 
-  Future<void> _shortNameChanged(
-      HabitMergeFormShortNameChangedEvent event, Emitter emit) async {
-    final Map<String, HabitShortNameValidator> shortNameMap = {};
+  Future<void> _nameChanged(
+      HabitMergeFormNameChangedEvent event, Emitter emit) async {
+    final Map<String, HabitNameValidator> nameMap = {};
 
-    if (event.shortName.entries.isEmpty) {
-      shortNameMap['en'] =
-          HabitShortNameValidator.dirty('No translation entered');
+    if (event.name.entries.isEmpty) {
+      nameMap['en'] = HabitNameValidator.dirty('No translation entered');
     } else {
-      for (final entry in event.shortName.entries) {
-        shortNameMap[entry.key] = HabitShortNameValidator.dirty(entry.value);
+      for (final entry in event.name.entries) {
+        nameMap[entry.key] = HabitNameValidator.dirty(entry.value);
       }
     }
 
     emit(
       state.copyWith(
-        shortName: shortNameMap,
+        name: nameMap,
         isValid: Formz.validate([
-          ...state.shortName.values,
-          ...state.longName.values,
-          ...state.description.values,
-          state.icon,
-          state.habitCategory,
-          state.habitToMergeOn,
-          ...state.unitIds.values,
-        ]),
-      ),
-    );
-  }
-
-  Future<void> _longNameChanged(
-      HabitMergeFormLongNameChangedEvent event, Emitter emit) async {
-    final Map<String, HabitLongNameValidator> longNameMap = {};
-
-    if (event.longName.entries.isEmpty) {
-      longNameMap['en'] =
-          HabitLongNameValidator.dirty('No translation entered');
-    } else {
-      for (final entry in event.longName.entries) {
-        longNameMap[entry.key] = HabitLongNameValidator.dirty(entry.value);
-      }
-    }
-
-    emit(
-      state.copyWith(
-        longName: longNameMap,
-        isValid: Formz.validate([
-          ...state.shortName.values,
-          ...state.longName.values,
+          ...state.name.values,
           ...state.description.values,
           state.icon,
           state.habitCategory,
@@ -137,8 +102,7 @@ class HabitMergeFormBloc
       state.copyWith(
         description: descriptionMap,
         isValid: Formz.validate([
-          ...state.shortName.values,
-          ...state.longName.values,
+          ...state.name.values,
           ...state.description.values,
           state.icon,
           state.habitCategory,
@@ -158,8 +122,7 @@ class HabitMergeFormBloc
         icon: icon,
         isValid: Formz.validate([
           state.habitCategory,
-          ...state.shortName.values,
-          ...state.longName.values,
+          ...state.name.values,
           ...state.description.values,
           icon,
           state.habitToMergeOn,
@@ -182,8 +145,7 @@ class HabitMergeFormBloc
         unitIds: unitIdsMap,
         isValid: Formz.validate([
           state.habitCategory,
-          ...state.shortName.values,
-          ...state.longName.values,
+          ...state.name.values,
           ...state.description.values,
           state.icon,
           ...unitIdsMap.values

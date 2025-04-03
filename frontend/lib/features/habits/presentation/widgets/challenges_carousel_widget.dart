@@ -31,11 +31,14 @@ class ChallengesCarouselWidget extends StatelessWidget {
         profileState is ProfileAuthenticated &&
         challengeState is ChallengesLoaded) {
       final userLocale = profileState.profile.locale;
-      final habitStatistic = habitState.habitStatistics[habitId]!;
-      final challenges = habitStatistic.challenges
-          .map((challengeId) => challengeState.challenges[challengeId])
-          .where((c) => c != null)
-          .toList();
+      final habitStatistic = habitState.habitStatistics[habitId];
+
+      final challenges = habitStatistic?.challenges
+              .map((challengeId) => challengeState.challenges[challengeId])
+              .where((c) => c != null)
+              .toList() ??
+          [];
+
       final challengesStatistics = challenges
           .map(
               (challenge) => challengeState.challengeStatistics[challenge!.id]!)

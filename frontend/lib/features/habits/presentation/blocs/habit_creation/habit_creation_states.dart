@@ -1,14 +1,12 @@
 import 'package:equatable/equatable.dart';
 import 'package:reallystick/core/validators/description.dart';
 import 'package:reallystick/core/validators/habit_category.dart';
-import 'package:reallystick/core/validators/habit_long_name.dart';
-import 'package:reallystick/core/validators/habit_short_name.dart';
+import 'package:reallystick/core/validators/habit_name.dart';
 import 'package:reallystick/core/validators/icon.dart';
 import 'package:reallystick/core/validators/unit.dart';
 
 final class HabitCreationFormState extends Equatable {
-  final HabitShortNameValidator shortName;
-  final HabitLongNameValidator longName;
+  final HabitNameValidator name;
   final DescriptionValidator description;
   final HabitCategoryValidator habitCategory;
   final IconValidator icon;
@@ -17,8 +15,7 @@ final class HabitCreationFormState extends Equatable {
   final String? errorMessage;
 
   const HabitCreationFormState({
-    this.shortName = const HabitShortNameValidator.pure(),
-    this.longName = const HabitLongNameValidator.pure(),
+    this.name = const HabitNameValidator.pure(),
     this.habitCategory = const HabitCategoryValidator.pure(),
     this.icon = const IconValidator.pure(),
     this.description = const DescriptionValidator.pure(),
@@ -29,8 +26,7 @@ final class HabitCreationFormState extends Equatable {
 
   @override
   List<Object?> get props => [
-        shortName,
-        longName,
+        name,
         icon,
         description,
         habitCategory,
@@ -40,8 +36,7 @@ final class HabitCreationFormState extends Equatable {
       ];
 
   HabitCreationFormState copyWith({
-    HabitShortNameValidator? shortName,
-    HabitLongNameValidator? longName,
+    HabitNameValidator? name,
     DescriptionValidator? description,
     HabitCategoryValidator? habitCategory,
     IconValidator? icon,
@@ -50,8 +45,7 @@ final class HabitCreationFormState extends Equatable {
     String? errorMessage,
   }) {
     return HabitCreationFormState(
-      shortName: shortName ?? this.shortName,
-      longName: longName ?? this.longName,
+      name: name ?? this.name,
       description: description ?? this.description,
       habitCategory: habitCategory ?? this.habitCategory,
       icon: icon ?? this.icon,

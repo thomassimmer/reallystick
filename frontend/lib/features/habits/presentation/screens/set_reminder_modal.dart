@@ -13,11 +13,11 @@ import 'package:reallystick/features/profile/presentation/blocs/profile/profile_
 
 class SetReminderModal extends StatefulWidget {
   final HabitParticipation habitParticipation;
-  final String habitLongName;
+  final String habitName;
 
   const SetReminderModal({
     required this.habitParticipation,
-    required this.habitLongName,
+    required this.habitName,
   });
 
   @override
@@ -40,8 +40,7 @@ class SetReminderModalState extends State<SetReminderModal> {
       // Convert the reminderTime from UTC String ("HH:mm:ss") to DateTime
       reminderTime = parseTime(widget.habitParticipation.reminderTime);
       reminderBody = widget.habitParticipation.reminderBody ??
-          AppLocalizations.of(context)!
-              .defaultReminderHabit(widget.habitLongName);
+          AppLocalizations.of(context)!.defaultReminderHabit(widget.habitName);
     });
   }
 

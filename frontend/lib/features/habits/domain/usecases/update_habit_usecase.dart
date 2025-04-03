@@ -12,8 +12,7 @@ class UpdateHabitUsecase {
 
   Future<Either<DomainError, Habit>> call({
     required String habitId,
-    required Map<String, String> shortName,
-    required Map<String, String> longName,
+    required Map<String, String> name,
     required Map<String, String> description,
     required String categoryId,
     required String icon,
@@ -22,8 +21,7 @@ class UpdateHabitUsecase {
   }) async {
     return await habitRepository.updateHabit(
       habitId: habitId,
-      shortName: shortName,
-      longName: longName,
+      name: name,
       description: description,
       categoryId: categoryId,
       icon: icon,

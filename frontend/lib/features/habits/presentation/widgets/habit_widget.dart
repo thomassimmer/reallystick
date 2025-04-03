@@ -31,13 +31,8 @@ class HabitWidget extends StatelessWidget {
 
         final userLocale = profileState.profile!.locale;
 
-        final shortName = getRightTranslationFromJson(
-          habit.shortName,
-          userLocale,
-        );
-
-        final longName = getRightTranslationFromJson(
-          habit.longName,
+        final name = getRightTranslationFromJson(
+          habit.name,
           userLocale,
         );
 
@@ -81,7 +76,7 @@ class HabitWidget extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                isLargeScreen ? longName : shortName,
+                                name,
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w500,

@@ -26,5 +26,5 @@ bool shouldDisplaySportSpecificInputs(
   return habit != null &&
       sportCategory != null &&
       habitCategories[habit.categoryId] == sportCategory &&
-      getRightTranslationFromJson(habit.shortName, 'en') != 'Workout';
+      getRightTranslationFromJson(habit.name, 'en') != 'Workout';
 }

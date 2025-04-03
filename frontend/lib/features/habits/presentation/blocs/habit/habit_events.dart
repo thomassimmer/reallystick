@@ -12,8 +12,7 @@ abstract class HabitEvent extends Equatable {
 class HabitInitializeEvent extends HabitEvent {}
 
 class CreateHabitEvent extends HabitEvent {
-  final String shortName;
-  final String longName;
+  final String name;
   final String description;
   final String categoryId;
   final String icon;
@@ -21,8 +20,7 @@ class CreateHabitEvent extends HabitEvent {
   final HashSet<String> unitIds;
 
   const CreateHabitEvent({
-    required this.shortName,
-    required this.longName,
+    required this.name,
     required this.description,
     required this.categoryId,
     required this.icon,
@@ -32,8 +30,7 @@ class CreateHabitEvent extends HabitEvent {
 
   @override
   List<Object?> get props => [
-        shortName,
-        longName,
+        name,
         description,
         categoryId,
         icon,
@@ -44,8 +41,7 @@ class CreateHabitEvent extends HabitEvent {
 
 class UpdateHabitEvent extends HabitEvent {
   final String habitId;
-  final Map<String, String> shortName;
-  final Map<String, String> longName;
+  final Map<String, String> name;
   final Map<String, String> description;
   final String categoryId;
   final String icon;
@@ -53,8 +49,7 @@ class UpdateHabitEvent extends HabitEvent {
 
   const UpdateHabitEvent({
     required this.habitId,
-    required this.shortName,
-    required this.longName,
+    required this.name,
     required this.description,
     required this.categoryId,
     required this.icon,
@@ -64,8 +59,7 @@ class UpdateHabitEvent extends HabitEvent {
   @override
   List<Object?> get props => [
         habitId,
-        shortName,
-        longName,
+        name,
         description,
         categoryId,
         icon,
@@ -76,8 +70,7 @@ class UpdateHabitEvent extends HabitEvent {
 class MergeHabitsEvent extends HabitEvent {
   final String habitToDeleteId;
   final String habitToMergeOnId;
-  final Map<String, String> shortName;
-  final Map<String, String> longName;
+  final Map<String, String> name;
   final Map<String, String> description;
   final String categoryId;
   final String icon;
@@ -86,8 +79,7 @@ class MergeHabitsEvent extends HabitEvent {
   const MergeHabitsEvent({
     required this.habitToDeleteId,
     required this.habitToMergeOnId,
-    required this.shortName,
-    required this.longName,
+    required this.name,
     required this.description,
     required this.categoryId,
     required this.icon,
@@ -98,8 +90,7 @@ class MergeHabitsEvent extends HabitEvent {
   List<Object?> get props => [
         habitToDeleteId,
         habitToMergeOnId,
-        shortName,
-        longName,
+        name,
         description,
         categoryId,
         icon,

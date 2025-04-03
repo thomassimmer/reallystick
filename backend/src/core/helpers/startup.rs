@@ -311,12 +311,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
             Habit {
                 id: Uuid::new_v4(),
                 category_id: habit_categories.get("health").unwrap().id,
-                short_name: json!(HashMap::from([("en", "Smoking"), ("fr", "Fumer")])).to_string(),
-                long_name: json!(HashMap::from([
-                    ("en", "Quit smoking"),
-                    ("fr", "Arrêter de fumer")
-                ]))
-                .to_string(),
+                name: json!(HashMap::from([("en", "Smoking"), ("fr", "Fumer")])).to_string(),
                 description: json!(HashMap::from([
                     ("en", "To quit smoking, it's here!"),
                     ("fr", "Pour arrêter de fumer, ça se passe ici !")
@@ -333,13 +328,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
             Habit {
                 id: Uuid::new_v4(),
                 category_id: habit_categories.get("languages").unwrap().id,
-                short_name: json!(HashMap::from([("en", "English"), ("fr", "Anglais"),]))
-                    .to_string(),
-                long_name: json!(HashMap::from([
-                    ("en", "Learn English"),
-                    ("fr", "Apprentissage de l'anglais"),
-                ]))
-                .to_string(),
+                name: json!(HashMap::from([("en", "English"), ("fr", "Anglais"),])).to_string(),
                 description: json!(HashMap::from([
                     (
                         "en",
@@ -366,13 +355,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
             Habit {
                 id: Uuid::new_v4(),
                 category_id: habit_categories.get("languages").unwrap().id,
-                short_name: json!(HashMap::from([("en", "French"), ("fr", "Français")]))
-                    .to_string(),
-                long_name: json!(HashMap::from([
-                    ("en", "Learn French"),
-                    ("fr", "Apprentissage du français")
-                ]))
-                .to_string(),
+                name: json!(HashMap::from([("en", "French"), ("fr", "Français")])).to_string(),
                 description: json!(HashMap::from([
                     (
                         "en",
@@ -399,13 +382,8 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
             Habit {
                 id: Uuid::new_v4(),
                 category_id: habit_categories.get("lifestyle").unwrap().id,
-                short_name: json!(HashMap::from([("en", "Video games"), ("fr", "Jeux vidéo")]))
+                name: json!(HashMap::from([("en", "Video games"), ("fr", "Jeux vidéo")]))
                     .to_string(),
-                long_name: json!(HashMap::from([
-                    ("en", "Play less video games"),
-                    ("fr", "Moins jouer aux jeux vidéo")
-                ]))
-                .to_string(),
                 description: json!(HashMap::from([
                     (
                         "en",
@@ -432,12 +410,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
             Habit {
                 id: Uuid::new_v4(),
                 category_id: habit_categories.get("health").unwrap().id,
-                short_name: json!(HashMap::from([("en", "Weight"), ("fr", "Poids")])).to_string(),
-                long_name: json!(HashMap::from([
-                    ("en", "Weight tracking"),
-                    ("fr", "Suivi du poids")
-                ]))
-                .to_string(),
+                name: json!(HashMap::from([("en", "Weight"), ("fr", "Poids")])).to_string(),
                 description: json!(HashMap::from([
                     (
                         "en",
@@ -462,13 +435,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
             Habit {
                 id: Uuid::new_v4(),
                 category_id: habit_categories.get("sport").unwrap().id,
-                short_name: json!(HashMap::from([("en", "Workout"), ("fr", "Musculation")]))
-                    .to_string(),
-                long_name: json!(HashMap::from([
-                    ("en", "Workout tracking"),
-                    ("fr", "Suivi des efforts en musculation")
-                ]))
-                .to_string(),
+                name: json!(HashMap::from([("en", "Workout"), ("fr", "Musculation")])).to_string(),
                 description: json!(HashMap::from([
                     (
                         "en",
@@ -495,13 +462,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
             Habit {
                 id: Uuid::new_v4(),
                 category_id: habit_categories.get("sport").unwrap().id,
-                short_name: json!(HashMap::from([("en", "Push-ups"), ("fr", "Pompes")]))
-                    .to_string(),
-                long_name: json!(HashMap::from([
-                    ("en", "Push-ups tracking"),
-                    ("fr", "Suivi des pompes")
-                ]))
-                .to_string(),
+                name: json!(HashMap::from([("en", "Push-ups"), ("fr", "Pompes")])).to_string(),
                 description: json!(HashMap::from([
                     (
                         "en",
@@ -524,13 +485,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
             Habit {
                 id: Uuid::new_v4(),
                 category_id: habit_categories.get("sport").unwrap().id,
-                short_name: json!(HashMap::from([("en", "Pull-ups"), ("fr", "Tractions")]))
-                    .to_string(),
-                long_name: json!(HashMap::from([
-                    ("en", "Pull-ups tracking"),
-                    ("fr", "Suivi des tractions")
-                ]))
-                .to_string(),
+                name: json!(HashMap::from([("en", "Pull-ups"), ("fr", "Tractions")])).to_string(),
                 description: json!(HashMap::from([
                     (
                         "en",
@@ -553,14 +508,9 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
             Habit {
                 id: Uuid::new_v4(),
                 category_id: habit_categories.get("finance").unwrap().id,
-                short_name: json!(HashMap::from([
+                name: json!(HashMap::from([
                     ("en", "Saving money"),
                     ("fr", "Économiser")
-                ]))
-                .to_string(),
-                long_name: json!(HashMap::from([
-                    ("en", "Spending less money"),
-                    ("fr", "Dépenser moins d'argent")
                 ]))
                 .to_string(),
                 description: json!(HashMap::from([

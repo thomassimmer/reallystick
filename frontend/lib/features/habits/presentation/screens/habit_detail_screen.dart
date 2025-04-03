@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:reallystick/core/constants/screen_size.dart';
 import 'package:reallystick/core/presentation/widgets/custom_app_bar.dart';
 import 'package:reallystick/core/presentation/widgets/full_width_list_view.dart';
 import 'package:reallystick/core/ui/colors.dart';
@@ -68,7 +67,7 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
 
   void _showNotificationsReminderBottomSheet({
     required HabitParticipation habitParticipation,
-    required String habitLongName,
+    required String habitName,
   }) {
     showModalBottomSheet(
       context: context,
@@ -94,7 +93,7 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
             children: [
               SetReminderModal(
                 habitParticipation: habitParticipation,
-                habitLongName: habitLongName,
+                habitName: habitName,
               )
             ],
           ),
@@ -186,13 +185,8 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
           .where((hdt) => hdt.habitId == widget.habitId)
           .toList();
 
-      final shortName = getRightTranslationFromJson(
-        habit.shortName,
-        userLocale,
-      );
-
-      final longName = getRightTranslationFromJson(
-        habit.longName,
+      final name = getRightTranslationFromJson(
+        habit.name,
         userLocale,
       );
 
@@ -201,8 +195,6 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
         userLocale,
       );
 
-      final bool isLargeScreen = checkIfLargeScreen(context);
-
       final habitColor = AppColorExtension.fromString(
         habitParticipation != null ? habitParticipation.color : "",
       ).color;
@@ -210,7 +202,7 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
       return Scaffold(
         appBar: CustomAppBar(
           title: Text(
-            isLargeScreen ? longName : shortName,
+            name,
             style: context.typographies.heading.copyWith(
               color: habitColor,
             ),
@@ -229,7 +221,7 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
                   } else if (value == 'set_reminder') {
                     _showNotificationsReminderBottomSheet(
                       habitParticipation: habitParticipation,
-                      habitLongName: longName,
+                      habitName: name,
                     );
                   }
                 },

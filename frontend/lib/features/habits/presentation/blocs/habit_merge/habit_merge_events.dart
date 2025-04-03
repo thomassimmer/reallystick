@@ -27,22 +27,13 @@ class HabitMergeFormCategoryChangedEvent extends HabitMergeFormEvent {
   List<Object?> get props => [habitCategory];
 }
 
-class HabitMergeFormShortNameChangedEvent extends HabitMergeFormEvent {
-  final Map<String, String> shortName;
+class HabitMergeFormNameChangedEvent extends HabitMergeFormEvent {
+  final Map<String, String> name;
 
-  const HabitMergeFormShortNameChangedEvent(this.shortName);
-
-  @override
-  List<Object?> get props => [shortName];
-}
-
-class HabitMergeFormLongNameChangedEvent extends HabitMergeFormEvent {
-  final Map<String, String> longName;
-
-  const HabitMergeFormLongNameChangedEvent(this.longName);
+  const HabitMergeFormNameChangedEvent(this.name);
 
   @override
-  List<Object?> get props => [longName];
+  List<Object?> get props => [name];
 }
 
 class HabitMergeFormDescriptionChangedEvent extends HabitMergeFormEvent {

@@ -18,22 +18,13 @@ class HabitCreationFormCategoryChangedEvent extends HabitCreationFormEvent {
   List<Object?> get props => [habitCategory];
 }
 
-class HabitCreationFormShortNameChangedEvent extends HabitCreationFormEvent {
-  final String shortName;
+class HabitCreationFormNameChangedEvent extends HabitCreationFormEvent {
+  final String name;
 
-  const HabitCreationFormShortNameChangedEvent(this.shortName);
-
-  @override
-  List<Object?> get props => [shortName];
-}
-
-class HabitCreationFormLongNameChangedEvent extends HabitCreationFormEvent {
-  final String longName;
-
-  const HabitCreationFormLongNameChangedEvent(this.longName);
+  const HabitCreationFormNameChangedEvent(this.name);
 
   @override
-  List<Object?> get props => [longName];
+  List<Object?> get props => [name];
 }
 
 class HabitCreationFormDescriptionChangedEvent extends HabitCreationFormEvent {

@@ -29,8 +29,7 @@ class CreateHabitScreen extends StatefulWidget {
 }
 
 class CreateHabitScreenState extends State<CreateHabitScreen> {
-  final TextEditingController _shortNameController = TextEditingController();
-  final TextEditingController _longNameController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
 
   String? _selectedCategoryId;
@@ -65,10 +64,7 @@ class CreateHabitScreenState extends State<CreateHabitScreen> {
     // Dispatch validation events for all fields
     habitFormBloc
         .add(HabitCreationFormCategoryChangedEvent(_selectedCategoryId ?? ""));
-    habitFormBloc
-        .add(HabitCreationFormShortNameChangedEvent(_shortNameController.text));
-    habitFormBloc
-        .add(HabitCreationFormLongNameChangedEvent(_longNameController.text));
+    habitFormBloc.add(HabitCreationFormNameChangedEvent(_nameController.text));
     habitFormBloc.add(
         HabitCreationFormDescriptionChangedEvent(_descriptionController.text));
     habitFormBloc.add(HabitCreationFormIconChangedEvent(_icon ?? ""));
@@ -79,8 +75,7 @@ class CreateHabitScreenState extends State<CreateHabitScreen> {
       () {
         if (habitFormBloc.state.isValid) {
           final newHabitEvent = CreateHabitEvent(
-            shortName: _shortNameController.text,
-            longName: _longNameController.text,
+            name: _nameController.text,
             description: _descriptionController.text,
             categoryId: _selectedCategoryId ?? "",
             icon: _icon ?? "",
@@ -138,20 +133,11 @@ class CreateHabitScreenState extends State<CreateHabitScreen> {
 
             final displayShortNameError = context.select(
               (HabitCreationFormBloc habitCreationFormBloc) =>
-                  habitCreationFormBloc.state.shortName.displayError,
+                  habitCreationFormBloc.state.name.displayError,
             );
             final displayShortNameErrorMessage = displayShortNameError != null
                 ? getTranslatedMessage(
                     context, ErrorMessage(displayShortNameError.messageKey))
-                : null;
-
-            final displayLongNameError = context.select(
-              (HabitCreationFormBloc habitCreationFormBloc) =>
-                  habitCreationFormBloc.state.longName.displayError,
-            );
-            final displayLongNameErrorMessage = displayLongNameError != null
-                ? getTranslatedMessage(
-                    context, ErrorMessage(displayLongNameError.messageKey))
                 : null;
 
             final displayDescriptionError = context.select(
@@ -234,29 +220,17 @@ class CreateHabitScreenState extends State<CreateHabitScreen> {
 
                           const SizedBox(height: 16.0),
 
-                          // Short Name Input
+                          // Name Input
                           CustomTextField(
-                            controller: _shortNameController,
-                            onChanged: (shortName) =>
-                                BlocProvider.of<HabitCreationFormBloc>(context)
-                                    .add(HabitCreationFormShortNameChangedEvent(
-                                        shortName)),
-                            label: AppLocalizations.of(context)!.shortName,
+                            controller: _nameController,
+                            onChanged: (name) => BlocProvider.of<
+                                    HabitCreationFormBloc>(context)
+                                .add(HabitCreationFormNameChangedEvent(name)),
+                            label: AppLocalizations.of(context)!.habitName,
                             errorText: displayShortNameErrorMessage,
                           ),
 
                           const SizedBox(height: 16.0),
-
-                          // Long Name Input
-                          CustomTextField(
-                            controller: _longNameController,
-                            onChanged: (longName) =>
-                                BlocProvider.of<HabitCreationFormBloc>(context)
-                                    .add(HabitCreationFormLongNameChangedEvent(
-                                        longName)),
-                            label: AppLocalizations.of(context)!.longName,
-                            errorText: displayLongNameErrorMessage,
-                          ),
 
                           const SizedBox(height: 16.0),
 

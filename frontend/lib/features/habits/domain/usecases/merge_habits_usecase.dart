@@ -13,8 +13,7 @@ class MergeHabitsUsecase {
   Future<Either<DomainError, Habit>> call({
     required String habitToDeleteId,
     required String habitToMergeOnId,
-    required Map<String, String> shortName,
-    required Map<String, String> longName,
+    required Map<String, String> name,
     required Map<String, String> description,
     required String categoryId,
     required String icon,
@@ -24,8 +23,7 @@ class MergeHabitsUsecase {
     return await habitRepository.mergeHabits(
       habitToDeleteId: habitToDeleteId,
       habitToMergeOnId: habitToMergeOnId,
-      shortName: shortName,
-      longName: longName,
+      name: name,
       description: description,
       categoryId: categoryId,
       icon: icon,

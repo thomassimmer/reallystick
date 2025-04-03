@@ -54,7 +54,6 @@ pub async fn update_unit(
     };
 
     unit.short_name = json!(body.short_name).to_string();
-    unit.long_name = json!(body.long_name).to_string();
 
     let update_unit_result = unit::update_unit(&mut *transaction, &unit).await;
 

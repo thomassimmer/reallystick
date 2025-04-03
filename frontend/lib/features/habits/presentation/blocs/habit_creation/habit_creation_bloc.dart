@@ -2,8 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:reallystick/core/validators/description.dart';
 import 'package:reallystick/core/validators/habit_category.dart';
-import 'package:reallystick/core/validators/habit_long_name.dart';
-import 'package:reallystick/core/validators/habit_short_name.dart';
+import 'package:reallystick/core/validators/habit_name.dart';
 import 'package:reallystick/core/validators/icon.dart';
 import 'package:reallystick/core/validators/unit.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit_creation/habit_creation_events.dart';
@@ -13,8 +12,7 @@ class HabitCreationFormBloc
     extends Bloc<HabitCreationFormEvent, HabitCreationFormState> {
   HabitCreationFormBloc() : super(const HabitCreationFormState()) {
     on<HabitCreationFormCategoryChangedEvent>(_categoryChanged);
-    on<HabitCreationFormShortNameChangedEvent>(_shortNameChanged);
-    on<HabitCreationFormLongNameChangedEvent>(_longNameChanged);
+    on<HabitCreationFormNameChangedEvent>(_nameChanged);
     on<HabitCreationFormDescriptionChangedEvent>(_descriptionChanged);
     on<HabitCreationFormIconChangedEvent>(_iconChanged);
     on<HabitCreationFormUnitsChangedEvent>(_unitsChanged);
@@ -29,8 +27,7 @@ class HabitCreationFormBloc
         habitCategory: habitCategory,
         isValid: Formz.validate([
           habitCategory,
-          state.shortName,
-          state.longName,
+          state.name,
           state.description,
           state.icon,
           ...state.unitIds.values
@@ -39,36 +36,16 @@ class HabitCreationFormBloc
     );
   }
 
-  Future<void> _shortNameChanged(
-      HabitCreationFormShortNameChangedEvent event, Emitter emit) async {
-    final shortName = HabitShortNameValidator.dirty(event.shortName);
+  Future<void> _nameChanged(
+      HabitCreationFormNameChangedEvent event, Emitter emit) async {
+    final name = HabitNameValidator.dirty(event.name);
 
     emit(
       state.copyWith(
-        shortName: shortName,
+        name: name,
         isValid: Formz.validate([
           state.habitCategory,
-          shortName,
-          state.longName,
-          state.description,
-          state.icon,
-          ...state.unitIds.values
-        ]),
-      ),
-    );
-  }
-
-  Future<void> _longNameChanged(
-      HabitCreationFormLongNameChangedEvent event, Emitter emit) async {
-    final longName = HabitLongNameValidator.dirty(event.longName);
-
-    emit(
-      state.copyWith(
-        longName: longName,
-        isValid: Formz.validate([
-          state.habitCategory,
-          state.shortName,
-          longName,
+          name,
           state.description,
           state.icon,
           ...state.unitIds.values
@@ -86,8 +63,7 @@ class HabitCreationFormBloc
         description: description,
         isValid: Formz.validate([
           state.habitCategory,
-          state.shortName,
-          state.longName,
+          state.name,
           description,
           state.icon,
           ...state.unitIds.values
@@ -105,8 +81,7 @@ class HabitCreationFormBloc
         icon: icon,
         isValid: Formz.validate([
           state.habitCategory,
-          state.shortName,
-          state.longName,
+          state.name,
           state.description,
           icon,
           ...state.unitIds.values
@@ -128,8 +103,7 @@ class HabitCreationFormBloc
         unitIds: unitIdsMap,
         isValid: Formz.validate([
           state.habitCategory,
-          state.shortName,
-          state.longName,
+          state.name,
           state.description,
           state.icon,
           ...unitIdsMap.values

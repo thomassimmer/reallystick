@@ -85,8 +85,7 @@ pub async fn update_habit(
         }
     }
 
-    habit.short_name = json!(body.short_name).to_string();
-    habit.long_name = json!(body.long_name).to_string();
+    habit.name = json!(body.name).to_string();
     habit.description = json!(body.description).to_string();
     habit.reviewed = body.reviewed;
     habit.icon = body.icon.clone();

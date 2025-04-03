@@ -36,11 +36,9 @@ class ReviewHabitScreen extends StatefulWidget {
 }
 
 class ReviewHabitScreenState extends State<ReviewHabitScreen> {
-  Map<String, String> _shortNameControllerForCurrentHabit = {};
-  Map<String, String> _longNameControllerForCurrentHabit = {};
+  Map<String, String> _nameControllerForCurrentHabit = {};
   Map<String, String> _descriptionControllerForCurrentHabit = {};
-  Map<String, String> _shortNameControllerForHabitToMergeWith = {};
-  Map<String, String> _longNameControllerForHabitToMergeWith = {};
+  Map<String, String> _nameControllerForHabitToMergeWith = {};
   Map<String, String> _descriptionControllerForHabitToMergeWith = {};
 
   String? _selectedCategoryIdForCurrentHabit;
@@ -93,10 +91,8 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
     // Dispatch validation events for all fields
     habitFormBloc.add(HabitReviewFormCategoryChangedEvent(
         _selectedCategoryIdForCurrentHabit ?? ""));
-    habitFormBloc.add(HabitReviewFormShortNameChangedEvent(
-        _shortNameControllerForCurrentHabit));
-    habitFormBloc.add(HabitReviewFormLongNameChangedEvent(
-        _longNameControllerForCurrentHabit));
+    habitFormBloc
+        .add(HabitReviewFormNameChangedEvent(_nameControllerForCurrentHabit));
     habitFormBloc.add(HabitReviewFormDescriptionChangedEvent(
         _descriptionControllerForCurrentHabit));
     habitFormBloc.add(HabitReviewFormIconChangedEvent(
@@ -109,8 +105,7 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
         if (habitFormBloc.state.isValid) {
           final newHabitEvent = UpdateHabitEvent(
             habitId: widget.habitId,
-            shortName: _shortNameControllerForCurrentHabit,
-            longName: _longNameControllerForCurrentHabit,
+            name: _nameControllerForCurrentHabit,
             description: _descriptionControllerForCurrentHabit,
             categoryId: _selectedCategoryIdForCurrentHabit ?? "",
             icon: _iconForCurrentHabit ?? "",
@@ -133,10 +128,8 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
         .add(HabitMergeFormChangedEvent(_selectedHabitToMergeOnId ?? ""));
     habitFormBloc.add(HabitMergeFormCategoryChangedEvent(
         _selectedCategoryIdForHabitToMergeWith ?? ""));
-    habitFormBloc.add(HabitMergeFormShortNameChangedEvent(
-        _shortNameControllerForHabitToMergeWith));
-    habitFormBloc.add(HabitMergeFormLongNameChangedEvent(
-        _longNameControllerForHabitToMergeWith));
+    habitFormBloc.add(
+        HabitMergeFormNameChangedEvent(_nameControllerForHabitToMergeWith));
     habitFormBloc.add(HabitMergeFormDescriptionChangedEvent(
         _descriptionControllerForHabitToMergeWith));
     habitFormBloc
@@ -150,8 +143,7 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
           final mergeHabitEvent = MergeHabitsEvent(
             habitToDeleteId: widget.habitId,
             habitToMergeOnId: _selectedHabitToMergeOnId ?? "",
-            shortName: _shortNameControllerForHabitToMergeWith,
-            longName: _longNameControllerForHabitToMergeWith,
+            name: _nameControllerForHabitToMergeWith,
             description: _descriptionControllerForHabitToMergeWith,
             categoryId: _selectedCategoryIdForHabitToMergeWith ?? "",
             icon: _iconForHabitToMergeWith ?? "",
@@ -176,8 +168,7 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
       final habit = habitState.habits[widget.habitId]!;
 
       setState(() {
-        _shortNameControllerForCurrentHabit = habit.shortName;
-        _longNameControllerForCurrentHabit = habit.longName;
+        _nameControllerForCurrentHabit = habit.name;
         _descriptionControllerForCurrentHabit = habit.description;
         _selectedCategoryIdForCurrentHabit = habit.categoryId;
         _selectedUnitIdsForCurrentHabit = habit.unitIds;
@@ -192,8 +183,7 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
       final habitToMergeWith = habits[newHabitToMergeWithId]!;
 
       setState(() {
-        _shortNameControllerForHabitToMergeWith = habitToMergeWith.shortName;
-        _longNameControllerForHabitToMergeWith = habitToMergeWith.longName;
+        _nameControllerForHabitToMergeWith = habitToMergeWith.name;
         _descriptionControllerForHabitToMergeWith =
             habitToMergeWith.description;
         _selectedHabitToMergeOnId = newHabitToMergeWithId;
@@ -203,8 +193,7 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
       });
     } else {
       setState(() {
-        _shortNameControllerForHabitToMergeWith = {};
-        _longNameControllerForHabitToMergeWith = {};
+        _nameControllerForHabitToMergeWith = {};
         _descriptionControllerForHabitToMergeWith = {};
         _selectedHabitToMergeOnId = null;
         _selectedCategoryIdForHabitToMergeWith = null;
@@ -261,23 +250,7 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
 
             final shortNameErrorMapForCurrentHabit = context.select(
               (HabitReviewFormBloc habitReviewFormBloc) => Map.fromEntries(
-                habitReviewFormBloc.state.shortName.entries.map(
-                  (entry) => MapEntry(
-                    entry.key,
-                    entry.value.displayError != null
-                        ? getTranslatedMessage(
-                            context,
-                            ErrorMessage(entry.value.displayError!.messageKey),
-                          )
-                        : null,
-                  ),
-                ),
-              ),
-            );
-
-            final longNameErrorMapForCurrentHabit = context.select(
-              (HabitReviewFormBloc habitReviewFormBloc) => Map.fromEntries(
-                habitReviewFormBloc.state.longName.entries.map(
+                habitReviewFormBloc.state.name.entries.map(
                   (entry) => MapEntry(
                     entry.key,
                     entry.value.displayError != null
@@ -332,25 +305,9 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
                                 .messageKey))
                     : null;
 
-            final shortNameErrorMapForHabitToMergeWith = context.select(
+            final nameErrorMapForHabitToMergeWith = context.select(
               (HabitMergeFormBloc habitMergeFormBloc) => Map.fromEntries(
-                habitMergeFormBloc.state.shortName.entries.map(
-                  (entry) => MapEntry(
-                    entry.key,
-                    entry.value.displayError != null
-                        ? getTranslatedMessage(
-                            context,
-                            ErrorMessage(entry.value.displayError!.messageKey),
-                          )
-                        : null,
-                  ),
-                ),
-              ),
-            );
-
-            final longNameErrorMapForHabitToMergeWith = context.select(
-              (HabitMergeFormBloc habitMergeFormBloc) => Map.fromEntries(
-                habitMergeFormBloc.state.longName.entries.map(
+                habitMergeFormBloc.state.name.entries.map(
                   (entry) => MapEntry(
                     entry.key,
                     entry.value.displayError != null
@@ -463,32 +420,18 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
 
                       const SizedBox(height: 16.0),
 
-                      // Short Name Input
+                      // Name Input
                       MultiLanguageInputField(
-                        initialTranslations: currentHabit.shortName,
+                        initialTranslations: currentHabit.name,
                         onTranslationsChanged:
                             (Map<String, String> translations) {
-                          _shortNameControllerForCurrentHabit = translations;
+                          _nameControllerForCurrentHabit = translations;
                           BlocProvider.of<HabitReviewFormBloc>(context).add(
-                            HabitReviewFormShortNameChangedEvent(translations),
+                            HabitReviewFormNameChangedEvent(translations),
                           );
                         },
-                        label: AppLocalizations.of(context)!.shortName,
+                        label: AppLocalizations.of(context)!.habitName,
                         errors: shortNameErrorMapForCurrentHabit,
-                      ),
-
-                      // Long Name Input
-                      MultiLanguageInputField(
-                        initialTranslations: currentHabit.longName,
-                        onTranslationsChanged:
-                            (Map<String, String> translations) {
-                          _longNameControllerForCurrentHabit = translations;
-                          BlocProvider.of<HabitReviewFormBloc>(context).add(
-                            HabitReviewFormLongNameChangedEvent(translations),
-                          );
-                        },
-                        label: AppLocalizations.of(context)!.longName,
-                        errors: longNameErrorMapForCurrentHabit,
                       ),
 
                       // Description Input
@@ -584,7 +527,7 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
                                 value: entry.key,
                                 child: Text(
                                   getRightTranslationFromJson(
-                                    entry.value.shortName,
+                                    entry.value.name,
                                     userLocale,
                                   ),
                                 ),
@@ -634,34 +577,18 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
 
                         const SizedBox(height: 16.0),
 
-                        // Short Name Input
+                        // Name Input
                         MultiLanguageInputField(
-                          initialTranslations: habitToMergeOn.shortName,
+                          initialTranslations: habitToMergeOn.name,
                           onTranslationsChanged:
                               (Map<String, String> translations) {
-                            _shortNameControllerForHabitToMergeWith =
-                                translations;
+                            _nameControllerForHabitToMergeWith = translations;
                             BlocProvider.of<HabitMergeFormBloc>(context).add(
-                              HabitMergeFormShortNameChangedEvent(translations),
+                              HabitMergeFormNameChangedEvent(translations),
                             );
                           },
-                          label: AppLocalizations.of(context)!.shortName,
-                          errors: shortNameErrorMapForHabitToMergeWith,
-                        ),
-
-                        // Long Name Input
-                        MultiLanguageInputField(
-                          initialTranslations: habitToMergeOn.longName,
-                          onTranslationsChanged:
-                              (Map<String, String> translations) {
-                            _longNameControllerForHabitToMergeWith =
-                                translations;
-                            BlocProvider.of<HabitMergeFormBloc>(context).add(
-                              HabitMergeFormLongNameChangedEvent(translations),
-                            );
-                          },
-                          label: AppLocalizations.of(context)!.longName,
-                          errors: longNameErrorMapForHabitToMergeWith,
+                          label: AppLocalizations.of(context)!.habitName,
+                          errors: nameErrorMapForHabitToMergeWith,
                         ),
 
                         // Description Input

@@ -205,12 +205,12 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
       CreateHabitEvent event, Emitter<HabitState> emit) async {
     final currentState = state as HabitsLoaded;
     final resultCreateHabitUsecase = await createHabitUsecase.call(
-        categoryId: event.categoryId,
-        shortName: Map.from({event.locale: event.shortName}),
-        longName: Map.from({event.locale: event.longName}),
-        description: Map.from({event.locale: event.description}),
-        icon: event.icon,
-        unitIds: event.unitIds);
+      categoryId: event.categoryId,
+      name: Map.from({event.locale: event.name}),
+      description: Map.from({event.locale: event.description}),
+      icon: event.icon,
+      unitIds: event.unitIds,
+    );
 
     await resultCreateHabitUsecase.fold(
       (error) {
@@ -285,8 +285,7 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
     final resultUpdateHabitUsecase = await updateHabitUsecase.call(
       habitId: event.habitId,
       categoryId: event.categoryId,
-      shortName: event.shortName,
-      longName: event.longName,
+      name: event.name,
       description: event.description,
       icon: event.icon,
       reviewed: true,
@@ -337,8 +336,7 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
       habitToDeleteId: event.habitToDeleteId,
       habitToMergeOnId: event.habitToMergeOnId,
       categoryId: event.categoryId,
-      shortName: event.shortName,
-      longName: event.longName,
+      name: event.name,
       description: event.description,
       icon: event.icon,
       reviewed: true,

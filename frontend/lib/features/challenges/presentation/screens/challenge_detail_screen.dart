@@ -133,7 +133,7 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
 
   void _showNotificationsReminderBottomSheet({
     required ChallengeParticipation challengeParticipation,
-    required String challengeLongName,
+    required String challengeName,
   }) {
     showModalBottomSheet(
       context: context,
@@ -159,7 +159,7 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
             children: [
               SetReminderModal(
                 challengeParticipation: challengeParticipation,
-                challengeLongName: challengeLongName,
+                challengeName: challengeName,
               )
             ],
           ),
@@ -440,7 +440,7 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
                         } else if (value == 'set_reminder') {
                           _showNotificationsReminderBottomSheet(
                             challengeParticipation: challengeParticipation!,
-                            challengeLongName: name,
+                            challengeName: name,
                           );
                         } else if (value == 'change_participation_start_date') {
                           _openChangeChallengeParticipationStartDateModal(

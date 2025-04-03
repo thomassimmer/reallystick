@@ -2,16 +2,14 @@ import 'package:equatable/equatable.dart';
 import 'package:reallystick/core/validators/description.dart';
 import 'package:reallystick/core/validators/habit.dart';
 import 'package:reallystick/core/validators/habit_category.dart';
-import 'package:reallystick/core/validators/habit_long_name.dart';
-import 'package:reallystick/core/validators/habit_short_name.dart';
+import 'package:reallystick/core/validators/habit_name.dart';
 import 'package:reallystick/core/validators/icon.dart';
 import 'package:reallystick/core/validators/password.dart';
 import 'package:reallystick/core/validators/unit.dart';
 
 final class HabitMergeFormState extends Equatable {
   final HabitValidator habitToMergeOn;
-  final Map<String, HabitShortNameValidator> shortName;
-  final Map<String, HabitLongNameValidator> longName;
+  final Map<String, HabitNameValidator> name;
   final Map<String, DescriptionValidator> description;
   final HabitCategoryValidator habitCategory;
   final IconValidator icon;
@@ -21,8 +19,7 @@ final class HabitMergeFormState extends Equatable {
 
   const HabitMergeFormState({
     this.habitToMergeOn = const HabitValidator.pure(),
-    this.shortName = const {},
-    this.longName = const {},
+    this.name = const {},
     this.habitCategory = const HabitCategoryValidator.pure(),
     this.icon = const IconValidator.pure(),
     this.description = const {},
@@ -34,8 +31,7 @@ final class HabitMergeFormState extends Equatable {
   @override
   List<Object?> get props => [
         habitToMergeOn,
-        shortName,
-        longName,
+        name,
         icon,
         description,
         habitCategory,
@@ -46,8 +42,7 @@ final class HabitMergeFormState extends Equatable {
 
   HabitMergeFormState copyWith({
     HabitValidator? habitToMergeOn,
-    Map<String, HabitShortNameValidator>? shortName,
-    Map<String, HabitLongNameValidator>? longName,
+    Map<String, HabitNameValidator>? name,
     Map<String, DescriptionValidator>? description,
     HabitCategoryValidator? habitCategory,
     IconValidator? icon,
@@ -58,8 +53,7 @@ final class HabitMergeFormState extends Equatable {
   }) {
     return HabitMergeFormState(
       habitToMergeOn: habitToMergeOn ?? this.habitToMergeOn,
-      shortName: shortName ?? this.shortName,
-      longName: longName ?? this.longName,
+      name: name ?? this.name,
       description: description ?? this.description,
       habitCategory: habitCategory ?? this.habitCategory,
       icon: icon ?? this.icon,

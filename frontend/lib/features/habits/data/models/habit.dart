@@ -6,8 +6,7 @@ import 'package:reallystick/features/habits/domain/entities/habit.dart';
 
 class HabitDataModel extends Equatable {
   final String id;
-  final Map<String, String> shortName;
-  final Map<String, String> longName;
+  final Map<String, String> name;
   final String categoryId;
   final bool reviewed;
   final Map<String, String> description;
@@ -16,8 +15,7 @@ class HabitDataModel extends Equatable {
 
   const HabitDataModel(
       {required this.id,
-      required this.shortName,
-      required this.longName,
+      required this.name,
       required this.categoryId,
       required this.reviewed,
       required this.description,
@@ -27,9 +25,7 @@ class HabitDataModel extends Equatable {
   factory HabitDataModel.fromJson(Map<String, dynamic> jsonObject) {
     return HabitDataModel(
       id: jsonObject['id'] as String,
-      shortName:
-          Map<String, String>.from(json.decode(jsonObject['short_name'])),
-      longName: Map<String, String>.from(json.decode(jsonObject['long_name'])),
+      name: Map<String, String>.from(json.decode(jsonObject['name'])),
       categoryId: jsonObject['category_id'] as String,
       reviewed: jsonObject['reviewed'] as bool,
       description:
@@ -40,24 +36,23 @@ class HabitDataModel extends Equatable {
   }
 
   Habit toDomain() => Habit(
-      id: id,
-      shortName: shortName,
-      longName: longName,
-      categoryId: categoryId,
-      reviewed: reviewed,
-      description: description,
-      icon: icon,
-      unitIds: unitIds);
+        id: id,
+        name: name,
+        categoryId: categoryId,
+        reviewed: reviewed,
+        description: description,
+        icon: icon,
+        unitIds: unitIds,
+      );
 
   @override
   List<Object?> get props => [
         id,
-        shortName,
-        longName,
+        name,
         categoryId,
         reviewed,
         description,
         icon,
-        unitIds
+        unitIds,
       ];
 }
