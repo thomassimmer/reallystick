@@ -132,7 +132,12 @@ class UnauthenticatedHomeScreenState extends State<UnauthenticatedHomeScreen>
           style: ButtonStyle(
             backgroundColor: WidgetStatePropertyAll(context.colors.primary),
           ),
-          child: Text(AppLocalizations.of(context)!.logIn),
+          child: Text(
+            AppLocalizations.of(context)!.logIn,
+            style: TextStyle(
+              color: context.colors.background,
+            ),
+          ),
         ),
         SizedBox(height: 16),
         ElevatedButton(
@@ -142,7 +147,12 @@ class UnauthenticatedHomeScreenState extends State<UnauthenticatedHomeScreen>
           style: ButtonStyle(
             backgroundColor: WidgetStatePropertyAll(context.colors.secondary),
           ),
-          child: Text(AppLocalizations.of(context)!.signUp),
+          child: Text(
+            AppLocalizations.of(context)!.signUp,
+            style: TextStyle(
+              color: context.colors.background,
+            ),
+          ),
         ),
         Spacer(),
         Text(
