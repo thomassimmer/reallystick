@@ -134,9 +134,6 @@ class UnauthenticatedHomeScreenState extends State<UnauthenticatedHomeScreen>
           ),
           child: Text(
             AppLocalizations.of(context)!.logIn,
-            style: TextStyle(
-              color: context.colors.background,
-            ),
           ),
         ),
         SizedBox(height: 16),
@@ -149,9 +146,6 @@ class UnauthenticatedHomeScreenState extends State<UnauthenticatedHomeScreen>
           ),
           child: Text(
             AppLocalizations.of(context)!.signUp,
-            style: TextStyle(
-              color: context.colors.background,
-            ),
           ),
         ),
         Spacer(),
@@ -317,7 +311,7 @@ class UnauthenticatedHomeScreenState extends State<UnauthenticatedHomeScreen>
             "✅ ${AppLocalizations.of(context)!.endToEndEncryptedPrivateMessages}\n\n"
             "✅ ${AppLocalizations.of(context)!.availableOnIosAndroidWebIn}",
             textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.white, fontSize: 16),
+            style: TextStyle(color: context.colors.background, fontSize: 16),
           ),
           const SizedBox(height: 20),
           Text(

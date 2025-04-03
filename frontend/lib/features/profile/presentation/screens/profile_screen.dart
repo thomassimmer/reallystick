@@ -159,34 +159,80 @@ class ProfileScreen extends StatelessWidget {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
                   backgroundColor: context.colors.primary,
-                  foregroundColor: Colors.white,
                 ),
                 child: Text(AppLocalizations.of(context)!.logout),
               ),
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () async {
-                  final shouldDelete = await showDialog<bool>(
+                  final shouldDelete = await showModalBottomSheet<bool>(
                     context: context,
+                    isDismissible: true,
+                    isScrollControlled: true,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.vertical(top: Radius.circular(16.0)),
+                    ),
+                    constraints: BoxConstraints(
+                      maxWidth: 700,
+                    ),
+                    backgroundColor: context.colors.background,
                     builder: (BuildContext context) {
-                      return AlertDialog(
-                        title:
-                            Text(AppLocalizations.of(context)!.confirmDelete),
-                        content: Text(
-                            AppLocalizations.of(context)!.confirmDeleteMessage),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.of(context).pop(false),
-                            child: Text(AppLocalizations.of(context)!.cancel),
-                          ),
-                          TextButton(
-                            onPressed: () => Navigator.of(context).pop(true),
-                            child: Text(
-                              AppLocalizations.of(context)!.confirm,
-                              style: TextStyle(color: context.colors.error),
-                            ),
-                          ),
-                        ],
+                      return Padding(
+                        padding: EdgeInsets.only(
+                          bottom: MediaQuery.of(context)
+                              .viewInsets
+                              .bottom, // Adjust for keyboard
+                          left: 16.0,
+                          right: 16.0,
+                          top: 16.0,
+                        ),
+                        child: Wrap(
+                          children: [
+                            Column(
+                              children: [
+                                Text(
+                                  AppLocalizations.of(context)!.confirmDelete,
+                                  textAlign: TextAlign.center,
+                                  style: context.typographies.headingSmall,
+                                ),
+                                SizedBox(height: 32),
+                                Text(AppLocalizations.of(context)!
+                                    .confirmDeleteMessage),
+                                SizedBox(height: 32),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    ElevatedButton(
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(false),
+                                      style: ElevatedButton.styleFrom(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 32, vertical: 12),
+                                        backgroundColor: context.colors.primary,
+                                      ),
+                                      child: Text(
+                                          AppLocalizations.of(context)!.cancel),
+                                    ),
+                                    SizedBox(width: 20),
+                                    ElevatedButton(
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(true),
+                                      style: ElevatedButton.styleFrom(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 32, vertical: 12),
+                                        backgroundColor: context.colors.error,
+                                      ),
+                                      child: Text(AppLocalizations.of(context)!
+                                          .confirm),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 32),
+                              ],
+                            )
+                          ],
+                        ),
                       );
                     },
                   );
@@ -200,7 +246,6 @@ class ProfileScreen extends StatelessWidget {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
                   backgroundColor: context.colors.error,
-                  foregroundColor: Colors.white,
                 ),
                 child: Text(AppLocalizations.of(context)!.deleteAccount),
               ),

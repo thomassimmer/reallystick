@@ -7,7 +7,6 @@ import 'package:reallystick/core/presentation/widgets/app_logo.dart';
 import 'package:reallystick/core/presentation/widgets/custom_container.dart';
 import 'package:reallystick/core/presentation/widgets/custom_text_field.dart';
 import 'package:reallystick/core/presentation/widgets/global_snack_bar.dart';
-import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_bloc.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_events.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_states.dart';
@@ -80,9 +79,6 @@ class LoginScreenState extends State<LoginScreen>
                           ElevatedButton(
                             child: Text(
                               AppLocalizations.of(context)!.comeBack,
-                              style: TextStyle(
-                                color: context.colors.background,
-                              ),
                             ),
                             onPressed: () {
                               context.goNamed('home');
@@ -147,9 +143,6 @@ class LoginScreenState extends State<LoginScreen>
         onPressed: triggerLogin,
         child: Text(
           AppLocalizations.of(context)!.logIn,
-          style: TextStyle(
-            color: context.colors.background,
-          ),
         ),
       ),
     ]);
@@ -196,9 +189,6 @@ class LoginScreenState extends State<LoginScreen>
         onPressed: triggerLogin,
         child: Text(
           AppLocalizations.of(context)!.logIn,
-          style: TextStyle(
-            color: context.colors.background,
-          ),
         ),
       ),
       TextButton(

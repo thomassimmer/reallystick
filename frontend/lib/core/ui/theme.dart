@@ -83,7 +83,7 @@ class AppTheme extends ThemeExtension<AppTheme> {
             foregroundColor: WidgetStateProperty.resolveWith((states) {
               return states.contains(WidgetState.disabled)
                   ? colors.disabled
-                  : null; // Defer to the widget's default.
+                  : colors.background; // Defer to the widget's default.
             }),
           ),
         ),
