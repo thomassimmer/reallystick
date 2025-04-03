@@ -151,7 +151,7 @@ class RecoveryCodeScreen extends StatelessWidget {
                 AuthGenerateTwoFactorAuthenticationConfigEvent(),
               );
             },
-            style: context.styles.buttonSmall,
+            style: context.styles.buttonMedium,
             child: Text(
               AppLocalizations.of(context)!.goToTwoFASetup,
               style: TextStyle(

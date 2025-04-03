@@ -64,31 +64,26 @@ class TwoFactorAuthenticationScreen extends StatelessWidget {
                     AppLocalizations.of(context)!.twoFAIsWellSetup,
                   ),
                   SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ElevatedButton(
-                        onPressed: () {
-                          BlocProvider.of<ProfileBloc>(context).add(
-                            ProfileGenerateTwoFactorAuthenticationConfigEvent(),
-                          );
-                        },
-                        style: context.styles.buttonSmall,
-                        child: Text(
-                            AppLocalizations.of(context)!.generateNewQrCode),
-                      ),
-                      SizedBox(width: 16),
-                      ElevatedButton(
-                        onPressed: () {
-                          BlocProvider.of<ProfileBloc>(context).add(
-                            ProfileDisableTwoFactorAuthenticationEvent(),
-                          );
-                        },
-                        style: context.styles.buttonSmall,
-                        child: Text(AppLocalizations.of(context)!.disableTwoFA),
-                      ),
-                    ],
-                  )
+                  ElevatedButton(
+                    onPressed: () {
+                      BlocProvider.of<ProfileBloc>(context).add(
+                        ProfileGenerateTwoFactorAuthenticationConfigEvent(),
+                      );
+                    },
+                    style: context.styles.buttonMedium,
+                    child:
+                        Text(AppLocalizations.of(context)!.generateNewQrCode),
+                  ),
+                  SizedBox(width: 16),
+                  ElevatedButton(
+                    onPressed: () {
+                      BlocProvider.of<ProfileBloc>(context).add(
+                        ProfileDisableTwoFactorAuthenticationEvent(),
+                      );
+                    },
+                    style: context.styles.buttonMedium,
+                    child: Text(AppLocalizations.of(context)!.disableTwoFA),
+                  ),
                 ],
               ),
             ),
@@ -133,7 +128,7 @@ class TwoFactorAuthenticationScreen extends StatelessWidget {
                         ProfileGenerateTwoFactorAuthenticationConfigEvent(),
                       );
                     },
-                    style: context.styles.buttonSmall.copyWith(
+                    style: context.styles.buttonMedium.copyWith(
                       backgroundColor:
                           WidgetStatePropertyAll(context.colors.secondary),
                     ),

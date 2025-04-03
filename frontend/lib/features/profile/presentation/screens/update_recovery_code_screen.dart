@@ -78,7 +78,7 @@ class UpdateRecoveryCodeScreen extends StatelessWidget {
               ],
               ElevatedButton(
                 onPressed: triggerGenerateNewRecoveryCode,
-                style: context.styles.buttonSmall,
+                style: context.styles.buttonMedium,
                 child:
                     Text(AppLocalizations.of(context)!.generateNewRecoveryCode),
               ),

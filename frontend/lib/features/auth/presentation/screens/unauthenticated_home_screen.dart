@@ -21,7 +21,7 @@ class UnauthenticatedHomeScreenState extends State<UnauthenticatedHomeScreen>
     with SingleTickerProviderStateMixin {
   final _controller = PageController();
   final PageController _pageControllerHabits =
-      PageController(initialPage: 0, viewportFraction: 0.7);
+      PageController(initialPage: 0, viewportFraction: 0.6);
   final PageController _pageControllerChallenges =
       PageController(initialPage: 0, viewportFraction: 0.7);
   final PageController _pageControllerDiscussions =
@@ -184,15 +184,19 @@ class UnauthenticatedHomeScreenState extends State<UnauthenticatedHomeScreen>
 
   Widget _buildScreenshotContainer(String imageUrl) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.black, width: 3),
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(16),
-        child: Image.asset(
-          imageUrl,
+      margin: const EdgeInsets.symmetric(horizontal: 8),
+      child: Center(
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: Colors.black, width: 3),
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: Image.asset(
+              imageUrl,
+            ),
+          ),
         ),
       ),
     );
@@ -237,8 +241,8 @@ class UnauthenticatedHomeScreenState extends State<UnauthenticatedHomeScreen>
           ),
         ] else ...[
           SizedBox(
-            height: 575,
-            width: 430,
+            height: 500,
+            width: 800,
             child: PageView(
               controller: pageController,
               children:
@@ -292,11 +296,6 @@ class UnauthenticatedHomeScreenState extends State<UnauthenticatedHomeScreen>
   Widget _buildFinalPage(PageController controller) {
     return Container(
       padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.black, width: 3),
-        color: Colors.black.withValues(alpha: 0.8),
-      ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -325,8 +324,6 @@ class UnauthenticatedHomeScreenState extends State<UnauthenticatedHomeScreen>
               );
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.white,
-              foregroundColor: Colors.black,
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             ),
             child: Text(AppLocalizations.of(context)!.jumpOnTop),

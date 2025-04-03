@@ -20,10 +20,6 @@ class AppThemeStyles {
       minimumSize: WidgetStatePropertyAll(Size.zero),
       padding: WidgetStatePropertyAll(
           EdgeInsets.symmetric(vertical: 10, horizontal: 12)),
-      shape: WidgetStatePropertyAll(
-        RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(15))),
-      ),
       textStyle: WidgetStatePropertyAll(
         TextStyle(
           fontSize: 12,
@@ -35,10 +31,6 @@ class AppThemeStyles {
       minimumSize: WidgetStatePropertyAll(Size.zero),
       padding: WidgetStatePropertyAll(
           EdgeInsets.symmetric(vertical: 8, horizontal: 24)),
-      shape: WidgetStatePropertyAll(
-        RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(30))),
-      ),
       textStyle: WidgetStatePropertyAll(
         TextStyle(
           fontSize: 16,
@@ -50,13 +42,6 @@ class AppThemeStyles {
       minimumSize: WidgetStatePropertyAll(Size.zero),
       padding: WidgetStatePropertyAll(
         EdgeInsets.symmetric(vertical: 12, horizontal: 24),
-      ),
-      shape: WidgetStatePropertyAll(
-        RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(8),
-          ),
-        ),
       ),
       textStyle: WidgetStatePropertyAll(
         TextStyle(
