@@ -88,6 +88,16 @@ class ProfileScreen extends StatelessWidget {
               _buildSection(context, AppLocalizations.of(context)!.other, [
                 // _buildCardTile(
                 //     context, AppLocalizations.of(context)!.about, 'about'),
+                _buildCardTile(
+                  context,
+                  AppLocalizations.of(context)!.privacyPolicy,
+                  'authenticated-privacy-policy',
+                ),
+                _buildCardTile(
+                  context,
+                  AppLocalizations.of(context)!.termsOfUse,
+                  'authenticated-terms-of-use',
+                ),
               ]),
               _buildActionButtons(context),
               SizedBox(height: 20),

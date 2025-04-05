@@ -1,6 +1,240 @@
 {
   "@@locale": "en",
-  "alreadyAnAccountLogin": "Already have an account? Sign in",
+  "@allActivitiesOnThisDay": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@createdBy": {
+    "placeholders": {
+      "creator": {
+        "type": "String"
+      }
+    }
+  },
+  "@createdByStartsOn": {
+    "placeholders": {
+      "creator": {
+        "type": "String"
+      },
+      "startDate": {
+        "type": "String"
+      }
+    }
+  },
+  "@defaultReminderChallenge": {
+    "placeholders": {
+      "challenge": {
+        "type": "String"
+      }
+    }
+  },
+  "@defaultReminderHabit": {
+    "placeholders": {
+      "habit": {
+        "type": "String"
+      }
+    }
+  },
+  "@descriptionWithTwoPoints": {
+    "placeholders": {
+      "description": {
+        "type": "String"
+      }
+    }
+  },
+  "@deviceInfo": {
+    "placeholders": {
+      "browser": {
+        "type": "String"
+      },
+      "isMobile": {
+        "type": "String"
+      },
+      "model": {
+        "type": "String"
+      },
+      "os": {
+        "type": "String"
+      }
+    }
+  },
+  "@editedAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "@hello": {
+    "placeholders": {
+      "userName": {
+        "example": "Bob",
+        "type": "String"
+      }
+    }
+  },
+  "@joinedByXPeople": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@joinedOn": {
+    "placeholders": {
+      "startDate": {
+        "type": "String"
+      }
+    }
+  },
+  "@lastActivityDays": {
+    "placeholders": {
+      "count": {
+        "description": "The number of days elapsed since the last activity.",
+        "type": "int"
+      }
+    }
+  },
+  "@lastActivityHours": {
+    "placeholders": {
+      "count": {
+        "description": "The number of hours elapsed since the last activity.",
+        "type": "int"
+      }
+    }
+  },
+  "@lastActivityMinutes": {
+    "placeholders": {
+      "count": {
+        "description": "The number of minutes elapsed since the last activity.",
+        "type": "int"
+      }
+    }
+  },
+  "@lastActivityMonths": {
+    "placeholders": {
+      "count": {
+        "description": "The number of months elapsed since the last activity.",
+        "type": "int"
+      }
+    }
+  },
+  "@lastActivitySeconds": {
+    "placeholders": {
+      "count": {
+        "description": "The number of seconds elapsed since the last activity.",
+        "type": "int"
+      }
+    }
+  },
+  "@lastActivityYears": {
+    "placeholders": {
+      "count": {
+        "description": "The number of years elapsed since the last activity.",
+        "type": "int"
+      }
+    }
+  },
+  "@noteWithNote": {
+    "placeholders": {
+      "note": {
+        "type": "String"
+      }
+    }
+  },
+  "@numberOfParticipantsInChallenge": {
+    "placeholders": {
+      "count": {
+        "description": "The number of participants in a given challenge.",
+        "type": "int"
+      }
+    }
+  },
+  "@numberOfParticipantsInHabit": {
+    "placeholders": {
+      "count": {
+        "description": "The number of participants in a given habit.",
+        "type": "int"
+      }
+    }
+  },
+  "@quantityOfSetWithQuantity": {
+    "placeholders": {
+      "quantity": {
+        "type": "int"
+      }
+    }
+  },
+  "@quantityPerSetWithQuantity": {
+    "placeholders": {
+      "quantity": {
+        "type": "int"
+      }
+    }
+  },
+  "@quantityWithQuantity": {
+    "placeholders": {
+      "quantity": {
+        "type": "int"
+      }
+    }
+  },
+  "@replyTo": {
+    "placeholders": {
+      "user": {
+        "type": "String"
+      }
+    }
+  },
+  "@shareChallengeText": {
+    "placeholders": {
+      "link": {
+        "type": "String"
+      }
+    }
+  },
+  "@startsOn": {
+    "placeholders": {
+      "startDate": {
+        "type": "String"
+      }
+    }
+  },
+  "@timeWithTime": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "@twoFASecretKey": {
+    "placeholders": {
+      "secretKey": {
+        "example": "Bob",
+        "type": "String"
+      }
+    }
+  },
+  "@weightWithQuantity": {
+    "placeholders": {
+      "quantity": {
+        "type": "int"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "@writeTo": {
+    "placeholders": {
+      "user": {
+        "type": "String"
+      }
+    }
+  },
   "about": "About",
   "aboutText": "This application is proposed to you by Tanya Simmer.",
   "account": "Account",
@@ -14,15 +248,9 @@
   "admin": "Admin",
   "ageCategory": "Age category",
   "allActivitiesOnThisDay": "All activities on this day ({count})",
-  "@allActivitiesOnThisDay": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "allHabits": "All habits",
   "allReportedMessages": "All Reported Messages",
+  "alreadyAnAccountLogin": "Already have an account? Sign in",
   "analytics": "Analytics",
   "analyticsInfoTooltip": "These statistics are refreshed every hour.",
   "answers": "Answers",
@@ -32,70 +260,54 @@
   "blockThisUser": "Block this user",
   "cancel": "Cancel",
   "category": "Category",
-  "changeChallengeParticipationStartDate": "Change participation start date",
-  "changeColor": "Change color",
-  "changePassword": "Change Password",
-  "changeRecoveryCode": "Change Recovery Code",
   "challengeCreated": "Your challenge was successfully created.",
-  "challengeDuplicated": "This challenge was successfully copied.",
-  "challengeFinished": "Challenge finished",
   "challengeDailyTracking": "Daily Objectives",
   "challengeDailyTrackingCreated": "This daily objective was successfully created.",
   "challengeDailyTrackingDeleted": "This daily objective was successfully deleted.",
-  "challengeDailyTrackingNoteTooLong": "The note must be less than 10 000 characters.",
   "challengeDailyTrackingNotFoundError": "This daily objective does not exist.",
+  "challengeDailyTrackingNoteTooLong": "The note must be less than 10 000 characters.",
   "challengeDailyTrackingUpdated": "Your changes were saved.",
   "challengeDeleted": "Your challenge was successfully deleted.",
+  "challengeDuplicated": "This challenge was successfully copied.",
+  "challengeFinished": "Challenge finished",
+  "challengeName": "Challenge Name",
+  "challengeNameWrongSizeError": "Challenge name must not be empty and less than 100 characters.",
+  "challengeNotFoundError": "This challenge does not exist.",
   "challengeParticipationCreated": "You successfully joined this habit.",
   "challengeParticipationDeleted": "Your participation to this challenge was successfully removed.",
   "challengeParticipationNotFoundError": "You don't seem to be participating to this challenge.",
   "challengeParticipationStartDate": "Challenge joined on:",
   "challengeParticipationUpdated": "Your changes were saved.",
-  "challengeName": "Challenge Name",
-  "challengeNameWrongSizeError": "Challenge name must not be empty and less than 100 characters.",
-  "challengeNotFoundError": "This challenge does not exist.",
   "challengeUpdated": "Your changes were saved.",
   "challengeWasDeletedByCreator": "This challenge was removed by its creator",
   "challenges": "Challenges",
   "challengesInfoTooltip": "This information is refreshed every hour.",
+  "changeChallengeParticipationStartDate": "Change participation start date",
+  "changeColor": "Change color",
+  "changePassword": "Change Password",
+  "changeRecoveryCode": "Change Recovery Code",
   "comeBack": "Come Back",
-  "confirmDeletion": "Confirm Deletion",
-  "confirmDeletionQuestion": "Are you sure you want to delete the session on this device?",
   "comingSoon": "Coming soon...",
   "confirm": "Confirm",
   "confirmDelete": "Confirm account deletion",
   "confirmDeleteMessage": "By clicking on \"Confirm\", your account and all associated activities will be permanently deleted.",
+  "confirmDeletion": "Confirm Deletion",
+  "confirmDeletionQuestion": "Are you sure you want to delete the session on this device?",
   "confirmDuplicateChallenge": "Do you want to create a copy of this challenge with the associated daily objectives?",
   "confirmMessageDeletion": "By clicking on \"Confirm\", this message and all replies will be permanently deleted.",
   "connected": "Online",
   "continent": "Continent",
+  "copyright": "© Copyright 2025. All rights reserved.",
   "country": "Country",
   "create": "Create",
-  "createdBy": "Created by {creator}",
-  "@createdBy": {
-    "placeholders": {
-      "creator": {
-        "type": "String"
-      }
-    }
-  },
-  "createdByStartsOn": "Created by {creator}, starts on: {startDate}",
-  "@createdByStartsOn": {
-    "placeholders": {
-      "creator": {
-        "type": "String"
-      },
-      "startDate": {
-        "type": "String"
-      }
-    }
-  },
-  "createdChallenges": "Created challenges",
+  "createANewChallenge": "Create a New Challenge",
+  "createANewHabit": "Create a New Habit",
   "createChallenge": "Create challenge",
   "createHabit": "Create habit",
   "createHabitsThatStick": "Create Habits That Stick",
-  "createANewChallenge": "Create a New Challenge",
-  "createANewHabit": "Create a New Habit",
+  "createdBy": "Created by {creator}",
+  "createdByStartsOn": "Created by {creator}, starts on: {startDate}",
+  "createdChallenges": "Created challenges",
   "creatorMissingPublicKey": "You do not have secret keys yet. Log in again to create them.",
   "currentPassword": "Current password",
   "dark": "Dark",
@@ -104,21 +316,7 @@
   "dayOfProgram": "Day of the Program",
   "defaultError": "An error occurred. Please try again.",
   "defaultReminderChallenge": "Don't forget to track your challenge: {challenge}",
-  "@defaultReminderChallenge": {
-    "placeholders": {
-      "challenge": {
-        "type": "String"
-      }
-    }
-  },
   "defaultReminderHabit": "Don't forget to track your habit: {habit}",
-  "@defaultReminderHabit": {
-    "placeholders": {
-      "habit": {
-        "type": "String"
-      }
-    }
-  },
   "delete": "Delete",
   "deleteAccount": "Delete account",
   "deleteChallenge": "Delete challenge",
@@ -126,32 +324,9 @@
   "deleteMessage": "Delete Message",
   "description": "Description",
   "descriptionWithTwoPoints": "Description: {description}",
-  "@descriptionWithTwoPoints": {
-    "placeholders": {
-      "description": {
-        "type": "String"
-      }
-    }
-  },
-  "devices": "Devices",
-  "deviceInfo": "{isMobile, select, true {Mobile device} false {Computer} other {Unknown}}{os, select, null {. } other { running on {os}. }}{browser, select, null {App} other {Browser: {browser}}}. {model, select, null {} other {Model: {model}.}}",
-  "@deviceInfo": {
-    "placeholders": {
-      "isMobile": {
-        "type": "String"
-      },
-      "os": {
-        "type": "String"
-      },
-      "browser": {
-        "type": "String"
-      },
-      "model": {
-        "type": "String"
-      }
-    }
-  },
   "deviceDeleteSuccessful": "You successfully stopped the session on this device",
+  "deviceInfo": "{isMobile, select, true {Mobile device} false {Computer} other {Unknown}}{os, select, null {. } other { running on {os}. }}{browser, select, null {App} other {Browser: {browser}}}. {model, select, null {} other {Model: {model}.}}",
+  "devices": "Devices",
   "disableTwoFA": "Disable",
   "disconnected": "Offline",
   "discussion": "Discussion",
@@ -163,13 +338,6 @@
   "editActivity": "Edit this activity",
   "editChallenge": "Edit this challenge",
   "editedAt": "Edited on {time}",
-  "@editedAt": {
-    "placeholders": {
-      "time": {
-        "type": "String"
-      }
-    }
-  },
   "enable": "Enable",
   "enableNotificationsReminder": "Enable reminder notifications",
   "endDate": "End Date",
@@ -193,36 +361,28 @@
   "generateNewRecoveryCode": "Generate a new recovery code",
   "goToTwoFASetup": "Set up two-factor authentication",
   "habit": "Habit",
+  "habitCategoryNotFoundError": "This habit category does not exist.",
+  "habitCreated": "Your habit was successfully created.",
   "habitDailyTracking": "Daily Tracking",
+  "habitDailyTrackingCreated": "Your activity was successfully created.",
+  "habitDailyTrackingDeleted": "Your activity was successfully deleted.",
+  "habitDailyTrackingNotFoundError": "This activity does not exist.",
+  "habitDailyTrackingUpdated": "Your activity was successfully updated.",
+  "habitDescriptionWrongSizeError": "Description must not be empty and less than 200 characters.",
+  "habitIsEmptyError": "A habit must be selected.",
+  "habitName": "Habit name",
+  "habitNameWrongSizeError": "Habit name must not be empty and less than 100 characters.",
+  "habitNotFoundError": "This habit does not exist.",
+  "habitParticipationCreated": "You successfully joined this habit.",
+  "habitParticipationDeleted": "Your participation to this habit was successfully removed.",
+  "habitParticipationNotFoundError": "You don't seem to be participating to this habit.",
+  "habitParticipationUpdated": "Your changes were saved.",
+  "habitUpdated": "Your habit was successfully updated.",
   "habits": "Habits",
   "habitsConcerned": "Habits Concerned",
   "habitsNotMergedError": "These two habits could not be merged.",
-  "habitCategoryNotFoundError": "This habit category does not exist.",
-  "habitCreated": "Your habit was successfully created.",
-  "habitDailyTrackingCreated": "Your activity was successfully created.",
-  "habitDailyTrackingDeleted": "Your activity was successfully deleted.",
-  "habitDailyTrackingUpdated": "Your activity was successfully updated.",
-  "habitDailyTrackingNotFoundError": "This activity does not exist.",
-  "habitDescriptionWrongSizeError": "Description must not be empty and less than 200 characters.",
-  "habitIsEmptyError": "A habit must be selected.",
-  "habitParticipationCreated": "You successfully joined this habit.",
-  "habitParticipationDeleted": "Your participation to this habit was successfully removed.",
-  "habitParticipationUpdated": "Your changes were saved.",
-  "habitName": "Habit name",
-  "habitNotFoundError": "This habit does not exist.",
-  "habitParticipationNotFoundError": "You don't seem to be participating to this habit.",
-  "habitNameWrongSizeError": "Habit name must not be empty and less than 100 characters.",
-  "habitUpdated": "Your habit was successfully updated.",
   "hasChildren": "Parent of children",
   "hello": "Hello {userName}",
-  "@hello": {
-    "placeholders": {
-      "userName": {
-        "type": "String",
-        "example": "Bob"
-      }
-    }
-  },
   "highSchoolOrLess": "High school or less",
   "highSchoolPlusFiveOrMoreYears": "High school + 5 years of studies or more",
   "highSchoolPlusOneOrTwoYears": "High school + 1 or 2 years of studies",
@@ -243,86 +403,24 @@
   "joinChallengeReachYourGoals": "Join Challenges,\nReach Your Goals",
   "joinThisChallenge": "Participate in this challenge",
   "joinedByXPeople": "{count,plural, zero {Joined by nobody yet} one {Joined by {count} person} other {Joined by {count} people}}",
-  "@joinedByXPeople": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "joinedOn": "Joined on: {startDate}",
-  "@joinedOn": {
-    "placeholders": {
-      "startDate": {
-        "type": "String"
-      }
-    }
-  },
   "jumpOnTop": "Jump to Top",
   "keepRecoveryCodeSafe": "Please keep this recovery code safe.\n\nIt is necessary if you lose your password or access to your 2FA application.",
   "language": "Language",
   "lastActivity": "Last activity:",
   "lastActivityDate": "Last activity date:",
-  "lastActivitySeconds": "{count,plural, =0 {Just now} one {{count} second ago} other {{count} seconds ago}}",
-  "@lastActivitySeconds": {
-    "placeholders": {
-      "count": {
-        "type": "int",
-        "description": "The number of seconds elapsed since the last activity."
-      }
-    }
-  },
-  "lastActivityMinutes": "{count,plural, one {{count} minute ago} other {{count} minutes ago}}",
-  "@lastActivityMinutes": {
-    "placeholders": {
-      "count": {
-        "type": "int",
-        "description": "The number of minutes elapsed since the last activity."
-      }
-    }
-  },
-  "lastActivityHours": "{count,plural, one {{count} hour ago} other {{count} hours ago}}",
-  "@lastActivityHours": {
-    "placeholders": {
-      "count": {
-        "type": "int",
-        "description": "The number of hours elapsed since the last activity."
-      }
-    }
-  },
   "lastActivityDays": "{count,plural, one {{count} day ago} other {{count} days ago}}",
-  "@lastActivityDays": {
-    "placeholders": {
-      "count": {
-        "type": "int",
-        "description": "The number of days elapsed since the last activity."
-      }
-    }
-  },
+  "lastActivityHours": "{count,plural, one {{count} hour ago} other {{count} hours ago}}",
+  "lastActivityMinutes": "{count,plural, one {{count} minute ago} other {{count} minutes ago}}",
   "lastActivityMonths": "{count,plural, one {{count} month ago} other {{count} months ago}}",
-  "@lastActivityMonths": {
-    "placeholders": {
-      "count": {
-        "type": "int",
-        "description": "The number of months elapsed since the last activity."
-      }
-    }
-  },
+  "lastActivitySeconds": "{count,plural, =0 {Just now} one {{count} second ago} other {{count} seconds ago}}",
   "lastActivityYears": "{count,plural, one {{count} year ago} other {{count} years ago}}",
-  "@lastActivityYears": {
-    "placeholders": {
-      "count": {
-        "type": "int",
-        "description": "The number of years elapsed since the last activity."
-      }
-    }
-  },
   "levelOfEducation": "Level of education",
   "light": "Light",
   "likedMessages": "Liked Messages",
   "livesInUrbanArea": "Living in urban area",
-  "livingInUrbanArea": "Urban area",
   "livingInRuralArea": "Rural area",
+  "livingInUrbanArea": "Urban area",
   "logIn": "Log In",
   "loginSuccessful": "You successfully logged in.",
   "logout": "Log out",
@@ -330,40 +428,30 @@
   "longName": "Long name",
   "male": "Male",
   "males": "Males",
-  "markedAsFinishedChallenges": "Finished challenges",
   "markChallengeAsFinished": "You arrived at the end of this challenge, congratulations!\nMark it as finished to do it again later without losing the details of this participation.",
+  "markedAsFinishedChallenges": "Finished challenges",
   "mergeHabit": "Merge Habit",
   "message": "Message",
-  "messages": "Messages",
-  "messagesAreEncrypted": "Messages are end-to-end encrypted.\nNo one outside of this chat, not even our team, can read them.",
   "messageDeletedError": "This message has been deleted.",
   "messageNotFoundError": "Message not found.",
+  "messages": "Messages",
+  "messagesAreEncrypted": "Messages are end-to-end encrypted.\nNo one outside of this chat, not even our team, can read them.",
   "missingDateTimeError": "The date can't be left empty.",
   "newDiscussion": "New Discussion",
   "newPassword": "New password",
   "next": "Next",
   "no": "No",
-  "note": "Note",
-  "noteWithNote": "Note:\n\n{note}",
-  "@noteWithNote": {
-    "placeholders": {
-      "note": {
-        "type": "String"
-      }
-    }
-  },
-  "notifications": "Notifications",
   "noAccountCreateOne": "No account? Create one here.",
   "noActivityRecordedYet": "No activity recorded yet.",
   "noAnswer": "I prefer to not answer",
   "noAnswerForThisMessageYet": "No answer for this message yet.",
-  "noChallengesForHabitYet": "No challenges yet.\nCreate the first challenge for this habit!",
   "noChallengeDailyTrackingYet": "No daily objectives set yet.",
+  "noChallengesForHabitYet": "No challenges yet.\nCreate the first challenge for this habit!",
+  "noChallengesYet": "You do not have challenges yet.",
   "noConcernedHabitsYet": "There are no concerned habits in this challenge yet.",
   "noContent": "No content to display",
-  "noChallengesYet": "You do not have challenges yet.",
-  "noDevices": "No device to display",
   "noDeviceInfo": "No device information to display",
+  "noDevices": "No device to display",
   "noDiscussionsForChallengeYet": "No discussions yet.\nCreate the first discussion for this challenge!",
   "noDiscussionsForHabitYet": "No discussions yet.\nCreate the first discussion for this habit!",
   "noEmailOfIdentifiableDataRequired": "No email or identifiable data required",
@@ -376,27 +464,14 @@
   "noReportedMessages": "You did not report any message yet.",
   "noResultsFound": "No results found.",
   "noWrittenMessages": "You did not write any message yet.",
+  "note": "Note",
+  "noteWithNote": "Note:\n\n{note}",
+  "notifications": "Notifications",
   "numberOfDaysToRepeatThisObjective": "Number of days to repeat this objective",
-  "numberOfParticipantsInChallengeTitle": "Number of participants",
   "numberOfParticipantsInChallenge": "{count, plural, zero {No one participates in this challenge.} one {{count} person participates in this challenge.} other {{count} people participate in this challenge.}}",
-  "@numberOfParticipantsInChallenge": {
-    "placeholders": {
-      "count": {
-        "type": "int",
-        "description": "The number of participants in a given challenge."
-      }
-    }
-  },
-  "numberOfParticipantsInHabitTitle": "Number of participants",
+  "numberOfParticipantsInChallengeTitle": "Number of participants",
   "numberOfParticipantsInHabit": "{count, plural, zero {No one participates in this habit.} one {{count} person participates in this habit.} other {{count} people participate in this habit.}}",
-  "@numberOfParticipantsInHabit": {
-    "placeholders": {
-      "count": {
-        "type": "int",
-        "description": "The number of participants in a given habit."
-      }
-    }
-  },
+  "numberOfParticipantsInHabitTitle": "Number of participants",
   "ongoingChallenges": "Ongoing challenges",
   "other": "Other",
   "otherChallenges": "Other challenges",
@@ -414,6 +489,8 @@
   "pleaseLoginOrSignUp": "Please log in or sign up to continue.",
   "poor": "Poor",
   "previous": "Previous",
+  "privacyPolicy": "Privacy Policy",
+  "privacyPolicyMarkdown": "# Privacy Policy\n\n**Effective Date:** April 5, 2025  \n**Last Updated:** April 5, 2025\n\nWelcome to **ReallyStick**, a social habit-tracking platform that enables users to track their daily progress, join challenges, and engage in public or private discussions — all while maintaining control over their personal data.\n\n## 1. Information We Collect\n\n### Required Data\n- Username\n- Password (hashed securely)\n- Recovery Code\n- Device Information (OS, platform, type)\n- IP Address\n- Session Tokens\n\n### Optional Demographics\n- Continent\n- Country\n- Age category\n- Gender\n- Level of study\n- Level of wealth\n- Employment status\n\n## 2. Private Messaging & Encryption\n\n- End-to-end encrypted private messages\n- Your private key is stored only on your device\n- We cannot read your private messages\n\n## 3. How We Use Your Data\n\nWe use your data to:\n- Provide app functionality\n- Manage device sessions\n- Generate anonymous analytics\n- Send push notifications (via Google Firebase)\n- Monitor abuse and maintain security\n\nWe do **not** sell or share your data for advertising.\n\n## 4. Data Sharing\n\nOnly external service:  \n- **Google Firebase** – to send push notifications\n\n## 5. Public Interactions\n\n- Only usernames are shown publicly\n- Public messages can be reported and moderated\n\n## 6. Data Retention & Deletion\n\nUsers can delete their account and all related data from their profile page.\n\n## 7. Security Measures\n\n- Hashed passwords\n- Local token storage\n- End-to-end encryption\n- IP logging for abuse prevention\n\n## 8. Anonymity & Identity\n\n- No email or real names required\n- Accounts are pseudonymous\n\n## 9. Children’s Privacy\n\nOur app is open to all users, but parental consent may be required depending on your local laws.\n\n## 10. User Rights (GDPR)\n\n- Access your data\n- Delete your data\n- Opt out of optional data fields\n\n## 11. Policy Changes\n\nWe may update this Privacy Policy. You’ll be notified in-app if we make major changes.\n\n## 12. Contact Us\n\nUse the in-app contact form",
   "profile": "Profile",
   "profileInformation": "Profile Information",
   "profileSettings": "Profile Settings",
@@ -422,36 +499,15 @@
   "publicMessageReportCreationSuccessful": "Your report was succesfully sent.",
   "qrCodeSecretKeyCopied": "QR code secret key copied to clipboard.",
   "quantity": "Quantity",
-  "quantityWithQuantity": "Quantity: {quantity}",
-  "@quantityWithQuantity": {
-    "placeholders": {
-      "quantity": {
-        "type": "int"
-      }
-    }
-  },
   "quantityOfSet": "Quantity of set",
-  "quantityOfSetIsNullError": "The quantity of set can't be null.",
   "quantityOfSetIsNegativeError": "The quantity of set can't be negative.",
+  "quantityOfSetIsNullError": "The quantity of set can't be null.",
   "quantityOfSetWithQuantity": "Quantity of set: {quantity}",
-  "@quantityOfSetWithQuantity": {
-    "placeholders": {
-      "quantity": {
-        "type": "int"
-      }
-    }
-  },
   "quantityPerSet": "Quantity per set",
-  "quantityPerSetIsNullError": "The quantity can't be empty.",
   "quantityPerSetIsNegativeError": "The quantity can't be negative.",
+  "quantityPerSetIsNullError": "The quantity can't be empty.",
   "quantityPerSetWithQuantity": "Quantity per set: {quantity}",
-  "@quantityPerSetWithQuantity": {
-    "placeholders": {
-      "quantity": {
-        "type": "int"
-      }
-    }
-  },
+  "quantityWithQuantity": "Quantity: {quantity}",
   "questionActivity": "What is your current activity?",
   "questionAge": "How old are you?",
   "questionFinancialSituation": "How would you describe your financial situation?",
@@ -477,20 +533,13 @@
   "relationshipStatus": "Relationship status",
   "relationshipStatusCouple": "In a relation",
   "relationshipStatusSingle": "Single",
+  "repeatOnMultipleDaysAfter": "Repeat on several days after this one",
   "repetitionNumberIsNegativeError": "The repetition number can't be negative.",
   "repetitionNumberIsNullError": "The repetition number can't be null.",
-  "repeatOnMultipleDaysAfter": "Repeat on several days after this one",
   "reply": "Reply",
   "replyTo": "Reply to {user}...",
-  "@replyTo": {
-    "placeholders": {
-      "user": {
-        "type": "String"
-      }
-    }
-  },
-  "reportedMessages": "Reported Messages",
   "reportMessage": "Report Message",
+  "reportedMessages": "Reported Messages",
   "retry": "Retry",
   "reviewHabit": "Review habit",
   "save": "Save",
@@ -506,40 +555,21 @@
   "share": "Share",
   "shareChallengeSubject": "Join a challenge",
   "shareChallengeText": "Hey! This challenge could be interesting for you: {link}",
-  "@shareChallengeText": {
-    "placeholders": {
-      "link": {
-        "type": "String"
-      }
-    }
-  },
   "shortName": "Short name",
   "signUp": "Sign Up",
   "skip": "Skip",
   "startDate": "Start Date",
   "startHabitShort": "Start",
-  "startsOn": "Starts on: {startDate}",
-  "@startsOn": {
-    "placeholders": {
-      "startDate": {
-        "type": "String"
-      }
-    }
-  },
   "startTrackingThisHabit": "Start tracking this habit",
+  "startsOn": "Starts on: {startDate}",
   "statistics": "Statistics",
   "student": "Student",
-  "tapToSeeLess": "Tap to see less",
   "tapForMoreDetails": "Tap for more details",
+  "tapToSeeLess": "Tap to see less",
+  "termsOfUse": "Terms of use",
+  "termsOfUseMarkdown": "# Terms of Use\n\n**Effective Date:** April 5, 2025  \n**Last Updated:** April 5, 2025\n\nWelcome to **ReallyStick**, a social habit-tracking platform designed to help you track and improve your daily habits. By accessing or using the app, you agree to be bound by the following Terms of Use. If you do not agree with these terms, please do not use the app.\n\n## 1. User Accounts\n\nTo use certain features of the app, you must create an account. You agree to:\n- Provide accurate and complete information during the registration process.\n- Keep your account information (username, password, recovery code) confidential.\n- Notify us immediately if you suspect unauthorized access to your account.\n\nYou are responsible for all activities that occur under your account, including any data shared or actions taken through your account.\n\n## 2. Use of the App\n\nYou agree to use **ReallyStick** only for lawful purposes and in accordance with these Terms of Use. You shall not:\n- Violate any applicable laws or regulations.\n- Post, share, or engage in any activity that is harmful, offensive, or illegal.\n- Use the app to send unsolicited messages or spam.\n- Attempt to hack, damage, or gain unauthorized access to the app or its features.\n\nWe reserve the right to suspend or terminate your account if you violate these terms.\n\n## 3. Privacy and Data Collection\n\nYour privacy is important to us. We collect certain data as outlined in our **Privacy Policy**. By using the app, you consent to the collection and use of your data in accordance with our Privacy Policy.\n\n## 4. Content and Ownership\n\n- All content provided by **ReallyStick** (including the app, website, and any related materials) is owned by us or our licensors and is protected by copyright, trademark, and other intellectual property laws.\n- You may not copy, modify, distribute, or create derivative works of any content without our permission.\n- You retain ownership of any content you post within the app, but by posting content, you grant us a license to use, display, and distribute that content within the app and for promotional purposes.\n\n## 5. User-Generated Content\n\nYou are responsible for the content you post or share on **ReallyStick**. This includes text, images, and any other media. You agree not to post:\n- Content that is harmful, harassing, offensive, or discriminatory.\n- Content that infringes on the intellectual property rights of others.\n- Content that violates any applicable laws.\n\nWe reserve the right to remove any content that violates these terms.\n\n## 6. Push Notifications\n\nWe may send you push notifications for updates, reminders, and important app-related information. You can manage or disable these notifications in the app’s settings.\n\n## 7. Termination\n\nWe reserve the right to suspend or terminate your access to **ReallyStick** at any time, for any reason, including if you violate these Terms of Use. Upon termination, your account will be deleted, and you will lose access to the app.\n\n## 8. Disclaimers\n\n- The app is provided \"as-is\" without any warranties of any kind, either express or implied.\n- We do not guarantee that the app will be error-free, secure, or available at all times.\n\n## 9. Limitation of Liability\n\nTo the fullest extent permitted by law, we are not liable for any damages arising from your use or inability to use **ReallyStick**, including but not limited to data loss, system errors, or any other indirect or consequential damages.\n\n## 10. Indemnification\n\nYou agree to indemnify, defend, and hold harmless **ReallyStick** and its affiliates from any claims, damages, liabilities, and expenses (including legal fees) arising from your use of the app, your violation of these Terms of Use, or any content you post or share on the app.\n\n## 11. Governing Law\n\nThese Terms of Use are governed by the laws of the jurisdiction in which you reside. Any disputes will be resolved in the appropriate courts in your region.\n\n## 12. Changes to the Terms\n\nWe may update these Terms of Use from time to time. If we make any material changes, we will notify you within the app. The most current version of these terms will always be available in the app.\n\n## 13. Contact Us\n\nIf you have any questions or concerns regarding these Terms of Use, please contact us using the in-app contact form.",
   "theme": "Theme",
   "timeWithTime": "Time: {time}",
-  "@timeWithTime": {
-    "placeholders": {
-      "time": {
-        "type": "String"
-      }
-    }
-  },
   "topActivityCardTitle": "Activity",
   "topAgesCardTitle": "Age categories",
   "topCountriesCardTitle": "Countries",
@@ -555,14 +585,6 @@
   "twoFAIsWellSetup": "Two-Factor Authentication is successfully set up for your account.",
   "twoFAScanQrCode": "Scan this QR code with your authentication app.",
   "twoFASecretKey": "Your QR code secret key is: {secretKey}",
-  "@twoFASecretKey": {
-    "placeholders": {
-      "secretKey": {
-        "type": "String",
-        "example": "Bob"
-      }
-    }
-  },
   "twoFASetup": "Enable two-factor authentication to secure your account.",
   "twoFactorAuthenticationNotEnabledError": "Two-factor authentication is not enabled for your account.",
   "unableToLoadRecoveryCode": "Unable to load the recovery code.",
@@ -588,27 +610,10 @@
   "weightIsNegativeError": "Weight can't be negative.",
   "weightUnit": "Weight Unit",
   "weightWithQuantity": "Weight: {quantity} {unit}",
-  "@weightWithQuantity": {
-    "placeholders": {
-      "quantity": {
-        "type": "int"
-      },
-      "unit": {
-        "type": "String"
-      }
-    }
-  },
   "welcome": "Welcome on ReallyStick",
   "whatIsThis": "What is this?",
   "worker": "Worker",
   "writeTo": "Write to {user}...",
-  "@writeTo": {
-    "placeholders": {
-      "user": {
-        "type": "String"
-      }
-    }
-  },
   "writtenMessages": "Written Messages",
   "yes": "Yes",
   "youAreNotAlone": "You are not alone.\nTalk. Share. Grow.",

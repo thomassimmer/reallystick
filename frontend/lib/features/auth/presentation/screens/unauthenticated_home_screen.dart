@@ -304,14 +304,19 @@ class UnauthenticatedHomeScreenState extends State<UnauthenticatedHomeScreen>
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          Spacer(),
           AppLogo(size: 200),
           Text(
-            "✅ ${AppLocalizations.of(context)!.noEmailOfIdentifiableDataRequired}\n\n"
-            "✅ ${AppLocalizations.of(context)!.personalizedNotificationsToStayOnTrack}\n\n"
-            "✅ ${AppLocalizations.of(context)!.endToEndEncryptedPrivateMessages}\n\n"
-            "✅ ${AppLocalizations.of(context)!.availableOnIosAndroidWebIn}",
+            "· ${AppLocalizations.of(context)!.noEmailOfIdentifiableDataRequired}\n\n"
+            "· ${AppLocalizations.of(context)!.personalizedNotificationsToStayOnTrack}\n\n"
+            "· ${AppLocalizations.of(context)!.endToEndEncryptedPrivateMessages}\n\n"
+            "· ${AppLocalizations.of(context)!.availableOnIosAndroidWebIn}",
             textAlign: TextAlign.center,
-            style: TextStyle(color: context.colors.background, fontSize: 16),
+            style: TextStyle(
+              color: context.colors.background,
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+            ),
           ),
           const SizedBox(height: 20),
           Text(
@@ -332,6 +337,40 @@ class UnauthenticatedHomeScreenState extends State<UnauthenticatedHomeScreen>
             ),
             child: Text(AppLocalizations.of(context)!.jumpOnTop),
           ),
+          Spacer(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextButton(
+                onPressed: () => context.goNamed('privacy-policy'),
+                child: Text(
+                  AppLocalizations.of(context)!.privacyPolicy,
+                  style: TextStyle(
+                    color: context.colors.background,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+              TextButton(
+                onPressed: () => context.goNamed('terms-of-use'),
+                child: Text(
+                  AppLocalizations.of(context)!.termsOfUse,
+                  style: TextStyle(
+                    color: context.colors.background,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Text(
+            AppLocalizations.of(context)!.copyright,
+            style: TextStyle(
+              color: context.colors.background,
+              fontSize: 13,
+            ),
+          ),
+          SizedBox(height: 20),
         ],
       ),
     );

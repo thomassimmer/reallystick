@@ -1,7 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reallystick/core/presentation/screens/error_screen.dart';
+import 'package:reallystick/core/presentation/screens/privacy_policy.dart';
 import 'package:reallystick/core/presentation/screens/root_screen.dart';
+import 'package:reallystick/core/presentation/screens/terms_of_use.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_bloc.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_states.dart';
 import 'package:reallystick/features/auth/presentation/screens/login_screen.dart';
@@ -375,6 +377,16 @@ class AppRouter {
                 name: 'profile-notifications',
                 builder: (context, state) => NotificationSelectionScreen(),
               ),
+              GoRoute(
+                path: 'privacy-policy',
+                name: 'authenticated-privacy-policy',
+                builder: (context, state) => PrivacyPolicyScreen(),
+              ),
+              GoRoute(
+                path: '/terms-of-use',
+                name: 'authenticated-terms-of-use',
+                builder: (context, state) => TermsOfUseScreen(),
+              )
             ],
           ),
         ],
@@ -393,6 +405,18 @@ class AppRouter {
           }
           return null;
         },
+        routes: [
+          GoRoute(
+            path: '/privacy-policy',
+            name: 'privacy-policy',
+            builder: (context, state) => PrivacyPolicyScreen(),
+          ),
+          GoRoute(
+            path: '/terms-of-use',
+            name: 'terms-of-use',
+            builder: (context, state) => TermsOfUseScreen(),
+          )
+        ],
       ),
 
       // Auth routes
