@@ -248,19 +248,13 @@ pub async fn register_user(
     let mut args = FluentArgs::new();
     args.set("username", new_user.username);
 
-    println!("new_user.locale: {}", new_user.locale);
-
     let private_message = PrivateMessage {
         id: Uuid::new_v4(),
         discussion_id: discussion.id,
         creator: reallystick_user.id,
         created_at: now(),
         updated_at: None,
-        content: translator.translate(
-            &new_user.locale,
-            "welcome-private-message",
-            Some(args),
-        ),
+        content: translator.translate(&new_user.locale, "welcome-private-message", Some(args)),
         creator_encrypted_session_key: "NOT_ENCRYPTED".to_string(),
         recipient_encrypted_session_key: "NOT_ENCRYPTED".to_string(),
         deleted: false,

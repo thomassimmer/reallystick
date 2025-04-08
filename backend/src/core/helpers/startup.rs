@@ -3,6 +3,7 @@ use std::collections::HashMap;
 use argon2::PasswordHasher;
 use argon2::{password_hash::SaltString, Argon2};
 use chrono::{Duration, Utc};
+use fluent::FluentArgs;
 use rand::rngs::OsRng;
 use serde_json::json;
 use sqlx::PgPool;
@@ -17,13 +18,24 @@ use crate::features::habits::helpers::unit::create_unit;
 use crate::features::habits::structs::models::habit_daily_tracking::HabitDailyTracking;
 use crate::features::habits::structs::models::habit_participation::HabitParticipation;
 use crate::features::habits::structs::models::unit::Unit;
-use crate::features::profile::helpers::profile::create_user;
+use crate::features::private_discussions::helpers::private_discussion::{
+    self, get_private_discussion_by_users,
+};
+use crate::features::private_discussions::helpers::private_discussion_participation::create_private_discussion_participation;
+use crate::features::private_discussions::helpers::private_message;
+use crate::features::private_discussions::structs::models::private_discussion::PrivateDiscussion;
+use crate::features::private_discussions::structs::models::private_discussion_participation::PrivateDiscussionParticipation;
+use crate::features::private_discussions::structs::models::private_message::PrivateMessage;
+use crate::features::profile::helpers::profile::{
+    create_user, get_all_users, get_user_by_username,
+};
 use crate::features::{
     habits::structs::models::{habit::Habit, habit_category::HabitCategory},
     profile::structs::models::User,
 };
 
 use super::mock_now::now;
+use super::translation::Translator;
 
 pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
     let mut transaction = match pool.begin().await {
@@ -791,6 +803,92 @@ pub async fn reset_database(pool: &PgPool) -> Result<(), sqlx::Error> {
     sqlx::query("DELETE FROM challenges;").execute(pool).await?;
     sqlx::query("DELETE FROM units;").execute(pool).await?;
     sqlx::query("DELETE FROM users;").execute(pool).await?;
+
+    Ok(())
+}
+
+pub async fn create_missing_discussions_with_reallystick_user(
+    pool: &PgPool,
+) -> Result<(), sqlx::Error> {
+    let mut transaction = match pool.begin().await {
+        Ok(t) => t,
+        Err(_) => panic!("Can't get a transaction."),
+    };
+
+    let users = get_all_users(&mut *transaction).await?;
+
+    let reallystick_user = get_user_by_username(&mut *transaction, "reallystick")
+        .await?
+        .unwrap();
+
+    for user in users {
+        let existing_discussion =
+            get_private_discussion_by_users(&mut *transaction, user.id, reallystick_user.id)
+                .await?;
+
+        if existing_discussion.is_some() {
+            continue;
+        }
+
+        let discussion = PrivateDiscussion {
+            id: Uuid::new_v4(),
+            created_at: now(),
+        };
+
+        private_discussion::create_private_discussion(&mut *transaction, &discussion).await?;
+
+        let discussion_participation_for_user = PrivateDiscussionParticipation {
+            id: Uuid::new_v4(),
+            user_id: user.id,
+            discussion_id: discussion.id,
+            color: "blue".to_string(),
+            created_at: now(),
+            has_blocked: false,
+        };
+
+        let discussion_participation_for_reallystick_user = PrivateDiscussionParticipation {
+            id: Uuid::new_v4(),
+            user_id: reallystick_user.id,
+            discussion_id: discussion.id,
+            color: "blue".to_string(),
+            created_at: now(),
+            has_blocked: false,
+        };
+
+        create_private_discussion_participation(
+            &mut *transaction,
+            &discussion_participation_for_user,
+        )
+        .await?;
+
+        create_private_discussion_participation(
+            &mut *transaction,
+            &discussion_participation_for_reallystick_user,
+        )
+        .await?;
+
+        let mut args = FluentArgs::new();
+        args.set("username", user.username);
+
+        let translator = Translator::new();
+
+        let private_message = PrivateMessage {
+            id: Uuid::new_v4(),
+            discussion_id: discussion.id,
+            creator: reallystick_user.id,
+            created_at: now(),
+            updated_at: None,
+            content: translator.translate(&user.locale, "welcome-private-message", Some(args)),
+            creator_encrypted_session_key: "NOT_ENCRYPTED".to_string(),
+            recipient_encrypted_session_key: "NOT_ENCRYPTED".to_string(),
+            deleted: false,
+            seen: false,
+        };
+
+        private_message::create_private_message(&mut *transaction, &private_message).await?;
+    }
+
+    transaction.commit().await?;
 
     Ok(())
 }

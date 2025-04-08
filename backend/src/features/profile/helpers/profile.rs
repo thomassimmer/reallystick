@@ -210,6 +210,22 @@ E: Executor<'a, Database = Postgres>,
     .await
 }
 
+pub async fn get_all_users<'a, E>(
+    executor: E,
+) -> Result<Vec<User>, sqlx::Error> where
+E: Executor<'a, Database = Postgres>,
+{
+    sqlx::query_as!(
+        User,
+        r#"
+        SELECT *
+        FROM users
+        "#,
+    )
+    .fetch_all(executor)
+    .await
+}
+
 pub async fn delete_user_by_id<'a, E>(
     executor: E,
     user_id: Uuid,

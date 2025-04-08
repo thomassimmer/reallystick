@@ -1,8 +1,10 @@
 use clap::Parser;
 use reallystick::configuration::get_configuration;
-use reallystick::core::helpers::startup::{populate_database, reset_database};
+use reallystick::core::helpers::startup::{
+    create_missing_discussions_with_reallystick_user, populate_database, reset_database,
+};
 use reallystick::startup::get_connection_pool;
-use tracing::error;
+use tracing::{error, info};
 
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
@@ -19,19 +21,29 @@ async fn main() {
 
     match action.as_str() {
         "reset" => {
-            println!("Resetting the database...");
+            info!("Resetting the database...");
             if let Err(e) = reset_database(&pool).await {
                 error!("Failed to reset the database: {}", e);
             } else {
-                println!("Database successfully reset.");
+                info!("Database successfully reset.");
             }
         }
         "populate" => {
-            println!("Populating the database...");
+            info!("Populating the database...");
             if let Err(e) = populate_database(&pool).await {
                 error!("Failed to populate the database: {}", e);
             } else {
-                println!("Database successfully populated.");
+                info!("Database successfully populated.");
+            }
+        }
+        "create_missing_discussions_with_reallystick_user" => {
+            if let Err(e) = create_missing_discussions_with_reallystick_user(&pool).await {
+                error!(
+                    "Failed to create missing discussions with reallystick user: {}",
+                    e
+                );
+            } else {
+                info!("Success !");
             }
         }
         _ => error!("Unknown action: {}", action),
