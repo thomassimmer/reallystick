@@ -179,7 +179,10 @@ class PrivateDiscussionBloc
           String clearContent =
               "Failed to find private key. Can't decrypt this message";
 
-          if (privateKey != null) {
+          if (discussion.lastMessage!.creatorEncryptedSessionKey ==
+              'NOT_ENCRYPTED') {
+            clearContent = discussion.lastMessage!.content;
+          } else if (privateKey != null) {
             final aesKey =
                 await decryptSymmetricKeyWithRsaPrivateKeyUsecase.call(
               encryptedAesKey: isCreator

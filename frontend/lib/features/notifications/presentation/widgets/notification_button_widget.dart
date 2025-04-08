@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart' hide Notification;
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/notifications/presentation/blocs/notifications/notifications_bloc.dart';
 import 'package:reallystick/features/notifications/presentation/blocs/notifications/notifications_events.dart';
 import 'package:reallystick/features/notifications/presentation/blocs/notifications/notifications_states.dart';
@@ -29,7 +28,7 @@ class NotificationButtonWidgetState extends State<NotificationButtonWidget> {
                 notificationState.notificationScreenIsVisible
                     ? Icons.notifications
                     : Icons.notifications_outlined,
-                color: context.colors.background,
+                color: Colors.white,
               ),
               onPressed: () {
                 BlocProvider.of<NotificationBloc>(context).add(

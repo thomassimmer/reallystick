@@ -140,7 +140,9 @@ class PrivateMessageBloc extends Bloc<PrivateMessageEvent, PrivateMessageState>
           String clearContent =
               "Failed to find private key. Can't decrypt this message";
 
-          if (privateKey != null) {
+          if (message.creatorEncryptedSessionKey == 'NOT_ENCRYPTED') {
+            clearContent = message.content;
+          } else if (privateKey != null) {
             final aesKey =
                 await decryptSymmetricKeyWithRsaPrivateKeyUsecase.call(
               encryptedAesKey: isCreator
@@ -194,7 +196,9 @@ class PrivateMessageBloc extends Bloc<PrivateMessageEvent, PrivateMessageState>
     String clearContent =
         "Failed to find private key. Can't decrypt this message";
 
-    if (privateKey != null) {
+    if (event.message.creatorEncryptedSessionKey == 'NOT_ENCRYPTED') {
+      clearContent = event.message.content;
+    } else if (privateKey != null) {
       final aesKey = await decryptSymmetricKeyWithRsaPrivateKeyUsecase.call(
         encryptedAesKey: isCreator
             ? event.message.creatorEncryptedSessionKey

@@ -466,31 +466,15 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
                       const SizedBox(height: 16.0),
 
                       // Icon Selector with error display
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              CustomElevatedButtonFormField(
-                                onPressed: () => _showEmojiPicker(
-                                  context,
-                                  userLocale,
-                                  true,
-                                ),
-                                iconData: Icons.emoji_emotions,
-                                label: AppLocalizations.of(context)!.icon,
-                                errorText:
-                                    displayIconErrorMessageForCurrentHabit,
-                              ),
-                              const SizedBox(width: 16.0),
-                              if (_iconForCurrentHabit != null)
-                                Text(
-                                  _iconForCurrentHabit!,
-                                  style: TextStyle(fontSize: 24),
-                                ),
-                            ],
-                          ),
-                        ],
+                      Text(AppLocalizations.of(context)!.icon),
+                      const SizedBox(height: 8),
+                      CustomElevatedButtonFormField(
+                        onPressed: () =>
+                            _showEmojiPicker(context, userLocale, true),
+                        iconData: null,
+                        label: _iconForCurrentHabit ?? "Choose an icon",
+                        errorText: displayIconErrorMessageForCurrentHabit,
+                        labelSize: _iconForCurrentHabit != null ? 20 : null,
                       ),
 
                       const SizedBox(height: 16.0),
@@ -624,31 +608,16 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
                         const SizedBox(height: 16.0),
 
                         // Icon Selector with error display
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                CustomElevatedButtonFormField(
-                                  onPressed: () => _showEmojiPicker(
-                                    context,
-                                    userLocale,
-                                    false,
-                                  ),
-                                  iconData: Icons.emoji_emotions,
-                                  label: AppLocalizations.of(context)!.icon,
-                                  errorText:
-                                      displayIconErrorMessageForHabitToMergeWith,
-                                ),
-                                const SizedBox(width: 16.0),
-                                if (_iconForHabitToMergeWith != null)
-                                  Text(
-                                    _iconForHabitToMergeWith!,
-                                    style: TextStyle(fontSize: 24),
-                                  ),
-                              ],
-                            ),
-                          ],
+                        Text(AppLocalizations.of(context)!.icon),
+                        const SizedBox(height: 8),
+                        CustomElevatedButtonFormField(
+                          onPressed: () =>
+                              _showEmojiPicker(context, userLocale, false),
+                          iconData: null,
+                          label: _iconForHabitToMergeWith ?? "Choose an icon",
+                          errorText: displayIconErrorMessageForHabitToMergeWith,
+                          labelSize:
+                              _iconForHabitToMergeWith != null ? 20 : null,
                         ),
 
                         const SizedBox(height: 16.0),

@@ -9,3 +9,4 @@ user-liked-your-message-body = { $username } just liked your message.
 user-replied-to-your-message-title = New reply
 user-replied-to-your-message-body = { $username } just replied to your message.
 reminder-title = Reminder
+welcome-private-message = Welcome on ReallyStick { $username }!\n\nYou can write all your feedbacks in here. Our teams will answer you as soon as possible.\n\n🫶

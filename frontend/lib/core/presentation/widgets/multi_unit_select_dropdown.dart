@@ -80,7 +80,6 @@ class MultiUnitSelectDropdownState extends State<MultiUnitSelectDropdown> {
                         : AppLocalizations.of(context)!.selectUnits,
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,
-                    style: TextStyle(fontSize: 16),
                   ),
                 ),
                 Icon(

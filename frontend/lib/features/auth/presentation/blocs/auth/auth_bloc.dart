@@ -4,6 +4,7 @@ import 'package:basic_utils/basic_utils.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:get_it/get_it.dart';
+import 'package:reallystick/core/constants/locales.dart';
 import 'package:reallystick/core/messages/message.dart';
 import 'package:reallystick/core/utils/recovery_code_generator.dart';
 import 'package:reallystick/features/auth/data/storage/private_message_key_storage.dart';
@@ -177,11 +178,18 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     final String currentTimeZone = await FlutterTimezone.getLocalTimezone();
 
+    // We use the device locale by default on signup
+    String locale = Platform.localeName;
+
+    // Set english if the code is not recognized
+    if (!locales.map((l) => l['code']).contains(locale)) {
+      locale = 'en';
+    }
+
     final result = await signupUseCase.call(
       username: event.username,
       password: event.password,
-      locale:
-          Platform.localeName, // We use the device locale by default on signup
+      locale: locale,
       theme: event.theme,
       timezone: currentTimeZone,
       publicKey: publicKey,

@@ -1,5 +1,12 @@
-use actix_web::{post, web, HttpRequest, HttpResponse, Responder};
+use std::sync::Arc;
+
+use actix_web::{
+    post,
+    web::{self, Data},
+    HttpRequest, HttpResponse, Responder,
+};
 use argon2::{password_hash::SaltString, Argon2, PasswordHasher};
+use fluent::FluentArgs;
 use rand::rngs::OsRng;
 use sqlx::PgPool;
 use tracing::error;
@@ -7,7 +14,9 @@ use uuid::Uuid;
 
 use crate::{
     core::{
-        constants::errors::AppError, helpers::mock_now::now, structs::responses::GenericResponse,
+        constants::errors::AppError,
+        helpers::{mock_now::now, translation::Translator},
+        structs::responses::GenericResponse,
     },
     features::{
         auth::{
@@ -15,6 +24,18 @@ use crate::{
                 password::is_password_valid, token::generate_tokens, username::is_username_valid,
             },
             structs::{requests::UserRegisterRequest, responses::UserSignupResponse},
+        },
+        private_discussions::{
+            helpers::{
+                private_discussion,
+                private_discussion_participation::create_private_discussion_participation,
+                private_message,
+            },
+            structs::models::{
+                private_discussion::PrivateDiscussion,
+                private_discussion_participation::PrivateDiscussionParticipation,
+                private_message::PrivateMessage,
+            },
         },
         profile::{
             helpers::{
@@ -30,8 +51,9 @@ use crate::{
 pub async fn register_user(
     req: HttpRequest,
     body: web::Json<UserRegisterRequest>,
-    pool: web::Data<PgPool>,
-    secret: web::Data<String>,
+    pool: Data<PgPool>,
+    translator: Data<Arc<Translator>>,
+    secret: Data<String>,
 ) -> impl Responder {
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
@@ -140,7 +162,7 @@ pub async fn register_user(
         secret.as_bytes(),
         new_user.id,
         new_user.is_admin,
-        new_user.username,
+        new_user.username.clone(),
         parsed_device_info,
         &mut *transaction,
     )
@@ -153,6 +175,106 @@ pub async fn register_user(
                 .json(AppError::TokenGeneration.to_response());
         }
     };
+
+    let reallystick_user = match get_user_by_username(&mut *transaction, "reallystick").await {
+        Ok(Some(user)) => user,
+        Ok(None) => {
+            error!("Error: reallystick user does not exist.");
+            return HttpResponse::InternalServerError().json(AppError::UserNotFound.to_response());
+        }
+        Err(e) => {
+            error!("Error: {}", e);
+            return HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response());
+        }
+    };
+
+    let discussion = PrivateDiscussion {
+        id: Uuid::new_v4(),
+        created_at: now(),
+    };
+
+    let create_private_discussion_result =
+        private_discussion::create_private_discussion(&mut *transaction, &discussion).await;
+
+    if let Err(e) = create_private_discussion_result {
+        error!("Error: {}", e);
+        return HttpResponse::InternalServerError()
+            .json(AppError::PrivateDiscussionCreation.to_response());
+    }
+
+    let discussion_participation_for_user = PrivateDiscussionParticipation {
+        id: Uuid::new_v4(),
+        user_id: new_user.id,
+        discussion_id: discussion.id,
+        color: "blue".to_string(),
+        created_at: now(),
+        has_blocked: false,
+    };
+
+    let discussion_participation_for_reallystick_user = PrivateDiscussionParticipation {
+        id: Uuid::new_v4(),
+        user_id: reallystick_user.id,
+        discussion_id: discussion.id,
+        color: "blue".to_string(),
+        created_at: now(),
+        has_blocked: false,
+    };
+
+    let create_discussion_participation_for_user_result = create_private_discussion_participation(
+        &mut *transaction,
+        &discussion_participation_for_user,
+    )
+    .await;
+
+    if let Err(e) = create_discussion_participation_for_user_result {
+        error!("Error: {}", e);
+        return HttpResponse::InternalServerError()
+            .json(AppError::PrivateDiscussionParticipationCreation.to_response());
+    }
+
+    let create_discussion_participation_for_recipient_result =
+        create_private_discussion_participation(
+            &mut *transaction,
+            &discussion_participation_for_reallystick_user,
+        )
+        .await;
+
+    if let Err(e) = create_discussion_participation_for_recipient_result {
+        error!("Error: {}", e);
+        return HttpResponse::InternalServerError()
+            .json(AppError::PrivateDiscussionParticipationCreation.to_response());
+    }
+
+    let mut args = FluentArgs::new();
+    args.set("username", new_user.username);
+
+    println!("new_user.locale: {}", new_user.locale);
+
+    let private_message = PrivateMessage {
+        id: Uuid::new_v4(),
+        discussion_id: discussion.id,
+        creator: reallystick_user.id,
+        created_at: now(),
+        updated_at: None,
+        content: translator.translate(
+            &new_user.locale,
+            "welcome-private-message",
+            Some(args),
+        ),
+        creator_encrypted_session_key: "NOT_ENCRYPTED".to_string(),
+        recipient_encrypted_session_key: "NOT_ENCRYPTED".to_string(),
+        deleted: false,
+        seen: false,
+    };
+
+    let create_private_message_result =
+        private_message::create_private_message(&mut *transaction, &private_message).await;
+
+    if let Err(e) = create_private_message_result {
+        error!("Error: {}", e);
+        return HttpResponse::InternalServerError()
+            .json(AppError::PrivateMessageCreation.to_response());
+    }
 
     if let Err(e) = transaction.commit().await {
         error!("Error: {}", e);

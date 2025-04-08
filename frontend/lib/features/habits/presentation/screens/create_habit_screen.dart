@@ -262,27 +262,15 @@ class CreateHabitScreenState extends State<CreateHabitScreen> {
                           const SizedBox(height: 16.0),
 
                           // Icon Selector with error display
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  CustomElevatedButtonFormField(
-                                    onPressed: () =>
-                                        _showEmojiPicker(context, userLocale),
-                                    iconData: Icons.emoji_emotions,
-                                    label: AppLocalizations.of(context)!.icon,
-                                    errorText: displayIconErrorMessage,
-                                  ),
-                                  const SizedBox(width: 16.0),
-                                  if (_icon != null)
-                                    Text(
-                                      _icon!,
-                                      style: TextStyle(fontSize: 24),
-                                    ),
-                                ],
-                              ),
-                            ],
+                          Text(AppLocalizations.of(context)!.icon),
+                          const SizedBox(height: 8),
+                          CustomElevatedButtonFormField(
+                            onPressed: () =>
+                                _showEmojiPicker(context, userLocale),
+                            iconData: null,
+                            label: _icon ?? "Choose an icon",
+                            errorText: displayIconErrorMessage,
+                            labelSize: _icon != null ? 20 : null,
                           ),
 
                           const SizedBox(height: 16.0),

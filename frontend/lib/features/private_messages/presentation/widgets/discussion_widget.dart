@@ -71,7 +71,9 @@ class DiscussionWidget extends StatelessWidget {
                         Text(AppLocalizations.of(context)!.youBlockedThisUser)
                       ] else ...[
                         Text(
-                          discussion.lastMessage?.content ?? "",
+                          discussion.lastMessage?.content
+                                  .replaceAll('\\n', '\n') ??
+                              "",
                           overflow: TextOverflow.ellipsis,
                           maxLines: 3,
                         ),

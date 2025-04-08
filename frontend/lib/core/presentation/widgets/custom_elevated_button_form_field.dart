@@ -3,35 +3,40 @@ import 'package:reallystick/core/ui/extensions.dart';
 
 class CustomElevatedButtonFormField extends StatelessWidget {
   final VoidCallback? onPressed;
-  final IconData iconData;
+  final IconData? iconData;
   final String label;
   final String? errorText;
   final Color? buttonColor;
-  final double? buttonWidth;
+  final double? labelSize;
 
   CustomElevatedButtonFormField({
     required this.onPressed,
-    required this.iconData,
+    this.iconData,
     required this.label,
     this.errorText,
     this.buttonColor,
-    this.buttonWidth,
+    this.labelSize,
   });
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         ElevatedButton.icon(
           onPressed: onPressed,
-          icon: Icon(
-            iconData,
-            color: context.colors.text,
-          ),
+          icon: iconData != null
+              ? Icon(
+                  iconData,
+                  color: context.colors.text,
+                )
+              : null,
           label: Text(
             label,
-            style: TextStyle(color: context.colors.text),
+            style: context.typographies.bodySmall.copyWith(
+              color: context.colors.text,
+              fontSize: labelSize,
+            ),
           ),
           style: ElevatedButton.styleFrom(
             backgroundColor: buttonColor ?? context.colors.backgroundDark,

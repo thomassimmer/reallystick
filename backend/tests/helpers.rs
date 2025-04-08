@@ -83,6 +83,10 @@ async fn configure_database(config: &DatabaseSettings) -> Pool<Postgres> {
         .await
         .expect("Failed to migrate the database");
 
+    let mut connection = PgConnection::connect_with(&config.with_db())
+        .await
+        .expect("Failed to connect to Postgres");
+
     // Create a user with empty username and password.
     let salt = SaltString::generate(&mut OsRng);
     let argon2 = Argon2::default();
@@ -91,9 +95,46 @@ async fn configure_database(config: &DatabaseSettings) -> Pool<Postgres> {
         .unwrap()
         .to_string();
 
-    let new_user = User {
+    let thomas = User {
         id: Uuid::new_v4(),
         username: "thomas".to_string(),
+        password: password_hash.clone(),
+        locale: "fr".to_string(),
+        theme: "light".to_string(),
+        timezone: "America/New_York".to_string(),
+        is_admin: true,
+        otp_verified: false,
+        otp_base32: None,
+        otp_auth_url: None,
+        created_at: now(),
+        updated_at: now(),
+        public_key: None,
+        private_key_encrypted: None,
+        salt_used_to_derive_key_from_password: None,
+        password_is_expired: false,
+        has_seen_questions: false,
+        age_category: None,
+        gender: None,
+        continent: None,
+        country: None,
+        region: None,
+        activity: None,
+        financial_situation: None,
+        lives_in_urban_area: None,
+        relationship_status: None,
+        level_of_education: None,
+        has_children: None,
+        notifications_enabled: false,
+        notifications_for_private_messages_enabled: false,
+        notifications_for_public_message_liked_enabled: false,
+        notifications_for_public_message_replies_enabled: false,
+        notifications_user_duplicated_your_challenge_enabled: false,
+        notifications_user_joined_your_challenge_enabled: true,
+    };
+
+    let reallystick = User {
+        id: Uuid::new_v4(),
+        username: "reallystick".to_string(),
         password: password_hash,
         locale: "fr".to_string(),
         theme: "light".to_string(),
@@ -128,19 +169,22 @@ async fn configure_database(config: &DatabaseSettings) -> Pool<Postgres> {
         notifications_user_joined_your_challenge_enabled: true,
     };
 
-    let mut connection = PgConnection::connect_with(&config.with_db())
-        .await
-        .expect("Failed to connect to Postgres");
-    let result = create_user(&mut connection, new_user.clone()).await;
+    let result = create_user(&mut connection, thomas.clone()).await;
+
+    if let Err(e) = result {
+        error!("{}", e);
+    }
+
+    let result = create_user(&mut connection, reallystick.clone()).await;
+
+    if let Err(e) = result {
+        error!("{}", e);
+    }
 
     connection
         .execute(r#"DELETE from units;"#)
         .await
         .expect("Failed to create database.");
-
-    if let Err(e) = result {
-        error!("{}", e);
-    }
 
     connection_pool
 }

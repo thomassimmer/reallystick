@@ -16,6 +16,7 @@ class AppLogo extends StatelessWidget {
         Icon(
           CustomIcons.reallystickLogo,
           size: size,
+          color: Colors.white,
         ),
       ],
     );

@@ -83,7 +83,7 @@ class PrivateMessageWidgetState extends State<PrivateMessageWidget> {
                 Text(
                   widget.message.deleted
                       ? AppLocalizations.of(context)!.messageDeletedError
-                      : widget.message.content,
+                      : widget.message.content.replaceAll('\\n', '\n'),
                   maxLines: null,
                   overflow: TextOverflow.visible,
                   softWrap: true,

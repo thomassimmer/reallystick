@@ -39,9 +39,46 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
         .unwrap()
         .to_string();
 
-    let new_user = User {
+    let thomas = User {
         id: Uuid::new_v4(),
         username: "thomas".to_string(),
+        password: password_hash.clone(),
+        locale: "fr".to_string(),
+        theme: "light".to_string(),
+        timezone: "America/New_York".to_string(),
+        is_admin: true,
+        private_key_encrypted: None,
+        salt_used_to_derive_key_from_password: None,
+        public_key: None,
+        otp_verified: false,
+        otp_base32: None,
+        otp_auth_url: None,
+        created_at: now(),
+        updated_at: now(),
+        password_is_expired: false,
+        has_seen_questions: false,
+        age_category: None,
+        gender: None,
+        continent: None,
+        country: None,
+        region: None,
+        activity: None,
+        financial_situation: None,
+        lives_in_urban_area: None,
+        relationship_status: None,
+        level_of_education: None,
+        has_children: None,
+        notifications_enabled: false,
+        notifications_for_private_messages_enabled: false,
+        notifications_for_public_message_liked_enabled: false,
+        notifications_for_public_message_replies_enabled: false,
+        notifications_user_duplicated_your_challenge_enabled: false,
+        notifications_user_joined_your_challenge_enabled: false,
+    };
+
+    let reallystick = User {
+        id: Uuid::new_v4(),
+        username: "reallystick".to_string(),
         password: password_hash,
         locale: "fr".to_string(),
         theme: "light".to_string(),
@@ -246,7 +283,8 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
         create_unit(&mut *transaction, unit).await?;
     }
 
-    let _ = create_user(&mut *transaction, new_user.clone()).await;
+    let _ = create_user(&mut *transaction, thomas.clone()).await;
+    let _ = create_user(&mut *transaction, reallystick.clone()).await;
 
     let habit_categories = HashMap::from([
         (
@@ -540,7 +578,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
         HabitParticipation {
             id: Uuid::new_v4(),
             habit_id: habits.get("smoking").unwrap().id,
-            user_id: new_user.id,
+            user_id: thomas.id,
             color: "blue".to_string(),
             to_gain: false,
             created_at: Utc::now(),
@@ -551,7 +589,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
         HabitParticipation {
             id: Uuid::new_v4(),
             habit_id: habits.get("english").unwrap().id,
-            user_id: new_user.id,
+            user_id: thomas.id,
             color: "yellow".to_string(),
             to_gain: true,
             created_at: Utc::now(),
@@ -562,7 +600,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
         HabitParticipation {
             id: Uuid::new_v4(),
             habit_id: habits.get("weight").unwrap().id,
-            user_id: new_user.id,
+            user_id: thomas.id,
             color: "green".to_string(),
             to_gain: true,
             created_at: Utc::now(),
@@ -573,7 +611,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
         HabitParticipation {
             id: Uuid::new_v4(),
             habit_id: habits.get("pullups").unwrap().id,
-            user_id: new_user.id,
+            user_id: thomas.id,
             color: "green".to_string(),
             to_gain: true,
             created_at: Utc::now(),
@@ -591,7 +629,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
         HabitDailyTracking {
             id: Uuid::new_v4(),
             habit_id: habits.get("smoking").unwrap().id,
-            user_id: new_user.id,
+            user_id: thomas.id,
             datetime: Utc::now() - Duration::days(8),
             created_at: Utc::now() - Duration::days(8),
             quantity_of_set: 1,
@@ -603,7 +641,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
         HabitDailyTracking {
             id: Uuid::new_v4(),
             habit_id: habits.get("smoking").unwrap().id,
-            user_id: new_user.id,
+            user_id: thomas.id,
             datetime: Utc::now() - Duration::days(3),
             created_at: Utc::now() - Duration::days(3),
             quantity_of_set: 1,
@@ -615,7 +653,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
         HabitDailyTracking {
             id: Uuid::new_v4(),
             habit_id: habits.get("english").unwrap().id,
-            user_id: new_user.id,
+            user_id: thomas.id,
             datetime: Utc::now(),
             created_at: Utc::now(),
             quantity_of_set: 1,
@@ -627,7 +665,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
         HabitDailyTracking {
             id: Uuid::new_v4(),
             habit_id: habits.get("english").unwrap().id,
-            user_id: new_user.id,
+            user_id: thomas.id,
             datetime: Utc::now() - Duration::days(1),
             created_at: Utc::now() - Duration::days(1),
             quantity_of_set: 30,
@@ -639,7 +677,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
         HabitDailyTracking {
             id: Uuid::new_v4(),
             habit_id: habits.get("english").unwrap().id,
-            user_id: new_user.id,
+            user_id: thomas.id,
             datetime: Utc::now() - Duration::days(2),
             created_at: Utc::now() - Duration::days(2),
             quantity_of_set: 2,
@@ -651,7 +689,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
         HabitDailyTracking {
             id: Uuid::new_v4(),
             habit_id: habits.get("weight").unwrap().id,
-            user_id: new_user.id,
+            user_id: thomas.id,
             datetime: Utc::now() - Duration::days(7),
             created_at: Utc::now() - Duration::days(7),
             quantity_of_set: 70,
@@ -663,7 +701,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
         HabitDailyTracking {
             id: Uuid::new_v4(),
             habit_id: habits.get("weight").unwrap().id,
-            user_id: new_user.id,
+            user_id: thomas.id,
             datetime: Utc::now() - Duration::days(1),
             created_at: Utc::now() - Duration::days(1),
             quantity_of_set: 71,
@@ -675,7 +713,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
         HabitDailyTracking {
             id: Uuid::new_v4(),
             habit_id: habits.get("pullups").unwrap().id,
-            user_id: new_user.id,
+            user_id: thomas.id,
             datetime: Utc::now(),
             created_at: Utc::now(),
             quantity_of_set: 10,
@@ -687,7 +725,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
         HabitDailyTracking {
             id: Uuid::new_v4(),
             habit_id: habits.get("pullups").unwrap().id,
-            user_id: new_user.id,
+            user_id: thomas.id,
             datetime: Utc::now(),
             created_at: Utc::now(),
             quantity_of_set: 7,
@@ -699,7 +737,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
         HabitDailyTracking {
             id: Uuid::new_v4(),
             habit_id: habits.get("pullups").unwrap().id,
-            user_id: new_user.id,
+            user_id: thomas.id,
             datetime: Utc::now() - Duration::days(2),
             created_at: Utc::now() - Duration::days(2),
             quantity_of_set: 10,
