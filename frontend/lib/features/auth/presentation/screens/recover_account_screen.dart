@@ -272,13 +272,16 @@ class RecoverAccountScreenState extends State<RecoverAccountScreen>
         AppLocalizations.of(context)!.enterValidationCode,
       ),
       SizedBox(height: 16),
-      CustomTextField(
-        controller: otpController,
-        label: AppLocalizations.of(context)!.validationCode,
-        onFieldSubmitted: (_) => recoverAccount(),
-        inputFormatters: <TextInputFormatter>[
-          FilteringTextInputFormatter.digitsOnly
-        ],
+      AutofillGroup(
+        child: CustomTextField(
+          controller: otpController,
+          label: AppLocalizations.of(context)!.validationCode,
+          onFieldSubmitted: (_) => recoverAccount(),
+          inputFormatters: <TextInputFormatter>[
+            FilteringTextInputFormatter.digitsOnly
+          ],
+          autofillHints: [AutofillHints.oneTimeCode],
+        ),
       ),
       SizedBox(height: 24),
       ElevatedButton(

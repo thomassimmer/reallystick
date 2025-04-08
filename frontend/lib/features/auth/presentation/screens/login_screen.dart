@@ -129,14 +129,17 @@ class LoginScreenState extends State<LoginScreen>
         AppLocalizations.of(context)!.enterOneTimePassword,
       ),
       SizedBox(height: 40),
-      CustomTextField(
-        controller: _codeController,
-        label: AppLocalizations.of(context)!.validationCode,
-        obscureText: true,
-        onFieldSubmitted: (_) => triggerLogin(),
-        inputFormatters: <TextInputFormatter>[
-          FilteringTextInputFormatter.digitsOnly
-        ],
+      AutofillGroup(
+        child: CustomTextField(
+          controller: _codeController,
+          label: AppLocalizations.of(context)!.validationCode,
+          obscureText: true,
+          onFieldSubmitted: (_) => triggerLogin(),
+          inputFormatters: <TextInputFormatter>[
+            FilteringTextInputFormatter.digitsOnly
+          ],
+          autofillHints: [AutofillHints.oneTimeCode],
+        ),
       ),
       SizedBox(height: 24),
       ElevatedButton(
@@ -164,16 +167,24 @@ class LoginScreenState extends State<LoginScreen>
         style: TextStyle(fontSize: 20),
       ),
       SizedBox(height: 16),
-      CustomTextField(
-        controller: _usernameController,
-        label: AppLocalizations.of(context)!.username,
-      ),
-      SizedBox(height: 16),
-      CustomTextField(
-        controller: _passwordController,
-        label: AppLocalizations.of(context)!.password,
-        obscureText: true,
-        onFieldSubmitted: (_) => triggerLogin(),
+      AutofillGroup(
+        child: Column(
+          children: [
+            CustomTextField(
+              controller: _usernameController,
+              label: AppLocalizations.of(context)!.username,
+              autofillHints: [AutofillHints.username],
+            ),
+            SizedBox(height: 16),
+            CustomTextField(
+              controller: _passwordController,
+              label: AppLocalizations.of(context)!.password,
+              obscureText: true,
+              onFieldSubmitted: (_) => triggerLogin(),
+              autofillHints: [AutofillHints.password],
+            ),
+          ],
+        ),
       ),
       TextButton(
         onPressed: () {

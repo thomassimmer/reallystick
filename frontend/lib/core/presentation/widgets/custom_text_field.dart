@@ -17,6 +17,7 @@ class CustomTextField extends StatefulWidget {
   final void Function(String)? onChanged;
   final void Function(String)? onFieldSubmitted;
   final List<TextInputFormatter>? inputFormatters;
+  final List<String>? autofillHints;
 
   const CustomTextField({
     this.controller,
@@ -32,6 +33,7 @@ class CustomTextField extends StatefulWidget {
     this.onChanged,
     this.onFieldSubmitted,
     this.inputFormatters,
+    this.autofillHints,
     this.enabled,
     super.key,
   });
@@ -117,6 +119,7 @@ class CustomTextFieldState extends State<CustomTextField> {
         ),
         validator: widget.validator,
         inputFormatters: widget.inputFormatters,
+        autofillHints: widget.autofillHints,
       ),
     );
   }

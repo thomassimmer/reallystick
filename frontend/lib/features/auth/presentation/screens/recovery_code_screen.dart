@@ -201,14 +201,17 @@ class RecoveryCodeScreen extends StatelessWidget {
               )
             ]),
         SizedBox(height: 24),
-        CustomTextField(
-          controller: _otpController,
-          label: AppLocalizations.of(context)!.validationCode,
-          obscureText: true,
-          onFieldSubmitted: (_) => triggerNextAction(),
-          inputFormatters: <TextInputFormatter>[
-            FilteringTextInputFormatter.digitsOnly
-          ],
+        AutofillGroup(
+          child: CustomTextField(
+            controller: _otpController,
+            label: AppLocalizations.of(context)!.validationCode,
+            obscureText: true,
+            onFieldSubmitted: (_) => triggerNextAction(),
+            inputFormatters: <TextInputFormatter>[
+              FilteringTextInputFormatter.digitsOnly
+            ],
+            autofillHints: [AutofillHints.oneTimeCode],
+          ),
         ),
         SizedBox(height: 24),
         ElevatedButton(

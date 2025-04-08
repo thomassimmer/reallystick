@@ -162,15 +162,18 @@ class TwoFactorAuthenticationScreen extends StatelessWidget {
                   IntrinsicWidth(
                     child: Column(
                       children: [
-                        CustomTextField(
-                          controller: _otpController,
-                          label: AppLocalizations.of(context)!.validationCode,
-                          obscureText: true,
-                          onFieldSubmitted: (_) =>
-                              triggerOneTimePasswordVerification(),
-                          inputFormatters: <TextInputFormatter>[
-                            FilteringTextInputFormatter.digitsOnly
-                          ],
+                        AutofillGroup(
+                          child: CustomTextField(
+                            controller: _otpController,
+                            label: AppLocalizations.of(context)!.validationCode,
+                            obscureText: true,
+                            onFieldSubmitted: (_) =>
+                                triggerOneTimePasswordVerification(),
+                            inputFormatters: <TextInputFormatter>[
+                              FilteringTextInputFormatter.digitsOnly
+                            ],
+                            autofillHints: [AutofillHints.oneTimeCode],
+                          ),
                         ),
                         SizedBox(height: 24),
                         Row(
