@@ -77,12 +77,7 @@ class RecoveryCodeScreen extends StatelessWidget {
                           onPressed: () {
                             context.goNamed('home');
                           },
-                          child: Text(
-                            AppLocalizations.of(context)!.home,
-                            style: TextStyle(
-                              color: context.colors.background,
-                            ),
-                          ),
+                          child: Text(AppLocalizations.of(context)!.home),
                         )
                       ])))),
     ]));
@@ -152,12 +147,7 @@ class RecoveryCodeScreen extends StatelessWidget {
               );
             },
             style: context.styles.buttonMedium,
-            child: Text(
-              AppLocalizations.of(context)!.goToTwoFASetup,
-              style: TextStyle(
-                color: context.colors.background,
-              ),
-            ),
+            child: Text(AppLocalizations.of(context)!.goToTwoFASetup),
           ),
         ],
       );
@@ -223,12 +213,7 @@ class RecoveryCodeScreen extends StatelessWidget {
         SizedBox(height: 24),
         ElevatedButton(
           onPressed: triggerNextAction,
-          child: Text(
-            AppLocalizations.of(context)!.verify,
-            style: TextStyle(
-              color: context.colors.background,
-            ),
-          ),
+          child: Text(AppLocalizations.of(context)!.verify),
         ),
       ],
     );

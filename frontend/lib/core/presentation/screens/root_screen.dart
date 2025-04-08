@@ -124,18 +124,9 @@ class RootScreenState extends State<RootScreen> {
                       children: [
                         AppLogo(size: 50),
                         SizedBox(width: 10),
-                        Text(
-                          'Really',
-                          style: context.typographies.headingSmall.copyWith(
-                            color: context.colors.background,
-                          ),
-                        ),
-                        Text(
-                          'Stick',
-                          style: context.typographies.headingSmall.copyWith(
-                            color: context.colors.background,
-                          ),
-                        ),
+                        Text('Really',
+                            style: context.typographies.headingSmall),
+                        Text('Stick', style: context.typographies.headingSmall),
                       ],
                     ),
                   ),

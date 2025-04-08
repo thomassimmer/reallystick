@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -9,6 +10,7 @@ import 'package:reallystick/core/presentation/widgets/app_logo.dart';
 import 'package:reallystick/core/presentation/widgets/custom_container.dart';
 import 'package:reallystick/core/presentation/widgets/custom_text_field.dart';
 import 'package:reallystick/core/presentation/widgets/global_snack_bar.dart';
+import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_bloc.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_events.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_states.dart';
@@ -51,26 +53,29 @@ class SignupScreenState extends State<SignupScreen>
                           AppLogo(),
                           SizedBox(height: 40),
                           CustomContainer(
-                              child: BlocConsumer<AuthBloc, AuthState>(
-                                  listener: (context, state) {
-                            if (state
-                                is AuthAuthenticatedAfterRegistrationState) {
-                              setState(() {
-                                _isAuthenticated = true;
-                              });
-                            } else {
-                              GlobalSnackBar.show(
-                                context: context,
-                                message: state.message,
-                              );
-                            }
-                          }, builder: (context, state) {
-                            if (state is AuthLoadingState) {
-                              return _buildLoadingScreen(context, state);
-                            } else {
-                              return _buildSignUpScreen(context, state);
-                            }
-                          })),
+                            child: BlocConsumer<AuthBloc, AuthState>(
+                              listener: (context, state) {
+                                if (state
+                                    is AuthAuthenticatedAfterRegistrationState) {
+                                  setState(() {
+                                    _isAuthenticated = true;
+                                  });
+                                } else {
+                                  GlobalSnackBar.show(
+                                    context: context,
+                                    message: state.message,
+                                  );
+                                }
+                              },
+                              builder: (context, state) {
+                                if (state is AuthLoadingState) {
+                                  return _buildLoadingScreen(context, state);
+                                } else {
+                                  return _buildSignUpScreen(context, state);
+                                }
+                              },
+                            ),
+                          ),
                           SizedBox(height: 16),
                           ElevatedButton(
                             onPressed: () {
@@ -126,46 +131,80 @@ class SignupScreenState extends State<SignupScreen>
       );
     }
 
-    return Column(
-      children: [
-        Text(
-          AppLocalizations.of(context)!.signUp,
-          style: TextStyle(fontSize: 20),
-        ),
-        SizedBox(height: 16),
-        CustomTextField(
-          controller: _usernameController,
-          onChanged: (username) => BlocProvider.of<AuthSignupFormBloc>(context)
-              .add(SignupFormUsernameChangedEvent(username)),
-          label: AppLocalizations.of(context)!.username,
-          obscureText: false,
-          errorText: displayUsernameErrorMessage,
-        ),
-        SizedBox(height: 16),
-        CustomTextField(
-          controller: _passwordController,
-          onChanged: (password) => BlocProvider.of<AuthSignupFormBloc>(context)
-              .add(SignupFormPasswordChangedEvent(password)),
-          obscureText: true,
-          label: AppLocalizations.of(context)!.password,
-          errorText: displayPasswordErrorMessage,
-          onFieldSubmitted: (_) => triggerSignUp(),
-        ),
-        SizedBox(height: 24),
-        ElevatedButton(
-          onPressed: triggerSignUp,
-          child: Text(
+    return Builder(
+      builder: (context) => Column(
+        children: [
+          Text(
             AppLocalizations.of(context)!.signUp,
+            style: TextStyle(fontSize: 20),
           ),
-        ),
-        SizedBox(height: 16),
-        TextButton(
-          onPressed: () {
-            context.goNamed('login');
-          },
-          child: Text(AppLocalizations.of(context)!.alreadyAnAccountLogin),
-        ),
-      ],
+          SizedBox(height: 16),
+          CustomTextField(
+            controller: _usernameController,
+            onChanged: (username) =>
+                BlocProvider.of<AuthSignupFormBloc>(context)
+                    .add(SignupFormUsernameChangedEvent(username)),
+            label: AppLocalizations.of(context)!.username,
+            obscureText: false,
+            errorText: displayUsernameErrorMessage,
+          ),
+          SizedBox(height: 16),
+          CustomTextField(
+            controller: _passwordController,
+            onChanged: (password) =>
+                BlocProvider.of<AuthSignupFormBloc>(context)
+                    .add(SignupFormPasswordChangedEvent(password)),
+            obscureText: true,
+            label: AppLocalizations.of(context)!.password,
+            errorText: displayPasswordErrorMessage,
+            onFieldSubmitted: (_) => triggerSignUp(),
+          ),
+          SizedBox(height: 24),
+          RichText(
+            textAlign: TextAlign.center,
+            text: TextSpan(
+              style: TextStyle(color: Colors.grey[700], fontSize: 14),
+              children: [
+                TextSpan(
+                    text: AppLocalizations.of(context)!.bySigningUpYouAgree),
+                TextSpan(text: '\n'),
+                TextSpan(
+                  text: AppLocalizations.of(context)!.termsOfUse,
+                  style: TextStyle(
+                      color: context.colors.primary,
+                      decoration: TextDecoration.underline),
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () => context.pushNamed('terms-of-use'),
+                ),
+                TextSpan(text: ' ${AppLocalizations.of(context)!.and} '),
+                TextSpan(
+                  text: AppLocalizations.of(context)!.privacyPolicy,
+                  style: TextStyle(
+                      color: context.colors.primary,
+                      decoration: TextDecoration.underline),
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () => context.pushNamed('privacy-policy'),
+                ),
+                const TextSpan(text: '.'),
+              ],
+            ),
+          ),
+          SizedBox(height: 24),
+          ElevatedButton(
+            onPressed: triggerSignUp,
+            child: Text(
+              AppLocalizations.of(context)!.signUp,
+            ),
+          ),
+          SizedBox(height: 16),
+          TextButton(
+            onPressed: () {
+              context.goNamed('login');
+            },
+            child: Text(AppLocalizations.of(context)!.alreadyAnAccountLogin),
+          ),
+        ],
+      ),
     );
   }
 }

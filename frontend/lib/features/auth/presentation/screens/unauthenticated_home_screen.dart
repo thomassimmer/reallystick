@@ -101,27 +101,14 @@ class UnauthenticatedHomeScreenState extends State<UnauthenticatedHomeScreen>
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              'Really',
-              style: context.typographies.heading.copyWith(
-                color: context.colors.background,
-              ),
-            ),
-            Text(
-              'Stick',
-              style: context.typographies.heading.copyWith(
-                color: context.colors.background,
-              ),
-            ),
+            Text('Really', style: context.typographies.heading),
+            Text('Stick', style: context.typographies.heading),
           ],
         ),
         SizedBox(height: 16),
         Text(
           AppLocalizations.of(context)!.pleaseLoginOrSignUp,
-          style: TextStyle(
-            fontSize: 18,
-            color: context.colors.background,
-          ),
+          style: TextStyle(fontSize: 18),
           textAlign: TextAlign.center,
         ),
         SizedBox(height: 40),
@@ -151,9 +138,6 @@ class UnauthenticatedHomeScreenState extends State<UnauthenticatedHomeScreen>
         Spacer(),
         Text(
           AppLocalizations.of(context)!.whatIsThis,
-          style: context.typographies.bodySmall.copyWith(
-            color: context.colors.background,
-          ),
         ),
         InkWell(
           onTap: () {
@@ -169,14 +153,12 @@ class UnauthenticatedHomeScreenState extends State<UnauthenticatedHomeScreen>
               Icon(
                 Icons.keyboard_arrow_down,
                 size: 40,
-                color: context.colors.background,
               ),
               Transform.translate(
                 offset: Offset(0, -30),
                 child: Icon(
                   Icons.keyboard_arrow_down,
                   size: 35,
-                  color: context.colors.background,
                 ),
               ),
             ],
@@ -222,9 +204,7 @@ class UnauthenticatedHomeScreenState extends State<UnauthenticatedHomeScreen>
         Spacer(),
         Text(
           title,
-          style: context.typographies.heading.copyWith(
-            color: context.colors.background,
-          ),
+          style: context.typographies.heading,
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 30),
@@ -280,14 +260,12 @@ class UnauthenticatedHomeScreenState extends State<UnauthenticatedHomeScreen>
               Icon(
                 Icons.keyboard_arrow_down,
                 size: 40,
-                color: context.colors.background,
               ),
               Transform.translate(
                 offset: Offset(0, -30),
                 child: Icon(
                   Icons.keyboard_arrow_down,
                   size: 35,
-                  color: context.colors.background,
                 ),
               ),
             ],
@@ -313,7 +291,6 @@ class UnauthenticatedHomeScreenState extends State<UnauthenticatedHomeScreen>
             "· ${AppLocalizations.of(context)!.availableOnIosAndroidWebIn}",
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: context.colors.background,
               fontSize: 16,
               fontWeight: FontWeight.w500,
             ),
@@ -321,7 +298,7 @@ class UnauthenticatedHomeScreenState extends State<UnauthenticatedHomeScreen>
           const SizedBox(height: 20),
           Text(
             "🇬🇧 🇫🇷 🇪🇸 🇵🇹 🇮🇹 🇩🇪 🇷🇺",
-            style: TextStyle(fontSize: 30),
+            style: TextStyle(fontSize: 25),
           ),
           const SizedBox(height: 30),
           ElevatedButton(
@@ -346,8 +323,8 @@ class UnauthenticatedHomeScreenState extends State<UnauthenticatedHomeScreen>
                 child: Text(
                   AppLocalizations.of(context)!.privacyPolicy,
                   style: TextStyle(
-                    color: context.colors.background,
                     fontSize: 16,
+                    color: context.colors.text,
                   ),
                 ),
               ),
@@ -356,8 +333,8 @@ class UnauthenticatedHomeScreenState extends State<UnauthenticatedHomeScreen>
                 child: Text(
                   AppLocalizations.of(context)!.termsOfUse,
                   style: TextStyle(
-                    color: context.colors.background,
                     fontSize: 16,
+                    color: context.colors.text,
                   ),
                 ),
               ),
@@ -366,7 +343,6 @@ class UnauthenticatedHomeScreenState extends State<UnauthenticatedHomeScreen>
           Text(
             AppLocalizations.of(context)!.copyright,
             style: TextStyle(
-              color: context.colors.background,
               fontSize: 13,
             ),
           ),
