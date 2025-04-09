@@ -61,7 +61,9 @@ class ReallyStickAppState extends State<ReallyStickApp> {
         child:
             BlocBuilder<ProfileBloc, ProfileState>(builder: (context, state) {
           // device locale by default
-          Locale locale = Locale(Platform.localeName);
+          String localeString = Platform.localeName;
+          List<String> parts = localeString.split(RegExp('[-_]'));
+          Locale locale = Locale(parts[0]);
 
           final Brightness brightness =
               MediaQuery.of(context).platformBrightness;

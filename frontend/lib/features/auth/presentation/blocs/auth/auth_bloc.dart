@@ -179,7 +179,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     final String currentTimeZone = await FlutterTimezone.getLocalTimezone();
 
     // We use the device locale by default on signup
-    String locale = Platform.localeName;
+    String localeString = Platform.localeName;
+    List<String> parts = localeString.split(RegExp('[-_]'));
+    String locale = parts[0];
 
     // Set english if the code is not recognized
     if (!locales.map((l) => l['code']).contains(locale)) {
