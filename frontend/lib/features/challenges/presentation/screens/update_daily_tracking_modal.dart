@@ -340,7 +340,7 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
                       );
                     },
                     child: Text(
-                      DateFormat.yMMMd().format(
+                      DateFormat.yMMMd(userLocale).format(
                         challenge.startDate!.add(
                           Duration(days: _selectedDayOfProgram),
                         ),

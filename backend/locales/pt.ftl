@@ -1,0 +1,12 @@
+user-joined-your-challenge-title = Um usuário acabou de entrar no seu desafio.
+user-joined-your-challenge-body = Genial! { $username } acaba de entrar no seu desafio.
+user-duplicated-your-challenge-title = Um usuário acabou de criar uma cópia do seu desafio.
+user-duplicated-your-challenge-body = Você está inspirando os outros! { $username } acaba de criar uma cópia do seu desafio.
+message-created-title = Nova mensagem
+message-created-body = { $username } acaba de te enviar uma mensagem.
+user-liked-your-message-title = Alguém curtiu sua mensagem
+user-liked-your-message-body = { $username } acabou de curtir sua mensagem.
+user-replied-to-your-message-title = Alguém respondeu à sua mensagem
+user-replied-to-your-message-body = { $username } acabou de responder à sua mensagem.
+reminder-title = Lembrete
+welcome-private-message = Bem-vindo ao ReallyStick { $username }!\n\nVocê pode escrever todos os seus comentários nesta conversa. Nossas equipes responderão o mais rápido possível.\n\n🫶

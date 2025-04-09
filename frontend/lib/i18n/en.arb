@@ -71,7 +71,6 @@
   "@hello": {
     "placeholders": {
       "userName": {
-        "example": "Bob",
         "type": "String"
       }
     }
@@ -93,7 +92,6 @@
   "@lastActivityDays": {
     "placeholders": {
       "count": {
-        "description": "The number of days elapsed since the last activity.",
         "type": "int"
       }
     }
@@ -101,7 +99,6 @@
   "@lastActivityHours": {
     "placeholders": {
       "count": {
-        "description": "The number of hours elapsed since the last activity.",
         "type": "int"
       }
     }
@@ -109,7 +106,6 @@
   "@lastActivityMinutes": {
     "placeholders": {
       "count": {
-        "description": "The number of minutes elapsed since the last activity.",
         "type": "int"
       }
     }
@@ -117,7 +113,6 @@
   "@lastActivityMonths": {
     "placeholders": {
       "count": {
-        "description": "The number of months elapsed since the last activity.",
         "type": "int"
       }
     }
@@ -125,7 +120,6 @@
   "@lastActivitySeconds": {
     "placeholders": {
       "count": {
-        "description": "The number of seconds elapsed since the last activity.",
         "type": "int"
       }
     }
@@ -133,7 +127,6 @@
   "@lastActivityYears": {
     "placeholders": {
       "count": {
-        "description": "The number of years elapsed since the last activity.",
         "type": "int"
       }
     }
@@ -148,7 +141,6 @@
   "@numberOfParticipantsInChallenge": {
     "placeholders": {
       "count": {
-        "description": "The number of participants in a given challenge.",
         "type": "int"
       }
     }
@@ -156,7 +148,6 @@
   "@numberOfParticipantsInHabit": {
     "placeholders": {
       "count": {
-        "description": "The number of participants in a given habit.",
         "type": "int"
       }
     }
@@ -213,7 +204,6 @@
   "@twoFASecretKey": {
     "placeholders": {
       "secretKey": {
-        "example": "Bob",
         "type": "String"
       }
     }

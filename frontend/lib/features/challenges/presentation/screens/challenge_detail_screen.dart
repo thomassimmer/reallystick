@@ -211,6 +211,7 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
 
   void _openChangeChallengeParticipationStartDateModal({
     required ChallengeParticipation challengeParticipation,
+    required String userLocale,
   }) async {
     await showModalBottomSheet(
       context: context,
@@ -226,6 +227,7 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
         return ChangeParticipationStartDateModal(
           challengeId: widget.challengeId,
           challengeParticipation: challengeParticipation,
+          userLocale: userLocale,
         );
       },
     );
@@ -445,6 +447,7 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
                         } else if (value == 'change_participation_start_date') {
                           _openChangeChallengeParticipationStartDateModal(
                             challengeParticipation: challengeParticipation!,
+                            userLocale: userLocale,
                           );
                         } else if (value == "start_again") {
                           _participateInChallengeAgain();
@@ -575,8 +578,7 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
                               if (challengeParticipation != null) ...[
                                 Text(
                                   AppLocalizations.of(context)!.joinedOn(
-                                    DateFormat.yMMMd(userLocale.toString())
-                                        .format(
+                                    DateFormat.yMMMd(userLocale).format(
                                       challengeParticipation.startDate,
                                     ),
                                   ),

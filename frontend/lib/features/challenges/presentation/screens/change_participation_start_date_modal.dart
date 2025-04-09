@@ -10,11 +10,13 @@ import 'package:reallystick/features/challenges/presentation/blocs/challenge/cha
 class ChangeParticipationStartDateModal extends StatefulWidget {
   final String challengeId;
   final ChallengeParticipation challengeParticipation;
+  final String userLocale;
 
   const ChangeParticipationStartDateModal({
     super.key,
     required this.challengeId,
     required this.challengeParticipation,
+    required this.userLocale,
   });
 
   @override
@@ -85,7 +87,7 @@ class ChangeParticipationStartDateModalState
                     }
                   },
                   child: Text(
-                    DateFormat.yMMMd().format(_startDate),
+                    DateFormat.yMMMd(widget.userLocale).format(_startDate),
                     style: context.typographies.body,
                   ),
                 ),

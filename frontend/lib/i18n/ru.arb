@@ -1,0 +1,614 @@
+{
+  "@@locale": "ru",
+  "@allActivitiesOnThisDay": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@createdBy": {
+    "placeholders": {
+      "creator": {
+        "type": "String"
+      }
+    }
+  },
+  "@createdByStartsOn": {
+    "placeholders": {
+      "creator": {
+        "type": "String"
+      },
+      "startDate": {
+        "type": "String"
+      }
+    }
+  },
+  "@defaultReminderChallenge": {
+    "placeholders": {
+      "challenge": {
+        "type": "String"
+      }
+    }
+  },
+  "@defaultReminderHabit": {
+    "placeholders": {
+      "habit": {
+        "type": "String"
+      }
+    }
+  },
+  "@descriptionWithTwoPoints": {
+    "placeholders": {
+      "description": {
+        "type": "String"
+      }
+    }
+  },
+  "@deviceInfo": {
+    "placeholders": {
+      "browser": {
+        "type": "String"
+      },
+      "isMobile": {
+        "type": "String"
+      },
+      "model": {
+        "type": "String"
+      },
+      "os": {
+        "type": "String"
+      }
+    }
+  },
+  "@editedAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "@hello": {
+    "placeholders": {
+      "userName": {
+        "type": "String"
+      }
+    }
+  },
+  "@joinedByXPeople": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@joinedOn": {
+    "placeholders": {
+      "startDate": {
+        "type": "String"
+      }
+    }
+  },
+  "@lastActivityDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@lastActivityHours": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@lastActivityMinutes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@lastActivityMonths": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@lastActivitySeconds": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@lastActivityYears": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@noteWithNote": {
+    "placeholders": {
+      "note": {
+        "type": "String"
+      }
+    }
+  },
+  "@numberOfParticipantsInChallenge": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@numberOfParticipantsInHabit": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@quantityOfSetWithQuantity": {
+    "placeholders": {
+      "quantity": {
+        "type": "int"
+      }
+    }
+  },
+  "@quantityPerSetWithQuantity": {
+    "placeholders": {
+      "quantity": {
+        "type": "int"
+      }
+    }
+  },
+  "@quantityWithQuantity": {
+    "placeholders": {
+      "quantity": {
+        "type": "int"
+      }
+    }
+  },
+  "@replyTo": {
+    "placeholders": {
+      "user": {
+        "type": "String"
+      }
+    }
+  },
+  "@shareChallengeText": {
+    "placeholders": {
+      "link": {
+        "type": "String"
+      }
+    }
+  },
+  "@startsOn": {
+    "placeholders": {
+      "startDate": {
+        "type": "String"
+      }
+    }
+  },
+  "@timeWithTime": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "@twoFASecretKey": {
+    "placeholders": {
+      "secretKey": {
+        "type": "String"
+      }
+    }
+  },
+  "@weightWithQuantity": {
+    "placeholders": {
+      "quantity": {
+        "type": "int"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "@writeTo": {
+    "placeholders": {
+      "user": {
+        "type": "String"
+      }
+    }
+  },
+  "about": "О приложении",
+  "aboutText": "Это приложение предоставлено Таней Симмер.",
+  "account": "Аккаунт",
+  "accountDeletionSuccessful": "Ваш аккаунт успешно удалён.",
+  "activity": "Активность",
+  "addActivity": "Добавить активность",
+  "addDailyObjective": "Добавить ежедневную цель",
+  "addNewChallenge": "Добавить новый вызов",
+  "addNewDiscussion": "Добавить новое обсуждение",
+  "addNewHabit": "Добавить новую привычку",
+  "admin": "Админ",
+  "ageCategory": "Возрастная категория",
+  "allActivitiesOnThisDay": "Все ваши активности в этот день ({count})",
+  "allHabits": "Все привычки",
+  "allReportedMessages": "Все сообщения, сообщенные как нарушающие",
+  "alreadyAnAccountLogin": "Уже есть аккаунт? Войдите",
+  "analytics": "Статистика",
+  "analyticsInfoTooltip": "Эти данные обновляются каждый час.",
+  "and": "и",
+  "answers": "Ответы",
+  "atLeastOneTranslationNeededError": "Необходимо хотя бы одно перевод.",
+  "availableOnIosAndroidWebIn": "Доступно на iOS, Android, Web на",
+  "average": "Среднее",
+  "blockThisUser": "Заблокировать этого пользователя",
+  "bySigningUpYouAgree": "Создавая аккаунт, вы соглашаетесь с нашими",
+  "cancel": "Отменить",
+  "category": "Категория",
+  "challengeCreated": "Ваш вызов успешно создан",
+  "challengeDailyTracking": "Ежедневный мониторинг целей",
+  "challengeDailyTrackingCreated": "Ваша ежедневная цель успешно создана.",
+  "challengeDailyTrackingDeleted": "Ваша ежедневная цель успешно удалена.",
+  "challengeDailyTrackingNotFoundError": "Эта активность не существует.",
+  "challengeDailyTrackingNoteTooLong": "Заметка должна содержать менее 10 000 символов.",
+  "challengeDailyTrackingUpdated": "Ваши изменения были успешно сохранены.",
+  "challengeDeleted": "Ваш вызов успешно удалён.",
+  "challengeDuplicated": "Этот вызов успешно скопирован.",
+  "challengeFinished": "Вызов завершён",
+  "challengeName": "Название вызова",
+  "challengeNameWrongSizeError": "Название вызова не должно быть пустым и должно содержать меньше 100 символов.",
+  "challengeNotFoundError": "Этот вызов не существует.",
+  "challengeParticipationCreated": "Вы успешно присоединились к этому вызову.",
+  "challengeParticipationDeleted": "Ваше участие в этом вызове было успешно удалено.",
+  "challengeParticipationNotFoundError": "Кажется, вы не участвуете в этом вызове",
+  "challengeParticipationStartDate": "Вызов начат:",
+  "challengeParticipationUpdated": "Ваши изменения были успешно сохранены.",
+  "challengeUpdated": "Ваши изменения были успешно сохранены.",
+  "challengeWasDeletedByCreator": "Этот вызов был удалён его создателем",
+  "challenges": "Вызовы",
+  "challengesInfoTooltip": "Эти данные обновляются каждый час.",
+  "changeChallengeParticipationStartDate": "Изменить дату начала участия",
+  "changeColor": "Изменить цвет",
+  "changePassword": "Изменить мой пароль",
+  "changeRecoveryCode": "Изменить мой код восстановления",
+  "comeBack": "Вернуться назад",
+  "comingSoon": "Скоро будет доступно...",
+  "confirm": "Подтвердить",
+  "confirmDelete": "Подтверждение удаления аккаунта",
+  "confirmDeleteMessage": "Нажав 'Подтвердить', ваш аккаунт и все связанные с ним активности будут удалены навсегда.",
+  "confirmDeletion": "Подтвердить удаление",
+  "confirmDeletionQuestion": "Вы подтверждаете удаление сессии на этом устройстве?",
+  "confirmDuplicateChallenge": "Хотите создать копию этого вызова с привязанными ежедневными целями?",
+  "confirmMessageDeletion": "Нажав 'Подтвердить', ваше сообщение и все ответы, связанные с ним, будут удалены навсегда.",
+  "connected": "Подключено",
+  "continent": "Континент",
+  "copyright": "© Авторские права 2025. Все права защищены.",
+  "country": "Страна",
+  "create": "Создать",
+  "createANewChallenge": "Создать новый вызов",
+  "createANewHabit": "Создать новую привычку",
+  "createChallenge": "Создать вызов",
+  "createHabit": "Создать привычку",
+  "createHabitsThatStick": "Создавайте привычки, которые остаются",
+  "createdBy": "Создано {creator}",
+  "createdByStartsOn": "Создано {creator}, начинается: {startDate}",
+  "createdChallenges": "Мои созданные вызовы",
+  "creatorMissingPublicKey": "У вас нет секретных ключей. Переподключитесь, чтобы их создать.",
+  "currentPassword": "Текущий пароль",
+  "dark": "Тёмный",
+  "dateTimeIsInTheFutureError": "Дата не может быть в будущем.",
+  "dateTimeIsInThePastError": "Дата не может быть в прошлом.",
+  "dayOfProgram": "День программы",
+  "defaultError": "Произошла ошибка. Пожалуйста, попробуйте снова.",
+  "defaultReminderChallenge": "Не забудьте выполнить свой вызов: {challenge}",
+  "defaultReminderHabit": "Не забудьте следить за своей привычкой: {habit}",
+  "delete": "Удалить",
+  "deleteAccount": "Удалить мой аккаунт",
+  "deleteChallenge": "Удалить этот вызов",
+  "deleteChallengeParticipation": "Удалить это участие",
+  "deleteMessage": "Удалить это сообщение",
+  "description": "Описание",
+  "descriptionWithTwoPoints": "Описание: {description}",
+  "deviceDeleteSuccessful": "Вы успешно завершили сессию на этом устройстве.",
+  "deviceInfo": "{isMobile, select, true {Мобильное устройство} false {Компьютер} other {Неизвестно}}{os, select, null {.} other { работает на {os}. }}{browser, select, null {Приложение} other {Браузер: {browser}}}. {model, select, null {} other {Модель: {model}.}}",
+  "devices": "Устройства",
+  "disableTwoFA": "Отключить",
+  "disconnected": "Отключено.",
+  "discussion": "Обсуждение",
+  "discussions": "Обсуждения",
+  "discussionsComingSoon": "Интересные обсуждения скоро появятся...",
+  "duplicate": "Создать копию",
+  "duplicateChallenge": "Копия вызова",
+  "edit": "Изменить",
+  "editActivity": "Изменить эту активность",
+  "editChallenge": "Изменить этот вызов",
+  "editedAt": "Изменено: {time}",
+  "enable": "Включить",
+  "enableNotificationsReminder": "Включить уведомления о напоминаниях",
+  "endDate": "Дата окончания",
+  "endToEndEncryptedPrivateMessages": "Шифрование сообщений с конца в конец",
+  "enterOneTimePassword": "Введите одноразовый код, сгенерированный вашим приложением для подтверждения аутентификации.",
+  "enterPassword": "Введите ваш пароль.",
+  "enterRecoveryCode": "Введите код восстановления.",
+  "enterUsername": "Введите ваше имя пользователя.",
+  "enterValidationCode": "Введите код из вашего приложения для аутентификации.",
+  "failedToLoadChallenges": "Ошибка при загрузке ваших вызовов.",
+  "failedToLoadHabits": "Ошибка при загрузке ваших привычек.",
+  "failedToLoadProfile": "Не удалось загрузить профиль.",
+  "female": "Женщина",
+  "females": "Женщины",
+  "financialSituation": "Финансовая ситуация",
+  "finished": "Завершено",
+  "fixedDates": "Фиксированные даты",
+  "forbiddenError": "У вас нет прав для выполнения этого действия.",
+  "gender": "Пол",
+  "generateNewQrCode": "Создать новый QR-код",
+  "generateNewRecoveryCode": "Создать новый код восстановления",
+  "goToTwoFASetup": "Включить",
+  "habit": "Привычка",
+  "habitCategoryNotFoundError": "Эта категория привычки не существует.",
+  "habitCreated": "Ваша привычка успешно создана",
+  "habitDailyTracking": "Ежедневный мониторинг",
+  "habitDailyTrackingCreated": "Ваша активность успешно создана.",
+  "habitDailyTrackingDeleted": "Ваша активность успешно удалена.",
+  "habitDailyTrackingNotFoundError": "Эта активность не существует.",
+  "habitDailyTrackingUpdated": "Ваши изменения были успешно сохранены.",
+  "habitDescriptionWrongSizeError": "Описание не должно быть пустым и должно содержать меньше 200 символов.",
+  "habitIsEmptyError": "Привычка должна быть выбрана.",
+  "habitName": "Название привычки",
+  "habitNameWrongSizeError": "Название привычки не должно быть пустым и должно содержать меньше 100 символов.",
+  "habitNotFoundError": "Эта привычка не существует.",
+  "habitParticipationCreated": "Вы успешно присоединились к этой привычке.",
+  "habitParticipationDeleted": "Ваше участие в этой привычке успешно удалено.",
+  "habitParticipationNotFoundError": "Кажется, вы не участвуете в этой привычке",
+  "habitParticipationUpdated": "Ваши изменения были успешно сохранены.",
+  "habitUpdated": "Ваши изменения были успешно сохранены.",
+  "habits": "Привычки",
+  "habitsConcerned": "Затронутые привычки",
+  "habitsNotMergedError": "Эти две привычки не могут быть объединены",
+  "hasChildren": "Я родитель",
+  "hello": "Привет, {userName}",
+  "highSchoolOrLess": "Среднее образование или меньше",
+  "highSchoolPlusFiveOrMoreYears": "Среднее образование + 5 лет и более",
+  "highSchoolPlusOneOrTwoYears": "Среднее образование + 1 или 2 года обучения",
+  "highSchoolPlusThreeOrFourYears": "Среднее образование + 3 или 4 года обучения",
+  "home": "Главная",
+  "icon": "Иконка",
+  "iconEmptyError": "Иконка обязательна.",
+  "iconNotFoundError": "Иконка привычки не найдена.",
+  "internalServerError": "Произошла внутренняя ошибка сервера. Пожалуйста, попробуйте снова.",
+  "introductionToQuestions": "Чтобы предоставить вам наилучший опыт и поделиться с вами интересной статистикой, у нас есть несколько быстрых вопросов для вас.\n\nВаши честные ответы помогут нам создать значимую статистику по всему миру.\n\nВаши ответы на вопросы не раскроют вашу личность.",
+  "invalidOneTimePasswordError": "Неверный одноразовый пароль. Пожалуйста, попробуйте снова.",
+  "invalidRequestError": "Запрос, который вы отправили, не был принят сервером.",
+  "invalidResponseError": "Ответ от сервера не был обработан.",
+  "invalidUsernameOrCodeOrRecoveryCodeError": "Неверное имя пользователя, одноразовый пароль или код восстановления. Пожалуйста, попробуйте снова.",
+  "invalidUsernameOrPasswordError": "Неверное имя пользователя или пароль. Пожалуйста, попробуйте снова.",
+  "invalidUsernameOrPasswordOrRecoveryCodeError": "Неверное имя пользователя, пароль или код восстановления. Пожалуйста, попробуйте снова.",
+  "invalidUsernameOrRecoveryCodeError": "Неверное имя пользователя или код восстановления. Пожалуйста, попробуйте снова.",
+  "joinChallengeReachYourGoals": "Присоединяйтесь к вызовам,\nДостигайте своих целей",
+  "joinThisChallenge": "Принять участие в этом вызове",
+  "joinedByXPeople": "{count, plural, zero {Присоединился {count} человек} one {Присоединился {count} человек} other {Присоединились {count} человек}}",
+  "joinedOn": "Присоединился: {startDate}",
+  "jumpOnTop": "Вернуться наверх",
+  "keepRecoveryCodeSafe": "Пожалуйста, храните этот код восстановления в безопасности.\n\nОн понадобится, если вы потеряете свой пароль или доступ к приложению для аутентификации.",
+  "language": "Язык",
+  "lastActivity": "Последняя активность:",
+  "lastActivityDate": "Дата последней активности:",
+  "lastActivityDays": "{count, plural, one {вчера} other {позавчера}}",
+  "lastActivityHours": "{count, plural, one {через {count} час} other {через {count} часов}}",
+  "lastActivityMinutes": "{count, plural, one {через {count} минуту} other {через {count} минут}}",
+  "lastActivityMonths": "{count, plural, one {через {count} месяц} other {через {count} месяцев}}",
+  "lastActivitySeconds": "{count, plural, =0 {только что} one {через {count} секунду} other {через {count} секунд}}",
+  "lastActivityYears": "{count, plural, one {через {count} год} other {через {count} лет}}",
+  "levelOfEducation": "Уровень образования",
+  "light": "Светлый",
+  "likedMessages": "Понравившиеся сообщения",
+  "livesInUrbanArea": "Живу в городской зоне",
+  "livingInRuralArea": "Сельская местность",
+  "livingInUrbanArea": "Городская местность",
+  "logIn": "Войти",
+  "loginSuccessful": "Вы успешно вошли в систему.",
+  "logout": "Выйти",
+  "logoutSuccessful": "Вы успешно вышли.",
+  "longName": "Полное имя",
+  "male": "Мужчина",
+  "males": "Мужчины",
+  "markChallengeAsFinished": "Вы завершили этот челлендж, поздравляем!\nОтметьте его как завершённый, чтобы можно было начать заново без потери данных.",
+  "markedAsFinishedChallenges": "Завершённые челленджи",
+  "mergeHabit": "Объединить привычки",
+  "message": "Сообщение",
+  "messageDeletedError": "Это сообщение было удалено.",
+  "messageNotFoundError": "Сообщение не найдено.",
+  "messages": "Сообщения",
+  "messagesAreEncrypted": "Сообщения зашифрованы end-to-end.\nНикто, кроме участников, не может их прочитать.",
+  "missingDateTimeError": "Дата не может быть пустой.",
+  "newDiscussion": "Новый разговор",
+  "newPassword": "Новый пароль",
+  "next": "Далее",
+  "no": "Нет",
+  "noAccountCreateOne": "Нет аккаунта? Создайте его здесь.",
+  "noActivityRecordedYet": "Активность ещё не записана.",
+  "noAnswer": "Я предпочитаю не отвечать",
+  "noAnswerForThisMessageYet": "На это сообщение ещё нет ответа.",
+  "noChallengeDailyTrackingYet": "Ещё не записан ежедневный прогресс по цели.",
+  "noChallengesForHabitYet": "Для этой привычки ещё нет челленджей.\nСоздайте первый!",
+  "noChallengesYet": "У вас ещё нет челленджей.",
+  "noConcernedHabitsYet": "Для этого челленджа нет соответствующих привычек.",
+  "noContent": "Нет контента для отображения",
+  "noDeviceInfo": "Нет информации о устройстве для отображения",
+  "noDevices": "Нет устройств для отображения",
+  "noDiscussionsForChallengeYet": "Для этого челленджа ещё нет обсуждений.\nСоздайте первое!",
+  "noDiscussionsForHabitYet": "Для этой привычки ещё нет обсуждений.\nСоздайте первое!",
+  "noEmailOfIdentifiableDataRequired": "Не требуется адрес электронной почты или личные данные",
+  "noHabitsYet": "У вас ещё нет привычек.",
+  "noLikedMessages": "Вы ещё не поставили лайк сообщению.",
+  "noMessagesYet": "В этом разговоре ещё нет сообщений.",
+  "noNotification": "У вас ещё нет уведомлений.",
+  "noPrivateDiscussionsYet": "У вас ещё нет личных обсуждений.",
+  "noRecoveryCodeAvailable": "Нет доступного кода восстановления.",
+  "noReportedMessages": "Вы ещё не пожаловались на сообщения.",
+  "noResultsFound": "Результатов не найдено.",
+  "noWrittenMessages": "Вы ещё не написали ни одного сообщения.",
+  "note": "Заметка",
+  "noteWithNote": "Заметка:\n\n{note}",
+  "notifications": "Уведомления",
+  "numberOfDaysToRepeatThisObjective": "Количество дней для повторения этой цели",
+  "numberOfParticipantsInChallenge": "{count, plural, zero {Никто не участвует в этом челлендже.} one {{count} человек участвует в этом челлендже.} other {{count} человек участвует в этом челлендже.}}",
+  "numberOfParticipantsInChallengeTitle": "Количество участников",
+  "numberOfParticipantsInHabit": "{count, plural, zero {Никто не придерживается этой привычки.} one {{count} человек придерживается этой привычки.} other {{count} человек придерживается этой привычки.}}",
+  "numberOfParticipantsInHabitTitle": "Количество участников",
+  "ongoingChallenges": "Текущие челленджи",
+  "other": "Другое",
+  "otherChallenges": "Другие челленджи",
+  "participateAgain": "Участвовать снова",
+  "password": "Пароль",
+  "passwordForgotten": "Забыли пароль?",
+  "passwordMustBeChangedError": "Ваш пароль должен быть изменён, чтобы вы могли войти в систему.",
+  "passwordNotComplexEnough": "Ваш пароль должен содержать хотя бы одну букву, цифру и специальный символ.",
+  "passwordNotExpiredError": "Ваш пароль не истёк. Вы не можете изменить его таким образом.",
+  "passwordTooShortError": "Ваш пароль должен содержать не менее 8 символов.",
+  "passwordUpdateSuccessful": "Ваш пароль был успешно обновлён",
+  "peopleWithChildren": "Люди с детьми",
+  "peopleWithoutChildren": "Люди без детей",
+  "personalizedNotificationsToStayOnTrack": "Персонализированные уведомления для поддержания мотивации",
+  "pleaseLoginOrSignUp": "Пожалуйста, войдите или зарегистрируйтесь, чтобы продолжить.",
+  "poor": "Бедный",
+  "previous": "Предыдущий",
+  "privacyPolicy": "Политика конфиденциальности",
+  "privacyPolicyMarkdown": "# Политика конфиденциальности\n\n**Дата вступления в силу:** 5 апреля 2025\n**Последнее обновление:** 5 апреля 2025\n\nДобро пожаловать в **ReallyStick**, социальную платформу для отслеживания привычек, которая позволяет пользователям следить за своим ежедневным прогрессом, участвовать в челленджах и общаться в публичных или частных беседах — сохраняя при этом контроль над личными данными.\n\n## 1. Информация, которую мы собираем\n\n### Обязательные данные\n- Имя пользователя\n- Пароль (защищённый хэшированием)\n- Код восстановления\n- Информация об устройстве (операционная система, платформа, тип устройства)\n- IP-адрес\n- Токены сеанса\n\n### Дополнительные демографические данные\n- Континент\n- Страна\n- Возрастная категория\n- Пол\n- Уровень образования\n- Уровень благосостояния\n- Профессиональный статус\n\n## 2. Личное сообщение и шифрование\n\n- Личные сообщения зашифрованы end-to-end\n- Ваш ключ шифрования хранится только на вашем устройстве\n- Мы не можем читать ваши личные сообщения\n\n## 3. Использование ваших данных\n\nМы используем ваши данные для:\n- Предоставления функционала приложения\n- Управления сеансами на ваших устройствах\n- Генерации анонимных статистик\n- Отправки push-уведомлений (через Google Firebase)\n- Противодействия злоупотреблениям и обеспечения безопасности\n\nМы **не продаём и не передаём** ваши данные в рекламных целях.\n\n## 4. Обмен данными\n\nИспользуемые внешние сервисы:\n- **Google Firebase** – для отправки push-уведомлений\n\n## 5. Публичные взаимодействия\n\n- Только имена пользователей видны публично\n- Публичные сообщения могут быть пожалованы и модерированы\n\n## 6. Хранение и удаление данных\n\nПользователи могут удалить свой аккаунт и все связанные с ним данные на странице профиля.\n\n## 7. Меры безопасности\n\n- Пароли хэшируются\n- Токены доступа хранятся локально\n- Шифрование end-to-end\n- Журналирование IP-адресов для предотвращения злоупотреблений\n\n## 8. Анонимность и идентичность\n\n- Не требуется адрес электронной почты или реальное имя\n- Аккаунты по умолчанию анонимны\n\n## 9. Защита детей\n\nНаше приложение открыто для всех, но согласие родителей может быть необходимым в зависимости от местных законов.\n\n## 10. П",
+  "profile": "Профиль",
+  "profileInformation": "Информация о профиле",
+  "profileSettings": "Настройки профиля",
+  "profileUpdateSuccessful": "Ваши данные были успешно сохранены.",
+  "publicMessageDeletionSuccessful": "Ваше сообщение было успешно удалено.",
+  "publicMessageReportCreationSuccessful": "Ваше сообщение было успешно отправлено.",
+  "qrCodeSecretKeyCopied": "Секретный ключ QR-кода был скопирован в буфер обмена.",
+  "quantity": "Количество",
+  "quantityOfSet": "Количество подходов",
+  "quantityOfSetIsNegativeError": "Количество подходов не может быть отрицательным.",
+  "quantityOfSetIsNullError": "Количество подходов не может быть нулевым.",
+  "quantityOfSetWithQuantity": "Количество подходов: {quantity}",
+  "quantityPerSet": "Количество повторений",
+  "quantityPerSetIsNegativeError": "Количество не может быть отрицательным.",
+  "quantityPerSetIsNullError": "Количество не может быть пустым.",
+  "quantityPerSetWithQuantity": "Количество повторений: {quantity}",
+  "quantityWithQuantity": "Количество: {quantity}",
+  "questionActivity": "Какая у вас сейчас активность?",
+  "questionAge": "Сколько вам лет?",
+  "questionFinancialSituation": "Как бы вы описали ваше финансовое положение?",
+  "questionGender": "Вы мужчина или женщина?",
+  "questionHasChildren": "У вас есть дети?",
+  "questionLevelOfEducation": "Какой у вас уровень образования?",
+  "questionLivingInUrbanArea": "Вы живете в городской местности?",
+  "questionLocation": "Где вы живете?",
+  "questionRelationStatus": "Вы в отношениях?",
+  "questionsAnswered": "Ваши ответы были сохранены. Спасибо!",
+  "quitThisChallenge": "Выйти из этого челленджа",
+  "quitThisHabit": "Отказаться от этой привычки",
+  "reason": "Причина",
+  "recipientMissingPublicKey": "У этого получателя еще нет секретных ключей.",
+  "recoverAccount": "Восстановление аккаунта",
+  "recoveryCode": "Код восстановления",
+  "recoveryCodeCopied": "Код восстановления был скопирован в буфер обмена.",
+  "recoveryCodeDescription": "Ваш код восстановления используется для восстановления доступа к вашему аккаунту, если вы забудете свой пароль.\n\nПожалуйста, храните его в секрете.\n\nЕсли вы забыли этот код, вы можете создать новый.\n\nЭто деактивирует текущий код подтверждения.",
+  "refreshTokenExpiredError": "Ваша сессия истекла. Пожалуйста, войдите снова.",
+  "regenerateQrCode": "Регенерировать QR-код",
+  "region": "Регион",
+  "relatedChallenges": "Связанные челленджи",
+  "relationshipStatus": "Статус отношений",
+  "relationshipStatusCouple": "В отношениях",
+  "relationshipStatusSingle": "Одинок",
+  "repeatOnMultipleDaysAfter": "Повторить через несколько дней после этого",
+  "repetitionNumberIsNegativeError": "Количество повторений не может быть отрицательным.",
+  "repetitionNumberIsNullError": "Количество повторений не может быть нулевым.",
+  "reply": "Ответ",
+  "replyTo": "Ответить {user}...",
+  "reportMessage": "Пожаловаться на сообщение",
+  "reportedMessages": "Сообщения, на которые подана жалоба",
+  "retry": "Повторить попытку",
+  "reviewHabit": "Обзор привычки",
+  "save": "Сохранить",
+  "saveHabit": "Сохранить изменения",
+  "searchChallenges": "Искать челленджи",
+  "searchHabits": "Искать привычки",
+  "searchUser": "Искать пользователя",
+  "selectIcon": "Выбрать иконку",
+  "selectLanguage": "Выбрать язык",
+  "selectTheme": "Выбрать тему",
+  "selectUnits": "Выберите единицы измерения для этой привычки",
+  "setNewPassword": "Введите новый пароль.",
+  "share": "Поделиться",
+  "shareChallengeSubject": "Присоединяйтесь к этому челленджу",
+  "shareChallengeText": "Привет! Этот челлендж может быть интересен для тебя: {link}",
+  "shortName": "Краткое имя",
+  "signUp": "Зарегистрироваться",
+  "skip": "Пропустить",
+  "startDate": "Дата начала",
+  "startHabitShort": "Начать",
+  "startTrackingThisHabit": "Начать отслеживание этой привычки",
+  "startsOn": "Начинается: {startDate}",
+  "statistics": "Статистика",
+  "student": "Студент",
+  "tapForMoreDetails": "Подробнее",
+  "tapToSeeLess": "Скрыть",
+  "termsOfUse": "Условия использования",
+  "termsOfUseMarkdown": "# Условия Использования  **Дата вступления в силу:** 5 апреля 2025 **Последнее обновление:** 5 апреля 2025  Добро пожаловать на **ReallyStick**, социальную платформу для отслеживания привычек, разработанную для помощи в отслеживании и улучшении ваших ежедневных привычек. Доступ или использование приложения означает ваше согласие с настоящими Условиями Использования. Если вы не согласны с этими условиями, пожалуйста, не используйте приложение.  ## 1. Пользовательские Аккаунты  Для использования некоторых функций приложения вам необходимо создать аккаунт. Вы соглашаетесь: - Предоставлять точные и полные данные при регистрации. - Сохранять конфиденциальность информации вашего аккаунта (имя пользователя, пароль, код восстановления). - Немедленно информировать нас о подозрении на несанкционированный доступ к вашему аккаунту.  Вы несете ответственность за все действия, совершаемые с вашего аккаунта, включая все данные, которые вы делитесь или действия, выполняемые через ваш аккаунт.  ## 2. Использование Приложения  Вы соглашаетесь использовать **ReallyStick** исключительно в законных целях и в соответствии с настоящими Условиями Использования. Вам запрещается: - Нарушать применимые законы или нормативные акты. - Публиковать, делиться или участвовать в любой вредной, оскорбительной или незаконной деятельности. - Использовать приложение для отправки нежелательных сообщений или спама. - Пытаться взломать, повредить или получить несанкционированный доступ к приложению или его функциям.  Мы оставляем за собой право приостановить или расторгнуть ваш аккаунт в случае нарушения этих условий.  ## 3. Конфиденциальность и Сбор Данных  Ваша конфиденциальность важна для нас. Мы собираем определенные данные, как описано в нашей **Политике Конфиденциальности**. Используя приложение, вы соглашаетесь на сбор и использование ваших данных в соответствии с нашей Политикой Конфиденциальности.  ## 4. Контент и Собственность  - Весь контент, предоставляемый **ReallyStick** (включая приложение, веб-сайт и любые связанные материалы), является собственностью **ReallyStick** или наших лицензиаров и защищен законами об авторских правах, товарных знаках и другими законами о интеллектуальной собственности. - Вы не можете копировать, изменять, распространять или создавать производные работы из любого контента без нашего разрешения. - Вы сохраняете права на любой контент, который вы публикуете в приложении, но, публикуя контент, вы предоставляете нам лицензию на его использование, отображение и распространение в приложении и в рекламных целях.  ## 5. Контент, Создаваемый Пользователями  Вы несете ответственность за контент, который вы публикуете или делитесь на **ReallyStick**, включая тексты, изображения и любые другие медиа. Вы соглашаетесь не публиковать: - Контент, который является вредным, оскорбительным, дискриминационным или домогательским. - Контент, нарушающий права интеллектуальной собственности других лиц. - Контент, нарушающий любые применимые законы.  Мы оставляем за собой право удалить любой контент, нарушающий эти условия.  ## 6. Push-Уведомления  Мы можем отправлять вам push-уведомления об обновлениях, напоминаниях и важной информации, связанной с приложением. Вы можете управлять или отключать эти уведомления в настройках приложения.  ## 7. Расторжение  Мы оставляем за собой право приостановить или расторгнуть ваш доступ к **ReallyStick** в любое время по любой причине, включая нарушение этих Условий Использования. В случае расторжения ваш аккаунт будет удален, и вы потеряете доступ к приложению.  ## 8. Отказ от Ответственности  - Приложение предоставляется \"как есть\" без каких-либо гарантий, явных или подразумеваемых. - Мы не гарантируем, что приложение будет свободно от ошибок, безопасно или доступно в любое время.  ## 9. Ограничение Ответственности  В максимальной степени, разрешенной законом, мы не несем ответственности за любые убытки, возникшие в результате вашего использования или невозможности использования **ReallyStick**, включая, но не ограничиваясь, потерей данных, системными ошибками или любыми другими косвенными или случайными убытками.  ## 10. Компенсация  Вы соглашаетесь возместить, защитить и освободить от ответственности **ReallyStick** и наших аффилированных лиц от любых претензий, убытков, ответственности и расходов (включая юридические издержки), возникших в результате вашего использования приложения, нарушения этих Условий Использования или любого контента, который вы публикуете или делитесь в приложении.  ## 11. Применимое Право  Эти Условия Использования регулируются законами страны или юрисдикции, в которой вы проживаете. Любые споры будут разрешаться в компетентных судах вашего региона.  ## 12. Изменения Условий  Мы можем обновлять эти Условия Использования время от времени. Если мы внесем значительные изменения, мы уведомим вас через приложение. Последняя версия этих условий всегда будет доступна в приложении.  ## 13. Связаться с Нами  Если у вас есть вопросы или опасения по поводу этих Условий Использования, пожалуйста, свяжитесь с нами через форму обратной связи в приложении.",
+  "theme": "Тема",
+  "timeWithTime": "Время: {time}",
+  "topActivityCardTitle": "Активность",
+  "topAgesCardTitle": "Возрастные категории",
+  "topCountriesCardTitle": "Страны",
+  "topFinancialSituationsCardTitle": "Финансовое положение",
+  "topGenderCardTitle": "Пол",
+  "topHasChildrenCardTitle": "Наличие детей",
+  "topLevelsOfEducationCardTitle": "Уровень образования",
+  "topLivesInUrbanAreaCardTitle": "Зона проживания",
+  "topRegionsCardTitle": "Регионы",
+  "topRelationshipStatusesCardTitle": "Семейное положение",
+  "twoFA": "Двухфакторная аутентификация",
+  "twoFAInvitation": "Безопасность и конфиденциальность — наши главные приоритеты.\n\nПожалуйста, активируйте двухфакторную аутентификацию, чтобы защитить ваш аккаунт от атак методом подбора пароля.",
+  "twoFAIsWellSetup": "Двухфакторная аутентификация настроена правильно на вашем аккаунте.",
+  "twoFAScanQrCode": "Сканируйте этот QR-код в вашем приложении для аутентификации.",
+  "twoFASecretKey": "Ваш секретный ключ QR-кода: {secretKey}",
+  "twoFASetup": "Активируйте двухфакторную аутентификацию для защиты вашего аккаунта.",
+  "twoFactorAuthenticationNotEnabledError": "Двухфакторная аутентификация не активирована на вашем аккаунте.",
+  "unableToLoadRecoveryCode": "Не удалось загрузить код восстановления.",
+  "unauthorizedError": "Вы не авторизованы для выполнения этой операции.",
+  "unblockThisUser": "Разблокировать этого пользователя",
+  "unemployed": "Безработный",
+  "unit": "Единица измерения",
+  "unitNotFoundError": "Эта единица измерения не существует.",
+  "unknown": "Неизвестно",
+  "unknownError": "Произошла неожиданная ошибка. Пожалуйста, попробуйте снова.",
+  "updateChallenge": "Изменить задачу",
+  "updatePassword": "Укажите ваш текущий пароль и новый.",
+  "userAlreadyExistingError": "Пользователь с таким именем уже существует. Пожалуйста, выберите другое.",
+  "userNotFoundError": "Пользователь не найден.",
+  "username": "Имя пользователя",
+  "usernameNotRespectingRulesError": "Ваше имя пользователя должно соответствовать следующим правилам:\n - начинаться и заканчиваться буквой или цифрой\n - разрешены специальные символы . _ -\n - не допускаются повторяющиеся специальные символы.",
+  "usernameWrongSizeError": "Длина вашего имени пользователя должна быть от 3 до 20 символов.",
+  "validationCode": "Код подтверждения",
+  "validationCodeCorrect": "Ваш код подтверждения правильный!",
+  "verify": "Проверить",
+  "wealthy": "Богатый",
+  "weight": "Вес",
+  "weightIsNegativeError": "Вес не может быть отрицательным.",
+  "weightUnit": "Единица веса",
+  "weightWithQuantity": "Вес: {quantity} {unit}",
+  "welcome": "Добро пожаловать на ReallyStick",
+  "whatIsThis": "Что это?",
+  "worker": "Рабочий",
+  "writeTo": "Напишите {user}...",
+  "writtenMessages": "Написанные сообщения",
+  "yes": "Да",
+  "youAreNotAlone": "Вы не одиноки. Общайтесь, обменивайтесь, растите.",
+  "youAreNotTheCreatorOfThisChallenge": "Вы не создатель этого задания.",
+  "youBlockedThisUser": "Вы заблокировали этого пользователя."
+}

@@ -143,7 +143,7 @@ class ChallengeWidget extends StatelessWidget {
                                       if (challengeParticipation != null) ...[
                                         SizedBox(height: 10),
                                         Text(
-                                          "${AppLocalizations.of(context)!.challengeParticipationStartDate} ${DateFormat.yMMMd().format(challengeParticipation!.startDate)}",
+                                          "${AppLocalizations.of(context)!.challengeParticipationStartDate} ${DateFormat.yMMMd(userLocale).format(challengeParticipation!.startDate)}",
                                         ),
                                         SizedBox(height: 20),
                                       ],

@@ -265,7 +265,7 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
                     );
                   },
                   child: Text(
-                    DateFormat.yMMMd().format(_selectedDateTime),
+                    DateFormat.yMMMd(userLocale).format(_selectedDateTime),
                     style: context.typographies.body,
                   ),
                 ),

@@ -285,7 +285,7 @@ class CreateChallengeScreenState extends State<CreateChallengeScreen> {
                                                   _startDateTime));
                                     },
                                     child: Text(
-                                      DateFormat.yMMMd().format(_startDateTime),
+                                      DateFormat.yMMMd(userLocale).format(_startDateTime),
                                       style: context.typographies.body,
                                     ),
                                   ),
