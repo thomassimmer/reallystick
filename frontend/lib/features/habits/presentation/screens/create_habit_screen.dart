@@ -131,13 +131,13 @@ class CreateHabitScreenState extends State<CreateHabitScreen> {
                         ErrorMessage(displayHabitCategoryError.messageKey))
                     : null;
 
-            final displayShortNameError = context.select(
+            final displayNameError = context.select(
               (HabitCreationFormBloc habitCreationFormBloc) =>
                   habitCreationFormBloc.state.name.displayError,
             );
-            final displayShortNameErrorMessage = displayShortNameError != null
+            final displayNameErrorMessage = displayNameError != null
                 ? getTranslatedMessage(
-                    context, ErrorMessage(displayShortNameError.messageKey))
+                    context, ErrorMessage(displayNameError.messageKey))
                 : null;
 
             final displayDescriptionError = context.select(
@@ -227,7 +227,7 @@ class CreateHabitScreenState extends State<CreateHabitScreen> {
                                     HabitCreationFormBloc>(context)
                                 .add(HabitCreationFormNameChangedEvent(name)),
                             label: AppLocalizations.of(context)!.habitName,
-                            errorText: displayShortNameErrorMessage,
+                            errorText: displayNameErrorMessage,
                           ),
 
                           const SizedBox(height: 16.0),
