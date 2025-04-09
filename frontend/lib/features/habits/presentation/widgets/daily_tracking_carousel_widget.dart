@@ -121,17 +121,13 @@ class DailyTrackingCarouselWidgetState
     const dayBoxSize = 30.0;
     final numberOfDays = max(8, daysSinceFirstActivity);
 
-    final lastSunday =
-        today.add(Duration(days: DateTime.sunday - today.weekday));
-    final firstMonday =
-        lastSunday.subtract(Duration(days: numberOfDays)).subtract(
-              Duration(
-                days:
-                    (lastSunday.subtract(Duration(days: numberOfDays)).weekday -
-                            1) %
-                        7,
-              ),
-            );
+    final lastSunday = today
+        .add(Duration(days: DateTime.sunday - today.weekday))
+        .copyWith(hour: 1, minute: 0, second: 0);
+    DateTime firstMonday = lastSunday
+        .subtract(Duration(days: numberOfDays))
+        .copyWith(hour: 0, minute: 0, second: 0);
+    firstMonday = firstMonday.subtract(Duration(days: firstMonday.weekday - 1));
 
     final actualNumberOfBoxesToDisplay =
         lastSunday.difference(firstMonday).inDays + 1;
