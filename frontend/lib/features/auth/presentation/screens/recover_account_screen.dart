@@ -135,10 +135,13 @@ class RecoverAccountScreenState extends State<RecoverAccountScreen>
         AppLocalizations.of(context)!.enterUsername,
       ),
       SizedBox(height: 16),
-      CustomTextField(
-        controller: usernameController,
-        label: AppLocalizations.of(context)!.username,
-        onFieldSubmitted: (_) => triggerNextAction(),
+      AutofillGroup(
+        child: CustomTextField(
+          controller: usernameController,
+          label: AppLocalizations.of(context)!.username,
+          onFieldSubmitted: (_) => triggerNextAction(),
+          autofillHints: [AutofillHints.username],
+        ),
       ),
       SizedBox(height: 24),
       ElevatedButton(
@@ -176,10 +179,13 @@ class RecoverAccountScreenState extends State<RecoverAccountScreen>
         AppLocalizations.of(context)!.enterPassword,
       ),
       SizedBox(height: 16),
-      CustomTextField(
-        controller: passwordController,
-        label: AppLocalizations.of(context)!.password,
-        obscureText: true,
+      AutofillGroup(
+        child: CustomTextField(
+          controller: passwordController,
+          label: AppLocalizations.of(context)!.password,
+          obscureText: true,
+          autofillHints: [AutofillHints.password],
+        ),
       ),
       SizedBox(height: 16),
       Text(

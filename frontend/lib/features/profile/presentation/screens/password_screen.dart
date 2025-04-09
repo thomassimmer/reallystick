@@ -77,15 +77,18 @@ class PasswordScreen extends StatelessWidget {
               AppLocalizations.of(context)!.setNewPassword,
             ),
             SizedBox(height: 16),
-            CustomTextField(
-              controller: _newPasswordController,
-              onChanged: (password) =>
-                  BlocProvider.of<ProfileSetPasswordFormBloc>(context)
-                      .add(SetPasswordFormPasswordChangedEvent(password)),
-              obscureText: true,
-              label: AppLocalizations.of(context)!.newPassword,
-              errorText: displayPasswordErrorMessage,
-              onFieldSubmitted: (_) => triggerSavePassword(),
+            AutofillGroup(
+              child: CustomTextField(
+                controller: _newPasswordController,
+                onChanged: (password) =>
+                    BlocProvider.of<ProfileSetPasswordFormBloc>(context)
+                        .add(SetPasswordFormPasswordChangedEvent(password)),
+                obscureText: true,
+                label: AppLocalizations.of(context)!.newPassword,
+                errorText: displayPasswordErrorMessage,
+                onFieldSubmitted: (_) => triggerSavePassword(),
+                autofillHints: [AutofillHints.newPassword],
+              ),
             ),
             SizedBox(height: 24),
             ElevatedButton(
@@ -129,21 +132,29 @@ class PasswordScreen extends StatelessWidget {
               AppLocalizations.of(context)!.updatePassword,
             ),
             SizedBox(height: 24),
-            CustomTextField(
-              controller: _currentPasswordController,
-              label: AppLocalizations.of(context)!.currentPassword,
-              obscureText: true,
-            ),
-            SizedBox(height: 24),
-            CustomTextField(
-              controller: _newPasswordController,
-              onChanged: (password) =>
-                  BlocProvider.of<ProfileUpdatePasswordFormBloc>(context)
-                      .add(UpdatePasswordFormPasswordChangedEvent(password)),
-              obscureText: true,
-              label: AppLocalizations.of(context)!.newPassword,
-              errorText: displayPasswordErrorMessage,
-              onFieldSubmitted: (_) => triggerSavePassword(),
+            AutofillGroup(
+              child: Column(
+                children: [
+                  CustomTextField(
+                    controller: _currentPasswordController,
+                    label: AppLocalizations.of(context)!.currentPassword,
+                    obscureText: true,
+                    autofillHints: [AutofillHints.password],
+                  ),
+                  SizedBox(height: 24),
+                  CustomTextField(
+                    controller: _newPasswordController,
+                    onChanged: (password) => BlocProvider.of<
+                            ProfileUpdatePasswordFormBloc>(context)
+                        .add(UpdatePasswordFormPasswordChangedEvent(password)),
+                    obscureText: true,
+                    label: AppLocalizations.of(context)!.newPassword,
+                    errorText: displayPasswordErrorMessage,
+                    onFieldSubmitted: (_) => triggerSavePassword(),
+                    autofillHints: [AutofillHints.newPassword],
+                  ),
+                ],
+              ),
             ),
             SizedBox(height: 24),
             ElevatedButton(

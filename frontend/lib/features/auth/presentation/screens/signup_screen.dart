@@ -139,25 +139,33 @@ class SignupScreenState extends State<SignupScreen>
             style: TextStyle(fontSize: 20),
           ),
           SizedBox(height: 16),
-          CustomTextField(
-            controller: _usernameController,
-            onChanged: (username) =>
-                BlocProvider.of<AuthSignupFormBloc>(context)
-                    .add(SignupFormUsernameChangedEvent(username)),
-            label: AppLocalizations.of(context)!.username,
-            obscureText: false,
-            errorText: displayUsernameErrorMessage,
-          ),
-          SizedBox(height: 16),
-          CustomTextField(
-            controller: _passwordController,
-            onChanged: (password) =>
-                BlocProvider.of<AuthSignupFormBloc>(context)
-                    .add(SignupFormPasswordChangedEvent(password)),
-            obscureText: true,
-            label: AppLocalizations.of(context)!.password,
-            errorText: displayPasswordErrorMessage,
-            onFieldSubmitted: (_) => triggerSignUp(),
+          AutofillGroup(
+            child: Column(
+              children: [
+                CustomTextField(
+                  controller: _usernameController,
+                  onChanged: (username) =>
+                      BlocProvider.of<AuthSignupFormBloc>(context)
+                          .add(SignupFormUsernameChangedEvent(username)),
+                  label: AppLocalizations.of(context)!.username,
+                  obscureText: false,
+                  errorText: displayUsernameErrorMessage,
+                  autofillHints: [AutofillHints.username],
+                ),
+                SizedBox(height: 16),
+                CustomTextField(
+                  controller: _passwordController,
+                  onChanged: (password) =>
+                      BlocProvider.of<AuthSignupFormBloc>(context)
+                          .add(SignupFormPasswordChangedEvent(password)),
+                  obscureText: true,
+                  label: AppLocalizations.of(context)!.password,
+                  errorText: displayPasswordErrorMessage,
+                  onFieldSubmitted: (_) => triggerSignUp(),
+                  autofillHints: [AutofillHints.password],
+                ),
+              ],
+            ),
           ),
           SizedBox(height: 24),
           RichText(
