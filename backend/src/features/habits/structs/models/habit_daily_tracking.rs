@@ -1,14 +1,13 @@
-use chrono::{DateTime, Utc};
+use chrono::{DateTime, NaiveDateTime, Utc};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
-
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct HabitDailyTracking {
     pub id: Uuid,
     pub user_id: Uuid,
     pub habit_id: Uuid,
-    pub datetime: DateTime<Utc>,
+    pub datetime: NaiveDateTime,
     pub created_at: DateTime<Utc>,
 
     pub quantity_per_set: i32,
@@ -18,13 +17,12 @@ pub struct HabitDailyTracking {
     pub weight_unit_id: Uuid,
 }
 
-
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct HabitDailyTrackingData {
     pub id: Uuid,
     pub user_id: Uuid,
     pub habit_id: Uuid,
-    pub datetime: DateTime<Utc>,
+    pub datetime: NaiveDateTime,
 
     pub quantity_per_set: i32,
     pub quantity_of_set: i32,

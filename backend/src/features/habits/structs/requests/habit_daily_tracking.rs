@@ -1,4 +1,4 @@
-use chrono::{DateTime, Utc};
+use chrono::NaiveDateTime;
 
 use serde::Deserialize;
 use uuid::Uuid;
@@ -15,7 +15,7 @@ pub struct UpdateHabitDailyTrackingParams {
 
 #[derive(Deserialize)]
 pub struct HabitDailyTrackingUpdateRequest {
-    pub datetime: DateTime<Utc>,
+    pub datetime: NaiveDateTime,
     pub quantity_per_set: i32,
     pub quantity_of_set: i32,
     pub unit_id: Uuid,
@@ -26,7 +26,7 @@ pub struct HabitDailyTrackingUpdateRequest {
 #[derive(Deserialize)]
 pub struct HabitDailyTrackingCreateRequest {
     pub habit_id: Uuid,
-    pub datetime: DateTime<Utc>,
+    pub datetime: NaiveDateTime,
     pub quantity_per_set: i32,
     pub quantity_of_set: i32,
     pub unit_id: Uuid,
