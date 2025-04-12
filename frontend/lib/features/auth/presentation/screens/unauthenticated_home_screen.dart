@@ -316,23 +316,31 @@ class UnauthenticatedHomeScreenState extends State<UnauthenticatedHomeScreen>
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              TextButton(
-                onPressed: () => context.goNamed('privacy-policy'),
-                child: Text(
-                  AppLocalizations.of(context)!.privacyPolicy,
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: context.colors.text,
+              Flexible(
+                child: TextButton(
+                  onPressed: () => context.goNamed('privacy-policy'),
+                  child: Text(
+                    AppLocalizations.of(context)!.privacyPolicy,
+                    overflow: TextOverflow.ellipsis,
+                    softWrap: false,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: context.colors.text,
+                    ),
                   ),
                 ),
               ),
-              TextButton(
-                onPressed: () => context.goNamed('terms-of-use'),
-                child: Text(
-                  AppLocalizations.of(context)!.termsOfUse,
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: context.colors.text,
+              Flexible(
+                child: TextButton(
+                  onPressed: () => context.goNamed('terms-of-use'),
+                  child: Text(
+                    AppLocalizations.of(context)!.termsOfUse,
+                    overflow: TextOverflow.ellipsis,
+                    softWrap: false,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: context.colors.text,
+                    ),
                   ),
                 ),
               ),

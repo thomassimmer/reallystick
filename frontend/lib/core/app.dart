@@ -71,7 +71,11 @@ class ReallyStickAppState extends State<ReallyStickApp> {
               ? DarkAppTheme().themeData
               : LightAppTheme().themeData;
 
-          if (state.profile != null) {
+          if (state is ProfileUnauthenticated) {
+            if (state.locale != null) {
+              locale = Locale(state.locale!);
+            }
+          } else if (state.profile != null) {
             locale = Locale(state.profile!.locale);
             themeData = state.profile!.theme == 'dark'
                 ? DarkAppTheme().themeData

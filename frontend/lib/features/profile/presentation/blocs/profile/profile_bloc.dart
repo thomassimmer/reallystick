@@ -203,6 +203,9 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState>
   void _changeUnauthenticatedLanguage(
       UnauthenticatedUserChangedLanguage event, Emitter<ProfileState> emit) {
     emit(
+      ProfileLoading(),
+    );
+    emit(
       ProfileUnauthenticated(locale: event.locale),
     );
   }
