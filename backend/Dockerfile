@@ -23,8 +23,3 @@ WORKDIR /app
 
 # Now copy the rest of the source code
 COPY --chown=rustuser:rustuser . .
-
-# Expose the port the app runs on
-EXPOSE 8000
-
-ENTRYPOINT ["/app/entrypoint.sh"]

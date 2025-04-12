@@ -25,6 +25,7 @@ services:
       dockerfile: Dockerfile.prod
     env_file:
       - ./backend/.env.docker
+    command: "./entrypoint.prod.sh"
     ports:
       - "8000:8000"
     volumes:
@@ -40,10 +41,10 @@ services:
     image: reallystick_backend
     build:
       context: ./backend
-      dockerfile: Dockerfile.notifications.prod
+      dockerfile: Dockerfile.prod
     env_file:
       - ./backend/.env.notifications.docker
-    command: ["./target/release/notifications"]
+    command: "./entrypoint.notifications.prod.sh"
     ports:
       - "8001:8001"
     volumes:
@@ -51,6 +52,7 @@ services:
     networks:
       - app-network
     depends_on:
+      - backend
       - db
       - redis
 

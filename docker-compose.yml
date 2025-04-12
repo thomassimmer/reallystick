@@ -25,6 +25,7 @@ services:
       dockerfile: Dockerfile
     env_file:
       - ./backend/.env.docker
+    command: "./entrypoint.sh"
     ports:
       - "8000:8000"
     volumes:
@@ -40,20 +41,10 @@ services:
     image: reallystick_backend
     build:
       context: ./backend
-      dockerfile: Dockerfile.notifications
+      dockerfile: Dockerfile
     env_file:
       - ./backend/.env.notifications.docker
-    command:
-      [
-        "cargo",
-        "watch",
-        "-q",
-        "-c",
-        "-w",
-        "src/",
-        "-x",
-        "run --bin notifications",
-      ]
+    command: "./entrypoint.notifications.sh"
     ports:
       - "8001:8001"
     volumes:
@@ -61,6 +52,7 @@ services:
     networks:
       - app-network
     depends_on:
+      - backend
       - db
       - redis
 
