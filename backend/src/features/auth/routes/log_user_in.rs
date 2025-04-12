@@ -3,21 +3,22 @@ use crate::core::structs::responses::GenericResponse;
 use crate::features::auth::helpers::password::password_is_valid;
 use crate::features::auth::helpers::token::generate_tokens;
 use crate::features::profile::helpers::device_info::get_user_agent;
-use crate::features::profile::helpers::profile::get_user_by_username;
+use crate::features::profile::helpers::profile::{get_user_by_username, update_user_deleted_at};
 use crate::{
     features::auth::structs::requests::UserLoginRequest,
     features::auth::structs::responses::{UserLoginResponse, UserLoginWhenOtpEnabledResponse},
 };
-use actix_web::{post, web, HttpRequest, HttpResponse, Responder};
+use actix_web::web::{Data, Json};
+use actix_web::{post, HttpRequest, HttpResponse, Responder};
 use sqlx::PgPool;
 use tracing::error;
 
 #[post("/login")]
 pub async fn log_user_in(
     req: HttpRequest,
-    body: web::Json<UserLoginRequest>,
-    pool: web::Data<PgPool>,
-    secret: web::Data<String>,
+    body: Json<UserLoginRequest>,
+    pool: Data<PgPool>,
+    secret: Data<String>,
 ) -> impl Responder {
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
@@ -48,6 +49,15 @@ pub async fn log_user_in(
             return HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response());
         }
     };
+
+    if user.deleted_at.is_some() {
+        let delete_result = update_user_deleted_at(&mut *transaction, user.id, None).await;
+
+        if let Err(e) = delete_result {
+            error!("Error: {}", e);
+            return HttpResponse::InternalServerError().json(AppError::UserUpdate.to_response());
+        }
+    }
 
     if !password_is_valid(&user, &body.password) {
         return HttpResponse::Unauthorized()

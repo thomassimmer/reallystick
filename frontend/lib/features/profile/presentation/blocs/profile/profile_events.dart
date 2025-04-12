@@ -12,12 +12,25 @@ class ProfileInitializeEvent extends ProfileEvent {}
 
 class ProfileLogoutEvent extends ProfileEvent {}
 
+class UnauthenticatedUserChangedLanguage extends ProfileEvent {
+  final String locale;
+
+  UnauthenticatedUserChangedLanguage({
+    required this.locale,
+  });
+
+  @override
+  List<Object?> get props => [locale];
+}
+
 class ProfileUpdateEvent extends ProfileEvent {
   final Profile newProfile;
   final bool displayNotification;
 
-  ProfileUpdateEvent(
-      {required this.newProfile, this.displayNotification = true});
+  ProfileUpdateEvent({
+    required this.newProfile,
+    this.displayNotification = true,
+  });
 
   @override
   List<Object?> get props => [newProfile, displayNotification];
@@ -41,7 +54,9 @@ class ProfileVerifyOneTimePasswordEvent extends ProfileEvent {
 class ProfileSetPasswordEvent extends ProfileEvent {
   final String newPassword;
 
-  const ProfileSetPasswordEvent({required this.newPassword});
+  const ProfileSetPasswordEvent({
+    required this.newPassword,
+  });
 
   @override
   List<Object> get props => [newPassword];
@@ -51,8 +66,10 @@ class ProfileUpdatePasswordEvent extends ProfileEvent {
   final String currentPassword;
   final String newPassword;
 
-  const ProfileUpdatePasswordEvent(
-      {required this.currentPassword, required this.newPassword});
+  const ProfileUpdatePasswordEvent({
+    required this.currentPassword,
+    required this.newPassword,
+  });
 
   @override
   List<Object> get props => [currentPassword, newPassword];

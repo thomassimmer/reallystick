@@ -28,8 +28,11 @@ class ProfileLoading extends ProfileState {
 }
 
 class ProfileUnauthenticated extends ProfileState {
+  final String? locale;
+
   const ProfileUnauthenticated({
     super.message,
+    this.locale,
   });
 }
 

@@ -261,7 +261,7 @@ where
     .await
 }
 
-pub async fn get_user_token_count<'a, E>(executor: E) -> Result<i64, sqlx::Error>
+pub async fn get_user_token_count<'a, E>(executor: E) -> Result<i64, Error>
 where
     E: Executor<'a, Database = Postgres>,
 {
@@ -275,4 +275,20 @@ where
     .await?;
 
     Ok(row.count.unwrap_or(0))
+}
+
+pub async fn delete_expired_tokens<'a, E>(executor: E) -> Result<PgQueryResult, Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
+    sqlx::query_as!(
+        UserToken,
+        r#"
+        DELETE
+        FROM user_tokens
+        WHERE expires_at < NOW()
+        "#,
+    )
+    .execute(executor)
+    .await
 }

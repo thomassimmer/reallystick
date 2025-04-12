@@ -120,6 +120,7 @@ pub async fn register_user(
         otp_auth_url: None,
         created_at: now(),
         updated_at: now(),
+        deleted_at: None,
         password_is_expired: false,
         has_seen_questions: false,
         age_category: None,

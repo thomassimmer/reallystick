@@ -282,7 +282,7 @@
   "comingSoon": "Bald verfügbar...",
   "confirm": "Bestätigen",
   "confirmDelete": "Konto-Löschung bestätigen",
-  "confirmDeleteMessage": "Durch Klicken auf \"Bestätigen\" werden Ihr Konto und alle zugehörigen Aktivitäten dauerhaft gelöscht.",
+  "confirmDeleteMessage": "Wenn Sie auf „Bestätigen“ klicken, wird Ihr Konto sowie alle zugehörigen Aktivitäten zur endgültigen Löschung in 3 Tagen vorgemerkt.\n\nWenn Sie sich vor Ablauf dieser Frist erneut anmelden, wird die Löschung aufgehoben.",
   "confirmDeletion": "Löschung bestätigen",
   "confirmDeletionQuestion": "Möchten Sie die Sitzung auf diesem Gerät wirklich beenden?",
   "confirmDuplicateChallenge": "Möchten Sie eine Kopie dieser Herausforderung mit den zugehörigen täglichen Zielen erstellen?",

@@ -1,8 +1,18 @@
 # Use the official Rust image as the base image
 FROM rust:1.81
 
-# Create a new user and switch to that user
 RUN useradd -m rustuser
+
+RUN apt-get update && apt-get install -y cron
+
+# Add crontab file
+COPY crontab.prod.txt /etc/cron.d/reallystick-cron
+RUN chmod 0644 /etc/cron.d/reallystick-cron
+RUN crontab -u rustuser /etc/cron.d/reallystick-cron
+RUN touch /var/log/cron.log
+RUN chown rustuser:rustuser /var/log/cron.log
+RUN chmod u+s /usr/sbin/cron
+
 USER rustuser
 
 # Set the working directory inside the container
@@ -13,3 +23,5 @@ COPY --chown=rustuser:rustuser . .
 
 # Expose the port the app runs on
 EXPOSE 8000
+
+ENTRYPOINT ["/app/entrypoint.prod.sh"]

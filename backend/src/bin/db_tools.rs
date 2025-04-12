@@ -1,10 +1,12 @@
 use clap::Parser;
 use reallystick::configuration::get_configuration;
 use reallystick::core::helpers::startup::{
-    create_missing_discussions_with_reallystick_user, populate_database, reset_database,
+    create_missing_discussions_with_reallystick_user, populate_database,
+    remove_expired_user_tokens, remove_users_marked_as_deleted_after_3_days, reset_database,
 };
 use reallystick::startup::get_connection_pool;
 use tracing::{error, info};
+use tracing_subscriber::FmtSubscriber;
 
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
@@ -14,6 +16,12 @@ struct Args {
 
 #[tokio::main]
 async fn main() {
+    let subscriber = FmtSubscriber::builder()
+        .with_max_level(tracing::Level::INFO)
+        .finish();
+
+    tracing::subscriber::set_global_default(subscriber).expect("setting default subscriber failed");
+
     let args = Args::parse();
     let action = args.action;
     let configuration = get_configuration().expect("Failed to read configuration.");
@@ -44,6 +52,19 @@ async fn main() {
                 );
             } else {
                 info!("Success !");
+            }
+        }
+        "remove_users_marked_as_deleted_after_3_days" => {
+            if let Err(e) = remove_users_marked_as_deleted_after_3_days(&pool).await {
+                error!(
+                    "Failed to remove users marked as deleted after 3 days: {}",
+                    e
+                );
+            }
+        }
+        "delete_expired_tokens" => {
+            if let Err(e) = remove_expired_user_tokens(&pool).await {
+                error!("Failed to delete expired tokens: {}", e);
             }
         }
         _ => error!("Unknown action: {}", action),

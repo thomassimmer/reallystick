@@ -1,5 +1,6 @@
 use actix_http::Payload;
 use actix_web::{FromRequest, HttpMessage, HttpRequest};
+use chrono::{DateTime, Utc};
 use futures_util::future::{err, ok, Ready};
 use serde::{Deserialize, Serialize};
 use sqlx::{prelude::FromRow, PgConnection};
@@ -24,8 +25,9 @@ pub struct User {
     pub otp_base32: Option<String>,
     pub otp_auth_url: Option<String>,
 
-    pub created_at: chrono::DateTime<chrono::Utc>,
-    pub updated_at: chrono::DateTime<chrono::Utc>,
+    pub created_at: DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
+    pub deleted_at: Option<DateTime<Utc>>,
 
     pub password_is_expired: bool,
     pub public_key: Option<String>,

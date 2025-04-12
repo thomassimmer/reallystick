@@ -85,6 +85,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState>
 
     on<ProfileInitializeEvent>(_initialize);
     on<ProfileLogoutEvent>(_logout);
+    on<UnauthenticatedUserChangedLanguage>(_changeUnauthenticatedLanguage);
     on<ProfileUpdateEvent>(_updateProfile);
     on<ProfileGenerateTwoFactorAuthenticationConfigEvent>(
         _generateTwoFactorAuthenticationConfig);
@@ -194,7 +195,16 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState>
 
   Future<void> _logout(
       ProfileLogoutEvent event, Emitter<ProfileState> emit) async {
-    emit(ProfileUnauthenticated());
+    emit(
+      ProfileUnauthenticated(),
+    );
+  }
+
+  void _changeUnauthenticatedLanguage(
+      UnauthenticatedUserChangedLanguage event, Emitter<ProfileState> emit) {
+    emit(
+      ProfileUnauthenticated(locale: event.locale),
+    );
   }
 
   Future<void> _updateProfile(

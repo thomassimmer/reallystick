@@ -1,0 +1,2 @@
+* * * * * cd /app && export $(cat .env.docker | xargs) && ./target/release/db_tools remove_users_marked_as_deleted_after_3_days >> /var/log/cron.log 2>&1
+* * * * * cd /app && export $(cat .env.docker | xargs) && ./target/release/db_tools delete_expired_tokens >> /var/log/cron.log 2>&1

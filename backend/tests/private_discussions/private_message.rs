@@ -174,7 +174,7 @@ pub async fn user_can_create_a_private_message() {
 
     user_creates_a_private_discussion(&app, &access_token, thomas_id, "blue").await;
 
-    let discussion_id = user_gets_private_discussions(&app, &access_token).await[0].id;
+    let discussion_id = user_gets_private_discussions(&app, &access_token).await[1].id;
 
     let private_messages =
         user_gets_private_messages_of_discussion(&app, &access_token, discussion_id).await;

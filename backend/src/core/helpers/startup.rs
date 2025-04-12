@@ -2,14 +2,15 @@ use std::collections::HashMap;
 
 use argon2::PasswordHasher;
 use argon2::{password_hash::SaltString, Argon2};
-use chrono::{Duration, Utc};
+use chrono::{Days, Duration, Utc};
 use fluent::FluentArgs;
 use rand::rngs::OsRng;
 use serde_json::json;
 use sqlx::PgPool;
-use tracing::error;
+use tracing::{error, info};
 use uuid::Uuid;
 
+use crate::features::auth::helpers::token::delete_expired_tokens;
 use crate::features::habits::helpers::habit::create_habit;
 use crate::features::habits::helpers::habit_category::create_habit_category;
 use crate::features::habits::helpers::habit_daily_tracking::create_habit_daily_tracking;
@@ -27,7 +28,8 @@ use crate::features::private_discussions::structs::models::private_discussion::P
 use crate::features::private_discussions::structs::models::private_discussion_participation::PrivateDiscussionParticipation;
 use crate::features::private_discussions::structs::models::private_message::PrivateMessage;
 use crate::features::profile::helpers::profile::{
-    create_user, get_all_users, get_user_by_username,
+    create_user, delete_user_by_id, get_all_users, get_all_users_marked_as_deleted,
+    get_user_by_username,
 };
 use crate::features::{
     habits::structs::models::{habit::Habit, habit_category::HabitCategory},
@@ -67,6 +69,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
         otp_auth_url: None,
         created_at: now(),
         updated_at: now(),
+        deleted_at: None,
         password_is_expired: false,
         has_seen_questions: false,
         age_category: None,
@@ -104,6 +107,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
         otp_auth_url: None,
         created_at: now(),
         updated_at: now(),
+        deleted_at: None,
         password_is_expired: false,
         has_seen_questions: false,
         age_category: None,
@@ -887,6 +891,48 @@ pub async fn create_missing_discussions_with_reallystick_user(
 
         private_message::create_private_message(&mut *transaction, &private_message).await?;
     }
+
+    transaction.commit().await?;
+
+    Ok(())
+}
+
+pub async fn remove_users_marked_as_deleted_after_3_days(pool: &PgPool) -> Result<(), sqlx::Error> {
+    let mut transaction = match pool.begin().await {
+        Ok(t) => t,
+        Err(_) => panic!("Can't get a transaction."),
+    };
+
+    let users = get_all_users_marked_as_deleted(&mut *transaction).await?;
+
+    for user in users.clone() {
+        if let Some(deleted_at) = user.deleted_at {
+            if let Some(three_day_after_deleted_at) = deleted_at.checked_add_days(Days::new(3)) {
+                if now() > three_day_after_deleted_at {
+                    if let Err(e) = delete_user_by_id(&mut *transaction, user.id).await {
+                        error!("Error: {}", e);
+                    }
+                }
+            }
+        }
+    }
+
+    info!("Successfully deleted {} users.", users.len());
+
+    transaction.commit().await?;
+
+    Ok(())
+}
+
+pub async fn remove_expired_user_tokens(pool: &PgPool) -> Result<(), sqlx::Error> {
+    let mut transaction = match pool.begin().await {
+        Ok(t) => t,
+        Err(_) => panic!("Can't get a transaction."),
+    };
+
+    let result = delete_expired_tokens(&mut *transaction).await?;
+
+    info!("Deleted {} expired user tokens.", result.rows_affected());
 
     transaction.commit().await?;
 

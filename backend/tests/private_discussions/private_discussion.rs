@@ -75,11 +75,11 @@ pub async fn user_can_create_private_discussion() {
     let (access_token, _) = user_signs_up(&app, None).await;
 
     let private_discussions = user_gets_private_discussions(&app, &access_token).await;
-    assert_eq!(private_discussions.len(), 0);
+    assert_eq!(private_discussions.len(), 1);
 
     user_creates_a_private_discussion(&app, &access_token, thomas_id, "blue").await;
 
     let private_discussions = user_gets_private_discussions(&app, &access_token).await;
-    assert_eq!(private_discussions.len(), 1);
-    assert_eq!(private_discussions[0].color, Some("blue".to_string()));
+    assert_eq!(private_discussions.len(), 2);
+    assert_eq!(private_discussions[1].color, Some("blue".to_string()));
 }

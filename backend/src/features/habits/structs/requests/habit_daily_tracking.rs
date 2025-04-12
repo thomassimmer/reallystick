@@ -1,6 +1,6 @@
 use chrono::NaiveDateTime;
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
 #[derive(Deserialize)]
@@ -13,7 +13,7 @@ pub struct UpdateHabitDailyTrackingParams {
     pub habit_daily_tracking_id: Uuid,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 pub struct HabitDailyTrackingUpdateRequest {
     pub datetime: NaiveDateTime,
     pub quantity_per_set: i32,
@@ -23,7 +23,7 @@ pub struct HabitDailyTrackingUpdateRequest {
     pub weight_unit_id: Uuid,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 pub struct HabitDailyTrackingCreateRequest {
     pub habit_id: Uuid,
     pub datetime: NaiveDateTime,

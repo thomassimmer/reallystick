@@ -25,7 +25,6 @@ services:
       dockerfile: Dockerfile.prod
     env_file:
       - ./backend/.env.docker
-    command: ["./target/release/reallystick"]
     ports:
       - "8000:8000"
     volumes:

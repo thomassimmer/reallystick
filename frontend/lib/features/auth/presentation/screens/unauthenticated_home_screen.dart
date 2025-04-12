@@ -9,6 +9,7 @@ import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_bloc.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_states.dart';
 import 'package:reallystick/features/auth/presentation/widgets/background.dart';
+import 'package:reallystick/features/auth/presentation/widgets/language_selector.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class UnauthenticatedHomeScreen extends StatefulWidget {
@@ -296,10 +297,7 @@ class UnauthenticatedHomeScreenState extends State<UnauthenticatedHomeScreen>
             ),
           ),
           const SizedBox(height: 20),
-          Text(
-            "🇬🇧 🇫🇷 🇪🇸 🇵🇹 🇮🇹 🇩🇪 🇷🇺",
-            style: TextStyle(fontSize: 25),
-          ),
+          LanguageSelector(),
           const SizedBox(height: 30),
           ElevatedButton(
             onPressed: () {

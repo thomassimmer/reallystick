@@ -1,8 +1,13 @@
 use crate::{
-    core::{constants::errors::AppError, structs::redis_messages::UserRemovedEvent},
+    core::{
+        constants::errors::AppError, helpers::mock_now::now,
+        structs::redis_messages::UserRemovedEvent,
+    },
     features::{
         auth::structs::models::Claims,
-        profile::{helpers::profile::delete_user_by_id, structs::responses::DeleteAccountResponse},
+        profile::{
+            helpers::profile::update_user_deleted_at, structs::responses::DeleteAccountResponse,
+        },
     },
 };
 use actix_web::{
@@ -30,7 +35,8 @@ pub async fn delete_account(
         }
     };
 
-    let delete_result = delete_user_by_id(&mut *transaction, request_claims.user_id).await;
+    let delete_result =
+        update_user_deleted_at(&mut *transaction, request_claims.user_id, Some(now())).await;
 
     if let Err(e) = delete_result {
         error!("Error: {}", e);

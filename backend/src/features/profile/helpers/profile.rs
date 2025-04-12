@@ -1,3 +1,4 @@
+use chrono::{DateTime, Utc};
 use sqlx::{postgres::PgQueryResult, Executor, Postgres};
 use uuid::Uuid;
 
@@ -171,7 +172,12 @@ where
 {
     let user = sqlx::query_as!(
         User,
-        "SELECT * FROM users WHERE username = $1",
+        r#"
+        SELECT *
+        FROM users
+        WHERE username = $1
+        AND deleted_at is null
+        "#,
         username
     )
     .fetch_optional(executor)
@@ -192,6 +198,7 @@ E: Executor<'a, Database = Postgres>,
         SELECT *
         FROM users
         WHERE id = $1
+        AND deleted_at is null
         "#,
         id,
     )
@@ -211,6 +218,7 @@ E: Executor<'a, Database = Postgres>,
         SELECT *
         FROM users
         WHERE id = ANY($1)
+        AND deleted_at is null
         "#,
         &ids,
     )
@@ -228,6 +236,25 @@ E: Executor<'a, Database = Postgres>,
         r#"
         SELECT *
         FROM users
+        WHERE deleted_at is null
+        "#,
+    )
+    .fetch_all(executor)
+    .await
+}
+
+
+pub async fn get_all_users_marked_as_deleted<'a, E>(
+    executor: E,
+) -> Result<Vec<User>, sqlx::Error> where
+E: Executor<'a, Database = Postgres>,
+{
+    sqlx::query_as!(
+        User,
+        r#"
+        SELECT *
+        FROM users
+        WHERE deleted_at is not null
         "#,
     )
     .fetch_all(executor)
@@ -247,6 +274,27 @@ E: Executor<'a, Database = Postgres>,
         from users
         WHERE id = $1
         "#,
+        user_id,
+    )
+    .execute(executor)
+    .await
+}
+
+pub async fn update_user_deleted_at<'a, E>(
+    executor: E,
+    user_id: Uuid,
+    deleted_at: Option<DateTime<Utc>>,
+) -> Result<PgQueryResult, sqlx::Error> where
+E: Executor<'a, Database = Postgres>,
+{
+    sqlx::query_as!(
+        User,
+        r#"
+        UPDATE users
+        SET deleted_at = $1
+        WHERE id = $2
+        "#,
+        deleted_at,
         user_id,
     )
     .execute(executor)
