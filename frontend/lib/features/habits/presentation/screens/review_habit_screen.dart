@@ -168,8 +168,14 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
       final habit = habitState.habits[widget.habitId]!;
 
       setState(() {
-        _nameControllerForCurrentHabit = habit.name;
-        _descriptionControllerForCurrentHabit = habit.description;
+        if (_nameControllerForCurrentHabit.values.isEmpty) {
+          _nameControllerForCurrentHabit = habit.name;
+        }
+
+        if (_descriptionControllerForCurrentHabit.values.isEmpty) {
+          _descriptionControllerForCurrentHabit = habit.description;
+        }
+
         _selectedCategoryIdForCurrentHabit = habit.categoryId;
         _selectedUnitIdsForCurrentHabit = habit.unitIds;
         _iconForCurrentHabit = habit.icon;
