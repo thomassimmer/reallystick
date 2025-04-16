@@ -153,20 +153,15 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
   }
 
   @override
-  void didChangeDependencies() async {
-    super.didChangeDependencies();
+  void initState() {
+    super.initState();
 
-    final profileState = context.watch<ProfileBloc>().state;
-
-    if (profileState is ProfileAuthenticated) {
-      BlocProvider.of<PublicMessageBloc>(context).add(
-        PublicMessageInitializeEvent(
-          habitId: widget.habitId,
-          challengeId: null,
-          isAdmin: profileState.profile.isAdmin,
-        ),
-      );
-    }
+    BlocProvider.of<PublicMessageBloc>(context).add(
+      PublicMessageInitializeEvent(
+        habitId: widget.habitId,
+        challengeId: null,
+      ),
+    );
   }
 
   @override

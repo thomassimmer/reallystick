@@ -52,8 +52,7 @@ class AppRouter {
       // ShellRoute for authenticated users
       ShellRoute(
         builder: (context, state, child) {
-          return RootScreen(
-              child: child); // Main screen for authenticated users
+          return RootScreen(child: child);
         },
         redirect: (context, state) {
           final authState = context.read<AuthBloc>().state;

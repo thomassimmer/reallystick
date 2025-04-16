@@ -150,6 +150,7 @@ class PrivateMessageBloc extends Bloc<PrivateMessageEvent, PrivateMessageState>
                   : message.recipientEncryptedSessionKey,
               rsaPrivateKeyPem: privateKey,
             );
+
             clearContent = await decryptMessageUsingAesUsecase.call(
                 encryptedContent: message.content, aesKey: aesKey);
           }

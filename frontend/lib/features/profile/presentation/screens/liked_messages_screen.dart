@@ -6,8 +6,6 @@ import 'package:reallystick/core/presentation/widgets/custom_app_bar.dart';
 import 'package:reallystick/core/presentation/widgets/full_width_list_view.dart';
 import 'package:reallystick/core/ui/colors.dart';
 import 'package:reallystick/core/ui/extensions.dart';
-import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
-import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
 import 'package:reallystick/features/public_messages/presentation/blocs/public_message/public_message_bloc.dart';
 import 'package:reallystick/features/public_messages/presentation/blocs/public_message/public_message_events.dart';
 import 'package:reallystick/features/public_messages/presentation/blocs/public_message/public_message_states.dart';
@@ -24,20 +22,15 @@ class LikedMessagesScreen extends StatefulWidget {
 
 class LikedMessagesScreenState extends State<LikedMessagesScreen> {
   @override
-  void didChangeDependencies() async {
-    super.didChangeDependencies();
+  void initState() {
+    super.initState();
 
-    final profileState = context.watch<ProfileBloc>().state;
-
-    if (profileState is ProfileAuthenticated) {
-      BlocProvider.of<PublicMessageBloc>(context).add(
-        PublicMessageInitializeEvent(
-          habitId: null,
-          challengeId: null,
-          isAdmin: profileState.profile.isAdmin,
-        ),
-      );
-    }
+    BlocProvider.of<PublicMessageBloc>(context).add(
+      PublicMessageInitializeEvent(
+        habitId: null,
+        challengeId: null,
+      ),
+    );
   }
 
   @override

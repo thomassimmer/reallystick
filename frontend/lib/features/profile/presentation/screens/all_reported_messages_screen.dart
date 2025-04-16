@@ -7,8 +7,6 @@ import 'package:reallystick/core/presentation/widgets/custom_text_field.dart';
 import 'package:reallystick/core/presentation/widgets/full_width_list_view.dart';
 import 'package:reallystick/core/ui/colors.dart';
 import 'package:reallystick/core/ui/extensions.dart';
-import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
-import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
 import 'package:reallystick/features/public_messages/domain/entities/public_message.dart';
 import 'package:reallystick/features/public_messages/presentation/blocs/public_message/public_message_bloc.dart';
 import 'package:reallystick/features/public_messages/presentation/blocs/public_message/public_message_events.dart';
@@ -28,20 +26,15 @@ class AllReportedMessagesScreen extends StatefulWidget {
 
 class AllReportedMessagesScreenState extends State<AllReportedMessagesScreen> {
   @override
-  void didChangeDependencies() async {
-    super.didChangeDependencies();
+  void initState() {
+    super.initState();
 
-    final profileState = context.watch<ProfileBloc>().state;
-
-    if (profileState is ProfileAuthenticated) {
-      BlocProvider.of<PublicMessageBloc>(context).add(
-        PublicMessageInitializeEvent(
-          habitId: null,
-          challengeId: null,
-          isAdmin: profileState.profile.isAdmin,
-        ),
-      );
-    }
+    BlocProvider.of<PublicMessageBloc>(context).add(
+      PublicMessageInitializeEvent(
+        habitId: null,
+        challengeId: null,
+      ),
+    );
   }
 
   void _showConfirmDeleteBottomSheet(

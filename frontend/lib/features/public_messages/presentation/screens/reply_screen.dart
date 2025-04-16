@@ -109,11 +109,6 @@ class ReplyScreenState extends State<ReplyScreen> {
   }
 
   @override
-  void didChangeDependencies() async {
-    super.didChangeDependencies();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final profileState = context.watch<ProfileBloc>().state;
     final replyState = context.watch<ReplyBloc>().state;

@@ -11,20 +11,14 @@ abstract class PublicMessageEvent extends Equatable {
 class PublicMessageInitializeEvent extends PublicMessageEvent {
   final String? habitId;
   final String? challengeId;
-  final bool isAdmin;
 
   const PublicMessageInitializeEvent({
     required this.habitId,
     required this.challengeId,
-    required this.isAdmin,
   });
 
   @override
-  List<Object?> get props => [
-        habitId,
-        challengeId,
-        isAdmin,
-      ];
+  List<Object?> get props => [habitId, challengeId];
 }
 
 class CreatePublicMessageEvent extends PublicMessageEvent {

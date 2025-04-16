@@ -131,15 +131,19 @@ class ChallengesCarouselWidget extends StatelessWidget {
                                 Text(challenge.icon,
                                     style: TextStyle(fontSize: 25)),
                                 SizedBox(width: 10),
-                                Text(
-                                  getRightTranslationFromJson(
-                                    challenge.name,
-                                    userLocale,
-                                  ),
-                                  style: TextStyle(
-                                    color: context.colors.textOnPrimary,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
+                                Expanded(
+                                  child: Text(
+                                    getRightTranslationFromJson(
+                                      challenge.name,
+                                      userLocale,
+                                    ),
+                                    style: TextStyle(
+                                      color: context.colors.textOnPrimary,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
                                   ),
                                 ),
                               ],

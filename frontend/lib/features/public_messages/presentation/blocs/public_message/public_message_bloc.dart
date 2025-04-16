@@ -7,6 +7,8 @@ import 'package:reallystick/core/messages/message.dart';
 import 'package:reallystick/features/auth/domain/errors/domain_error.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_bloc.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_events.dart';
+import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
+import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
 import 'package:reallystick/features/public_messages/domain/entities/public_message.dart';
 import 'package:reallystick/features/public_messages/domain/entities/public_message_report.dart';
 import 'package:reallystick/features/public_messages/domain/usecases/create_public_message_like_usecase.dart';
@@ -34,6 +36,7 @@ import 'package:reallystick/features/users/presentation/blocs/user/user_events.d
 
 class PublicMessageBloc extends Bloc<PublicMessageEvent, PublicMessageState> {
   final AuthBloc authBloc = GetIt.instance<AuthBloc>();
+  final ProfileBloc profileBloc = GetIt.instance<ProfileBloc>();
   final UserBloc userBloc = GetIt.instance<UserBloc>();
   final ThreadBloc threadBloc = GetIt.instance<ThreadBloc>();
   final ReplyBloc replyBloc = GetIt.instance<ReplyBloc>();
@@ -259,7 +262,8 @@ class PublicMessageBloc extends Bloc<PublicMessageEvent, PublicMessageState> {
     List<PublicMessage> allReportedMessages = currentState.allReportedMessages;
     List<PublicMessageReport> allReports = currentState.allReports;
 
-    if (event.isAdmin) {
+    if (profileBloc.state is ProfileAuthenticated &&
+        profileBloc.state.profile!.isAdmin) {
       final resultGetMessageReportsUsecase =
           await getMessageReportsUsecase.call();
 

@@ -52,6 +52,16 @@ class PrivateDiscussionScreenState extends State<PrivateDiscussionScreen> {
     _contentController.addListener(() {
       setState(() {});
     });
+
+    final privateMessageState = context.read<PrivateMessageBloc>().state;
+
+    if (privateMessageState.discussionId != widget.discussionId) {
+      BlocProvider.of<PrivateMessageBloc>(context).add(
+        InitializePrivateMessagesEvent(
+          discussionId: widget.discussionId,
+        ),
+      );
+    }
   }
 
   @override
@@ -257,12 +267,11 @@ class PrivateDiscussionScreenState extends State<PrivateDiscussionScreen> {
 
     if (userState is UsersLoaded && profileState is ProfileAuthenticated) {
       if (privateMessageState.discussionId != widget.discussionId) {
-        BlocProvider.of<PrivateMessageBloc>(context).add(
-          InitializePrivateMessagesEvent(
-            discussionId: widget.discussionId,
-          ),
-        );
-        return CircularProgressIndicator();
+        return buildLoadingScreen();
+      }
+
+      if (privateDiscussionState.discussions[widget.discussionId] == null) {
+        return buildLoadingScreen();
       }
 
       final userLocale = profileState.profile.locale;
@@ -448,23 +457,27 @@ class PrivateDiscussionScreenState extends State<PrivateDiscussionScreen> {
         ),
       );
     } else {
-      return Scaffold(
-        appBar: CustomAppBar(),
-        body: Center(
-          child: Container(
-              constraints: BoxConstraints(
-                maxWidth: 700,
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircularProgressIndicator(),
-                  SizedBox(height: 10),
-                  Text("Your messages are loading...")
-                ],
-              )),
-        ),
-      );
+      return buildLoadingScreen();
     }
+  }
+
+  Widget buildLoadingScreen() {
+    return Scaffold(
+      appBar: CustomAppBar(),
+      body: Center(
+        child: Container(
+            constraints: BoxConstraints(
+              maxWidth: 700,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(height: 10),
+                Text("Your messages are loading...")
+              ],
+            )),
+      ),
+    );
   }
 }
