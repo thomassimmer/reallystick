@@ -266,10 +266,12 @@ class ListDailyTrackingsModalState extends State<ListDailyTrackingsModal> {
                                     SizedBox(
                                       width: 33,
                                     ),
-                                    Text(
-                                      AppLocalizations.of(context)!
-                                          .noteWithNote(dailyTracking.note!),
-                                      style: context.typographies.body,
+                                    Expanded(
+                                      child: Text(
+                                        AppLocalizations.of(context)!
+                                            .noteWithNote(dailyTracking.note!),
+                                        style: context.typographies.body,
+                                      ),
                                     ),
                                   ],
                                 ),

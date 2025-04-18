@@ -113,45 +113,52 @@ class ChallengeWidget extends StatelessWidget {
                             children: [
                               Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                right: 16.0),
-                                            child: Text(
-                                              challenge.icon,
-                                              style: TextStyle(
-                                                fontSize: 25,
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  right: 16.0),
+                                              child: Text(
+                                                challenge.icon,
+                                                style: TextStyle(
+                                                  fontSize: 25,
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                          Text(
-                                            name,
-                                            style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.w500,
-                                              color: challengeColor,
+                                            Expanded(
+                                              child: Text(
+                                                name,
+                                                style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: challengeColor,
+                                                ),
+                                                overflow: TextOverflow.ellipsis,
+                                                maxLines: 1,
+                                              ),
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                      if (challengeParticipation != null) ...[
-                                        SizedBox(height: 10),
-                                        Text(
-                                          "${AppLocalizations.of(context)!.challengeParticipationStartDate} ${DateFormat.yMMMd(userLocale).format(challengeParticipation!.startDate)}",
+                                          ],
                                         ),
-                                        SizedBox(height: 20),
+                                        if (challengeParticipation != null) ...[
+                                          SizedBox(height: 10),
+                                          Text(
+                                            "${AppLocalizations.of(context)!.challengeParticipationStartDate} ${DateFormat.yMMMd(userLocale).format(challengeParticipation!.startDate)}",
+                                          ),
+                                          SizedBox(height: 20),
+                                        ],
                                       ],
-                                    ],
+                                    ),
                                   ),
                                   if (isLargeScreen &&
                                       challengeParticipation != null) ...[
-                                    Spacer(),
                                     challenge.startDate != null
                                         ? DailyTrackingCarouselWithStartDateWidget(
                                             challengeParticipation:

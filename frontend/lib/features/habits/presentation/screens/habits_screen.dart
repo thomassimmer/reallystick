@@ -274,28 +274,25 @@ class HabitsScreenState extends State<HabitsScreen> {
                                     _categoriesExpansion[habitCategory.id]!
                                         ? CrossFadeState.showFirst
                                         : CrossFadeState.showSecond,
-                                firstChild: ListView.builder(
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  itemCount: sortedHabitParticipations.length,
-                                  itemBuilder: (context, index) {
-                                    final habitParticipation =
-                                        sortedHabitParticipations[index];
-                                    final habit = habitState
-                                        .habits[habitParticipation.habitId]!;
-                                    final habitDailyTrackingsForThisHabit =
-                                        habitDailyTrackings
-                                            .where((hdt) =>
-                                                hdt.habitId == habit.id)
-                                            .toList();
+                                firstChild: Column(
+                                  children: sortedHabitParticipations.map(
+                                    (habitParticipation) {
+                                      final habit = habitState
+                                          .habits[habitParticipation.habitId]!;
+                                      final habitDailyTrackingsForThisHabit =
+                                          habitDailyTrackings
+                                              .where((hdt) =>
+                                                  hdt.habitId == habit.id)
+                                              .toList();
 
-                                    return HabitWidget(
-                                      habit: habit,
-                                      habitParticipation: habitParticipation,
-                                      habitDailyTrackings:
-                                          habitDailyTrackingsForThisHabit,
-                                    );
-                                  },
+                                      return HabitWidget(
+                                        habit: habit,
+                                        habitParticipation: habitParticipation,
+                                        habitDailyTrackings:
+                                            habitDailyTrackingsForThisHabit,
+                                      );
+                                    },
+                                  ).toList(),
                                 ),
                                 secondChild: SizedBox.shrink(),
                               ),

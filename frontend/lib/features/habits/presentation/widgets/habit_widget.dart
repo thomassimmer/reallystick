@@ -62,38 +62,44 @@ class HabitWidget extends StatelessWidget {
                 children: [
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(right: 16.0),
-                                child: Text(
-                                  habit.icon,
-                                  style: TextStyle(fontSize: 25),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 16.0),
+                                  child: Text(
+                                    habit.icon,
+                                    style: TextStyle(fontSize: 25),
+                                  ),
                                 ),
-                              ),
-                              Text(
-                                name,
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w500,
-                                  color: habitColor,
+                                Expanded(
+                                  child: Text(
+                                    name,
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w500,
+                                      color: habitColor,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 8),
-                          LastActivityWidget(
-                            habitDailyTrackings: habitDailyTrackings,
-                            userLocale: userLocale,
-                          ),
-                        ],
+                              ],
+                            ),
+                            const SizedBox(height: 8),
+                            LastActivityWidget(
+                              habitDailyTrackings: habitDailyTrackings,
+                              userLocale: userLocale,
+                            ),
+                          ],
+                        ),
                       ),
                       if (isLargeScreen) ...[
-                        Spacer(),
                         DailyTrackingCarouselWidget(
                           habit: habit,
                           habitDailyTrackings: habitDailyTrackings,

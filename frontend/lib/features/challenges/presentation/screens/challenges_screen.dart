@@ -87,7 +87,8 @@ class ChallengesScreenState extends State<ChallengesScreen> {
             body: RefreshIndicator(
               onRefresh: _pullRefresh,
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
                 child: FullWidthScrollView(
                   slivers: [
                     if (createdChallenges.isNotEmpty ||
@@ -130,36 +131,33 @@ class ChallengesScreenState extends State<ChallengesScreen> {
                             crossFadeState: _isOngoingChallengesExpanded
                                 ? CrossFadeState.showFirst
                                 : CrossFadeState.showSecond,
-                            firstChild: ListView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: ongoingParticipations.length,
-                              itemBuilder: (context, index) {
-                                final challengeParticipation =
-                                    ongoingParticipations[index];
-                                final challenge = challengeState.challenges[
-                                    challengeParticipation.challengeId]!;
+                            firstChild: Column(
+                              children: ongoingParticipations.map(
+                                (challengeParticipation) {
+                                  final challenge = challengeState.challenges[
+                                      challengeParticipation.challengeId]!;
 
-                                var challengeDailyTrackings = challengeState
-                                    .challengeDailyTrackings[challenge.id];
+                                  var challengeDailyTrackings = challengeState
+                                      .challengeDailyTrackings[challenge.id];
 
-                                if (challengeDailyTrackings == null) {
-                                  BlocProvider.of<ChallengeBloc>(context).add(
-                                    GetChallengeDailyTrackingsEvent(
-                                      challengeId: challenge.id,
-                                    ),
+                                  if (challengeDailyTrackings == null) {
+                                    BlocProvider.of<ChallengeBloc>(context).add(
+                                      GetChallengeDailyTrackingsEvent(
+                                        challengeId: challenge.id,
+                                      ),
+                                    );
+                                    challengeDailyTrackings = [];
+                                  }
+
+                                  return ChallengeWidget(
+                                    challenge: challenge,
+                                    challengeParticipation:
+                                        challengeParticipation,
+                                    challengeDailyTrackings:
+                                        challengeDailyTrackings,
                                   );
-                                  challengeDailyTrackings = [];
-                                }
-
-                                return ChallengeWidget(
-                                  challenge: challenge,
-                                  challengeParticipation:
-                                      challengeParticipation,
-                                  challengeDailyTrackings:
-                                      challengeDailyTrackings,
-                                );
-                              },
+                                },
+                              ).toList(),
                             ),
                             secondChild: Container(),
                           ),
@@ -202,19 +200,16 @@ class ChallengesScreenState extends State<ChallengesScreen> {
                             crossFadeState: _isCreatedChallengesExpanded
                                 ? CrossFadeState.showFirst
                                 : CrossFadeState.showSecond,
-                            firstChild: ListView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: createdChallenges.length,
-                              itemBuilder: (context, index) {
-                                final challenge = createdChallenges[index];
-
-                                return ChallengeWidget(
-                                  challenge: challenge,
-                                  challengeParticipation: null,
-                                  challengeDailyTrackings: [],
-                                );
-                              },
+                            firstChild: Column(
+                              children: createdChallenges.map(
+                                (challenge) {
+                                  return ChallengeWidget(
+                                    challenge: challenge,
+                                    challengeParticipation: null,
+                                    challengeDailyTrackings: [],
+                                  );
+                                },
+                              ).toList(),
                             ),
                             secondChild: Container(),
                           ),
@@ -258,36 +253,33 @@ class ChallengesScreenState extends State<ChallengesScreen> {
                                 _isMarkedAsFinishedChallengesExpanded
                                     ? CrossFadeState.showFirst
                                     : CrossFadeState.showSecond,
-                            firstChild: ListView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: markedAsFinishedParticipations.length,
-                              itemBuilder: (context, index) {
-                                final challengeParticipation =
-                                    markedAsFinishedParticipations[index];
-                                final challenge = challengeState.challenges[
-                                    challengeParticipation.challengeId]!;
+                            firstChild: Column(
+                              children: markedAsFinishedParticipations.map(
+                                (challengeParticipation) {
+                                  final challenge = challengeState.challenges[
+                                      challengeParticipation.challengeId]!;
 
-                                var challengeDailyTrackings = challengeState
-                                    .challengeDailyTrackings[challenge.id];
+                                  var challengeDailyTrackings = challengeState
+                                      .challengeDailyTrackings[challenge.id];
 
-                                if (challengeDailyTrackings == null) {
-                                  BlocProvider.of<ChallengeBloc>(context).add(
-                                    GetChallengeDailyTrackingsEvent(
-                                      challengeId: challenge.id,
-                                    ),
+                                  if (challengeDailyTrackings == null) {
+                                    BlocProvider.of<ChallengeBloc>(context).add(
+                                      GetChallengeDailyTrackingsEvent(
+                                        challengeId: challenge.id,
+                                      ),
+                                    );
+                                    challengeDailyTrackings = [];
+                                  }
+
+                                  return ChallengeWidget(
+                                    challenge: challenge,
+                                    challengeParticipation:
+                                        challengeParticipation,
+                                    challengeDailyTrackings:
+                                        challengeDailyTrackings,
                                   );
-                                  challengeDailyTrackings = [];
-                                }
-
-                                return ChallengeWidget(
-                                  challenge: challenge,
-                                  challengeParticipation:
-                                      challengeParticipation,
-                                  challengeDailyTrackings:
-                                      challengeDailyTrackings,
-                                );
-                              },
+                                },
+                              ).toList(),
                             ),
                             secondChild: Container(),
                           ),
