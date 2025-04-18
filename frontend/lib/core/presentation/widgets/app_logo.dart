@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:reallystick/core/presentation/widgets/custom_icons.dart';
 
 class AppLogo extends StatelessWidget {
   final double size;
@@ -13,11 +12,11 @@ class AppLogo extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(
-          CustomIcons.reallystickLogo,
-          size: size,
-          color: Colors.white,
+        Image.asset(
+          'assets/images/reallystick_logo.png',
+          width: size,
         ),
+        
       ],
     );
   }

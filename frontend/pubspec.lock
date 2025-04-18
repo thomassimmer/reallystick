@@ -413,14 +413,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.1.2"
-  icon_generator:
-    dependency: "direct main"
-    description:
-      name: icon_generator
-      sha256: "80876dc1692c9c571845beeea8020eac79aba55e7065418f0577c6d9d47bd6e1"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.0.3"
   intl:
     dependency: "direct main"
     description:
@@ -642,14 +634,6 @@ packages:
     description:
       name: qr_flutter
       sha256: "5095f0fc6e3f71d08adef8feccc8cea4f12eec18a2e31c2e8d82cb6019f4b097"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.1.0"
-  recase:
-    dependency: transitive
-    description:
-      name: recase
-      sha256: e4eb4ec2dcdee52dcf99cb4ceabaffc631d7424ee55e56f280bc039737f89213
       url: "https://pub.dev"
     source: hosted
     version: "4.1.0"
