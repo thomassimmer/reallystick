@@ -51,12 +51,63 @@ class SearchHabitsScreenState extends State<SearchHabitsScreen> {
           habitState.habitCategories;
 
       // Filter habits based on the search query
-      final filteredHabits = habits
-          .where(
-            (habit) => habit.name.values.any((name) =>
-                name.toLowerCase().contains(searchQuery.toLowerCase())),
-          )
-          .toList();
+      final lowerQuery = searchQuery.toLowerCase();
+
+      final filteredHabits = habits.where((habit) {
+        final nameMatches = habit.name.values.any(
+          (name) => name.toLowerCase().contains(lowerQuery),
+        );
+
+        final descriptionMatches = habit.description.values.any(
+          (desc) => desc.toLowerCase().contains(lowerQuery),
+        );
+
+        final categoryName = habitCategories[habit.categoryId]?.name.values;
+        final categoryMatches = categoryName?.any(
+              (catName) => catName.toLowerCase().contains(lowerQuery),
+            ) ??
+            false;
+
+        return nameMatches || descriptionMatches || categoryMatches;
+      }).toList();
+
+      final Map<String, List<Habit>> groupedHabits = {};
+      for (final habit in filteredHabits) {
+        groupedHabits.putIfAbsent(habit.categoryId, () => []).add(habit);
+      }
+
+      final List<_GroupedHabitItem> habitListWithHeaders = [];
+
+      final sortedCategoryIds = groupedHabits.keys.toList()
+        ..sort((a, b) {
+          final aName = habitCategories[a]?.name.values.first ?? '';
+          final bName = habitCategories[b]?.name.values.first ?? '';
+          return aName.compareTo(bName);
+        });
+
+      for (final categoryId in sortedCategoryIds) {
+        final category = habitCategories[categoryId];
+        if (category == null) continue;
+
+        habitListWithHeaders.add(
+          _GroupedHabitItem.categoryHeader(
+            getRightTranslationFromJson(category.name, userLocale),
+          ),
+        );
+
+        final sortedHabits = List<Habit>.from(groupedHabits[categoryId]!);
+        sortedHabits.sort((a, b) {
+          final aName =
+              getRightTranslationFromJson(a.name, userLocale).toLowerCase();
+          final bName =
+              getRightTranslationFromJson(b.name, userLocale).toLowerCase();
+          return aName.compareTo(bName);
+        });
+
+        for (final habit in sortedHabits) {
+          habitListWithHeaders.add(_GroupedHabitItem.habit(habit));
+        }
+      }
 
       return Scaffold(
         appBar: CustomAppBar(
@@ -66,6 +117,25 @@ class SearchHabitsScreenState extends State<SearchHabitsScreen> {
             overflow: TextOverflow.ellipsis,
             maxLines: 1,
           ),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16.0,
+                vertical: 4,
+              ),
+              child: InkWell(
+                borderRadius: BorderRadius.circular(16),
+                onTap: () {
+                  context.pushNamed('createHabit');
+                },
+                child: Icon(
+                  Icons.add_outlined,
+                  size: 25,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+          ],
         ),
         body: Column(
           children: [
@@ -96,67 +166,86 @@ class SearchHabitsScreenState extends State<SearchHabitsScreen> {
             ),
             Expanded(
               child: FullWidthListViewBuilder(
-                itemCount: filteredHabits.isNotEmpty
-                    ? filteredHabits.length +
-                        1 // +1 for the "Create Habit" button
-                    : 1, // Only show the message and button when no habits match
-                itemBuilder: (context, index) {
-                  if (filteredHabits.isNotEmpty &&
-                      index < filteredHabits.length) {
-                    // Render habit items
-                    final habit = filteredHabits[index];
-                    final category = habitCategories[habit.categoryId];
+                  itemCount: habitListWithHeaders.isNotEmpty
+                      ? habitListWithHeaders.length
+                      : 1,
+                  itemBuilder: (context, index) {
+                    if (habitListWithHeaders.isNotEmpty) {
+                      final item = habitListWithHeaders[index];
 
-                    return ListTile(
-                      title: Text(
-                        getRightTranslationFromJson(
-                          habit.name,
-                          userLocale,
-                        ),
-                      ),
-                      subtitle: Text(
-                        category != null
-                            ? getRightTranslationFromJson(
-                                category.name,
-                                userLocale,
-                              )
-                            : AppLocalizations.of(context)!.unknown,
-                      ),
-                      onTap: () {
-                        context.pushNamed(
-                          'habitDetails',
-                          pathParameters: {'habitId': habit.id},
+                      if (item.isCategoryHeader) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 16.0,
+                          ),
+                          child: Text(
+                            item.categoryName!,
+                          ),
                         );
-                      },
-                    );
-                  } else {
-                    // Render no results message and the "Create Habit" button
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 16.0, horizontal: 32.0),
-                      child: Column(
-                        children: [
-                          if (filteredHabits.isEmpty)
+                      } else {
+                        final habit = item.habit!;
+                        return Column(
+                          children: [
+                            ListTile(
+                              contentPadding: EdgeInsets.symmetric(vertical: 5),
+                              leading: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(habit.icon,
+                                      style: TextStyle(fontSize: 15)),
+                                ],
+                              ),
+                              title: Text(
+                                getRightTranslationFromJson(
+                                    habit.name, userLocale),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              subtitle: Text(
+                                getRightTranslationFromJson(
+                                    habit.description, userLocale),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 2,
+                              ),
+                              onTap: () {
+                                context.pushNamed(
+                                  'habitDetails',
+                                  pathParameters: {'habitId': habit.id},
+                                );
+                              },
+                            ),
+                            if (index < habitListWithHeaders.length - 1 &&
+                                !habitListWithHeaders[index + 1]
+                                    .isCategoryHeader)
+                              const Divider(height: 1, thickness: 0.5),
+                          ],
+                        );
+                      }
+                    } else {
+                      // No results case (same as before)
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 16.0, horizontal: 32.0),
+                        child: Column(
+                          children: [
                             Text(
                               AppLocalizations.of(context)!.noResultsFound,
                               style: TextStyle(fontSize: 18),
                               textAlign: TextAlign.center,
                             ),
-                          const SizedBox(height: 16.0),
-                          ElevatedButton(
-                            onPressed: () {
-                              context.pushNamed('createHabit');
-                            },
-                            child: Text(
-                              AppLocalizations.of(context)!.createANewHabit,
+                            const SizedBox(height: 16.0),
+                            ElevatedButton(
+                              onPressed: () {
+                                context.pushNamed('createHabit');
+                              },
+                              child: Text(
+                                AppLocalizations.of(context)!.createANewHabit,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    );
-                  }
-                },
-              ),
+                          ],
+                        ),
+                      );
+                    }
+                  }),
             ),
           ],
         ),
@@ -165,4 +254,14 @@ class SearchHabitsScreenState extends State<SearchHabitsScreen> {
       return SizedBox.shrink();
     }
   }
+}
+
+class _GroupedHabitItem {
+  final String? categoryName;
+  final Habit? habit;
+
+  _GroupedHabitItem.categoryHeader(this.categoryName) : habit = null;
+  _GroupedHabitItem.habit(this.habit) : categoryName = null;
+
+  bool get isCategoryHeader => categoryName != null;
 }

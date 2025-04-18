@@ -96,7 +96,7 @@ class DiscussionListState extends State<DiscussionListWidget> {
               InkWell(
                 onTap: _showAddThreadBottomSheet,
                 child: Icon(
-                  Icons.add_circle_outline,
+                  Icons.add_outlined,
                   size: 25,
                   color: widget.color.withValues(alpha: 0.8),
                 ),

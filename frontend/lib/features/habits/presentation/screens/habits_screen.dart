@@ -169,7 +169,7 @@ class HabitsScreenState extends State<HabitsScreen> {
                         context.goNamed('habitSearch');
                       },
                       child: Icon(
-                        Icons.add_circle_outline,
+                        Icons.add_outlined,
                         size: 30,
                       ),
                     ),

@@ -77,7 +77,7 @@ class ChallengesScreenState extends State<ChallengesScreen> {
                       context.goNamed('challengeSearch');
                     },
                     child: Icon(
-                      Icons.add_circle_outline,
+                      Icons.add_outlined,
                       size: 30,
                     ),
                   ),

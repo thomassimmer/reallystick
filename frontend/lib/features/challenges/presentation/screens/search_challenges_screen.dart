@@ -45,15 +45,24 @@ class SearchChallengesScreenState extends State<SearchChallengesScreen> {
     if (profileState is ProfileAuthenticated &&
         challengeState is ChallengesLoaded) {
       final userLocale = profileState.profile.locale;
-
       final List<Challenge> challenges =
           challengeState.challenges.values.toList();
 
-      // Filter challenges based on the search query
-      final filteredChallenges = challenges
-          .where((challenge) => challenge.name.values.any(
-              (name) => name.toLowerCase().contains(searchQuery.toLowerCase())))
-          .toList();
+      final lowerQuery = searchQuery.toLowerCase();
+
+      // Filter + sort by name
+      final filteredChallenges = challenges.where((challenge) {
+        final nameMatch = challenge.name.values
+            .any((name) => name.toLowerCase().contains(lowerQuery));
+        final descMatch = challenge.description.values
+            .any((desc) => desc.toLowerCase().contains(lowerQuery));
+        return nameMatch || descMatch;
+      }).toList()
+        ..sort((a, b) {
+          final aName = getRightTranslationFromJson(a.name, userLocale);
+          final bName = getRightTranslationFromJson(b.name, userLocale);
+          return aName.toLowerCase().compareTo(bName.toLowerCase());
+        });
 
       return Scaffold(
         appBar: CustomAppBar(
@@ -63,6 +72,25 @@ class SearchChallengesScreenState extends State<SearchChallengesScreen> {
             overflow: TextOverflow.ellipsis,
             maxLines: 1,
           ),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16.0,
+                vertical: 4,
+              ),
+              child: InkWell(
+                borderRadius: BorderRadius.circular(16),
+                onTap: () {
+                  context.pushNamed('createChallenge');
+                },
+                child: Icon(
+                  Icons.add_outlined,
+                  size: 25,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+          ],
         ),
         body: Column(
           children: [
@@ -70,8 +98,7 @@ class SearchChallengesScreenState extends State<SearchChallengesScreen> {
               padding: const EdgeInsets.all(16.0),
               child: Center(
                 child: ConstrainedBox(
-                  constraints:
-                      const BoxConstraints(maxWidth: 700), // Limit max width
+                  constraints: const BoxConstraints(maxWidth: 700),
                   child: TextField(
                     controller: _searchController,
                     decoration: InputDecoration(
@@ -81,9 +108,7 @@ class SearchChallengesScreenState extends State<SearchChallengesScreen> {
                       suffixIcon: searchQuery.isNotEmpty
                           ? IconButton(
                               icon: Icon(Icons.clear),
-                              onPressed: () {
-                                _searchController.clear();
-                              },
+                              onPressed: () => _searchController.clear(),
                             )
                           : null,
                     ),
@@ -94,49 +119,63 @@ class SearchChallengesScreenState extends State<SearchChallengesScreen> {
             Expanded(
               child: FullWidthListViewBuilder(
                 itemCount: filteredChallenges.isNotEmpty
-                    ? filteredChallenges.length +
-                        1 // +1 for the "Create Challenge" button
-                    : 1, // Only show the message and button when no challenges match
+                    ? filteredChallenges.length
+                    : 1,
                 itemBuilder: (context, index) {
-                  if (filteredChallenges.isNotEmpty &&
-                      index < filteredChallenges.length) {
-                    // Render challenge items
+                  if (filteredChallenges.isNotEmpty) {
                     final challenge = filteredChallenges[index];
+                    final isLast = index == filteredChallenges.length - 1;
 
-                    return ListTile(
-                      title: Text(
-                        getRightTranslationFromJson(
-                          challenge.name,
-                          userLocale,
-                        ),
-                      ),
-                      subtitle: Text(getRightTranslationFromJson(
-                        challenge.description,
-                        userLocale,
-                      )),
-                      onTap: () {
-                        context.pushNamed(
-                          'challengeDetails',
-                          pathParameters: {
-                            'challengeId': challenge.id,
-                            'challengeParticipationId': 'null',
+                    return Column(
+                      children: [
+                        ListTile(
+                          contentPadding: EdgeInsets.symmetric(vertical: 5),
+                          leading: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(challenge.icon,
+                                  style: TextStyle(fontSize: 15)),
+                            ],
+                          ),
+                          title: Text(
+                            getRightTranslationFromJson(
+                              challenge.name,
+                              userLocale,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          subtitle: Text(
+                            getRightTranslationFromJson(
+                              challenge.description,
+                              userLocale,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
+                          ),
+                          onTap: () {
+                            context.pushNamed(
+                              'challengeDetails',
+                              pathParameters: {
+                                'challengeId': challenge.id,
+                                'challengeParticipationId': 'null',
+                              },
+                            );
                           },
-                        );
-                      },
+                        ),
+                        if (!isLast) const Divider(height: 1, thickness: 0.5),
+                      ],
                     );
                   } else {
-                    // Render no results message and the "Create Challenge" button
                     return Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: 16.0, horizontal: 32.0),
                       child: Column(
                         children: [
-                          if (filteredChallenges.isEmpty)
-                            Text(
-                              AppLocalizations.of(context)!.noResultsFound,
-                              style: TextStyle(fontSize: 18),
-                              textAlign: TextAlign.center,
-                            ),
+                          Text(
+                            AppLocalizations.of(context)!.noResultsFound,
+                            style: TextStyle(fontSize: 18),
+                            textAlign: TextAlign.center,
+                          ),
                           const SizedBox(height: 16.0),
                           ElevatedButton(
                             onPressed: () {
