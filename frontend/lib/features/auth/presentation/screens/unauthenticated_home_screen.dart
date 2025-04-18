@@ -97,6 +97,7 @@ class UnauthenticatedHomeScreenState extends State<UnauthenticatedHomeScreen>
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Spacer(),
+        Spacer(),
         AppLogo(size: 200),
         SizedBox(height: 20),
         Row(
@@ -107,10 +108,13 @@ class UnauthenticatedHomeScreenState extends State<UnauthenticatedHomeScreen>
           ],
         ),
         SizedBox(height: 16),
-        Text(
-          AppLocalizations.of(context)!.pleaseLoginOrSignUp,
-          style: TextStyle(fontSize: 18),
-          textAlign: TextAlign.center,
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 50),
+          child: Text(
+            AppLocalizations.of(context)!.pleaseLoginOrSignUp,
+            style: TextStyle(fontSize: 18),
+            textAlign: TextAlign.center,
+          ),
         ),
         SizedBox(height: 40),
         ElevatedButton(
@@ -196,6 +200,7 @@ class UnauthenticatedHomeScreenState extends State<UnauthenticatedHomeScreen>
     PageController pageController,
   ) {
     final bool isLargeScreen = checkIfLargeScreen(context);
+    final screenHeight = MediaQuery.of(context).size.height;
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -203,10 +208,13 @@ class UnauthenticatedHomeScreenState extends State<UnauthenticatedHomeScreen>
       children: [
         Spacer(),
         Spacer(),
-        Text(
-          title,
-          style: context.typographies.heading,
-          textAlign: TextAlign.center,
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 25),
+          child: Text(
+            title,
+            style: context.typographies.heading,
+            textAlign: TextAlign.center,
+          ),
         ),
         const SizedBox(height: 30),
         if (isLargeScreen) ...[
@@ -217,7 +225,7 @@ class UnauthenticatedHomeScreenState extends State<UnauthenticatedHomeScreen>
               children: images
                   .map(
                     (img) => SizedBox(
-                      height: 575,
+                      height: screenHeight * 0.5,
                       child: _buildScreenshotContainer(img),
                     ),
                   )
@@ -226,7 +234,7 @@ class UnauthenticatedHomeScreenState extends State<UnauthenticatedHomeScreen>
           ),
         ] else ...[
           SizedBox(
-            height: 500,
+            height: screenHeight * 0.5,
             width: 800,
             child: PageView(
               controller: pageController,
@@ -284,7 +292,9 @@ class UnauthenticatedHomeScreenState extends State<UnauthenticatedHomeScreen>
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Spacer(),
-          AppLogo(size: 200),
+          const SizedBox(height: 40),
+          AppLogo(size: 100),
+          const SizedBox(height: 40),
           Text(
             "· ${AppLocalizations.of(context)!.noEmailOfIdentifiableDataRequired}\n\n"
             "· ${AppLocalizations.of(context)!.personalizedNotificationsToStayOnTrack}\n\n"
