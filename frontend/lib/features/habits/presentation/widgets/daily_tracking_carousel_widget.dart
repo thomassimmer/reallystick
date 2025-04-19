@@ -283,6 +283,8 @@ class DailyTrackingCarouselWidgetState
                                               0.9);
                               final hasActivity =
                                   (aggregatedQuantities[datetime] ?? 0.0) > 0;
+                              final isToday = datetime.isSameDate(today);
+
                               final border = hasActivity
                                   ? Border.all(
                                       color: widget.habitColor, width: 1)
@@ -297,29 +299,25 @@ class DailyTrackingCarouselWidgetState
                                             ? () => _openDailyTrackings(
                                                 datetime: datetime)
                                             : null,
-                                        child: Container(
-                                          width: dayBoxSize,
-                                          height: dayBoxSize,
-                                          decoration: BoxDecoration(
-                                            color: widget.habitColor.withValues(
-                                                alpha: normalizedOpacity),
-                                            border: border,
-                                            borderRadius:
-                                                BorderRadius.circular(4),
-                                          ),
-                                        ),
+                                        child: isToday
+                                            ? buildCustomBoxForToday(
+                                                dayBoxSize,
+                                                normalizedOpacity,
+                                                widget.canOpenDayBoxes,
+                                              )
+                                            : buildCustomBoxForOtherDay(
+                                                dayBoxSize,
+                                                normalizedOpacity,
+                                                border),
                                       )
-                                    : Container(
-                                        width: dayBoxSize,
-                                        height: dayBoxSize,
-                                        decoration: BoxDecoration(
-                                          color: widget.habitColor.withValues(
-                                              alpha: normalizedOpacity),
-                                          border: border,
-                                          borderRadius:
-                                              BorderRadius.circular(4),
-                                        ),
-                                      ),
+                                    : isToday
+                                        ? buildCustomBoxForToday(
+                                            dayBoxSize,
+                                            normalizedOpacity,
+                                            widget.canOpenDayBoxes,
+                                          )
+                                        : buildCustomBoxForOtherDay(dayBoxSize,
+                                            normalizedOpacity, border),
                               );
                             },
                           ).toList(),
@@ -336,5 +334,59 @@ class DailyTrackingCarouselWidgetState
     } else {
       return SizedBox.shrink();
     }
+  }
+
+  Widget buildCustomBoxForOtherDay(
+      double dayBoxSize, double normalizedOpacity, BoxBorder? border) {
+    return Container(
+      width: dayBoxSize,
+      height: dayBoxSize,
+      decoration: BoxDecoration(
+        color: widget.habitColor.withValues(alpha: normalizedOpacity),
+        border: border,
+        borderRadius: BorderRadius.circular(4),
+      ),
+    );
+  }
+
+  Widget buildCustomBoxForToday(
+      double dayBoxSize, double normalizedOpacity, bool canOpenDayBoxes) {
+    return Container(
+      width: dayBoxSize,
+      height: dayBoxSize,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(4),
+        border: Border.all(color: Colors.transparent),
+        gradient: SweepGradient(
+          colors: [
+            Colors.orange,
+            Colors.pink,
+            Colors.purple,
+            Colors.blue,
+            Colors.green,
+            Colors.orange,
+          ],
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(1),
+        child: Container(
+          decoration: BoxDecoration(
+            color: canOpenDayBoxes
+                ? context.colors.background
+                : Theme.of(context).cardColor,
+            borderRadius: BorderRadius.circular(4),
+          ),
+          child: Container(
+            width: dayBoxSize,
+            height: dayBoxSize,
+            decoration: BoxDecoration(
+              color: widget.habitColor.withValues(alpha: normalizedOpacity),
+              borderRadius: BorderRadius.circular(4),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

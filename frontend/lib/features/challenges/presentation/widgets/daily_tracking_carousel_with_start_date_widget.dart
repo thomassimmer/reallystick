@@ -313,6 +313,10 @@ class DailyTrackingCarouselWithStartDateWidgetState
                                   }
                                 }
                               }
+                              final isToday = datetime.isSameDate(now);
+                              final numberOfActivitiesOnThatDay =
+                                  challengeDailyTrackingsPerDay[datetime]!
+                                      .length;
 
                               return Padding(
                                 padding:
@@ -324,54 +328,26 @@ class DailyTrackingCarouselWithStartDateWidgetState
                                       GestureDetector(
                                         onTap: () => _openDailyTrackings(
                                             datetime: datetime),
-                                        child: Container(
-                                          width: dayBoxSize,
-                                          height: dayBoxSize,
-                                          decoration: BoxDecoration(
-                                            color: widget.challengeColor,
-                                            borderRadius:
-                                                BorderRadius.circular(4),
-                                          ),
-                                          child: Center(
-                                            child: Text(
-                                              challengeDailyTrackingsPerDay[
-                                                      datetime]!
-                                                  .length
-                                                  .toString(),
-                                              style: context
-                                                  .typographies.captionSmall
-                                                  .copyWith(
-                                                color: Colors.white
-                                                    .withValues(alpha: 0.5),
+                                        child: isToday
+                                            ? buildCustomBoxForToday(
+                                                dayBoxSize,
+                                                numberOfActivitiesOnThatDay,
+                                              )
+                                            : buildCustomBoxForOtherDay(
+                                                dayBoxSize,
+                                                numberOfActivitiesOnThatDay,
                                               ),
-                                            ),
-                                          ),
-                                        ),
                                       ),
                                     ] else ...[
-                                      Container(
-                                        width: dayBoxSize,
-                                        height: dayBoxSize,
-                                        decoration: BoxDecoration(
-                                          color: widget.challengeColor,
-                                          borderRadius:
-                                              BorderRadius.circular(4),
-                                        ),
-                                        child: Center(
-                                          child: Text(
-                                            challengeDailyTrackingsPerDay[
-                                                    datetime]!
-                                                .length
-                                                .toString(),
-                                            style: context
-                                                .typographies.captionSmall
-                                                .copyWith(
-                                              color: Colors.white
-                                                  .withValues(alpha: 0.5),
+                                      isToday
+                                          ? buildCustomBoxForToday(
+                                              dayBoxSize,
+                                              numberOfActivitiesOnThatDay,
+                                            )
+                                          : buildCustomBoxForOtherDay(
+                                              dayBoxSize,
+                                              numberOfActivitiesOnThatDay,
                                             ),
-                                          ),
-                                        ),
-                                      ),
                                     ],
                                     SizedBox(height: 5),
                                     if (dailyObjectivesDone != null) ...[
@@ -422,5 +398,70 @@ class DailyTrackingCarouselWithStartDateWidgetState
     } else {
       return SizedBox.shrink();
     }
+  }
+
+  Widget buildCustomBoxForOtherDay(
+    double dayBoxSize,
+    int numberOfActivitiesOnThatDay,
+  ) {
+    return Container(
+      width: dayBoxSize,
+      height: dayBoxSize,
+      decoration: BoxDecoration(
+        color: widget.challengeColor,
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Center(
+        child: Text(
+          numberOfActivitiesOnThatDay.toString(),
+          style: context.typographies.captionSmall.copyWith(
+            color: Colors.white.withValues(alpha: 0.5),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildCustomBoxForToday(
+    double dayBoxSize,
+    int numberOfActivitiesOnThatDay,
+  ) {
+    return Container(
+      width: dayBoxSize,
+      height: dayBoxSize,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(4),
+        border: Border.all(color: Colors.transparent),
+        gradient: SweepGradient(
+          colors: [
+            Colors.orange,
+            Colors.pink,
+            Colors.purple,
+            Colors.blue,
+            Colors.green,
+            Colors.orange,
+          ],
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(1),
+        child: Container(
+          width: dayBoxSize,
+          height: dayBoxSize,
+          decoration: BoxDecoration(
+            color: widget.challengeColor,
+            borderRadius: BorderRadius.circular(4),
+          ),
+          child: Center(
+            child: Text(
+              numberOfActivitiesOnThatDay.toString(),
+              style: context.typographies.captionSmall.copyWith(
+                color: Colors.white.withValues(alpha: 0.5),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
