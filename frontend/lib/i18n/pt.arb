@@ -131,13 +131,6 @@
       }
     }
   },
-  "@noteWithNote": {
-    "placeholders": {
-      "note": {
-        "type": "String"
-      }
-    }
-  },
   "@numberOfParticipantsInChallenge": {
     "placeholders": {
       "count": {
@@ -282,7 +275,8 @@
   "comingSoon": "Disponível em breve...",
   "confirm": "Confirmar",
   "confirmDelete": "Confirmação de exclusão de conta",
-  "confirmDeleteMessage": "Ao clicar em \"Confirmar\", a sua conta e todas as atividades associadas serão agendadas para exclusão permanente em 3 dias.\n\nSe voltar a iniciar sessão antes do fim deste prazo, a exclusão será cancelada.",  "confirmDeletion": "Confirmar exclusão",
+  "confirmDeleteMessage": "Ao clicar em \"Confirmar\", a sua conta e todas as atividades associadas serão agendadas para exclusão permanente em 3 dias.\n\nSe voltar a iniciar sessão antes do fim deste prazo, a exclusão será cancelada.",
+  "confirmDeletion": "Confirmar exclusão",
   "confirmDeletionQuestion": "Você confirma a exclusão da sessão neste dispositivo?",
   "confirmDuplicateChallenge": "Deseja criar uma cópia deste desafio com os objetivos diários associados?",
   "confirmMessageDeletion": "Ao clicar em 'Confirmar', sua mensagem e todas as respostas associadas serão excluídas permanentemente.",
@@ -456,7 +450,7 @@
   "noResultsFound": "Nenhum resultado encontrado.",
   "noWrittenMessages": "Você ainda não escreveu nenhuma mensagem.",
   "note": "Nota",
-  "noteWithNote": "Nota:\n\n{note}",
+  "noteWithNote": "Nota:",
   "notifications": "Notificações",
   "numberOfDaysToRepeatThisObjective": "Número de dias para repetir este objetivo",
   "numberOfParticipantsInChallenge": "{count,plural, zero {Ninguém segue este desafio.} one {{count} pessoa segue este desafio.} other {{count} pessoas seguem este desafio.}}",

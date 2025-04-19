@@ -131,13 +131,6 @@
       }
     }
   },
-  "@noteWithNote": {
-    "placeholders": {
-      "note": {
-        "type": "String"
-      }
-    }
-  },
   "@numberOfParticipantsInChallenge": {
     "placeholders": {
       "count": {
@@ -225,7 +218,6 @@
       }
     }
   },
-
   "about": "Acerca de",
   "aboutText": "Esta aplicación es presentada por Tanya Simmer.",
   "account": "Cuenta",
@@ -458,7 +450,7 @@
   "noResultsFound": "No se encontraron resultados.",
   "noWrittenMessages": "Aún no has escrito ningún mensaje.",
   "note": "Nota",
-  "noteWithNote": "Nota:\n\n{note}",
+  "noteWithNote": "Nota:",
   "notifications": "Notificaciones",
   "numberOfDaysToRepeatThisObjective": "Número de días para repetir este objetivo",
   "numberOfParticipantsInChallenge": "{count,plural, zero {Nadie sigue este desafío.} one {{count} persona sigue este desafío.} other {{count} personas siguen este desafío.}}",

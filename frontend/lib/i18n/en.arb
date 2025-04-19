@@ -131,13 +131,6 @@
       }
     }
   },
-  "@noteWithNote": {
-    "placeholders": {
-      "note": {
-        "type": "String"
-      }
-    }
-  },
   "@numberOfParticipantsInChallenge": {
     "placeholders": {
       "count": {
@@ -282,7 +275,8 @@
   "comingSoon": "Coming soon...",
   "confirm": "Confirm",
   "confirmDelete": "Confirm account deletion",
-  "confirmDeleteMessage": "By clicking \"Confirm\", your account and all associated activity will be scheduled for permanent deletion in 3 days.\n\nIf you log in again before this period expires, the deletion will be cancelled.",  "confirmDeletion": "Confirm Deletion",
+  "confirmDeleteMessage": "By clicking \"Confirm\", your account and all associated activity will be scheduled for permanent deletion in 3 days.\n\nIf you log in again before this period expires, the deletion will be cancelled.",
+  "confirmDeletion": "Confirm Deletion",
   "confirmDeletionQuestion": "Are you sure you want to delete the session on this device?",
   "confirmDuplicateChallenge": "Do you want to create a copy of this challenge with the associated daily objectives?",
   "confirmMessageDeletion": "By clicking on \"Confirm\", this message and all replies will be permanently deleted.",
@@ -456,7 +450,7 @@
   "noResultsFound": "No results found.",
   "noWrittenMessages": "You did not write any message yet.",
   "note": "Note",
-  "noteWithNote": "Note:\n\n{note}",
+  "noteWithNote": "Note:",
   "notifications": "Notifications",
   "numberOfDaysToRepeatThisObjective": "Number of days to repeat this objective",
   "numberOfParticipantsInChallenge": "{count, plural, zero {No one participates in this challenge.} one {{count} person participates in this challenge.} other {{count} people participate in this challenge.}}",

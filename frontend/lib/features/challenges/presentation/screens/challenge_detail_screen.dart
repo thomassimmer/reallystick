@@ -606,27 +606,24 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
                       challengeId: challenge.id,
                     ),
                     SizedBox(height: 30),
-                    if (challenge.creator == profileState.profile.id ||
-                        challengeParticipation != null) ...[
-                      challenge.startDate != null
-                          ? DailyTrackingCarouselWithStartDateWidget(
-                              challengeParticipation: challengeParticipation,
-                              challengeDailyTrackings: challengeDailyTrackings,
-                              challengeColor: challengeColor,
-                              challenge: challenge,
-                              canOpenDayBoxes: true,
-                              displayTitle: true,
-                            )
-                          : DailyTrackingCarouselWithoutStartDateWidget(
-                              challengeParticipation: challengeParticipation,
-                              challengeDailyTrackings: challengeDailyTrackings,
-                              challengeColor: challengeColor,
-                              challenge: challenge,
-                              canOpenDayBoxes: true,
-                              displayTitle: true,
-                            ),
-                      SizedBox(height: 30),
-                    ],
+                    challenge.startDate != null
+                        ? DailyTrackingCarouselWithStartDateWidget(
+                            challengeParticipation: challengeParticipation,
+                            challengeDailyTrackings: challengeDailyTrackings,
+                            challengeColor: challengeColor,
+                            challenge: challenge,
+                            canOpenDayBoxes: true,
+                            displayTitle: true,
+                          )
+                        : DailyTrackingCarouselWithoutStartDateWidget(
+                            challengeParticipation: challengeParticipation,
+                            challengeDailyTrackings: challengeDailyTrackings,
+                            challengeColor: challengeColor,
+                            challenge: challenge,
+                            canOpenDayBoxes: true,
+                            displayTitle: true,
+                          ),
+                    SizedBox(height: 30),
                     DiscussionListWidget(
                       color: challengeColor,
                       habitId: null,

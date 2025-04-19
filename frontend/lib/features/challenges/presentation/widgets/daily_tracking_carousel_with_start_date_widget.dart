@@ -107,7 +107,6 @@ class DailyTrackingCarouselWithStartDateWidgetState
       ),
       constraints: BoxConstraints(
         maxWidth: 700,
-        maxHeight: 400,
       ),
       backgroundColor: context.colors.background,
       builder: (BuildContext context) {
@@ -121,14 +120,17 @@ class DailyTrackingCarouselWithStartDateWidgetState
             right: 16.0,
             top: 16.0,
           ),
-          child: Wrap(
-            children: [
-              ListDailyTrackingsModal(
-                datetime: datetime,
-                challenge: widget.challenge,
-                challengeParticipation: widget.challengeParticipation,
-              ),
-            ],
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListDailyTrackingsModal(
+                  datetime: datetime,
+                  challenge: widget.challenge,
+                  challengeParticipation: widget.challengeParticipation,
+                ),
+              ],
+            ),
           ),
         );
       },

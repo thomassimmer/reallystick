@@ -131,13 +131,6 @@
       }
     }
   },
-  "@noteWithNote": {
-    "placeholders": {
-      "note": {
-        "type": "String"
-      }
-    }
-  },
   "@numberOfParticipantsInChallenge": {
     "placeholders": {
       "count": {
@@ -457,7 +450,7 @@
   "noResultsFound": "Pas de résultat.",
   "noWrittenMessages": "Vous n'avez pas encore écrit un message.",
   "note": "Note",
-  "noteWithNote": "Note :\n\n{note}",
+  "noteWithNote": "Note :",
   "notifications": "Notifications",
   "numberOfDaysToRepeatThisObjective": "Nombre de jour à répéter cet objectif",
   "numberOfParticipantsInChallenge": "{count,plural, zero {Personne ne suit ce défi.} one {{count} personne suit ce défi.} other {{count} personnes suivent ce défi.}}",

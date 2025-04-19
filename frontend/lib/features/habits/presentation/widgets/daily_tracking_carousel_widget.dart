@@ -78,25 +78,29 @@ class DailyTrackingCarouselWidgetState
       ),
       constraints: BoxConstraints(
         maxWidth: 700,
-        maxHeight: 400,
       ),
       backgroundColor: context.colors.background,
       builder: (BuildContext context) {
         return Padding(
-            padding: EdgeInsets.only(
-              bottom: max(16.0, MediaQuery.of(context).viewInsets.bottom),
-              left: 16.0,
-              right: 16.0,
-              top: 16.0,
-            ),
-            child: Wrap(
+          padding: EdgeInsets.only(
+            bottom: max(16.0, MediaQuery.of(context).viewInsets.bottom),
+            left: 16.0,
+            right: 16.0,
+            top: 16.0,
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 ListDailyTrackingsModal(
                   datetime: datetime,
                   habitId: widget.habit.id,
+                  habitColor: widget.habitColor,
                 ),
               ],
-            ));
+            ),
+          ),
+        );
       },
     );
   }
