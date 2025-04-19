@@ -262,7 +262,7 @@ pub async fn send_push_notification(
         None => None::<Value>,
     };
 
-    send_fcm_message(
+    if let Err(e) = send_fcm_message(
         &fcm_token,
         Some(notification),
         payload,
@@ -270,5 +270,7 @@ pub async fn send_push_notification(
         "reallystick-d807d",
     )
     .await
-    .unwrap();
+    {
+        error!("Error: {}", e);
+    }
 }
