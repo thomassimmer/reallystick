@@ -8,6 +8,7 @@ class CustomMessageInput extends StatefulWidget {
   final VoidCallback onSendMessage;
   final VoidCallback? onEditMessage;
   final bool isEditing;
+  final bool readOnly;
 
   const CustomMessageInput({
     super.key,
@@ -16,6 +17,7 @@ class CustomMessageInput extends StatefulWidget {
     required this.onSendMessage,
     this.onEditMessage,
     this.isEditing = false,
+    this.readOnly = false,
   });
 
   @override
@@ -56,6 +58,7 @@ class CustomMessageInputState extends State<CustomMessageInput> {
   @override
   Widget build(BuildContext context) {
     return TextField(
+      readOnly: widget.readOnly,
       controller: widget.contentController,
       focusNode: _focusNode,
       autofocus: true,

@@ -240,6 +240,7 @@ class ThreadScreenState extends State<ThreadScreen> {
                     ),
                     if (message != null) ...[
                       CustomMessageInput(
+                        readOnly: widget.previewMode,
                         contentController: _contentController,
                         recipientUsername:
                             userState.users[message.creator]?.username,
