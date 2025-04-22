@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:reallystick/core/ui/extensions.dart';
+import 'package:reallystick/core/utils/preview_data.dart';
 import 'package:reallystick/features/private_messages/domain/entities/private_message.dart';
 import 'package:reallystick/features/private_messages/presentation/blocs/private_discussion/private_discussion_bloc.dart';
 import 'package:reallystick/features/private_messages/presentation/blocs/private_discussion/private_discussion_events.dart';
@@ -17,12 +18,14 @@ class PrivateMessageWidget extends StatefulWidget {
   final PrivateMessage message;
   final Color color;
   final String userId;
+  final bool previewMode;
 
   const PrivateMessageWidget({
     required this.discussionId,
     required this.message,
     required this.color,
     required this.userId,
+    required this.previewMode,
   });
 
   @override
@@ -48,8 +51,12 @@ class PrivateMessageWidgetState extends State<PrivateMessageWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final userState = context.watch<UserBloc>().state;
-    final profileState = context.watch<ProfileBloc>().state;
+    final profileState = widget.previewMode
+        ? getProfileAuthenticatedForPreview(context)
+        : context.watch<ProfileBloc>().state;
+    final userState = widget.previewMode
+        ? getUserStateForPreview(context)
+        : context.watch<UserBloc>().state;
 
     if (userState is UsersLoaded && profileState is ProfileAuthenticated) {
       final userLocale = profileState.profile.locale;

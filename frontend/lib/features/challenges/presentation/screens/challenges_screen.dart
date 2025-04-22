@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:reallystick/core/presentation/widgets/custom_app_bar.dart';
 import 'package:reallystick/core/presentation/widgets/full_width_scroll_view.dart';
 import 'package:reallystick/core/ui/extensions.dart';
+import 'package:reallystick/core/utils/preview_data.dart';
 import 'package:reallystick/features/challenges/domain/entities/challenge_participation.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_bloc.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_events.dart';
@@ -14,6 +15,12 @@ import 'package:reallystick/features/profile/presentation/blocs/profile/profile_
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
 
 class ChallengesScreen extends StatefulWidget {
+  final bool previewMode;
+
+  const ChallengesScreen({
+    required this.previewMode,
+  });
+
   @override
   ChallengesScreenState createState() => ChallengesScreenState();
 }
@@ -36,8 +43,12 @@ class ChallengesScreenState extends State<ChallengesScreen> {
   Widget build(BuildContext context) {
     return Builder(
       builder: (context) {
-        final profileState = context.watch<ProfileBloc>().state;
-        final challengeState = context.watch<ChallengeBloc>().state;
+        final profileState = widget.previewMode
+            ? getProfileAuthenticatedForPreview(context)
+            : context.watch<ProfileBloc>().state;
+        final challengeState = widget.previewMode
+            ? getChallengeStateForPreview(context)
+            : context.watch<ChallengeBloc>().state;
 
         if (profileState is ProfileAuthenticated &&
             challengeState is ChallengesLoaded) {
@@ -155,6 +166,7 @@ class ChallengesScreenState extends State<ChallengesScreen> {
                                         challengeParticipation,
                                     challengeDailyTrackings:
                                         challengeDailyTrackings,
+                                    previewMode: widget.previewMode,
                                   );
                                 },
                               ).toList(),
@@ -207,6 +219,7 @@ class ChallengesScreenState extends State<ChallengesScreen> {
                                     challenge: challenge,
                                     challengeParticipation: null,
                                     challengeDailyTrackings: [],
+                                    previewMode: widget.previewMode,
                                   );
                                 },
                               ).toList(),
@@ -277,6 +290,7 @@ class ChallengesScreenState extends State<ChallengesScreen> {
                                         challengeParticipation,
                                     challengeDailyTrackings:
                                         challengeDailyTrackings,
+                                    previewMode: widget.previewMode,
                                   );
                                 },
                               ).toList(),

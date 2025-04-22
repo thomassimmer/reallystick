@@ -26,8 +26,14 @@ import 'package:reallystick/features/public_messages/presentation/blocs/public_m
 
 class RootScreen extends StatefulWidget {
   final Widget child;
+  final bool previewMode;
+  final int previewTab;
 
-  const RootScreen({required this.child});
+  const RootScreen({
+    required this.child,
+    required this.previewMode,
+    required this.previewTab,
+  });
 
   @override
   RootScreenState createState() => RootScreenState();
@@ -35,6 +41,10 @@ class RootScreen extends StatefulWidget {
 
 class RootScreenState extends State<RootScreen> {
   int _calculateSelectedIndex(BuildContext context) {
+    if (widget.previewMode) {
+      return widget.previewTab;
+    }
+
     final String location = GoRouterState.of(context).uri.path;
     if (location.startsWith('/habits')) {
       return 0;
@@ -146,7 +156,9 @@ class RootScreenState extends State<RootScreen> {
                     padding: const EdgeInsets.symmetric(
                       horizontal: 6.0,
                     ),
-                    child: NotificationButtonWidget(),
+                    child: NotificationButtonWidget(
+                      previewMode: widget.previewMode,
+                    ),
                   ),
                 ),
               ],

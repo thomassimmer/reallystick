@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:reallystick/core/constants/dates.dart';
 import 'package:reallystick/core/ui/extensions.dart';
+import 'package:reallystick/core/utils/preview_data.dart';
 import 'package:reallystick/features/challenges/domain/entities/challenge.dart';
 import 'package:reallystick/features/challenges/domain/entities/challenge_daily_tracking.dart';
 import 'package:reallystick/features/challenges/domain/entities/challenge_participation.dart';
@@ -14,7 +15,6 @@ import 'package:reallystick/features/challenges/presentation/blocs/challenge/cha
 import 'package:reallystick/features/challenges/presentation/helpers/challenge_result.dart';
 import 'package:reallystick/features/challenges/presentation/screens/list_daily_trackings_modal.dart';
 import 'package:reallystick/features/habits/domain/entities/habit_daily_tracking.dart';
-import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_states.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
@@ -26,6 +26,7 @@ class DailyTrackingCarouselWithoutStartDateWidget extends StatefulWidget {
   final Color challengeColor;
   final bool canOpenDayBoxes;
   final bool displayTitle;
+  final bool previewMode;
 
   DailyTrackingCarouselWithoutStartDateWidget({
     super.key,
@@ -35,6 +36,7 @@ class DailyTrackingCarouselWithoutStartDateWidget extends StatefulWidget {
     required this.challengeColor,
     required this.canOpenDayBoxes,
     required this.displayTitle,
+    required this.previewMode,
   });
 
   @override
@@ -122,9 +124,11 @@ class DailyTrackingCarouselWithoutStartDateWidgetState
               mainAxisSize: MainAxisSize.min,
               children: [
                 ListDailyTrackingsModal(
-                    datetime: datetime,
-                    challenge: widget.challenge,
-                    challengeParticipation: widget.challengeParticipation),
+                  datetime: datetime,
+                  challenge: widget.challenge,
+                  challengeParticipation: widget.challengeParticipation,
+                  previewMode: widget.previewMode,
+                ),
               ],
             ),
           ),
@@ -135,9 +139,15 @@ class DailyTrackingCarouselWithoutStartDateWidgetState
 
   @override
   Widget build(BuildContext context) {
-    final profileState = context.watch<ProfileBloc>().state;
-    final challengeState = context.watch<ChallengeBloc>().state;
-    final habitState = context.watch<HabitBloc>().state;
+    final profileState = widget.previewMode
+        ? getProfileAuthenticatedForPreview(context)
+        : context.watch<ProfileBloc>().state;
+    final challengeState = widget.previewMode
+        ? getChallengeStateForPreview(context)
+        : context.watch<ChallengeBloc>().state;
+    final habitState = widget.previewMode
+        ? getHabitsLoadedForPreview(context)
+        : context.watch<ChallengeBloc>().state;
 
     if (profileState is ProfileAuthenticated &&
         challengeState is ChallengesLoaded &&

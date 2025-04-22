@@ -132,6 +132,7 @@ class LikedMessagesScreenState extends State<LikedMessagesScreen> {
                       challengeId: message.challengeId,
                       challengeParticipationId: null,
                       withReplies: false,
+                      previewMode: false,
                     ),
                   ),
                 ),

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -10,6 +12,7 @@ import 'package:reallystick/core/presentation/widgets/custom_app_bar.dart';
 import 'package:reallystick/core/presentation/widgets/full_width_list_view.dart';
 import 'package:reallystick/core/ui/colors.dart';
 import 'package:reallystick/core/ui/extensions.dart';
+import 'package:reallystick/core/utils/preview_data.dart';
 import 'package:reallystick/features/challenges/domain/entities/challenge_participation.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_bloc.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_events.dart';
@@ -38,11 +41,17 @@ import 'package:share_plus/share_plus.dart';
 class ChallengeDetailsScreen extends StatefulWidget {
   final String challengeId;
   final String? challengeParticipationId;
+  final bool previewMode;
+  final bool previewForDailyObjectives;
+  final bool previewForDiscussion;
 
   const ChallengeDetailsScreen({
     super.key,
     required this.challengeId,
     required this.challengeParticipationId,
+    required this.previewMode,
+    required this.previewForDailyObjectives,
+    required this.previewForDiscussion,
   });
 
   @override
@@ -50,6 +59,8 @@ class ChallengeDetailsScreen extends StatefulWidget {
 }
 
 class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
+  ScrollController controller = ScrollController();
+
   void _showAddDailyTrackingBottomSheet() {
     showModalBottomSheet(
       context: context,
@@ -281,12 +292,35 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
   void initState() {
     super.initState();
 
-    BlocProvider.of<PublicMessageBloc>(context).add(
-      PublicMessageInitializeEvent(
-        habitId: null,
-        challengeId: widget.challengeId,
-      ),
-    );
+    if (widget.previewMode) {
+      if (widget.previewForDailyObjectives || widget.previewForDiscussion) {
+        WidgetsBinding.instance.addPostFrameCallback(
+          (_) {
+            Future.delayed(
+              Duration(milliseconds: 50),
+              () {
+                _scrollToChart();
+              },
+            );
+          },
+        );
+      }
+    } else {
+      BlocProvider.of<PublicMessageBloc>(context).add(
+        PublicMessageInitializeEvent(
+          habitId: null,
+          challengeId: widget.challengeId,
+        ),
+      );
+    }
+  }
+
+  void _scrollToChart() {
+    if (controller.hasClients) {
+      controller.jumpTo(controller.position.maxScrollExtent);
+    } else {
+      Timer(Duration(milliseconds: 400), () => _scrollToChart());
+    }
   }
 
   @override
@@ -314,8 +348,12 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
       },
       child: Builder(
         builder: (context) {
-          final profileState = context.watch<ProfileBloc>().state;
-          final challengeState = context.watch<ChallengeBloc>().state;
+          final profileState = widget.previewMode
+              ? getProfileAuthenticatedForPreview(context)
+              : context.watch<ProfileBloc>().state;
+          final challengeState = widget.previewMode
+              ? getChallengeStateForPreview(context)
+              : context.watch<ChallengeBloc>().state;
 
           if (profileState is ProfileAuthenticated &&
               challengeState is ChallengesLoaded) {
@@ -531,6 +569,7 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
               body: RefreshIndicator(
                 onRefresh: _pullRefresh,
                 child: FullWidthListView(
+                  controller: controller,
                   children: [
                     Container(
                       decoration: BoxDecoration(
@@ -599,11 +638,13 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
                     ListOfConcernedHabits(
                       challengeColor: challengeColor,
                       challengeId: widget.challengeId,
+                      previewMode: widget.previewMode,
                     ),
                     SizedBox(height: 30),
                     AnalyticsCarouselWidget(
                       challengeColor: challengeColor,
                       challengeId: challenge.id,
+                      previewMode: widget.previewMode,
                     ),
                     SizedBox(height: 30),
                     challenge.startDate != null
@@ -614,6 +655,7 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
                             challenge: challenge,
                             canOpenDayBoxes: true,
                             displayTitle: true,
+                            previewMode: widget.previewMode,
                           )
                         : DailyTrackingCarouselWithoutStartDateWidget(
                             challengeParticipation: challengeParticipation,
@@ -622,6 +664,7 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
                             challenge: challenge,
                             canOpenDayBoxes: true,
                             displayTitle: true,
+                            previewMode: widget.previewMode,
                           ),
                     SizedBox(height: 30),
                     DiscussionListWidget(
@@ -629,6 +672,7 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
                       habitId: null,
                       challengeId: widget.challengeId,
                       challengeParticipationId: challengeParticipation?.id,
+                      previewMode: widget.previewMode,
                     ),
                     SizedBox(height: 72),
                   ],

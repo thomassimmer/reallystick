@@ -52,7 +52,11 @@ class AppRouter {
       // ShellRoute for authenticated users
       ShellRoute(
         builder: (context, state, child) {
-          return RootScreen(child: child);
+          return RootScreen(
+            previewMode: false,
+            previewTab: 0,
+            child: child,
+          );
         },
         redirect: (context, state) {
           final authState = context.read<AuthBloc>().state;
@@ -67,13 +71,16 @@ class AppRouter {
           GoRoute(
             path: '/',
             name: 'home',
-            builder: (context, state) =>
-                HabitsScreen(), // Authenticated user's home
+            builder: (context, state) => HabitsScreen(
+              previewMode: false,
+            ), // Authenticated user's home
           ),
           GoRoute(
             path: '/habits',
             name: 'habits',
-            builder: (context, state) => HabitsScreen(),
+            builder: (context, state) => HabitsScreen(
+              previewMode: false,
+            ),
             routes: [
               GoRoute(
                 path: 'search',
@@ -127,6 +134,8 @@ class AppRouter {
 
                   return HabitDetailsScreen(
                     habitId: habitId,
+                    previewMode: false,
+                    previewModeForChart: false,
                   );
                 },
                 routes: [
@@ -142,6 +151,7 @@ class AppRouter {
                         challengeId: null,
                         challengeParticipationId: null,
                         threadId: threadId,
+                        previewMode: false,
                       );
                     },
                     routes: [
@@ -171,7 +181,9 @@ class AppRouter {
           GoRoute(
             path: '/challenges',
             name: 'challenges',
-            builder: (context, state) => ChallengesScreen(),
+            builder: (context, state) => ChallengesScreen(
+              previewMode: false,
+            ),
             routes: [
               GoRoute(
                 path: 'search',
@@ -205,6 +217,9 @@ class AppRouter {
                     challengeParticipationId: challengeParticipationId == 'null'
                         ? null
                         : challengeParticipationId,
+                    previewMode: false,
+                    previewForDailyObjectives: false,
+                    previewForDiscussion: false,
                   );
                 },
                 routes: [
@@ -225,6 +240,7 @@ class AppRouter {
                                 ? null
                                 : challengeParticipationId,
                         threadId: threadId,
+                        previewMode: false,
                       );
                     },
                     routes: [
@@ -270,6 +286,7 @@ class AppRouter {
 
                   return PrivateDiscussionScreen(
                     discussionId: discussionId,
+                    previewMode: false,
                   );
                 },
               ),

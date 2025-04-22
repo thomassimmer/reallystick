@@ -146,6 +146,7 @@ class UserReportedMessagesScreenState
                           challengeId: message.challengeId,
                           challengeParticipationId: null,
                           withReplies: false,
+                          previewMode: false,
                         ),
                         Padding(
                           padding: EdgeInsets.all(16),

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -5,6 +7,7 @@ import 'package:reallystick/core/presentation/widgets/custom_app_bar.dart';
 import 'package:reallystick/core/presentation/widgets/full_width_list_view.dart';
 import 'package:reallystick/core/ui/colors.dart';
 import 'package:reallystick/core/ui/extensions.dart';
+import 'package:reallystick/core/utils/preview_data.dart';
 import 'package:reallystick/features/habits/domain/entities/habit_participation.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_events.dart';
@@ -25,10 +28,14 @@ import 'package:reallystick/features/public_messages/presentation/widgets/discus
 
 class HabitDetailsScreen extends StatefulWidget {
   final String habitId;
+  final bool previewMode;
+  final bool previewModeForChart;
 
   const HabitDetailsScreen({
     super.key,
     required this.habitId,
+    required this.previewMode,
+    required this.previewModeForChart,
   });
 
   @override
@@ -36,6 +43,8 @@ class HabitDetailsScreen extends StatefulWidget {
 }
 
 class HabitDetailsScreenState extends State<HabitDetailsScreen> {
+  ScrollController controller = ScrollController();
+
   void _showAddDailyTrackingBottomSheet() {
     showModalBottomSheet(
       context: context,
@@ -156,18 +165,45 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
   void initState() {
     super.initState();
 
-    BlocProvider.of<PublicMessageBloc>(context).add(
-      PublicMessageInitializeEvent(
-        habitId: widget.habitId,
-        challengeId: null,
-      ),
-    );
+    if (widget.previewMode) {
+      if (widget.previewModeForChart) {
+        WidgetsBinding.instance.addPostFrameCallback(
+          (_) {
+            Future.delayed(
+              Duration(milliseconds: 50),
+              () {
+                _scrollToChart();
+              },
+            );
+          },
+        );
+      }
+    } else {
+      BlocProvider.of<PublicMessageBloc>(context).add(
+        PublicMessageInitializeEvent(
+          habitId: widget.habitId,
+          challengeId: null,
+        ),
+      );
+    }
+  }
+
+  void _scrollToChart() {
+    if (controller.hasClients) {
+      controller.jumpTo(controller.position.maxScrollExtent);
+    } else {
+      Timer(Duration(milliseconds: 400), () => _scrollToChart());
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final profileState = context.watch<ProfileBloc>().state;
-    final habitState = context.watch<HabitBloc>().state;
+    final profileState = widget.previewMode
+        ? getProfileAuthenticatedForPreview(context)
+        : context.watch<ProfileBloc>().state;
+    final habitState = widget.previewMode
+        ? getHabitsLoadedForPreview(context)
+        : context.watch<HabitBloc>().state;
 
     if (profileState is ProfileAuthenticated && habitState is HabitsLoaded) {
       final userLocale = profileState.profile.locale;
@@ -244,6 +280,9 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
                 label: null,
               )
             : FloatingActionButton.extended(
+                heroTag: widget.previewMode
+                    ? null
+                    : '<default FloatingActionButton tag>',
                 onPressed: _startTrackingThisHabit,
                 icon: Icon(Icons.login),
                 label:
@@ -255,6 +294,7 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
         body: RefreshIndicator(
           onRefresh: _pullRefresh,
           child: FullWidthListView(
+            controller: controller,
             children: [
               Container(
                 decoration: BoxDecoration(
@@ -288,6 +328,7 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
               AnalyticsCarouselWidget(
                 habitColor: habitColor,
                 habitId: habit.id,
+                previewMode: widget.previewMode,
               ),
               SizedBox(height: 40),
               if (habitParticipation != null) ...[
@@ -297,12 +338,15 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
                   habit: habit,
                   canOpenDayBoxes: true,
                   displayTitle: true,
+                  previewMode: widget.previewMode,
+                  previewModeForChart: widget.previewModeForChart,
                 ),
                 SizedBox(height: 16),
               ],
               ChallengesCarouselWidget(
                 habitColor: habitColor,
                 habitId: widget.habitId,
+                previewMode: widget.previewMode,
               ),
               SizedBox(height: 40),
               DiscussionListWidget(
@@ -310,6 +354,7 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
                 habitId: widget.habitId,
                 challengeId: null,
                 challengeParticipationId: null,
+                previewMode: widget.previewMode,
               ),
               SizedBox(height: 72),
             ],

@@ -137,6 +137,7 @@ class _DailyTrackingChartState extends State<DailyTrackingChart> {
                   datetime: datetime,
                   habitId: widget.habit.id,
                   habitColor: widget.habitColor,
+                  previewMode: false,
                 ),
               ],
             ),

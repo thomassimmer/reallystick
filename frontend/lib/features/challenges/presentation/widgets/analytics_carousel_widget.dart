@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:reallystick/core/utils/preview_data.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_bloc.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_states.dart';
 import 'package:reallystick/features/challenges/presentation/helpers/statistics.dart';
@@ -12,16 +13,22 @@ import 'package:reallystick/features/profile/presentation/blocs/profile/profile_
 class AnalyticsCarouselWidget extends StatelessWidget {
   final Color challengeColor;
   final String challengeId;
+  final bool previewMode;
 
   const AnalyticsCarouselWidget({
     required this.challengeColor,
     required this.challengeId,
+    required this.previewMode,
   });
 
   @override
   Widget build(BuildContext context) {
-    final challengeState = context.watch<ChallengeBloc>().state;
-    final profileState = context.watch<ProfileBloc>().state;
+    final profileState = previewMode
+        ? getProfileAuthenticatedForPreview(context)
+        : context.watch<ProfileBloc>().state;
+    final challengeState = previewMode
+        ? getChallengeStateForPreview(context)
+        : context.watch<ChallengeBloc>().state;
 
     if (challengeState is ChallengesLoaded &&
         profileState is ProfileAuthenticated) {

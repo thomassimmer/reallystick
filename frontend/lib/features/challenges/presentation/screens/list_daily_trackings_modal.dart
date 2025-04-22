@@ -7,6 +7,7 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:reallystick/core/constants/dates.dart';
 import 'package:reallystick/core/ui/colors.dart';
 import 'package:reallystick/core/ui/extensions.dart';
+import 'package:reallystick/core/utils/preview_data.dart';
 import 'package:reallystick/features/challenges/domain/entities/challenge.dart';
 import 'package:reallystick/features/challenges/domain/entities/challenge_daily_tracking.dart';
 import 'package:reallystick/features/challenges/domain/entities/challenge_participation.dart';
@@ -15,7 +16,6 @@ import 'package:reallystick/features/challenges/presentation/blocs/challenge/cha
 import 'package:reallystick/features/challenges/presentation/helpers/challenge_result.dart';
 import 'package:reallystick/features/challenges/presentation/screens/update_daily_tracking_modal.dart';
 import 'package:reallystick/features/habits/domain/entities/habit_daily_tracking.dart';
-import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_states.dart';
 import 'package:reallystick/features/habits/presentation/helpers/translations.dart';
 import 'package:reallystick/features/habits/presentation/helpers/units.dart';
@@ -27,12 +27,14 @@ class ListDailyTrackingsModal extends StatefulWidget {
   final Challenge challenge;
   final ChallengeParticipation? challengeParticipation;
   final DateTime datetime;
+  final bool previewMode;
 
   const ListDailyTrackingsModal({
     super.key,
     required this.challenge,
     required this.challengeParticipation,
     required this.datetime,
+    required this.previewMode,
   });
 
   @override
@@ -78,9 +80,15 @@ class ListDailyTrackingsModalState extends State<ListDailyTrackingsModal> {
 
   @override
   Widget build(BuildContext context) {
-    final challengeState = context.watch<ChallengeBloc>().state;
-    final habitState = context.watch<HabitBloc>().state;
-    final profileState = context.watch<ProfileBloc>().state;
+    final profileState = widget.previewMode
+        ? getProfileAuthenticatedForPreview(context)
+        : context.watch<ProfileBloc>().state;
+    final challengeState = widget.previewMode
+        ? getChallengeStateForPreview(context)
+        : context.watch<ChallengeBloc>().state;
+    final habitState = widget.previewMode
+        ? getHabitsLoadedForPreview(context)
+        : context.watch<ProfileBloc>().state;
 
     if (challengeState is ChallengesLoaded &&
         habitState is HabitsLoaded &&

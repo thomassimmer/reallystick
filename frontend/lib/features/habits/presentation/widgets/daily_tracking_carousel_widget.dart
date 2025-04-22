@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:reallystick/core/constants/dates.dart';
 import 'package:reallystick/core/constants/unit_conversion.dart';
 import 'package:reallystick/core/ui/extensions.dart';
+import 'package:reallystick/core/utils/preview_data.dart';
 import 'package:reallystick/features/habits/domain/entities/habit.dart';
 import 'package:reallystick/features/habits/domain/entities/habit_daily_tracking.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.dart';
@@ -23,14 +24,19 @@ class DailyTrackingCarouselWidget extends StatefulWidget {
   final Color habitColor;
   final bool canOpenDayBoxes;
   final bool displayTitle;
+  final bool previewMode;
+  final bool previewModeForChart;
 
-  DailyTrackingCarouselWidget(
-      {super.key,
-      required this.habit,
-      required this.habitDailyTrackings,
-      required this.habitColor,
-      required this.canOpenDayBoxes,
-      required this.displayTitle});
+  DailyTrackingCarouselWidget({
+    super.key,
+    required this.habit,
+    required this.habitDailyTrackings,
+    required this.habitColor,
+    required this.canOpenDayBoxes,
+    required this.displayTitle,
+    required this.previewMode,
+    required this.previewModeForChart,
+  });
 
   @override
   DailyTrackingCarouselWidgetState createState() =>
@@ -46,6 +52,8 @@ class DailyTrackingCarouselWidgetState
   @override
   void initState() {
     super.initState();
+
+    showChart = widget.previewModeForChart;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Future.delayed(Duration(milliseconds: 50), () {
@@ -96,6 +104,7 @@ class DailyTrackingCarouselWidgetState
                   datetime: datetime,
                   habitId: widget.habit.id,
                   habitColor: widget.habitColor,
+                  previewMode: false,
                 ),
               ],
             ),
@@ -107,7 +116,9 @@ class DailyTrackingCarouselWidgetState
 
   @override
   Widget build(BuildContext context) {
-    final profileState = context.watch<ProfileBloc>().state;
+    final profileState = widget.previewMode
+        ? getProfileAuthenticatedForPreview(context)
+        : context.watch<ProfileBloc>().state;
     final userLocale = profileState.profile!.locale;
 
     final today = DateTime.now();
@@ -146,7 +157,9 @@ class DailyTrackingCarouselWidgetState
       (index) => lastDays.skip(index * 7).take(7).toList(),
     );
 
-    final habitState = context.watch<HabitBloc>().state;
+    final habitState = widget.previewMode
+        ? getHabitsLoadedForPreview(context)
+        : context.watch<HabitBloc>().state;
 
     if (habitState is HabitsLoaded) {
       final Map<DateTime, double> aggregatedQuantities = {

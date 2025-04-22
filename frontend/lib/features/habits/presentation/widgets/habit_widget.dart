@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reallystick/core/constants/screen_size.dart';
 import 'package:reallystick/core/ui/colors.dart';
+import 'package:reallystick/core/utils/preview_data.dart';
 import 'package:reallystick/features/habits/domain/entities/habit.dart';
 import 'package:reallystick/features/habits/domain/entities/habit_daily_tracking.dart';
 import 'package:reallystick/features/habits/domain/entities/habit_participation.dart';
@@ -15,19 +16,25 @@ class HabitWidget extends StatelessWidget {
   final Habit habit;
   final HabitParticipation habitParticipation;
   final List<HabitDailyTracking> habitDailyTrackings;
+  final bool previewMode;
+  final bool previewModeForChart;
 
   const HabitWidget({
     super.key,
     required this.habit,
     required this.habitParticipation,
     required this.habitDailyTrackings,
+    required this.previewMode,
+    required this.previewModeForChart,
   });
 
   @override
   Widget build(BuildContext context) {
     return Builder(
       builder: (context) {
-        final profileState = context.watch<ProfileBloc>().state;
+        final profileState = previewMode
+            ? getProfileAuthenticatedForPreview(context)
+            : context.watch<ProfileBloc>().state;
 
         final userLocale = profileState.profile!.locale;
 
@@ -106,6 +113,8 @@ class HabitWidget extends StatelessWidget {
                           habitColor: habitColor,
                           canOpenDayBoxes: false,
                           displayTitle: false,
+                          previewMode: previewMode,
+                          previewModeForChart: previewModeForChart,
                         ),
                       ],
                     ],
@@ -118,6 +127,8 @@ class HabitWidget extends StatelessWidget {
                       habitColor: habitColor,
                       canOpenDayBoxes: false,
                       displayTitle: false,
+                      previewMode: previewMode,
+                      previewModeForChart: previewModeForChart,
                     ),
                   ],
                 ],

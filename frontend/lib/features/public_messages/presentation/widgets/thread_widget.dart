@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reallystick/core/ui/extensions.dart';
+import 'package:reallystick/core/utils/preview_data.dart';
 import 'package:reallystick/features/public_messages/domain/entities/public_message.dart';
 import 'package:reallystick/features/public_messages/presentation/blocs/public_message/public_message_bloc.dart';
 import 'package:reallystick/features/public_messages/presentation/blocs/public_message/public_message_states.dart';
@@ -15,6 +16,7 @@ class ThreadWidget extends StatelessWidget {
   final String? habitId;
   final String? challengeId;
   final String? challengeParticipationId;
+  final bool previewMode;
 
   const ThreadWidget({
     super.key,
@@ -23,12 +25,17 @@ class ThreadWidget extends StatelessWidget {
     required this.habitId,
     required this.challengeId,
     required this.challengeParticipationId,
+    required this.previewMode,
   });
 
   @override
   Widget build(BuildContext context) {
-    final userState = context.watch<UserBloc>().state;
-    final publicMessageState = context.watch<PublicMessageBloc>().state;
+    final userState = previewMode
+        ? getUserStateForPreview(context)
+        : context.watch<UserBloc>().state;
+    final publicMessageState = previewMode
+        ? getPublicMessagesLoadedForPreview(context)
+        : context.watch<PublicMessageBloc>().state;
 
     if (userState is UsersLoaded &&
         publicMessageState is PublicMessagesLoaded) {

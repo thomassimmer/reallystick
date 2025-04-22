@@ -132,6 +132,7 @@ class WrittenMessagesScreenState extends State<WrittenMessagesScreen> {
                       challengeId: message.challengeId,
                       challengeParticipationId: null,
                       withReplies: false,
+                      previewMode: false,
                     ),
                   ),
                 ),

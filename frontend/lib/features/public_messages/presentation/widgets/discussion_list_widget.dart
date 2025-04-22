@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:reallystick/core/ui/extensions.dart';
+import 'package:reallystick/core/utils/preview_data.dart';
 import 'package:reallystick/features/public_messages/presentation/blocs/public_message/public_message_bloc.dart';
 import 'package:reallystick/features/public_messages/presentation/blocs/public_message/public_message_states.dart';
 import 'package:reallystick/features/public_messages/presentation/screens/add_thread_modal.dart';
@@ -12,12 +13,14 @@ class DiscussionListWidget extends StatefulWidget {
   final String? habitId;
   final String? challengeId;
   final String? challengeParticipationId;
+  final bool previewMode;
 
   const DiscussionListWidget({
     required this.color,
     required this.habitId,
     required this.challengeId,
     required this.challengeParticipationId,
+    required this.previewMode,
   });
 
   @override
@@ -61,7 +64,9 @@ class DiscussionListState extends State<DiscussionListWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final publicMessageState = context.watch<PublicMessageBloc>().state;
+    final publicMessageState = widget.previewMode
+        ? getPublicMessagesLoadedForPreview(context)
+        : context.watch<PublicMessageBloc>().state;
 
     if (publicMessageState is PublicMessagesLoaded) {
       final threads = publicMessageState.threads;
@@ -112,6 +117,7 @@ class DiscussionListState extends State<DiscussionListWidget> {
                 habitId: widget.habitId,
                 challengeId: widget.challengeId,
                 challengeParticipationId: widget.challengeParticipationId,
+                previewMode: widget.previewMode,
               ),
               SizedBox(height: 10),
             ],

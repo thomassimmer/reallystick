@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:reallystick/core/utils/preview_data.dart';
 import 'package:reallystick/features/habits/domain/entities/analytics_card_info.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_states.dart';
@@ -12,16 +13,22 @@ import 'package:reallystick/features/profile/presentation/blocs/profile/profile_
 class AnalyticsCarouselWidget extends StatelessWidget {
   final Color habitColor;
   final String habitId;
+  final bool previewMode;
 
   const AnalyticsCarouselWidget({
     required this.habitColor,
     required this.habitId,
+    required this.previewMode,
   });
 
   @override
   Widget build(BuildContext context) {
-    final habitState = context.watch<HabitBloc>().state;
-    final profileState = context.watch<ProfileBloc>().state;
+    final profileState = previewMode
+        ? getProfileAuthenticatedForPreview(context)
+        : context.watch<ProfileBloc>().state;
+    final habitState = previewMode
+        ? getHabitsLoadedForPreview(context)
+        : context.watch<HabitBloc>().state;
 
     if (habitState is HabitsLoaded && profileState is ProfileAuthenticated) {
       final userLocale = profileState.profile.locale;

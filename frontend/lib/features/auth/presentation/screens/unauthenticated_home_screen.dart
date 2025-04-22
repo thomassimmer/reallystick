@@ -2,14 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
-import 'package:reallystick/core/constants/screen_size.dart';
 import 'package:reallystick/core/presentation/widgets/app_logo.dart';
 import 'package:reallystick/core/presentation/widgets/global_snack_bar.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_bloc.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_states.dart';
 import 'package:reallystick/features/auth/presentation/widgets/background.dart';
+import 'package:reallystick/features/auth/presentation/widgets/challenge_details_screen_screenshot.dart';
+import 'package:reallystick/features/auth/presentation/widgets/challenges_screen_screenshot.dart';
+import 'package:reallystick/features/auth/presentation/widgets/habit_details_screen_screenshot.dart';
+import 'package:reallystick/features/auth/presentation/widgets/habits_screen_screenshot.dart';
 import 'package:reallystick/features/auth/presentation/widgets/language_selector.dart';
+import 'package:reallystick/features/auth/presentation/widgets/private_discussion_screenshot.dart';
+import 'package:reallystick/features/auth/presentation/widgets/public_discussion_thread_screenshot.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class UnauthenticatedHomeScreen extends StatefulWidget {
@@ -22,7 +27,7 @@ class UnauthenticatedHomeScreenState extends State<UnauthenticatedHomeScreen>
     with SingleTickerProviderStateMixin {
   final _controller = PageController();
   final PageController _pageControllerHabits =
-      PageController(initialPage: 0, viewportFraction: 0.6);
+      PageController(initialPage: 0, viewportFraction: 0.7);
   final PageController _pageControllerChallenges =
       PageController(initialPage: 0, viewportFraction: 0.7);
   final PageController _pageControllerDiscussions =
@@ -66,19 +71,40 @@ class UnauthenticatedHomeScreenState extends State<UnauthenticatedHomeScreen>
                 _buildUnauthenticatedHomeScreen(context),
                 _buildScreenshotsScreen(
                   context,
-                  habitImages,
+                  [
+                    HabitsScreenScreenshot(),
+                    HabitDetailsScreenScreenshot(previewForChart: false),
+                    HabitDetailsScreenScreenshot(previewForChart: true),
+                  ],
                   "${AppLocalizations.of(context)!.createHabitsThatStick}\n🌱",
                   _pageControllerHabits,
                 ),
                 _buildScreenshotsScreen(
                   context,
-                  challengeImages,
+                  [
+                    ChallengesScreenScreenshot(),
+                    ChallengeDetailsScreenScreenshot(
+                      previewForDailyObjectives: false,
+                      previewForDiscussion: false,
+                    ),
+                    ChallengeDetailsScreenScreenshot(
+                      previewForDailyObjectives: true,
+                      previewForDiscussion: false,
+                    ),
+                  ],
                   "${AppLocalizations.of(context)!.joinChallengeReachYourGoals}\n🚀",
                   _pageControllerChallenges,
                 ),
                 _buildScreenshotsScreen(
                   context,
-                  discussionImages,
+                  [
+                    ChallengeDetailsScreenScreenshot(
+                      previewForDailyObjectives: false,
+                      previewForDiscussion: true,
+                    ),
+                    PublicDiscussionThreadScreenshot(),
+                    PrivateDiscussionScreenshot(),
+                  ],
                   "${AppLocalizations.of(context)!.youAreNotAlone}\n🤝",
                   _pageControllerDiscussions,
                 ),
@@ -103,8 +129,14 @@ class UnauthenticatedHomeScreenState extends State<UnauthenticatedHomeScreen>
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Really', style: context.typographies.heading),
-            Text('Stick', style: context.typographies.heading),
+            Text(
+              'Really',
+              style: context.typographies.heading.copyWith(color: Colors.white),
+            ),
+            Text(
+              'Stick',
+              style: context.typographies.heading.copyWith(color: Colors.white),
+            ),
           ],
         ),
         SizedBox(height: 16),
@@ -112,7 +144,7 @@ class UnauthenticatedHomeScreenState extends State<UnauthenticatedHomeScreen>
           padding: EdgeInsets.symmetric(horizontal: 50),
           child: Text(
             AppLocalizations.of(context)!.pleaseLoginOrSignUp,
-            style: TextStyle(fontSize: 18),
+            style: TextStyle(fontSize: 18, color: Colors.white),
             textAlign: TextAlign.center,
           ),
         ),
@@ -143,6 +175,7 @@ class UnauthenticatedHomeScreenState extends State<UnauthenticatedHomeScreen>
         Spacer(),
         Text(
           AppLocalizations.of(context)!.whatIsThis,
+          style: TextStyle(color: Colors.white),
         ),
         InkWell(
           onTap: () {
@@ -158,12 +191,14 @@ class UnauthenticatedHomeScreenState extends State<UnauthenticatedHomeScreen>
               Icon(
                 Icons.keyboard_arrow_down,
                 size: 40,
+                color: Colors.white,
               ),
               Transform.translate(
                 offset: Offset(0, -30),
                 child: Icon(
                   Icons.keyboard_arrow_down,
                   size: 35,
+                  color: Colors.white,
                 ),
               ),
             ],
@@ -173,33 +208,12 @@ class UnauthenticatedHomeScreenState extends State<UnauthenticatedHomeScreen>
     );
   }
 
-  Widget _buildScreenshotContainer(String imageUrl) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 8),
-      child: Center(
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: Colors.black, width: 3),
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(16),
-            child: Image.asset(
-              imageUrl,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget _buildScreenshotsScreen(
     BuildContext context,
-    List<String> images,
+    List<Widget> screens,
     String title,
     PageController pageController,
   ) {
-    final bool isLargeScreen = checkIfLargeScreen(context);
     final screenHeight = MediaQuery.of(context).size.height;
 
     return Column(
@@ -212,49 +226,32 @@ class UnauthenticatedHomeScreenState extends State<UnauthenticatedHomeScreen>
           padding: EdgeInsets.symmetric(horizontal: 25),
           child: Text(
             title,
-            style: context.typographies.heading,
+            style: context.typographies.heading.copyWith(
+              color: Colors.white,
+            ),
             textAlign: TextAlign.center,
           ),
         ),
-        const SizedBox(height: 30),
-        if (isLargeScreen) ...[
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: images
-                  .map(
-                    (img) => SizedBox(
-                      height: screenHeight * 0.5,
-                      child: _buildScreenshotContainer(img),
-                    ),
-                  )
-                  .toList(),
-            ),
+        Spacer(),
+        SizedBox(
+          height: screenHeight * 0.55,
+          child: PageView(
+            controller: _pageControllerHabits,
+            children: screens,
           ),
-        ] else ...[
-          SizedBox(
-            height: screenHeight * 0.5,
-            width: 800,
-            child: PageView(
-              controller: pageController,
-              children:
-                  images.map((img) => _buildScreenshotContainer(img)).toList(),
-            ),
+        ),
+        const SizedBox(height: 16),
+        SmoothPageIndicator(
+          controller: _pageControllerHabits,
+          count: 3,
+          effect: ExpandingDotsEffect(
+            activeDotColor: Colors.white,
+            dotColor: Colors.grey,
+            dotHeight: 8,
+            dotWidth: 8,
+            spacing: 8,
           ),
-          const SizedBox(height: 16),
-          SmoothPageIndicator(
-            controller: pageController,
-            count: images.length,
-            effect: ExpandingDotsEffect(
-              activeDotColor: Colors.white,
-              dotColor: Colors.grey,
-              dotHeight: 8,
-              dotWidth: 8,
-              spacing: 8,
-            ),
-          ),
-        ],
+        ),
         Spacer(),
         InkWell(
           onTap: () {
@@ -269,12 +266,14 @@ class UnauthenticatedHomeScreenState extends State<UnauthenticatedHomeScreen>
               Icon(
                 Icons.keyboard_arrow_down,
                 size: 40,
+                color: Colors.white,
               ),
               Transform.translate(
                 offset: Offset(0, -30),
                 child: Icon(
                   Icons.keyboard_arrow_down,
                   size: 35,
+                  color: Colors.white,
                 ),
               ),
             ],
@@ -302,9 +301,7 @@ class UnauthenticatedHomeScreenState extends State<UnauthenticatedHomeScreen>
             "· ${AppLocalizations.of(context)!.availableOnIosAndroidWebIn}",
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-            ),
+                fontSize: 16, fontWeight: FontWeight.w500, color: Colors.white),
           ),
           const SizedBox(height: 20),
           LanguageSelector(),
@@ -333,10 +330,7 @@ class UnauthenticatedHomeScreenState extends State<UnauthenticatedHomeScreen>
                     AppLocalizations.of(context)!.privacyPolicy,
                     overflow: TextOverflow.ellipsis,
                     softWrap: false,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: context.colors.text,
-                    ),
+                    style: TextStyle(fontSize: 14, color: Colors.white),
                   ),
                 ),
               ),
@@ -347,10 +341,7 @@ class UnauthenticatedHomeScreenState extends State<UnauthenticatedHomeScreen>
                     AppLocalizations.of(context)!.termsOfUse,
                     overflow: TextOverflow.ellipsis,
                     softWrap: false,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: context.colors.text,
-                    ),
+                    style: TextStyle(fontSize: 14, color: Colors.white),
                   ),
                 ),
               ),
@@ -358,9 +349,7 @@ class UnauthenticatedHomeScreenState extends State<UnauthenticatedHomeScreen>
           ),
           Text(
             AppLocalizations.of(context)!.copyright,
-            style: TextStyle(
-              fontSize: 13,
-            ),
+            style: TextStyle(fontSize: 13, color: Colors.white),
           ),
           SizedBox(height: 20),
         ],

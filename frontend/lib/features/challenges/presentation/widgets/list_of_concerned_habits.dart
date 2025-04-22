@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:reallystick/core/utils/preview_data.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_bloc.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_states.dart';
 import 'package:reallystick/features/challenges/presentation/widgets/habit_card_widget.dart';
-import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_states.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
@@ -12,17 +12,25 @@ import 'package:reallystick/features/profile/presentation/blocs/profile/profile_
 class ListOfConcernedHabits extends StatelessWidget {
   final Color challengeColor;
   final String challengeId;
+  final bool previewMode;
 
   const ListOfConcernedHabits({
     required this.challengeColor,
     required this.challengeId,
+    required this.previewMode,
   });
 
   @override
   Widget build(BuildContext context) {
-    final challengeState = context.watch<ChallengeBloc>().state;
-    final profileState = context.watch<ProfileBloc>().state;
-    final habitState = context.watch<HabitBloc>().state;
+    final profileState = previewMode
+        ? getProfileAuthenticatedForPreview(context)
+        : context.watch<ProfileBloc>().state;
+    final challengeState = previewMode
+        ? getChallengeStateForPreview(context)
+        : context.watch<ChallengeBloc>().state;
+    final habitState = previewMode
+        ? getHabitsLoadedForPreview(context)
+        : context.watch<ChallengeBloc>().state;
 
     if (challengeState is ChallengesLoaded &&
         profileState is ProfileAuthenticated &&

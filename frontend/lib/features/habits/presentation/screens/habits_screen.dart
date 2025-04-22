@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:reallystick/core/presentation/widgets/custom_app_bar.dart';
 import 'package:reallystick/core/presentation/widgets/full_width_scroll_view.dart';
 import 'package:reallystick/core/ui/extensions.dart';
+import 'package:reallystick/core/utils/preview_data.dart';
 import 'package:reallystick/features/habits/domain/entities/habit_category.dart';
 import 'package:reallystick/features/habits/domain/entities/habit_daily_tracking.dart';
 import 'package:reallystick/features/habits/domain/entities/habit_participation.dart';
@@ -21,6 +22,12 @@ import 'package:reallystick/features/profile/presentation/blocs/profile/profile_
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
 
 class HabitsScreen extends StatefulWidget {
+  final bool previewMode;
+
+  const HabitsScreen({
+    required this.previewMode,
+  });
+
   @override
   HabitsScreenState createState() => HabitsScreenState();
 }
@@ -102,7 +109,9 @@ class HabitsScreenState extends State<HabitsScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    final profileState = context.watch<ProfileBloc>().state;
+    final profileState = widget.previewMode
+        ? getProfileAuthenticatedForPreview(context)
+        : context.watch<ProfileBloc>().state;
 
     if (profileState is ProfileAuthenticated &&
         !profileState.profile.hasSeenQuestions &&
@@ -113,7 +122,10 @@ class HabitsScreenState extends State<HabitsScreen> {
       });
     }
 
-    final habitState = context.watch<HabitBloc>().state;
+    final habitState = widget.previewMode
+        ? getHabitsLoadedForPreview(context)
+        : context.watch<HabitBloc>().state;
+
     if (habitState is HabitsLoaded) {
       Map<String, bool> newCategoriesExpansion = {};
 
@@ -144,8 +156,12 @@ class HabitsScreenState extends State<HabitsScreen> {
       },
       child: Builder(
         builder: (context) {
-          final profileState = context.watch<ProfileBloc>().state;
-          final habitState = context.watch<HabitBloc>().state;
+          final profileState = widget.previewMode
+              ? getProfileAuthenticatedForPreview(context)
+              : context.watch<ProfileBloc>().state;
+          final habitState = widget.previewMode
+              ? getHabitsLoadedForPreview(context)
+              : context.watch<HabitBloc>().state;
 
           if (profileState is ProfileAuthenticated &&
               habitState is HabitsLoaded) {
@@ -290,6 +306,8 @@ class HabitsScreenState extends State<HabitsScreen> {
                                         habitParticipation: habitParticipation,
                                         habitDailyTrackings:
                                             habitDailyTrackingsForThisHabit,
+                                        previewMode: widget.previewMode,
+                                        previewModeForChart: false,
                                       );
                                     },
                                   ).toList(),

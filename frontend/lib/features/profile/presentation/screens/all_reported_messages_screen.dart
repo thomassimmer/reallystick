@@ -201,6 +201,7 @@ class AllReportedMessagesScreenState extends State<AllReportedMessagesScreen> {
                           challengeId: message.challengeId,
                           challengeParticipationId: null,
                           withReplies: false,
+                          previewMode: false,
                         ),
                         Padding(
                           padding: EdgeInsets.all(16),

@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart' hide Notification;
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:reallystick/core/utils/preview_data.dart';
 import 'package:reallystick/features/notifications/presentation/blocs/notifications/notifications_bloc.dart';
 import 'package:reallystick/features/notifications/presentation/blocs/notifications/notifications_events.dart';
 import 'package:reallystick/features/notifications/presentation/blocs/notifications/notifications_states.dart';
 
 class NotificationButtonWidget extends StatefulWidget {
-  const NotificationButtonWidget();
+  final bool previewMode;
+
+  const NotificationButtonWidget({
+    required this.previewMode,
+  });
 
   @override
   NotificationButtonWidgetState createState() =>
@@ -17,6 +22,10 @@ class NotificationButtonWidgetState extends State<NotificationButtonWidget> {
   Widget build(BuildContext context) {
     return BlocBuilder<NotificationBloc, NotificationState>(
       builder: (context, notificationState) {
+        if (widget.previewMode) {
+          notificationState = getNotificationStateForPreview(context);
+        }
+
         final unseenNotifications =
             notificationState.notifications.where((n) => !n.seen).length;
 

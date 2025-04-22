@@ -6,6 +6,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:reallystick/core/constants/dates.dart';
 import 'package:reallystick/core/ui/extensions.dart';
+import 'package:reallystick/core/utils/preview_data.dart';
 import 'package:reallystick/features/habits/domain/entities/habit_daily_tracking.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_states.dart';
@@ -19,12 +20,14 @@ class ListDailyTrackingsModal extends StatefulWidget {
   final String habitId;
   final DateTime datetime;
   final Color habitColor;
+  final bool previewMode;
 
   const ListDailyTrackingsModal({
     super.key,
     required this.habitId,
     required this.datetime,
     required this.habitColor,
+    required this.previewMode,
   });
 
   @override
@@ -69,8 +72,12 @@ class ListDailyTrackingsModalState extends State<ListDailyTrackingsModal> {
 
   @override
   Widget build(BuildContext context) {
-    final habitState = context.watch<HabitBloc>().state;
-    final profileState = context.watch<ProfileBloc>().state;
+    final profileState = widget.previewMode
+        ? getProfileAuthenticatedForPreview(context)
+        : context.watch<ProfileBloc>().state;
+    final habitState = widget.previewMode
+        ? getHabitsLoadedForPreview(context)
+        : context.watch<HabitBloc>().state;
 
     if (habitState is HabitsLoaded && profileState is ProfileAuthenticated) {
       final userLocale = profileState.profile.locale;
@@ -81,6 +88,8 @@ class ListDailyTrackingsModalState extends State<ListDailyTrackingsModal> {
               hdt.datetime.isSameDate(widget.datetime))
           .toList();
       final habit = habitState.habits[widget.habitId];
+
+      dailyTrackings.sort((a, b) => a.datetime.compareTo(b.datetime));
 
       return Padding(
         padding:

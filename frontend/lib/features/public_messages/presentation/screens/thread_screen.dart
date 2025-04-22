@@ -5,6 +5,7 @@ import 'package:reallystick/core/presentation/widgets/custom_app_bar.dart';
 import 'package:reallystick/core/presentation/widgets/full_width_column.dart';
 import 'package:reallystick/core/ui/colors.dart';
 import 'package:reallystick/core/ui/extensions.dart';
+import 'package:reallystick/core/utils/preview_data.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_bloc.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_events.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_states.dart';
@@ -33,6 +34,7 @@ class ThreadScreen extends StatefulWidget {
   final String? habitId;
   final String? challengeId;
   final String? challengeParticipationId;
+  final bool previewMode;
 
   const ThreadScreen({
     super.key,
@@ -40,6 +42,7 @@ class ThreadScreen extends StatefulWidget {
     required this.habitId,
     required this.challengeId,
     required this.challengeParticipationId,
+    required this.previewMode,
   });
 
   @override
@@ -105,27 +108,37 @@ class ThreadScreenState extends State<ThreadScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final profileState = context.watch<ProfileBloc>().state;
-    final threadState = context.watch<ThreadBloc>().state;
-
-    if (profileState is ProfileAuthenticated &&
-        threadState is ThreadLoaded &&
-        (threadState.threadId == null ||
-            threadState.threadId != widget.threadId)) {
-      BlocProvider.of<ThreadBloc>(context).add(
-        InitializeThreadEvent(
-          threadId: widget.threadId,
-        ),
-      );
-    }
-
     return Builder(
       builder: (context) {
-        final profileState = context.watch<ProfileBloc>().state;
-        final challengeState = context.watch<ChallengeBloc>().state;
-        final habitState = context.watch<HabitBloc>().state;
-        final publicMessageState = context.watch<PublicMessageBloc>().state;
-        final userState = context.watch<UserBloc>().state;
+        final profileState = widget.previewMode
+            ? getProfileAuthenticatedForPreview(context)
+            : context.watch<ProfileBloc>().state;
+        final habitState = widget.previewMode
+            ? getHabitsLoadedForPreview(context)
+            : context.watch<HabitBloc>().state;
+        final challengeState = widget.previewMode
+            ? getChallengeStateForPreview(context)
+            : context.watch<ChallengeBloc>().state;
+        final publicMessageState = widget.previewMode
+            ? getPublicMessagesLoadedForPreview(context)
+            : context.watch<PublicMessageBloc>().state;
+        final userState = widget.previewMode
+            ? getUserStateForPreview(context)
+            : context.watch<UserBloc>().state;
+        final threadState = widget.previewMode
+            ? getThreadStateForPreview(context)
+            : context.watch<ThreadBloc>().state;
+
+        if (profileState is ProfileAuthenticated &&
+            threadState is ThreadLoaded &&
+            (threadState.threadId == null ||
+                threadState.threadId != widget.threadId)) {
+          BlocProvider.of<ThreadBloc>(context).add(
+            InitializeThreadEvent(
+              threadId: widget.threadId,
+            ),
+          );
+        }
 
         if (userState is UsersLoaded &&
             profileState is ProfileAuthenticated &&
@@ -221,6 +234,7 @@ class ThreadScreenState extends State<ThreadScreen> {
                               widget.challengeParticipationId,
                           threadId: widget.threadId,
                           withReplies: true,
+                          previewMode: widget.previewMode,
                         ),
                       ),
                     ),

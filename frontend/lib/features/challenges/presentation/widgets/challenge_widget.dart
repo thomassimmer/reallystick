@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:reallystick/core/constants/screen_size.dart';
 import 'package:reallystick/core/ui/colors.dart';
+import 'package:reallystick/core/utils/preview_data.dart';
 import 'package:reallystick/features/challenges/domain/entities/challenge.dart';
 import 'package:reallystick/features/challenges/domain/entities/challenge_daily_tracking.dart';
 import 'package:reallystick/features/challenges/domain/entities/challenge_participation.dart';
@@ -20,20 +21,26 @@ class ChallengeWidget extends StatelessWidget {
   final Challenge challenge;
   final ChallengeParticipation? challengeParticipation;
   final List<ChallengeDailyTracking> challengeDailyTrackings;
+  final bool previewMode;
 
   const ChallengeWidget({
     super.key,
     required this.challenge,
     required this.challengeParticipation,
     required this.challengeDailyTrackings,
+    required this.previewMode,
   });
 
   @override
   Widget build(BuildContext context) {
     return Builder(
       builder: (context) {
-        final profileState = context.watch<ProfileBloc>().state;
-        final challengeState = context.watch<ChallengeBloc>().state;
+        final profileState = previewMode
+            ? getProfileAuthenticatedForPreview(context)
+            : context.watch<ProfileBloc>().state;
+        final challengeState = previewMode
+            ? getChallengeStateForPreview(context)
+            : context.watch<ChallengeBloc>().state;
 
         if (challengeState is ChallengesLoaded) {
           final userLocale = profileState.profile!.locale;
@@ -169,6 +176,7 @@ class ChallengeWidget extends StatelessWidget {
                                             challengeColor: challengeColor,
                                             canOpenDayBoxes: false,
                                             displayTitle: false,
+                                            previewMode: previewMode,
                                           )
                                         : DailyTrackingCarouselWithoutStartDateWidget(
                                             challengeParticipation:
@@ -179,6 +187,7 @@ class ChallengeWidget extends StatelessWidget {
                                             challengeColor: challengeColor,
                                             canOpenDayBoxes: false,
                                             displayTitle: false,
+                                            previewMode: previewMode,
                                           ),
                                   ],
                                 ],
@@ -196,6 +205,7 @@ class ChallengeWidget extends StatelessWidget {
                                         challengeColor: challengeColor,
                                         canOpenDayBoxes: false,
                                         displayTitle: false,
+                                        previewMode: previewMode,
                                       )
                                     : DailyTrackingCarouselWithoutStartDateWidget(
                                         challengeParticipation:
@@ -206,6 +216,7 @@ class ChallengeWidget extends StatelessWidget {
                                         challengeColor: challengeColor,
                                         canOpenDayBoxes: false,
                                         displayTitle: false,
+                                        previewMode: previewMode,
                                       ),
                               ],
                             ],

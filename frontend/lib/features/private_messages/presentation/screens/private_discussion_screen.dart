@@ -9,6 +9,7 @@ import 'package:reallystick/core/presentation/widgets/full_width_list_view.dart'
 import 'package:reallystick/core/presentation/widgets/global_snack_bar.dart';
 import 'package:reallystick/core/ui/colors.dart';
 import 'package:reallystick/core/ui/extensions.dart';
+import 'package:reallystick/core/utils/preview_data.dart';
 import 'package:reallystick/features/habits/presentation/screens/color_picker_modal.dart';
 import 'package:reallystick/features/private_messages/domain/entities/private_discussion.dart';
 import 'package:reallystick/features/private_messages/domain/entities/private_message.dart';
@@ -30,10 +31,12 @@ import 'package:reallystick/features/users/presentation/blocs/user/user_states.d
 
 class PrivateDiscussionScreen extends StatefulWidget {
   final String discussionId;
+  final bool previewMode;
 
   const PrivateDiscussionScreen({
     super.key,
     required this.discussionId,
+    required this.previewMode,
   });
 
   @override
@@ -260,10 +263,18 @@ class PrivateDiscussionScreenState extends State<PrivateDiscussionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final userState = context.watch<UserBloc>().state;
-    final profileState = context.watch<ProfileBloc>().state;
-    final privateDiscussionState = context.watch<PrivateDiscussionBloc>().state;
-    final privateMessageState = context.watch<PrivateMessageBloc>().state;
+    final profileState = widget.previewMode
+        ? getProfileAuthenticatedForPreview(context)
+        : context.watch<ProfileBloc>().state;
+    final userState = widget.previewMode
+        ? getUserStateForPreview(context)
+        : context.watch<UserBloc>().state;
+    final privateMessageState = widget.previewMode
+        ? getPrivateMessageStateForPreview(context)
+        : context.watch<PrivateMessageBloc>().state;
+    final privateDiscussionState = widget.previewMode
+        ? getPrivateDiscussionStateForPreview(context)
+        : context.watch<PrivateDiscussionBloc>().state;
 
     if (userState is UsersLoaded && profileState is ProfileAuthenticated) {
       if (privateMessageState.discussionId != widget.discussionId) {
@@ -430,6 +441,7 @@ class PrivateDiscussionScreenState extends State<PrivateDiscussionScreen> {
                                             discussion.color)
                                         .color,
                                     userId: profileState.profile.id,
+                                    previewMode: widget.previewMode,
                                   ),
                                 ),
                                 SizedBox(height: 10),

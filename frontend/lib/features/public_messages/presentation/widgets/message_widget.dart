@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reallystick/core/ui/extensions.dart';
+import 'package:reallystick/core/utils/preview_data.dart';
 import 'package:reallystick/features/private_messages/domain/entities/private_discussion.dart';
 import 'package:reallystick/features/private_messages/presentation/blocs/private_discussion/private_discussion_bloc.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
@@ -31,6 +32,7 @@ class MessageWidget extends StatelessWidget {
   final String? challengeId;
   final String? challengeParticipationId;
   final bool withReplies;
+  final bool previewMode;
 
   const MessageWidget({
     super.key,
@@ -41,6 +43,7 @@ class MessageWidget extends StatelessWidget {
     required this.challengeId,
     required this.challengeParticipationId,
     required this.withReplies,
+    required this.previewMode,
   });
 
   void _likeMessage(
@@ -133,11 +136,19 @@ class MessageWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final userState = context.watch<UserBloc>().state;
-    final profileState = context.watch<ProfileBloc>().state;
-    final publicMessageState = context.watch<PublicMessageBloc>().state;
+    final profileState = previewMode
+        ? getProfileAuthenticatedForPreview(context)
+        : context.watch<ProfileBloc>().state;
+    final publicMessageState = previewMode
+        ? getPublicMessagesLoadedForPreview(context)
+        : context.watch<PublicMessageBloc>().state;
+    final userState = previewMode
+        ? getUserStateForPreview(context)
+        : context.watch<UserBloc>().state;
+    final threadState = previewMode
+        ? getThreadStateForPreview(context)
+        : context.watch<ThreadBloc>().state;
     final privateDiscussionState = context.watch<PrivateDiscussionBloc>().state;
-    final threadState = context.watch<ThreadBloc>().state;
     final replyState = context.watch<ReplyBloc>().state;
 
     if (userState is UsersLoaded &&
@@ -380,6 +391,7 @@ class MessageWidget extends StatelessWidget {
                     challengeParticipationId: challengeParticipationId,
                     threadId: threadId,
                     withReplies: false,
+                    previewMode: previewMode,
                   ),
                 ),
               ],

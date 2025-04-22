@@ -17,6 +17,7 @@ class AddActivityButton extends StatelessWidget {
   Widget build(BuildContext context) {
     if (label != null) {
       return FloatingActionButton.extended(
+        heroTag: null,
         onPressed: action,
         icon: Icon(Icons.add),
         label: Text(label!),
@@ -27,6 +28,7 @@ class AddActivityButton extends StatelessWidget {
     }
 
     return FloatingActionButton(
+      heroTag: null,
       onPressed: action,
       backgroundColor: color ?? context.colors.primary,
       child: const Icon(Icons.add),
