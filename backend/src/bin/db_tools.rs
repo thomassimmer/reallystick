@@ -6,7 +6,7 @@ use reallystick::core::helpers::startup::{
 };
 use reallystick::startup::get_connection_pool;
 use tracing::{error, info};
-use tracing_subscriber::FmtSubscriber;
+use tracing_subscriber::{EnvFilter, FmtSubscriber};
 
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
@@ -16,11 +16,9 @@ struct Args {
 
 #[tokio::main]
 async fn main() {
-    let subscriber = FmtSubscriber::builder()
-        .with_max_level(tracing::Level::INFO)
-        .finish();
-
-    tracing::subscriber::set_global_default(subscriber).expect("setting default subscriber failed");
+    FmtSubscriber::builder()
+        .with_env_filter(EnvFilter::from_default_env())
+        .init();
 
     let args = Args::parse();
     let action = args.action;
