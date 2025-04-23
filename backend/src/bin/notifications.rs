@@ -1,14 +1,12 @@
 use reallystick::{configuration::get_configuration, startup_notifications::Application};
 use tracing::{error, info};
-use tracing_subscriber::FmtSubscriber;
+use tracing_subscriber::{EnvFilter, FmtSubscriber};
 
 #[tokio::main]
 async fn main() {
-    let subscriber = FmtSubscriber::builder()
-        .with_max_level(tracing::Level::INFO)
-        .finish();
-
-    tracing::subscriber::set_global_default(subscriber).expect("setting default subscriber failed");
+    FmtSubscriber::builder()
+        .with_env_filter(EnvFilter::from_default_env())
+        .init();
 
     let configuration = get_configuration().expect("Failed to read configuration.");
     let application = Application::build(configuration.clone())
