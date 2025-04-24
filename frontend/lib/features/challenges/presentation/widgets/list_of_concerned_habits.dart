@@ -5,6 +5,7 @@ import 'package:reallystick/core/utils/preview_data.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_bloc.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_states.dart';
 import 'package:reallystick/features/challenges/presentation/widgets/habit_card_widget.dart';
+import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_states.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
@@ -30,7 +31,7 @@ class ListOfConcernedHabits extends StatelessWidget {
         : context.watch<ChallengeBloc>().state;
     final habitState = previewMode
         ? getHabitsLoadedForPreview(context)
-        : context.watch<ChallengeBloc>().state;
+        : context.watch<HabitBloc>().state;
 
     if (challengeState is ChallengesLoaded &&
         profileState is ProfileAuthenticated &&
