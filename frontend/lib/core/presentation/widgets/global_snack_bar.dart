@@ -17,7 +17,6 @@ class GlobalSnackBar {
   static show({
     required BuildContext context,
     required Message? message,
-    bool hideCurrent = false,
   }) {
     if (message == null) {
       return null;
@@ -28,10 +27,7 @@ class GlobalSnackBar {
 
     final messenger = ScaffoldMessenger.of(context);
 
-    // Hide any existing SnackBar before showing a new one
-    if (hideCurrent == true) {
-      messenger.hideCurrentSnackBar();
-    }
+    messenger.hideCurrentSnackBar();
 
     return messenger.showSnackBar(
       SnackBar(

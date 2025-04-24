@@ -109,8 +109,7 @@ class RootScreenState extends State<RootScreen> {
         }),
         BlocListener<NotificationBloc, NotificationState>(
             listener: (context, state) {
-          GlobalSnackBar.show(
-              context: context, message: state.message, hideCurrent: true);
+          GlobalSnackBar.show(context: context, message: state.message);
         })
       ],
       child: Builder(
