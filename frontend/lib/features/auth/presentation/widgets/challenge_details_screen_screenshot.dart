@@ -46,7 +46,7 @@ class ChallengeDetailsScreenScreenshot extends StatelessWidget {
                       previewMode: true,
                       previewTab: 1,
                       child: ChallengeDetailsScreen(
-                        challengeId: previewForDiscussion ? '2' : '1',
+                        challengeId: previewForDiscussion ? '3' : '1',
                         challengeParticipationId:
                             previewForDiscussion ? '2' : '1',
                         previewMode: true,

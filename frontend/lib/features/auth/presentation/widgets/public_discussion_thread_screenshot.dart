@@ -27,7 +27,7 @@ class PublicDiscussionThreadScreenshot extends StatelessWidget {
                   previewTab: 1,
                   child: ThreadScreen(
                     threadId: '1',
-                    challengeId: '2',
+                    challengeId: '3',
                     challengeParticipationId: '2',
                     habitId: null,
                     previewMode: true,

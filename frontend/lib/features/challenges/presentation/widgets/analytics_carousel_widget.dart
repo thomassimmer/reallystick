@@ -10,23 +10,63 @@ import 'package:reallystick/features/habits/presentation/widgets/analytics_card_
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
 
-class AnalyticsCarouselWidget extends StatelessWidget {
+class AnalyticsCarouselWidget extends StatefulWidget {
   final Color challengeColor;
   final String challengeId;
   final bool previewMode;
-
   const AnalyticsCarouselWidget({
+    super.key,
     required this.challengeColor,
     required this.challengeId,
     required this.previewMode,
   });
 
   @override
+  State<AnalyticsCarouselWidget> createState() =>
+      AnalyticsCarouselWidgetState();
+}
+
+class AnalyticsCarouselWidgetState extends State<AnalyticsCarouselWidget> {
+  ScrollController controller = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.previewMode) {
+        _startSlowScroll();
+      }
+    });
+  }
+
+  void _startSlowScroll() {
+    if (!controller.hasClients) return;
+
+    const double scrollSpeedPerSecond = 20;
+    final double maxScroll = controller.position.maxScrollExtent;
+    final double currentScroll = controller.offset;
+    final double distanceToScroll = maxScroll - currentScroll;
+
+    if (distanceToScroll <= 0) return;
+
+    final durationSeconds = distanceToScroll / scrollSpeedPerSecond;
+    final duration = Duration(
+      milliseconds: (durationSeconds * 1000).clamp(1, double.infinity).toInt(),
+    );
+
+    controller.animateTo(
+      maxScroll,
+      duration: duration,
+      curve: Curves.linear,
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final profileState = previewMode
+    final profileState = widget.previewMode
         ? getProfileAuthenticatedForPreview(context)
         : context.watch<ProfileBloc>().state;
-    final challengeState = previewMode
+    final challengeState = widget.previewMode
         ? getChallengeStateForPreview(context)
         : context.watch<ChallengeBloc>().state;
 
@@ -34,7 +74,7 @@ class AnalyticsCarouselWidget extends StatelessWidget {
         profileState is ProfileAuthenticated) {
       final userLocale = profileState.profile.locale;
       final challengeStatistic =
-          challengeState.challengeStatistics[challengeId];
+          challengeState.challengeStatistics[widget.challengeId];
 
       List<AnalyticsCardInfo> analyticsCards = [];
 
@@ -161,8 +201,6 @@ class AnalyticsCarouselWidget extends StatelessWidget {
           );
         }
 
-        analyticsCards.shuffle();
-
         analyticsCards.insert(
           0,
           AnalyticsCardInfo(
@@ -192,14 +230,14 @@ class AnalyticsCarouselWidget extends StatelessWidget {
               Icon(
                 Icons.query_stats,
                 size: 20,
-                color: challengeColor,
+                color: widget.challengeColor,
               ),
               SizedBox(width: 10),
               Text(
                 AppLocalizations.of(context)!.analytics,
                 style: TextStyle(
                   fontSize: 20,
-                  color: challengeColor,
+                  color: widget.challengeColor,
                 ),
               ),
               Spacer(),
@@ -209,13 +247,14 @@ class AnalyticsCarouselWidget extends StatelessWidget {
                 child: Icon(
                   Icons.info_outline,
                   size: 25,
-                  color: challengeColor.withValues(alpha: 0.8),
+                  color: widget.challengeColor.withValues(alpha: 0.8),
                 ),
               ),
             ],
           ),
           SizedBox(height: 10),
           SingleChildScrollView(
+            controller: controller,
             scrollDirection: Axis.horizontal,
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -225,7 +264,7 @@ class AnalyticsCarouselWidget extends StatelessWidget {
                   key: ValueKey(card.title),
                   analyticsCardInfo: card,
                   userLocale: userLocale,
-                  color: challengeColor,
+                  color: widget.challengeColor,
                 );
               }).toList(),
             ),
@@ -235,7 +274,7 @@ class AnalyticsCarouselWidget extends StatelessWidget {
     } else {
       return Center(
         child: CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation<Color>(challengeColor),
+          valueColor: AlwaysStoppedAnimation<Color>(widget.challengeColor),
         ),
       );
     }

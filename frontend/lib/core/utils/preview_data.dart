@@ -84,7 +84,7 @@ HabitsLoaded getHabitsLoadedForPreview(BuildContext context) {
       HabitParticipation(
         id: '1',
         userId: '1',
-        habitId: locale == 'en' ? '1' : '2',
+        habitId: '1',
         color: 'red',
         toGain: true,
         notificationsReminderEnabled: false,
@@ -94,7 +94,7 @@ HabitsLoaded getHabitsLoadedForPreview(BuildContext context) {
       HabitParticipation(
         id: '1',
         userId: '1',
-        habitId: '3',
+        habitId: '2',
         color: 'lightGreen',
         toGain: true,
         notificationsReminderEnabled: false,
@@ -104,7 +104,7 @@ HabitsLoaded getHabitsLoadedForPreview(BuildContext context) {
       HabitParticipation(
         id: '1',
         userId: '1',
-        habitId: '4',
+        habitId: '3',
         color: 'lightBlue',
         toGain: true,
         notificationsReminderEnabled: false,
@@ -115,70 +115,65 @@ HabitsLoaded getHabitsLoadedForPreview(BuildContext context) {
     habits: {
       '1': Habit(
         id: '1',
-        name: {
-          "de": "Französisch",
-          "en": "French",
-          "es": "Francés",
-          "fr": "Français",
-          "it": "Francese",
-          "pt": "Francês",
-          "ru": "Французский"
-        },
+        name: locale == 'en'
+            ? {
+                "de": "Französisch",
+                "en": "French",
+                "es": "Francés",
+                "fr": "Français",
+                "it": "Francese",
+                "pt": "Francês",
+                "ru": "Французский"
+              }
+            : {
+                "de": "Englisch",
+                "en": "English",
+                "es": "Inglés",
+                "fr": "Anglais",
+                "it": "Inglese",
+                "pt": "Inglês",
+                "ru": "Английский"
+              },
         categoryId: '1',
         reviewed: true,
-        description: {
-          "de":
-              "Verfolge dein tägliches Französischlernen, um stetige Fortschritte zu machen und motiviert zu bleiben.",
-          "en":
-              "Track your French learning every day to make steady progress and stay motivated.",
-          "es":
-              "Controla tu aprendizaje de francés cada día para avanzar con constancia y mantenerte motivado.",
-          "fr":
-              "Suivez votre apprentissage du français chaque jour pour progresser régulièrement et rester motivé(e).",
-          "it":
-              "Tieni traccia del tuo apprendimento del francese ogni giorno per fare progressi costanti e restare motivato.",
-          "pt":
-              "Acompanhe seu aprendizado de francês todos os dias para progredir com consistência e manter-se motivado.",
-          "ru":
-              "Отслеживайте изучение французского каждый день, чтобы стабильно продвигаться и сохранять мотивацию."
-        },
-        icon: "🇫🇷",
+        description: locale == 'en'
+            ? {
+                "de":
+                    "Verfolge dein tägliches Französischlernen, um stetige Fortschritte zu machen und motiviert zu bleiben.",
+                "en":
+                    "Track your French learning every day to make steady progress and stay motivated.",
+                "es":
+                    "Controla tu aprendizaje de francés cada día para avanzar con constancia y mantenerte motivado.",
+                "fr":
+                    "Suivez votre apprentissage du français chaque jour pour progresser régulièrement et rester motivé(e).",
+                "it":
+                    "Tieni traccia del tuo apprendimento del francese ogni giorno per fare progressi costanti e restare motivato.",
+                "pt":
+                    "Acompanhe seu aprendizado de francês todos os dias para progredir com consistência e manter-se motivado.",
+                "ru":
+                    "Отслеживайте изучение французского каждый день, чтобы стабильно продвигаться и сохранять мотивацию."
+              }
+            : {
+                "de":
+                    "Verfolge dein tägliches Englischlernen, um stetige Fortschritte zu machen und motiviert zu bleiben.",
+                "en":
+                    "Track your English learning every day to make steady progress and stay motivated.",
+                "es":
+                    "Controla tu aprendizaje de inglés cada día para avanzar con constancia y mantenerte motivado.",
+                "fr":
+                    "Suivez votre apprentissage de l’anglais chaque jour pour progresser régulièrement et rester motivé(e).",
+                "it":
+                    "Tieni traccia del tuo apprendimento dell’inglese ogni giorno per fare progressi costanti e restare motivato.",
+                "pt":
+                    "Acompanhe seu aprendizado de inglês todos os dias para progredir com consistência e manter-se motivado.",
+                "ru":
+                    "Отслеживайте изучение английского каждый день, чтобы стабильно продвигаться и сохранять мотивацию."
+              },
+        icon: locale == 'en' ? "🇫🇷" : "🇬🇧",
         unitIds: HashSet.from(['1']),
       ),
       '2': Habit(
         id: '2',
-        name: {
-          "de": "Englisch",
-          "en": "English",
-          "es": "Inglés",
-          "fr": "Anglais",
-          "it": "Inglese",
-          "pt": "Inglês",
-          "ru": "Английский"
-        },
-        categoryId: '1',
-        reviewed: true,
-        description: {
-          "de":
-              "Verfolge dein tägliches Englischlernen, um stetige Fortschritte zu machen und motiviert zu bleiben.",
-          "en":
-              "Track your English learning every day to make steady progress and stay motivated.",
-          "es":
-              "Controla tu aprendizaje de inglés cada día para avanzar con constancia y mantenerte motivado.",
-          "fr":
-              "Suivez votre apprentissage de l’anglais chaque jour pour progresser régulièrement et rester motivé(e).",
-          "it":
-              "Tieni traccia del tuo apprendimento dell’inglese ogni giorno per fare progressi costanti e restare motivato.",
-          "pt":
-              "Acompanhe seu aprendizado de inglês todos os dias para progredir com consistência e manter-se motivado.",
-          "ru":
-              "Отслеживайте изучение английского каждый день, чтобы стабильно продвигаться и сохранять мотивацию."
-        },
-        icon: "🇬🇧",
-        unitIds: HashSet.from(['1']),
-      ),
-      '3': Habit(
-        id: '3',
         name: {
           "en": "Squats",
           "fr": "Squats",
@@ -209,8 +204,8 @@ HabitsLoaded getHabitsLoadedForPreview(BuildContext context) {
         icon: "🏋️‍♀️",
         unitIds: HashSet.from(['1']),
       ),
-      '4': Habit(
-        id: '4',
+      '3': Habit(
+        id: '3',
         name: {
           "de": "Hydration",
           "en": "Hydration",
@@ -250,7 +245,7 @@ HabitsLoaded getHabitsLoadedForPreview(BuildContext context) {
         return HabitDailyTracking(
           id: '${index + 1}',
           userId: '1',
-          habitId: locale == 'en' ? '1' : '2',
+          habitId: '1',
           datetime:
               DateTime(date.year, date.month, date.day, date.hour, date.minute),
           quantityPerSet: duration,
@@ -268,7 +263,7 @@ HabitsLoaded getHabitsLoadedForPreview(BuildContext context) {
         return HabitDailyTracking(
           id: '${index + 1}',
           userId: '1',
-          habitId: locale == 'en' ? '1' : '2',
+          habitId: '1',
           datetime:
               DateTime(date.year, date.month, date.day, 8 + index * 13, 30),
           quantityPerSet: duration,
@@ -285,7 +280,7 @@ HabitsLoaded getHabitsLoadedForPreview(BuildContext context) {
         return HabitDailyTracking(
           id: '${index + 1}',
           userId: '1',
-          habitId: '3',
+          habitId: '2',
           datetime:
               DateTime(date.year, date.month, date.day, date.hour, date.minute),
           quantityPerSet: duration,
@@ -302,7 +297,7 @@ HabitsLoaded getHabitsLoadedForPreview(BuildContext context) {
         return HabitDailyTracking(
           id: '${index + 1}',
           userId: '1',
-          habitId: '4',
+          habitId: '3',
           datetime:
               DateTime(date.year, date.month, date.day, date.hour, date.minute),
           quantityPerSet: duration,
@@ -428,36 +423,50 @@ HabitsLoaded getHabitsLoadedForPreview(BuildContext context) {
           MapEntry('30-35', 451),
           MapEntry('35-40', 179),
         },
-        topCountries: {},
-        topRegions: {},
-        topHasChildren: {},
-        topLivesInUrbanArea: {},
-        topGender: {},
-        topActivities: {},
-        topFinancialSituations: {},
-        topRelationshipStatuses: {},
-        topLevelsOfEducation: {},
-        challenges: [],
-      ),
-      '2': HabitStatistic(
-        habitId: '2',
-        participantsCount: 2302,
-        topAges: {
-          MapEntry('25-30', 1020),
-          MapEntry('30-35', 451),
-          MapEntry('35-40', 179),
+        topCountries: {
+          MapEntry("France", 753),
+          MapEntry("England", 632),
+          MapEntry("Germany", 540),
         },
-        topCountries: {},
-        topRegions: {},
-        topHasChildren: {},
-        topLivesInUrbanArea: {},
-        topGender: {},
-        topActivities: {},
-        topFinancialSituations: {},
-        topRelationshipStatuses: {},
-        topLevelsOfEducation: {},
-        challenges: [],
-      )
+        topRegions: {
+          MapEntry("Europe", 1253),
+          MapEntry("Oceania", 503),
+          MapEntry("Americas", 159),
+        },
+        topHasChildren: {
+          MapEntry("Yes", 1853),
+          MapEntry("No", 105),
+        },
+        topLivesInUrbanArea: {
+          MapEntry("Yes", 1053),
+          MapEntry("No", 1004),
+        },
+        topGender: {
+          MapEntry("female", 1303),
+          MapEntry("male", 953),
+        },
+        topActivities: {
+          MapEntry("student", 623),
+          MapEntry("unemployed", 403),
+          MapEntry("worker", 303),
+        },
+        topFinancialSituations: {
+          MapEntry("average", 803),
+          MapEntry("wealthy", 603),
+          MapEntry("poor", 303),
+        },
+        topRelationshipStatuses: {
+          MapEntry("single", 1723),
+          MapEntry("couple", 402),
+        },
+        topLevelsOfEducation: {
+          MapEntry("highSchoolOrLess", 1203),
+          MapEntry("highSchoolPlusOneOrTwoYears", 803),
+          MapEntry("highSchoolPlusThreeOrFourYears", 403),
+          MapEntry("highSchoolPlusFiveOrMoreYears", 103),
+        },
+        challenges: ['1', '2'],
+      ),
     },
   );
 }
@@ -480,6 +489,23 @@ ChallengesLoaded getChallengeStateForPreview(BuildContext context) {
           ? profileState.locale ?? "en"
           : "en";
 
+  final Map<String, String> pronunciationInstructions = {
+    'en':
+        "-Study the French alphabet and practice spelling your name.\n\n-Watch [this video](https://youtu.be/4PvBkp-4bmc?si=DYnxRu0C18Saoy2F) on French pronunciation basics.",
+    'fr':
+        "-Étudiez l'alphabet anglais et entraînez-vous à épeler votre nom.\n\n-Regardez [cette vidéo](https://youtu.be/4PvBkp-4bmc?si=DYnxRu0C18Saoy2F) sur les bases de la prononciation en anglais.",
+    'de':
+        "-Lernen Sie das englische Alphabet und üben Sie, Ihren Namen zu buchstabieren.\n\n-Sehen Sie sich [dieses Video](https://youtu.be/4PvBkp-4bmc?si=DYnxRu0C18Saoy2F) zu den Grundlagen der englischen Aussprache an.",
+    'it':
+        "-Studia l'alfabeto inglese e esercitati a fare lo spelling del tuo nome.\n\n-Guarda [questo video](https://youtu.be/4PvBkp-4bmc?si=DYnxRu0C18Saoy2F) sulle basi della pronuncia inglese.",
+    'es':
+        "-Estudia el alfabeto inglés y practica deletrear tu nombre.\n\n-Mira [este video](https://youtu.be/4PvBkp-4bmc?si=DYnxRu0C18Saoy2F) sobre los fundamentos de la pronunciación en inglés.",
+    'pt':
+        "-Estude o alfabeto inglês e pratique soletrar seu nome.\n\n-Assista a [este vídeo](https://youtu.be/4PvBkp-4bmc?si=DYnxRu0C18Saoy2F) sobre os fundamentos da pronúncia em inglês.",
+    'ru':
+        "-Изучите английский алфавит и потренируйтесь произносить своё имя по буквам.\n\n-Посмотрите [это видео](https://youtu.be/4PvBkp-4bmc?si=DYnxRu0C18Saoy2F) об основах английского произношения.",
+  };
+
   return ChallengesLoaded(
     challengeParticipations: [
       ChallengeParticipation(
@@ -496,7 +522,7 @@ ChallengesLoaded getChallengeStateForPreview(BuildContext context) {
       ChallengeParticipation(
         id: '2',
         userId: '1',
-        challengeId: '2',
+        challengeId: '3',
         color: 'lightGreen',
         startDate: DateTime.now().subtract(Duration(days: 200)),
         notificationsReminderEnabled: false,
@@ -509,22 +535,87 @@ ChallengesLoaded getChallengeStateForPreview(BuildContext context) {
       '1': Challenge(
         id: '1',
         creator: '2',
-        name: {"en": "French in 60: From Bonjour to Baguette"},
+        name: {
+          "en": "French in 60: From Bonjour to Baguette",
+          "fr": "60 jours d'anglais pour débutants",
+          "de": "60 Tage Englisch für Anfänger",
+          "it": "60 giorni di inglese per principianti",
+          "es": "60 días de inglés para principiantes",
+          "pt": "60 dias de inglês para iniciantes",
+          "ru": "60 дней английского для начинающих",
+        },
         description: {
           "en":
               "Go from beginner (A1) to intermediate (B1) in 60 days by practicing French daily for a set amount of time.",
+          "fr":
+              "Passez du niveau débutant (A1) au niveau intermédiaire (B1) en 60 jours en pratiquant l'anglais chaque jour pendant un temps défini.",
+          "de":
+              "Lerne in 60 Tagen von Anfänger (A1) bis Mittelstufe (B1), indem du täglich Englisch für eine bestimmte Zeit übst.",
+          "it":
+              "Passa da principiante (A1) a intermedio (B1) in 60 giorni praticando l'inglese ogni giorno per un tempo prestabilito.",
+          "es":
+              "Pasa de principiante (A1) a intermedio (B1) en 60 días practicando inglés todos los días durante un tiempo determinado.",
+          "pt":
+              "Passe de iniciante (A1) para intermediário (B1) em 60 dias praticando inglês diariamente por um tempo determinado.",
+          "ru":
+              "Пройди путь от новичка (A1) до среднего уровня (B1) за 60 дней, ежедневно практикуя английский в течение определённого времени.",
         },
-        icon: '🇫🇷',
+        icon: locale == 'en' ? '🇫🇷' : '🇬🇧',
         startDate: null,
         deleted: false,
       ),
       '2': Challenge(
         id: '2',
         creator: '2',
-        name: {"en": "Marathon in 6 months"},
+        name: {
+          "en": "French in 90 Days for Intermediate Learners",
+          "fr": "90 jours d'anglais : niveau intermédiaire",
+          "de": "90 Tage Englisch für fortgeschrittene Anfänger",
+          "it": "90 giorni di inglese per studenti intermedi",
+          "es": "90 días de inglés para estudiantes intermedios",
+          "pt": "90 dias de inglês para alunos intermediários",
+          "ru": "90 дней английского для учащихся со средним уровнем",
+        },
         description: {
           "en":
-              "Go from beginner (A1) to intermediate (B1) in 60 days by practicing French daily for a set amount of time.",
+              "Go from intermediate (B1) to advanced (C1) in 60 days by practicing French daily for a set amount of time.",
+          "fr":
+              "Passez de B1 à C1 en 90 jours en pratiquant l'anglais chaque jour pendant un certain temps.",
+          "de":
+              "Erreiche von B1 auf C1 in 90 Tagen durch tägliches Englischüben für eine festgelegte Zeit.",
+          "it":
+              "Passa da B1 a C1 in 90 giorni praticando l'inglese ogni giorno per un tempo stabilito.",
+          "es":
+              "Pasa de B1 a C1 en 90 días practicando inglés diariamente durante un tiempo determinado.",
+          "pt":
+              "Passe de B1 para C1 em 90 dias praticando inglês todos os dias por um tempo definido.",
+          "ru":
+              "Перейдите с уровня B1 на C1 за 90 дней, ежедневно практикуя английский в течение определенного времени.",
+        },
+        icon: locale == 'en' ? '🇫🇷' : '🇬🇧',
+        startDate: null,
+        deleted: false,
+      ),
+      '3': Challenge(
+        id: '3',
+        creator: '2',
+        name: {
+          "en": "Marathon in 6 months",
+          "fr": "Marathon en 6 mois",
+          "de": "Marathon in 6 Monaten",
+          "it": "Maratona in 6 mesi",
+          "es": "Maratón en 6 meses",
+          "pt": "Maratona em 6 meses",
+          "ru": "Марафон за 6 месяцев",
+        },
+        description: {
+          "en": "Run a marathon in 6 months with this program!",
+          "fr": "Courez un marathon en 6 mois grâce à ce programme !",
+          "de": "Laufen Sie mit diesem Programm in 6 Monaten einen Marathon!",
+          "it": "Corri una maratona in 6 mesi con questo programma!",
+          "es": "¡Corre una maratón en 6 meses con este programa!",
+          "pt": "Corra uma maratona em 6 meses com este programa!",
+          "ru": "Пробегите марафон за 6 месяцев с помощью этой программы!",
         },
         icon: '🏃‍♀️',
         startDate: null,
@@ -534,23 +625,37 @@ ChallengesLoaded getChallengeStateForPreview(BuildContext context) {
     challengeDailyTrackings: {
       '1': List.generate(60, (index) {
         return ChallengeDailyTracking(
-            id: index.toString(),
-            habitId: locale == 'en' ? '1' : '2',
-            challengeId: '1',
-            dayOfProgram: index,
-            quantityPerSet: 30,
-            quantityOfSet: 1,
-            unitId: '2',
-            weight: 0,
-            weightUnitId: '1',
-            note:
-                '-Study the French alphabet and practice spelling your name.\n\n-Watch [this video](https://youtu.be/4PvBkp-4bmc?si=DYnxRu0C18Saoy2F) on French pronunciation basics.');
+          id: index.toString(),
+          habitId: '1',
+          challengeId: '1',
+          dayOfProgram: index,
+          quantityPerSet: 30,
+          quantityOfSet: 1,
+          unitId: '2',
+          weight: 0,
+          weightUnitId: '1',
+          note: pronunciationInstructions[locale],
+        );
       }),
-      '2': List.generate(180, (index) {
+      '2': List.generate(90, (index) {
         return ChallengeDailyTracking(
           id: index.toString(),
           habitId: '1',
           challengeId: '2',
+          dayOfProgram: index,
+          quantityPerSet: 30,
+          quantityOfSet: 1,
+          unitId: '2',
+          weight: 0,
+          weightUnitId: '1',
+          note: pronunciationInstructions[locale],
+        );
+      }),
+      '3': List.generate(180, (index) {
+        return ChallengeDailyTracking(
+          id: index.toString(),
+          habitId: '1',
+          challengeId: '3',
           dayOfProgram: index,
           quantityPerSet: 0,
           quantityOfSet: 1,
@@ -570,17 +675,154 @@ ChallengesLoaded getChallengeStateForPreview(BuildContext context) {
           MapEntry('30-35', 451),
           MapEntry('35-40', 179),
         },
-        topCountries: {},
-        topRegions: {},
-        topHasChildren: {},
-        topLivesInUrbanArea: {},
-        topGender: {},
-        topActivities: {},
-        topFinancialSituations: {},
-        topRelationshipStatuses: {},
-        topLevelsOfEducation: {},
+        topCountries: {
+          MapEntry("France", 753),
+          MapEntry("England", 632),
+          MapEntry("Germany", 540),
+        },
+        topRegions: {
+          MapEntry("Europe", 1253),
+          MapEntry("Oceania", 503),
+          MapEntry("Americas", 159),
+        },
+        topHasChildren: {
+          MapEntry("Yes", 1853),
+          MapEntry("No", 105),
+        },
+        topLivesInUrbanArea: {
+          MapEntry("Yes", 1053),
+          MapEntry("No", 1004),
+        },
+        topGender: {
+          MapEntry("female", 1303),
+          MapEntry("male", 953),
+        },
+        topActivities: {
+          MapEntry("student", 623),
+          MapEntry("unemployed", 403),
+          MapEntry("worker", 303),
+        },
+        topFinancialSituations: {
+          MapEntry("average", 803),
+          MapEntry("wealthy", 603),
+          MapEntry("poor", 303),
+        },
+        topRelationshipStatuses: {
+          MapEntry("single", 1723),
+          MapEntry("couple", 402),
+        },
+        topLevelsOfEducation: {
+          MapEntry("highSchoolOrLess", 1203),
+          MapEntry("highSchoolPlusOneOrTwoYears", 803),
+          MapEntry("highSchoolPlusThreeOrFourYears", 403),
+          MapEntry("highSchoolPlusFiveOrMoreYears", 103),
+        },
         creatorUsername: 'reallystick',
-      )
+      ),
+      '2': ChallengeStatistic(
+        challengeId: '2',
+        participantsCount: 2325,
+        topAges: {
+          MapEntry('25-30', 1020),
+          MapEntry('30-35', 451),
+          MapEntry('35-40', 179),
+        },
+        topCountries: {
+          MapEntry("France", 753),
+          MapEntry("England", 632),
+          MapEntry("Germany", 540),
+        },
+        topRegions: {
+          MapEntry("Europe", 1253),
+          MapEntry("Oceania", 503),
+          MapEntry("Americas", 159),
+        },
+        topHasChildren: {
+          MapEntry("Yes", 1853),
+          MapEntry("No", 105),
+        },
+        topLivesInUrbanArea: {
+          MapEntry("Yes", 1053),
+          MapEntry("No", 1004),
+        },
+        topGender: {
+          MapEntry("female", 1303),
+          MapEntry("male", 953),
+        },
+        topActivities: {
+          MapEntry("student", 623),
+          MapEntry("unemployed", 403),
+          MapEntry("worker", 303),
+        },
+        topFinancialSituations: {
+          MapEntry("average", 803),
+          MapEntry("wealthy", 603),
+          MapEntry("poor", 303),
+        },
+        topRelationshipStatuses: {
+          MapEntry("single", 1723),
+          MapEntry("couple", 402),
+        },
+        topLevelsOfEducation: {
+          MapEntry("highSchoolOrLess", 1203),
+          MapEntry("highSchoolPlusOneOrTwoYears", 803),
+          MapEntry("highSchoolPlusThreeOrFourYears", 403),
+          MapEntry("highSchoolPlusFiveOrMoreYears", 103),
+        },
+        creatorUsername: 'reallystick',
+      ),
+      '3': ChallengeStatistic(
+        challengeId: '3',
+        participantsCount: 3401,
+        topAges: {
+          MapEntry('25-30', 1020),
+          MapEntry('30-35', 451),
+          MapEntry('35-40', 179),
+        },
+        topCountries: {
+          MapEntry("France", 753),
+          MapEntry("England", 632),
+          MapEntry("Germany", 540),
+        },
+        topRegions: {
+          MapEntry("Europe", 1253),
+          MapEntry("Oceania", 503),
+          MapEntry("Americas", 159),
+        },
+        topHasChildren: {
+          MapEntry("Yes", 1853),
+          MapEntry("No", 105),
+        },
+        topLivesInUrbanArea: {
+          MapEntry("Yes", 1053),
+          MapEntry("No", 1004),
+        },
+        topGender: {
+          MapEntry("female", 1303),
+          MapEntry("male", 953),
+        },
+        topActivities: {
+          MapEntry("student", 623),
+          MapEntry("unemployed", 403),
+          MapEntry("worker", 303),
+        },
+        topFinancialSituations: {
+          MapEntry("average", 803),
+          MapEntry("wealthy", 603),
+          MapEntry("poor", 303),
+        },
+        topRelationshipStatuses: {
+          MapEntry("single", 1723),
+          MapEntry("couple", 402),
+        },
+        topLevelsOfEducation: {
+          MapEntry("highSchoolOrLess", 1203),
+          MapEntry("highSchoolPlusOneOrTwoYears", 803),
+          MapEntry("highSchoolPlusThreeOrFourYears", 403),
+          MapEntry("highSchoolPlusFiveOrMoreYears", 103),
+        },
+        creatorUsername: 'reallystick',
+      ),
     },
   );
 }

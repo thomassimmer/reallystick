@@ -10,29 +10,70 @@ import 'package:reallystick/features/habits/presentation/widgets/analytics_card_
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
 
-class AnalyticsCarouselWidget extends StatelessWidget {
+class AnalyticsCarouselWidget extends StatefulWidget {
   final Color habitColor;
   final String habitId;
   final bool previewMode;
 
   const AnalyticsCarouselWidget({
+    super.key,
     required this.habitColor,
     required this.habitId,
     required this.previewMode,
   });
 
   @override
+  State<AnalyticsCarouselWidget> createState() =>
+      AnalyticsCarouselWidgetState();
+}
+
+class AnalyticsCarouselWidgetState extends State<AnalyticsCarouselWidget> {
+  ScrollController controller = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.previewMode) {
+        _startSlowScroll();
+      }
+    });
+  }
+
+  void _startSlowScroll() {
+    if (!controller.hasClients) return;
+
+    const double scrollSpeedPerSecond = 20;
+    final double maxScroll = controller.position.maxScrollExtent;
+    final double currentScroll = controller.offset;
+    final double distanceToScroll = maxScroll - currentScroll;
+
+    if (distanceToScroll <= 0) return;
+
+    final durationSeconds = distanceToScroll / scrollSpeedPerSecond;
+    final duration = Duration(
+      milliseconds: (durationSeconds * 1000).clamp(1, double.infinity).toInt(),
+    );
+
+    controller.animateTo(
+      maxScroll,
+      duration: duration,
+      curve: Curves.linear,
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final profileState = previewMode
+    final profileState = widget.previewMode
         ? getProfileAuthenticatedForPreview(context)
         : context.watch<ProfileBloc>().state;
-    final habitState = previewMode
+    final habitState = widget.previewMode
         ? getHabitsLoadedForPreview(context)
         : context.watch<HabitBloc>().state;
 
     if (habitState is HabitsLoaded && profileState is ProfileAuthenticated) {
       final userLocale = profileState.profile.locale;
-      final habitStatistic = habitState.habitStatistics[habitId];
+      final habitStatistic = habitState.habitStatistics[widget.habitId];
 
       List<AnalyticsCardInfo> analyticsCards = [];
 
@@ -158,8 +199,6 @@ class AnalyticsCarouselWidget extends StatelessWidget {
           );
         }
 
-        analyticsCards.shuffle();
-
         analyticsCards.insert(
           0,
           AnalyticsCardInfo(
@@ -189,14 +228,14 @@ class AnalyticsCarouselWidget extends StatelessWidget {
               Icon(
                 Icons.query_stats,
                 size: 20,
-                color: habitColor,
+                color: widget.habitColor,
               ),
               SizedBox(width: 10),
               Text(
                 AppLocalizations.of(context)!.analytics,
                 style: TextStyle(
                   fontSize: 20,
-                  color: habitColor,
+                  color: widget.habitColor,
                 ),
               ),
               Spacer(),
@@ -206,13 +245,14 @@ class AnalyticsCarouselWidget extends StatelessWidget {
                 child: Icon(
                   Icons.info_outline,
                   size: 25,
-                  color: habitColor.withValues(alpha: 0.8),
+                  color: widget.habitColor.withValues(alpha: 0.8),
                 ),
               ),
             ],
           ),
           SizedBox(height: 10),
           SingleChildScrollView(
+            controller: controller,
             scrollDirection: Axis.horizontal,
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -222,7 +262,7 @@ class AnalyticsCarouselWidget extends StatelessWidget {
                   key: ValueKey(card.title),
                   analyticsCardInfo: card,
                   userLocale: userLocale,
-                  color: habitColor,
+                  color: widget.habitColor,
                 );
               }).toList(),
             ),
@@ -232,7 +272,7 @@ class AnalyticsCarouselWidget extends StatelessWidget {
     } else {
       return Center(
         child: CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation<Color>(habitColor),
+          valueColor: AlwaysStoppedAnimation<Color>(widget.habitColor),
         ),
       );
     }

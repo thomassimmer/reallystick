@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:reallystick/core/constants/screen_size.dart';
 import 'package:reallystick/core/presentation/screens/root_screen.dart';
 import 'package:reallystick/core/ui/extensions.dart';
-import 'package:reallystick/core/utils/preview_data.dart';
 import 'package:reallystick/features/habits/presentation/screens/habit_detail_screen.dart';
 import 'package:reallystick/features/habits/presentation/screens/list_daily_trackings_modal.dart';
 
@@ -44,12 +43,7 @@ class HabitDetailsScreenScreenshot extends StatelessWidget {
                       previewMode: true,
                       previewTab: 0,
                       child: HabitDetailsScreen(
-                        habitId: getProfileAuthenticatedForPreview(context)
-                                    .profile
-                                    .locale ==
-                                'en'
-                            ? '1'
-                            : '2',
+                        habitId: '1',
                         previewMode: true,
                         previewModeForChart: previewForChart,
                       ),
@@ -103,13 +97,7 @@ class HabitDetailsScreenScreenshot extends StatelessWidget {
                               ListDailyTrackingsModal(
                                 datetime:
                                     DateTime.now().subtract(Duration(days: 1)),
-                                habitId:
-                                    getProfileAuthenticatedForPreview(context)
-                                                .profile
-                                                .locale ==
-                                            'en'
-                                        ? '1'
-                                        : '2',
+                                habitId: '1',
                                 habitColor: Colors.blue,
                                 previewMode: true,
                               ),
