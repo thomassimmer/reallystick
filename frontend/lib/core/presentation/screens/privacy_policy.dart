@@ -12,6 +12,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
         title: Text(AppLocalizations.of(context)!.privacyPolicy),
       ),
       body: Markdown(
+        selectable: true,
         data: AppLocalizations.of(context)!.privacyPolicyMarkdown,
         styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
           p: const TextStyle(fontSize: 14),

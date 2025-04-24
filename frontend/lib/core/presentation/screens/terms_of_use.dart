@@ -12,6 +12,7 @@ class TermsOfUseScreen extends StatelessWidget {
         title: Text(AppLocalizations.of(context)!.termsOfUse),
       ),
       body: Markdown(
+        selectable: true,
         data: AppLocalizations.of(context)!.termsOfUseMarkdown,
         styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
           p: const TextStyle(fontSize: 14),
