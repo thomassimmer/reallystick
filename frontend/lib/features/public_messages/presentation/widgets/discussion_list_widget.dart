@@ -109,46 +109,45 @@ class DiscussionListState extends State<DiscussionListWidget> {
             ],
           ),
           SizedBox(height: 10),
-          if (threads.isNotEmpty) ...[
-            for (final thread in threads) ...[
-              ThreadWidget(
-                thread: thread,
-                color: widget.color,
-                habitId: widget.habitId,
-                challengeId: widget.challengeId,
-                challengeParticipationId: widget.challengeParticipationId,
-                previewMode: widget.previewMode,
-              ),
-              SizedBox(height: 10),
-            ],
-          ] else ...[
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 8),
-              decoration: BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                    color: widget.color.withValues(alpha: 0.2),
-                    blurRadius: 10,
-                  ),
-                ],
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: InkWell(
-                borderRadius: BorderRadius.circular(16),
-                onTap: _showAddThreadBottomSheet,
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Center(
-                    child: Text(
-                      AppLocalizations.of(context)!.noDiscussionsForHabitYet,
-                      style: TextStyle(color: context.colors.text),
-                      textAlign: TextAlign.center,
-                    ),
+          for (final thread in threads) ...[
+            ThreadWidget(
+              thread: thread,
+              color: widget.color,
+              habitId: widget.habitId,
+              challengeId: widget.challengeId,
+              challengeParticipationId: widget.challengeParticipationId,
+              previewMode: widget.previewMode,
+            ),
+            SizedBox(height: 10),
+          ],
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 8),
+            decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color: widget.color.withValues(alpha: 0.2),
+                  blurRadius: 10,
+                ),
+              ],
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(16),
+              onTap: _showAddThreadBottomSheet,
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Center(
+                  child: Text(
+                    threads.isEmpty
+                        ? AppLocalizations.of(context)!.noDiscussionsForHabitYet
+                        : AppLocalizations.of(context)!.addNewDiscussion,
+                    style: TextStyle(color: context.colors.text),
+                    textAlign: TextAlign.center,
                   ),
                 ),
               ),
             ),
-          ]
+          ),
         ],
       );
     } else {

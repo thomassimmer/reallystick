@@ -61,7 +61,6 @@ class CustomMessageInputState extends State<CustomMessageInput> {
       readOnly: widget.readOnly,
       controller: widget.contentController,
       focusNode: _focusNode,
-      autofocus: true,
       keyboardType: TextInputType.multiline,
       textInputAction: TextInputAction.newline,
       maxLines: null,

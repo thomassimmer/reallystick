@@ -234,7 +234,7 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
         appBar: CustomAppBar(
           title: Text(
             name,
-            style: context.typographies.heading.copyWith(
+            style: context.typographies.headingSmall.copyWith(
               color: habitColor,
             ),
             overflow: TextOverflow.ellipsis,

@@ -58,7 +58,7 @@ class _AnalyticsCardWidgetState extends State<AnalyticsCardWidget> {
     return Container(
       width: 350,
       height: _detailsOpen ? null : 130,
-      margin: const EdgeInsets.only(right: 12.0),
+      margin: const EdgeInsets.only(right: 8.0),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
@@ -74,6 +74,7 @@ class _AnalyticsCardWidgetState extends State<AnalyticsCardWidget> {
             blurRadius: 5,
           ),
         ],
+        border: Border.all(width: 1, color: widget.color),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Padding(
