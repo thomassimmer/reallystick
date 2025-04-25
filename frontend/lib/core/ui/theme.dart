@@ -52,7 +52,7 @@ class AppTheme extends ThemeExtension<AppTheme> {
             fontFamily: 'Montserrat',
           ),
           centerTitle: true,
-          backgroundColor: colors.primary,
+          backgroundColor: Colors.transparent,
           foregroundColor: colors.text,
           surfaceTintColor: colors.text,
           systemOverlayStyle: SystemUiOverlayStyle(

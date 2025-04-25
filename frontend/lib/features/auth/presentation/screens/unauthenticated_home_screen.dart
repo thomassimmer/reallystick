@@ -61,7 +61,10 @@ class UnauthenticatedHomeScreenState extends State<UnauthenticatedHomeScreen>
         }
       },
       child: Scaffold(
-        appBar: AppBar(),
+        appBar: AppBar(
+          backgroundColor: context.colors.primary,
+          toolbarHeight: 1,
+        ),
         body: Stack(
           children: [
             Background(),
