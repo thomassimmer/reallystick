@@ -286,6 +286,7 @@ class RecoverAccountScreenState extends State<RecoverAccountScreen>
           inputFormatters: <TextInputFormatter>[
             FilteringTextInputFormatter.digitsOnly
           ],
+          keyboardType: TextInputType.number,
           autofillHints: [AutofillHints.oneTimeCode],
         ),
       ),

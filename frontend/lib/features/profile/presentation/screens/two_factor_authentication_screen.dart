@@ -172,6 +172,7 @@ class TwoFactorAuthenticationScreen extends StatelessWidget {
                             inputFormatters: <TextInputFormatter>[
                               FilteringTextInputFormatter.digitsOnly
                             ],
+                            keyboardType: TextInputType.number,
                             autofillHints: [AutofillHints.oneTimeCode],
                           ),
                         ),

@@ -138,6 +138,7 @@ class LoginScreenState extends State<LoginScreen>
           inputFormatters: <TextInputFormatter>[
             FilteringTextInputFormatter.digitsOnly
           ],
+          keyboardType: TextInputType.number,
           autofillHints: [AutofillHints.oneTimeCode],
         ),
       ),
