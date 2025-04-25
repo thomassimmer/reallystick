@@ -61,6 +61,7 @@ class UnauthenticatedHomeScreenState extends State<UnauthenticatedHomeScreen>
         }
       },
       child: Scaffold(
+        appBar: AppBar(),
         body: Stack(
           children: [
             Background(),

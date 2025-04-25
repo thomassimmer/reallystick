@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:reallystick/core/ui/colors.dart';
 import 'package:reallystick/core/ui/styles.dart';
 import 'package:reallystick/core/ui/typography.dart';
@@ -51,9 +52,13 @@ class AppTheme extends ThemeExtension<AppTheme> {
             fontFamily: 'Montserrat',
           ),
           centerTitle: true,
-          color: Colors.transparent,
+          backgroundColor: colors.primary,
           foregroundColor: colors.text,
           surfaceTintColor: colors.text,
+          systemOverlayStyle: SystemUiOverlayStyle(
+            statusBarColor: colors.primary,
+            systemNavigationBarColor: colors.primary,
+          ),
         ),
         tabBarTheme: TabBarTheme(
           labelColor: colors.text,
