@@ -57,7 +57,7 @@ class AppTheme extends ThemeExtension<AppTheme> {
           surfaceTintColor: colors.text,
           systemOverlayStyle: SystemUiOverlayStyle(
             statusBarColor: colors.primary,
-            systemNavigationBarColor: colors.primary,
+            systemNavigationBarColor: colors.secondary,
           ),
         ),
         tabBarTheme: TabBarTheme(

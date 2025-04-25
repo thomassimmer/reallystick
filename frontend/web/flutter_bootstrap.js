@@ -18,6 +18,7 @@ _flutter.loader.load({
           document.body.removeChild(loaderContainer);
         }
         
+        document.documentElement.style.backgroundColor = '#03A9F4';
       }, 500);
     }
 
