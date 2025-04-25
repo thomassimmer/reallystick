@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:reallystick/core/messages/message.dart';
 import 'package:reallystick/core/messages/message_mapper.dart';
 import 'package:reallystick/core/presentation/widgets/custom_dropdown_button_form_field.dart';
+import 'package:reallystick/core/presentation/widgets/custom_text_button.dart';
 import 'package:reallystick/core/presentation/widgets/custom_text_field.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/challenges/domain/entities/challenge_daily_tracking.dart';
@@ -312,7 +313,7 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
               children: [
                 // Day Selector
                 Expanded(
-                  child: TextButton(
+                  child: CustomTextButton(
                     onPressed: () async {
                       final pickedDate = await showDatePicker(
                         context: context,
@@ -339,13 +340,11 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
                             _selectedDayOfProgram),
                       );
                     },
-                    child: Text(
-                      DateFormat.yMMMd(userLocale).format(
-                        challenge.startDate!.add(
-                          Duration(days: _selectedDayOfProgram),
-                        ),
+                    labelText: AppLocalizations.of(context)!.date,
+                    text: DateFormat.yMMMd(userLocale).format(
+                      challenge.startDate!.add(
+                        Duration(days: _selectedDayOfProgram),
                       ),
-                      style: context.typographies.body,
                     ),
                   ),
                 ),

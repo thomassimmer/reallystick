@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
+import 'package:reallystick/core/presentation/widgets/custom_text_button.dart';
 import 'package:reallystick/core/presentation/widgets/custom_text_field.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/core/utils/time.dart';
@@ -91,32 +92,28 @@ class SetReminderModalState extends State<SetReminderModal> {
             ],
           ),
           const SizedBox(height: 16),
-          TextButton(
-            onPressed: () async {
-              final pickedTime = await showTimePicker(
-                context: context,
-                initialTime: TimeOfDay.fromDateTime(reminderTime),
-              );
-              if (pickedTime != null) {
-                setState(() {
-                  reminderTime = DateTime(
-                    reminderTime.year,
-                    reminderTime.month,
-                    reminderTime.day,
-                    pickedTime.hour,
-                    pickedTime.minute,
-                  );
-                });
-              }
-            },
-            child: Text(
-              DateFormat.Hm(userLocale).format(reminderTime),
-              style: context.typographies.body.copyWith(
-                color: notificationsReminderEnabled
-                    ? context.colors.primary
-                    : context.colors.hint,
-              ),
-            ),
+          CustomTextButton(
+            onPressed: notificationsReminderEnabled
+                ? () async {
+                    final pickedTime = await showTimePicker(
+                      context: context,
+                      initialTime: TimeOfDay.fromDateTime(reminderTime),
+                    );
+                    if (pickedTime != null) {
+                      setState(() {
+                        reminderTime = DateTime(
+                          reminderTime.year,
+                          reminderTime.month,
+                          reminderTime.day,
+                          pickedTime.hour,
+                          pickedTime.minute,
+                        );
+                      });
+                    }
+                  }
+                : null,
+            labelText: AppLocalizations.of(context)!.time,
+            text: DateFormat.Hm(userLocale).format(reminderTime),
           ),
           const SizedBox(height: 16),
           CustomTextField(

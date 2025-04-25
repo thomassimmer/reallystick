@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:reallystick/core/messages/message.dart';
 import 'package:reallystick/core/messages/message_mapper.dart';
 import 'package:reallystick/core/presentation/widgets/custom_dropdown_button_form_field.dart';
+import 'package:reallystick/core/presentation/widgets/custom_text_button.dart';
 import 'package:reallystick/core/presentation/widgets/custom_text_field.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.dart';
@@ -272,7 +273,7 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
             children: [
               // Day Selector
               Expanded(
-                child: TextButton(
+                child: CustomTextButton(
                   onPressed: () async {
                     final pickedDate = await showDatePicker(
                       context: context,
@@ -295,10 +296,8 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
                         .add(HabitDailyTrackingCreationFormDateTimeChangedEvent(
                             _selectedDateTime));
                   },
-                  child: Text(
-                    DateFormat.yMMMd(userLocale).format(_selectedDateTime),
-                    style: context.typographies.body,
-                  ),
+                  labelText: AppLocalizations.of(context)!.date,
+                  text: DateFormat.yMMMd(userLocale).format(_selectedDateTime),
                 ),
               ),
 
@@ -306,7 +305,7 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
 
               // Time Selector
               Expanded(
-                child: TextButton(
+                child: CustomTextButton(
                   onPressed: () async {
                     final pickedTime = await showTimePicker(
                       context: context,
@@ -329,10 +328,8 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
                                   _selectedDateTime));
                     }
                   },
-                  child: Text(
-                    DateFormat.Hm().format(_selectedDateTime),
-                    style: context.typographies.body,
-                  ),
+                  labelText: AppLocalizations.of(context)!.time,
+                  text: DateFormat.Hm().format(_selectedDateTime),
                 ),
               ),
             ],

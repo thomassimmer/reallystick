@@ -16,6 +16,7 @@ import 'package:reallystick/features/challenges/presentation/blocs/challenge/cha
 import 'package:reallystick/features/challenges/presentation/helpers/challenge_result.dart';
 import 'package:reallystick/features/challenges/presentation/screens/update_daily_tracking_modal.dart';
 import 'package:reallystick/features/habits/domain/entities/habit_daily_tracking.dart';
+import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_states.dart';
 import 'package:reallystick/features/habits/presentation/helpers/translations.dart';
 import 'package:reallystick/features/habits/presentation/helpers/units.dart';
@@ -88,7 +89,7 @@ class ListDailyTrackingsModalState extends State<ListDailyTrackingsModal> {
         : context.watch<ChallengeBloc>().state;
     final habitState = widget.previewMode
         ? getHabitsLoadedForPreview(context)
-        : context.watch<ProfileBloc>().state;
+        : context.watch<HabitBloc>().state;
 
     if (challengeState is ChallengesLoaded &&
         habitState is HabitsLoaded &&

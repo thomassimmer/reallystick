@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
+import 'package:reallystick/core/presentation/widgets/custom_text_button.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/challenges/domain/entities/challenge_participation.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_bloc.dart';
@@ -66,7 +67,7 @@ class ChangeParticipationStartDateModalState
                   style: context.typographies.headingSmall,
                 ),
                 SizedBox(height: 16),
-                TextButton(
+                CustomTextButton(
                   onPressed: () async {
                     final pickedDate = await showDatePicker(
                       context: context,
@@ -86,10 +87,8 @@ class ChangeParticipationStartDateModalState
                       });
                     }
                   },
-                  child: Text(
-                    DateFormat.yMMMd(widget.userLocale).format(_startDate),
-                    style: context.typographies.body,
-                  ),
+                  labelText: AppLocalizations.of(context)!.date,
+                  text: DateFormat.yMMMd(widget.userLocale).format(_startDate),
                 ),
                 SizedBox(height: 16),
                 ElevatedButton(

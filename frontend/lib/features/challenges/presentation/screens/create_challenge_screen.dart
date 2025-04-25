@@ -7,6 +7,7 @@ import 'package:reallystick/core/messages/message.dart';
 import 'package:reallystick/core/messages/message_mapper.dart';
 import 'package:reallystick/core/presentation/widgets/custom_app_bar.dart';
 import 'package:reallystick/core/presentation/widgets/custom_elevated_button_form_field.dart';
+import 'package:reallystick/core/presentation/widgets/custom_text_button.dart';
 import 'package:reallystick/core/presentation/widgets/emoji_selector.dart';
 import 'package:reallystick/core/presentation/widgets/multi_language_input_field.dart';
 import 'package:reallystick/core/ui/extensions.dart';
@@ -259,7 +260,7 @@ class CreateChallengeScreenState extends State<CreateChallengeScreen> {
                               children: [
                                 // Day Selector
                                 Expanded(
-                                  child: TextButton(
+                                  child: CustomTextButton(
                                     onPressed: () async {
                                       final pickedDate = await showDatePicker(
                                         context: context,
@@ -284,10 +285,10 @@ class CreateChallengeScreenState extends State<CreateChallengeScreen> {
                                               ChallengeCreationFormStartDateChangedEvent(
                                                   _startDateTime));
                                     },
-                                    child: Text(
-                                      DateFormat.yMMMd(userLocale).format(_startDateTime),
-                                      style: context.typographies.body,
-                                    ),
+                                    labelText:
+                                        AppLocalizations.of(context)!.date,
+                                    text: DateFormat.yMMMd(userLocale)
+                                        .format(_startDateTime),
                                   ),
                                 ),
 
@@ -295,7 +296,7 @@ class CreateChallengeScreenState extends State<CreateChallengeScreen> {
 
                                 // Time Selector
                                 Expanded(
-                                  child: TextButton(
+                                  child: CustomTextButton(
                                     onPressed: () async {
                                       final pickedTime = await showTimePicker(
                                         context: context,
@@ -321,10 +322,10 @@ class CreateChallengeScreenState extends State<CreateChallengeScreen> {
                                         );
                                       }
                                     },
-                                    child: Text(
-                                      DateFormat.Hm().format(_startDateTime),
-                                      style: context.typographies.body,
-                                    ),
+                                    labelText:
+                                        AppLocalizations.of(context)!.time,
+                                    text:
+                                        DateFormat.Hm().format(_startDateTime),
                                   ),
                                 ),
                               ],

@@ -86,7 +86,6 @@ class SearchChallengesScreenState extends State<SearchChallengesScreen> {
                 child: Icon(
                   Icons.add_outlined,
                   size: 25,
-                  color: Colors.black,
                 ),
               ),
             ),

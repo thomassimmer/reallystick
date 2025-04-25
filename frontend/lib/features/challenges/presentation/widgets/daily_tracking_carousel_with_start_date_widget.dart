@@ -16,6 +16,7 @@ import 'package:reallystick/features/challenges/presentation/blocs/challenge/cha
 import 'package:reallystick/features/challenges/presentation/helpers/challenge_result.dart';
 import 'package:reallystick/features/challenges/presentation/screens/list_daily_trackings_modal.dart';
 import 'package:reallystick/features/habits/domain/entities/habit_daily_tracking.dart';
+import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_states.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
@@ -150,7 +151,7 @@ class DailyTrackingCarouselWithStartDateWidgetState
         : context.watch<ChallengeBloc>().state;
     final habitState = widget.previewMode
         ? getHabitsLoadedForPreview(context)
-        : context.watch<ChallengeBloc>().state;
+        : context.watch<HabitBloc>().state;
 
     if (profileState is ProfileAuthenticated &&
         challengeState is ChallengesLoaded &&
