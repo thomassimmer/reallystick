@@ -69,7 +69,13 @@ class DiscussionListState extends State<DiscussionListWidget> {
         : context.watch<PublicMessageBloc>().state;
 
     if (publicMessageState is PublicMessagesLoaded) {
-      final threads = publicMessageState.threads;
+      final threads = publicMessageState.threads
+          .where(
+            (thread) =>
+                thread.habitId == widget.habitId &&
+                thread.challengeId == widget.challengeId,
+          )
+          .toList();
 
       threads.sort((a, b) {
         if (b.likeCount != a.likeCount) {

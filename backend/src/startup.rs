@@ -7,6 +7,7 @@ use crate::configuration::{DatabaseSettings, Settings};
 use crate::core::helpers::translation::Translator;
 use crate::core::middlewares::token_validator::TokenValidator;
 use crate::core::routes::health_check::health_check;
+use crate::core::routes::version::version_check;
 use crate::features::auth::routes::disable_otp::disable;
 use crate::features::auth::routes::generate_otp::generate;
 use crate::features::auth::routes::log_user_in::log_user_in;
@@ -177,6 +178,7 @@ pub fn create_app(
         .service(
             web::scope("/api")
                 .service(health_check)
+                .service(version_check)
                 .service(
                     web::scope("/auth")
                         .service(register_user)

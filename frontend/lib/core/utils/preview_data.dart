@@ -856,13 +856,13 @@ UsersLoaded getUserStateForPreview(BuildContext context) {
 
 PublicMessagesLoaded getPublicMessagesLoadedForPreview(BuildContext context) {
   return PublicMessagesLoaded(
-    challengeId: '1',
+    challengeId: '3',
     habitId: null,
     threads: [
       PublicMessage(
         id: '1',
         habitId: null,
-        challengeId: '2',
+        challengeId: '3',
         threadId: '1',
         creator: '3',
         repliesTo: null,
@@ -881,7 +881,7 @@ PublicMessagesLoaded getPublicMessagesLoadedForPreview(BuildContext context) {
       PublicMessage(
         id: '1',
         habitId: null,
-        challengeId: '2',
+        challengeId: '3',
         threadId: '1',
         creator: '3',
         repliesTo: null,
@@ -910,7 +910,7 @@ ThreadLoaded getThreadStateForPreview(BuildContext context) {
       PublicMessage(
         id: '2',
         habitId: null,
-        challengeId: '2',
+        challengeId: '3',
         threadId: '1',
         creator: '4',
         repliesTo: '1',
