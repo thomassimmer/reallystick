@@ -1,6 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:reallystick/i18n/app_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'package:reallystick/core/router.dart';
 import 'package:reallystick/core/ui/themes/dark.dart';
@@ -34,7 +34,9 @@ import 'package:reallystick/features/public_messages/presentation/blocs/public_m
 import 'package:reallystick/features/public_messages/presentation/blocs/reply/reply_bloc.dart';
 import 'package:reallystick/features/public_messages/presentation/blocs/thread/thread_bloc.dart';
 import 'package:reallystick/features/users/presentation/blocs/user/user_bloc.dart';
+import 'package:reallystick/i18n/app_localizations.dart';
 import 'package:universal_io/io.dart';
+import 'package:web/web.dart';
 
 class ReallyStickApp extends StatefulWidget {
   ReallyStickApp({
@@ -80,6 +82,10 @@ class ReallyStickAppState extends State<ReallyStickApp> {
             themeData = state.profile!.theme == 'dark'
                 ? DarkAppTheme().themeData
                 : LightAppTheme().themeData;
+          }
+
+          if (kIsWeb) {
+            document.documentElement?.setAttribute("lang", locale.toString());
           }
 
           return MaterialApp.router(

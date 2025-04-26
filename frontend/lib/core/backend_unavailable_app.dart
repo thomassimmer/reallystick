@@ -1,9 +1,11 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:reallystick/core/presentation/widgets/app_logo.dart';
 import 'package:reallystick/core/ui/themes/dark.dart';
 import 'package:reallystick/core/ui/themes/light.dart';
 import 'package:reallystick/i18n/app_localizations.dart';
 import 'package:universal_io/io.dart';
+import 'package:web/web.dart' as web;
 
 class BackendUnavailableApp extends StatelessWidget {
   final VoidCallback onRetry;
@@ -15,6 +17,10 @@ class BackendUnavailableApp extends StatelessWidget {
     String localeString = Platform.localeName;
     List<String> parts = localeString.split(RegExp('[-_]'));
     Locale locale = Locale(parts[0]);
+
+    if (kIsWeb) {
+      web.document.documentElement?.setAttribute("lang", locale.toString());
+    }
 
     final brightness =
         WidgetsBinding.instance.platformDispatcher.platformBrightness;
