@@ -1,7 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reallystick/core/messages/errors/domain_error.dart';
 import 'package:reallystick/core/messages/message.dart';
@@ -18,6 +17,7 @@ import 'package:reallystick/features/auth/presentation/blocs/auth_login/auth_log
 import 'package:reallystick/features/auth/presentation/blocs/auth_login/auth_login_events.dart';
 import 'package:reallystick/features/auth/presentation/widgets/background.dart';
 import 'package:reallystick/features/auth/presentation/widgets/successful_login_animation.dart';
+import 'package:reallystick/i18n/app_localizations.dart';
 
 class SignupScreen extends StatefulWidget {
   @override

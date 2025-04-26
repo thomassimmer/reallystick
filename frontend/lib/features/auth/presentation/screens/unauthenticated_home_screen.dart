@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:reallystick/i18n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reallystick/core/presentation/widgets/app_logo.dart';
 import 'package:reallystick/core/presentation/widgets/global_snack_bar.dart';

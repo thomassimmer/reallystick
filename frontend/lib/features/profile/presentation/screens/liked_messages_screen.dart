@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reallystick/core/presentation/widgets/custom_app_bar.dart';
 import 'package:reallystick/core/presentation/widgets/full_width_list_view.dart';
@@ -10,6 +9,7 @@ import 'package:reallystick/features/public_messages/presentation/blocs/public_m
 import 'package:reallystick/features/public_messages/presentation/blocs/public_message/public_message_events.dart';
 import 'package:reallystick/features/public_messages/presentation/blocs/public_message/public_message_states.dart';
 import 'package:reallystick/features/public_messages/presentation/widgets/message_widget.dart';
+import 'package:reallystick/i18n/app_localizations.dart';
 
 class LikedMessagesScreen extends StatefulWidget {
   const LikedMessagesScreen({

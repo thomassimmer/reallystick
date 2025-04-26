@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:reallystick/core/presentation/widgets/custom_text_button.dart';
 import 'package:reallystick/core/presentation/widgets/custom_text_field.dart';
@@ -11,6 +10,7 @@ import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_events.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
+import 'package:reallystick/i18n/app_localizations.dart';
 
 class SetReminderModal extends StatefulWidget {
   final HabitParticipation habitParticipation;
@@ -113,8 +113,6 @@ class SetReminderModalState extends State<SetReminderModal> {
                 : null,
             labelText: AppLocalizations.of(context)!.time,
             text: DateFormat.Hm(userLocale).format(reminderTime),
-           
-            
           ),
           const SizedBox(height: 16),
           CustomTextField(

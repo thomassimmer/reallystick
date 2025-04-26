@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:reallystick/core/messages/message.dart';
 import 'package:reallystick/core/presentation/widgets/global_snack_bar.dart';
 import 'package:reallystick/core/ui/extensions.dart';
@@ -16,6 +15,7 @@ import 'package:reallystick/features/profile/presentation/widgets/level_of_educa
 import 'package:reallystick/features/profile/presentation/widgets/living_in_urban_area_selection_widget.dart';
 import 'package:reallystick/features/profile/presentation/widgets/location_selection_widget.dart';
 import 'package:reallystick/features/profile/presentation/widgets/relation_status_selection_widget.dart';
+import 'package:reallystick/i18n/app_localizations.dart';
 
 class QuestionnaireModal extends StatefulWidget {
   final ScrollController scrollController;

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:reallystick/core/messages/errors/domain_error.dart';
 import 'package:reallystick/core/messages/message.dart';
 import 'package:reallystick/core/messages/message_mapper.dart';
@@ -14,6 +13,7 @@ import 'package:reallystick/features/profile/presentation/blocs/set_password/set
 import 'package:reallystick/features/profile/presentation/blocs/set_password/set_password_events.dart';
 import 'package:reallystick/features/profile/presentation/blocs/update_password/update_password_bloc.dart';
 import 'package:reallystick/features/profile/presentation/blocs/update_password/update_password_events.dart';
+import 'package:reallystick/i18n/app_localizations.dart';
 
 class PasswordScreen extends StatelessWidget {
   final TextEditingController _currentPasswordController =

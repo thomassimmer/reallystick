@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reallystick/core/messages/message.dart';
 import 'package:reallystick/core/presentation/widgets/custom_app_bar.dart';
@@ -16,6 +15,7 @@ import 'package:reallystick/features/profile/presentation/blocs/profile/profile_
 import 'package:reallystick/features/users/presentation/blocs/user/user_bloc.dart';
 import 'package:reallystick/features/users/presentation/blocs/user/user_events.dart';
 import 'package:reallystick/features/users/presentation/blocs/user/user_states.dart';
+import 'package:reallystick/i18n/app_localizations.dart';
 
 class NewPrivateDiscussionScreen extends StatefulWidget {
   final String recipientId;
@@ -174,12 +174,11 @@ class NewPrivateDiscussionScreenState
             children: [
               Container(
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.yellow),
-                  borderRadius: BorderRadius.circular(16),
-                  color: Colors.yellow.withValues(alpha: 0.1)
-                ),
+                    border: Border.all(color: Colors.yellow),
+                    borderRadius: BorderRadius.circular(16),
+                    color: Colors.yellow.withValues(alpha: 0.1)),
                 child: Padding(
-                  padding: EdgeInsets.all( 16),
+                  padding: EdgeInsets.all(16),
                   child: Text(
                     AppLocalizations.of(context)!.messagesAreEncrypted,
                     textAlign: TextAlign.center,

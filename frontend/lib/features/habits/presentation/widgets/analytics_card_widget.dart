@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:reallystick/features/habits/domain/entities/analytics_card_info.dart';
+import 'package:reallystick/i18n/app_localizations.dart';
 
 class AnalyticsCardWidget extends StatefulWidget {
   final AnalyticsCardInfo analyticsCardInfo;

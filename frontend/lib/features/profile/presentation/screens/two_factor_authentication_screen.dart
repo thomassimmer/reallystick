@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:reallystick/core/messages/message.dart';
 import 'package:reallystick/core/presentation/widgets/custom_app_bar.dart';
@@ -11,6 +10,7 @@ import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_events.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
+import 'package:reallystick/i18n/app_localizations.dart';
 
 class TwoFactorAuthenticationScreen extends StatelessWidget {
   final TextEditingController _otpController = TextEditingController();

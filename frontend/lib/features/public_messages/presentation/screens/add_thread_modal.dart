@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:reallystick/core/messages/message.dart';
 import 'package:reallystick/core/messages/message_mapper.dart';
 import 'package:reallystick/core/presentation/widgets/custom_text_field.dart';
@@ -9,6 +8,7 @@ import 'package:reallystick/features/public_messages/presentation/blocs/public_m
 import 'package:reallystick/features/public_messages/presentation/blocs/public_message/public_message_events.dart';
 import 'package:reallystick/features/public_messages/presentation/blocs/public_message_creation/public_message_creation_bloc.dart';
 import 'package:reallystick/features/public_messages/presentation/blocs/public_message_creation/public_message_creation_events.dart';
+import 'package:reallystick/i18n/app_localizations.dart';
 
 class AddThreadModal extends StatefulWidget {
   final String? habitId;

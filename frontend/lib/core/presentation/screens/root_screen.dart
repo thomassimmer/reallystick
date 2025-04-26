@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reallystick/core/constants/screen_size.dart';
 import 'package:reallystick/core/presentation/widgets/app_logo.dart';
@@ -23,6 +22,7 @@ import 'package:reallystick/features/profile/presentation/blocs/profile/profile_
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
 import 'package:reallystick/features/public_messages/presentation/blocs/public_message/public_message_bloc.dart';
 import 'package:reallystick/features/public_messages/presentation/blocs/public_message/public_message_states.dart';
+import 'package:reallystick/i18n/app_localizations.dart';
 
 class RootScreen extends StatefulWidget {
   final Widget child;

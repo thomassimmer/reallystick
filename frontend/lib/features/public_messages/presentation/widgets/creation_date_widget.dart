@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:reallystick/core/ui/extensions.dart';
+import 'package:reallystick/i18n/app_localizations.dart';
 
 class DateWidget extends StatefulWidget {
   final DateTime datetime;

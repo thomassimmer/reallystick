@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:reallystick/core/utils/preview_data.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_bloc.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_states.dart';
@@ -9,6 +8,7 @@ import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_states.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
+import 'package:reallystick/i18n/app_localizations.dart';
 
 class ListOfConcernedHabits extends StatelessWidget {
   final Color challengeColor;

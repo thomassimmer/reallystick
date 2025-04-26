@@ -3,7 +3,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:reallystick/core/constants/dates.dart';
 import 'package:reallystick/core/constants/unit_conversion.dart';
@@ -17,6 +16,7 @@ import 'package:reallystick/features/habits/presentation/screens/list_daily_trac
 import 'package:reallystick/features/habits/presentation/widgets/daily_tracking_chart.dart';
 import 'package:reallystick/features/habits/presentation/widgets/last_activity_widget.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
+import 'package:reallystick/i18n/app_localizations.dart';
 
 class DailyTrackingCarouselWidget extends StatefulWidget {
   final Habit habit;

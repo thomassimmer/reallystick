@@ -1,3 +1,4 @@
+synthetic-package: false
 arb-dir: lib/i18n
 template-arb-file: en.arb
 output-localization-file: app_localizations.dart

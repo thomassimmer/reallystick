@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:reallystick/core/messages/message.dart';
@@ -21,6 +20,7 @@ import 'package:reallystick/features/challenges/presentation/screens/challenge_n
 import 'package:reallystick/features/challenges/presentation/screens/user_is_not_challenge_creator_screen.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
+import 'package:reallystick/i18n/app_localizations.dart';
 
 class UpdateChallengeScreen extends StatefulWidget {
   final String challengeId;

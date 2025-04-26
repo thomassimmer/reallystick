@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/core/utils/preview_data.dart';
 import 'package:reallystick/features/public_messages/presentation/blocs/public_message/public_message_bloc.dart';
 import 'package:reallystick/features/public_messages/presentation/blocs/public_message/public_message_states.dart';
 import 'package:reallystick/features/public_messages/presentation/screens/add_thread_modal.dart';
 import 'package:reallystick/features/public_messages/presentation/widgets/thread_widget.dart';
+import 'package:reallystick/i18n/app_localizations.dart';
 
 class DiscussionListWidget extends StatefulWidget {
   final Color color;

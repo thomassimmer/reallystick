@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reallystick/core/presentation/widgets/app_logo.dart';
 import 'package:reallystick/core/presentation/widgets/custom_container.dart';
@@ -12,6 +11,7 @@ import 'package:reallystick/features/auth/presentation/blocs/auth/auth_events.da
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_states.dart';
 import 'package:reallystick/features/auth/presentation/widgets/background.dart';
 import 'package:reallystick/features/auth/presentation/widgets/successful_login_animation.dart';
+import 'package:reallystick/i18n/app_localizations.dart';
 
 class LoginScreen extends StatefulWidget {
   @override

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reallystick/core/messages/message.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_bloc.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_events.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_states.dart';
+import 'package:reallystick/i18n/app_localizations.dart';
 
 class DuplicateChallengeModal extends StatelessWidget {
   final String challengeId;
