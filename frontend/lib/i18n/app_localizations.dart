@@ -1713,6 +1713,12 @@ abstract class AppLocalizations {
   /// **'Quantity'**
   String get quantity;
 
+  /// No description provided for @quantityIsNotANumberError.
+  ///
+  /// In en, this message translates to:
+  /// **'Quantity must be a number.'**
+  String get quantityIsNotANumberError;
+
   /// No description provided for @quantityOfSet.
   ///
   /// In en, this message translates to:
@@ -1759,13 +1765,13 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'Quantity per set: {quantity}'**
-  String quantityPerSetWithQuantity(int quantity);
+  String quantityPerSetWithQuantity(String quantity);
 
   /// No description provided for @quantityWithQuantity.
   ///
   /// In en, this message translates to:
   /// **'Quantity: {quantity}'**
-  String quantityWithQuantity(int quantity);
+  String quantityWithQuantity(String quantity);
 
   /// No description provided for @questionActivity.
   ///

@@ -65,6 +65,11 @@ class QuantityPerSetIsNullError implements DomainError {
   final String messageKey = 'quantityPerSetIsNullError';
 }
 
+class QuantityIsNotANumberError implements DomainError {
+  @override
+  final String messageKey = 'quantityIsNotANumberError';
+}
+
 class QuantityOfSetIsNegativeError implements DomainError {
   @override
   final String messageKey = 'quantityOfSetIsNegativeError';

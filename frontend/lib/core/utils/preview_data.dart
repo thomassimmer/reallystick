@@ -248,7 +248,7 @@ HabitsLoaded getHabitsLoadedForPreview(BuildContext context) {
           habitId: '1',
           datetime:
               DateTime(date.year, date.month, date.day, date.hour, date.minute),
-          quantityPerSet: duration,
+          quantityPerSet: duration.toDouble(),
           quantityOfSet: 1,
           unitId: '2',
           weight: 0,
@@ -266,7 +266,7 @@ HabitsLoaded getHabitsLoadedForPreview(BuildContext context) {
           habitId: '1',
           datetime:
               DateTime(date.year, date.month, date.day, 8 + index * 13, 30),
-          quantityPerSet: duration,
+          quantityPerSet: duration.toDouble(),
           quantityOfSet: 1,
           unitId: '2',
           weight: 0,
@@ -283,7 +283,7 @@ HabitsLoaded getHabitsLoadedForPreview(BuildContext context) {
           habitId: '2',
           datetime:
               DateTime(date.year, date.month, date.day, date.hour, date.minute),
-          quantityPerSet: duration,
+          quantityPerSet: duration.toDouble(),
           quantityOfSet: 1,
           unitId: '2',
           weight: 0,
@@ -300,7 +300,7 @@ HabitsLoaded getHabitsLoadedForPreview(BuildContext context) {
           habitId: '3',
           datetime:
               DateTime(date.year, date.month, date.day, date.hour, date.minute),
-          quantityPerSet: duration,
+          quantityPerSet: duration.toDouble(),
           quantityOfSet: 1,
           unitId: '2',
           weight: 0,

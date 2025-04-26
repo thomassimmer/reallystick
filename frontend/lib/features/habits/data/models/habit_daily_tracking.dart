@@ -6,7 +6,7 @@ class HabitDailyTrackingDataModel extends Equatable {
   final String userId;
   final String habitId;
   final DateTime datetime;
-  final int quantityPerSet;
+  final double quantityPerSet;
   final int quantityOfSet;
   final String unitId;
   final int weight;
@@ -30,7 +30,7 @@ class HabitDailyTrackingDataModel extends Equatable {
       userId: json['user_id'] as String,
       habitId: json['habit_id'] as String,
       datetime: DateTime.parse(json['datetime'] as String),
-      quantityPerSet: json['quantity_per_set'] as int,
+      quantityPerSet: json['quantity_per_set'] as double,
       quantityOfSet: json['quantity_of_set'] as int,
       unitId: json['unit_id'] as String,
       weight: json['weight'] as int,

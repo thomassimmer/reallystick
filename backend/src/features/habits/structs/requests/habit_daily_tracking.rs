@@ -16,7 +16,7 @@ pub struct UpdateHabitDailyTrackingParams {
 #[derive(Deserialize, Serialize)]
 pub struct HabitDailyTrackingUpdateRequest {
     pub datetime: NaiveDateTime,
-    pub quantity_per_set: i32,
+    pub quantity_per_set: f64,
     pub quantity_of_set: i32,
     pub unit_id: Uuid,
     pub weight: i32,
@@ -27,7 +27,7 @@ pub struct HabitDailyTrackingUpdateRequest {
 pub struct HabitDailyTrackingCreateRequest {
     pub habit_id: Uuid,
     pub datetime: NaiveDateTime,
-    pub quantity_per_set: i32,
+    pub quantity_per_set: f64,
     pub quantity_of_set: i32,
     pub unit_id: Uuid,
     pub weight: i32,

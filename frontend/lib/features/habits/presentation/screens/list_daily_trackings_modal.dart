@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:reallystick/core/constants/dates.dart';
+import 'package:reallystick/core/constants/unit_conversion.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/core/utils/preview_data.dart';
 import 'package:reallystick/features/habits/domain/entities/habit_daily_tracking.dart';
@@ -138,20 +139,21 @@ class ListDailyTrackingsModalState extends State<ListDailyTrackingsModal> {
                                 Text(
                                   AppLocalizations.of(context)!
                                       .quantityPerSetWithQuantity(
-                                          dailyTracking.quantityPerSet),
+                                          formatQuantity(
+                                              dailyTracking.quantityPerSet)),
                                   style: context.typographies.body,
                                 ),
                               ] else ...[
                                 Text(
                                   AppLocalizations.of(context)!
-                                      .quantityWithQuantity(
-                                          dailyTracking.quantityPerSet),
+                                      .quantityWithQuantity(formatQuantity(
+                                          dailyTracking.quantityPerSet)),
                                   style: context.typographies.body,
                                 ),
                               ],
                               if (unit.shortName['en'] != '')
                                 Text(
-                                  " ${getRightTranslationForUnitFromJson(unit.longName, dailyTracking.quantityPerSet, userLocale)}",
+                                  " ${getRightTranslationForUnitFromJson(unit.longName, dailyTracking.quantityPerSet.toInt(), userLocale)}",
                                   style: context.typographies.body,
                                 ),
                             ],

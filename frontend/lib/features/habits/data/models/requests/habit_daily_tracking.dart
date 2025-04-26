@@ -1,6 +1,6 @@
 class HabitDailyTrackingUpdateRequestModel {
   final DateTime datetime;
-  final int quantityPerSet;
+  final double quantityPerSet;
   final int quantityOfSet;
   final String unitId;
   final int weight;
@@ -30,7 +30,7 @@ class HabitDailyTrackingUpdateRequestModel {
 class HabitDailyTrackingCreateRequestModel {
   final String habitId;
   final DateTime datetime;
-  final int quantityPerSet;
+  final double quantityPerSet;
   final int quantityOfSet;
   final String unitId;
   final int weight;

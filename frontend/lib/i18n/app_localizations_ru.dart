@@ -938,6 +938,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get quantity => 'Количество';
 
   @override
+  String get quantityIsNotANumberError => 'Количество должно быть числом.';
+
+  @override
   String get quantityOfSet => 'Количество подходов';
 
   @override
@@ -961,12 +964,12 @@ class AppLocalizationsRu extends AppLocalizations {
   String get quantityPerSetIsNullError => 'Количество не может быть пустым.';
 
   @override
-  String quantityPerSetWithQuantity(int quantity) {
+  String quantityPerSetWithQuantity(String quantity) {
     return 'Количество повторений: $quantity';
   }
 
   @override
-  String quantityWithQuantity(int quantity) {
+  String quantityWithQuantity(String quantity) {
     return 'Количество: $quantity';
   }
 

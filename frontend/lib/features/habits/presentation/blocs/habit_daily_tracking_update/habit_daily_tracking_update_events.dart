@@ -9,10 +9,11 @@ sealed class HabitDailyTrackingUpdateEvent extends Equatable {
 
 class HabitDailyTrackingUpdateFormQuantityPerSetChangedEvent
     extends HabitDailyTrackingUpdateEvent {
-  final int? quantityPerSet;
+  final String quantityPerSet;
 
   const HabitDailyTrackingUpdateFormQuantityPerSetChangedEvent(
-      this.quantityPerSet);
+    this.quantityPerSet,
+  );
 
   @override
   List<Object?> get props => [quantityPerSet];

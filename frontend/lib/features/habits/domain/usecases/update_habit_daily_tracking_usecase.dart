@@ -11,7 +11,7 @@ class UpdateHabitDailyTrackingUsecase {
   Future<Either<DomainError, HabitDailyTracking>> call({
     required String habitDailyTrackingId,
     required DateTime datetime,
-    required int quantityPerSet,
+    required double quantityPerSet,
     required int quantityOfSet,
     required String unitId,
     required int weight,

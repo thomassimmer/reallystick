@@ -60,7 +60,7 @@ class CreateChallengeDailyTrackingEvent extends ChallengeEvent {
   final String challengeId;
   final String habitId;
   final int dayOfProgram;
-  final int quantityPerSet;
+  final double quantityPerSet;
   final int quantityOfSet;
   final String unitId;
   final int weight;
@@ -101,7 +101,7 @@ class UpdateChallengeDailyTrackingEvent extends ChallengeEvent {
   final String challengeId;
   final String habitId;
   final int dayOfProgram;
-  final int quantityPerSet;
+  final double quantityPerSet;
   final int quantityOfSet;
   final String unitId;
   final int weight;

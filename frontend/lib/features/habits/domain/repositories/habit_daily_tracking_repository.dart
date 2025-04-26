@@ -11,7 +11,7 @@ abstract class HabitDailyTrackingRepository {
   Future<Either<DomainError, HabitDailyTracking>> createHabitDailyTracking({
     required String habitId,
     required DateTime datetime,
-    required int quantityPerSet,
+    required double quantityPerSet,
     required int quantityOfSet,
     required String unitId,
     required int weight,
@@ -20,7 +20,7 @@ abstract class HabitDailyTrackingRepository {
   Future<Either<DomainError, HabitDailyTracking>> updateHabitDailyTracking({
     required String habitDailyTrackingId,
     required DateTime datetime,
-    required int quantityPerSet,
+    required double quantityPerSet,
     required int quantityOfSet,
     required String unitId,
     required int weight,

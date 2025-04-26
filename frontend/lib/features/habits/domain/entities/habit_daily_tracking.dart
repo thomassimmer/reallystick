@@ -5,7 +5,7 @@ class HabitDailyTracking extends Equatable {
   final String userId;
   final String habitId;
   final DateTime datetime;
-  final int quantityPerSet;
+  final double quantityPerSet;
   final int quantityOfSet;
   final String unitId;
   final int weight;
@@ -41,7 +41,7 @@ class HabitDailyTracking extends Equatable {
     String? userId,
     String? habitId,
     DateTime? datetime,
-    int? quantityPerSet,
+    double? quantityPerSet,
     int? quantityOfSet,
     String? unitId,
     int? weight,

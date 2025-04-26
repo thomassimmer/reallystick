@@ -155,14 +155,14 @@
   "@quantityPerSetWithQuantity": {
     "placeholders": {
       "quantity": {
-        "type": "int"
+        "type": "String"
       }
     }
   },
   "@quantityWithQuantity": {
     "placeholders": {
       "quantity": {
-        "type": "int"
+        "type": "String"
       }
     }
   },
@@ -486,6 +486,7 @@
   "publicMessageReportCreationSuccessful": "O seu relatório foi enviado com sucesso.",
   "qrCodeSecretKeyCopied": "A chave secreta do QR-code foi copiada para a área de transferência.",
   "quantity": "Quantidade",
+  "quantityIsNotANumberError": "A quantidade deve ser um número.",
   "quantityOfSet": "Número de sets",
   "quantityOfSetIsNegativeError": "O número de sets não pode ser negativo.",
   "quantityOfSetIsNullError": "O número de sets não pode ser nulo.",

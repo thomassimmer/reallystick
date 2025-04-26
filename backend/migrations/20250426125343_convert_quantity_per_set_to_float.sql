@@ -1,0 +1,2 @@
+ALTER TABLE challenge_daily_trackings ALTER COLUMN quantity_per_set TYPE DOUBLE PRECISION USING quantity_per_set::DOUBLE PRECISION;
+ALTER TABLE habit_daily_trackings ALTER COLUMN quantity_per_set TYPE DOUBLE PRECISION USING quantity_per_set::DOUBLE PRECISION;

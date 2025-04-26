@@ -101,7 +101,7 @@ class MergeHabitsEvent extends HabitEvent {
 class CreateHabitDailyTrackingEvent extends HabitEvent {
   final String habitId;
   final DateTime datetime;
-  final int quantityPerSet;
+  final double quantityPerSet;
   final int quantityOfSet;
   final String unitId;
   final int weight;
@@ -130,7 +130,7 @@ class CreateHabitDailyTrackingEvent extends HabitEvent {
 class UpdateHabitDailyTrackingEvent extends HabitEvent {
   final String habitDailyTrackingId;
   final DateTime datetime;
-  final int quantityPerSet;
+  final double quantityPerSet;
   final int quantityOfSet;
   final String unitId;
   final int weight;

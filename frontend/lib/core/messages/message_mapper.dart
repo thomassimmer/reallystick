@@ -80,6 +80,8 @@ String getTranslatedMessage(BuildContext context, Message message) {
         return localizations.quantityOfSetIsNullError;
       case 'quantityPerSetIsNullError':
         return localizations.quantityPerSetIsNullError;
+      case 'quantityIsNotANumberError':
+        return localizations.quantityIsNotANumberError;
       case 'quantityOfSetIsNegativeError':
         return localizations.quantityOfSetIsNegativeError;
       case 'quantityPerSetIsNegativeError':

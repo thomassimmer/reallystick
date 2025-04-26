@@ -10,7 +10,7 @@ pub struct HabitDailyTracking {
     pub datetime: NaiveDateTime,
     pub created_at: DateTime<Utc>,
 
-    pub quantity_per_set: i32,
+    pub quantity_per_set: f64,
     pub quantity_of_set: i32,
     pub unit_id: Uuid,
     pub weight: i32,
@@ -24,7 +24,7 @@ pub struct HabitDailyTrackingData {
     pub habit_id: Uuid,
     pub datetime: NaiveDateTime,
 
-    pub quantity_per_set: i32,
+    pub quantity_per_set: f64,
     pub quantity_of_set: i32,
     pub unit_id: Uuid,
     pub weight: i32,

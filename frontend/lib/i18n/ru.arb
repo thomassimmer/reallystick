@@ -155,14 +155,14 @@
   "@quantityPerSetWithQuantity": {
     "placeholders": {
       "quantity": {
-        "type": "int"
+        "type": "String"
       }
     }
   },
   "@quantityWithQuantity": {
     "placeholders": {
       "quantity": {
-        "type": "int"
+        "type": "String"
       }
     }
   },
@@ -486,6 +486,7 @@
   "publicMessageReportCreationSuccessful": "Ваше сообщение было успешно отправлено.",
   "qrCodeSecretKeyCopied": "Секретный ключ QR-кода был скопирован в буфер обмена.",
   "quantity": "Количество",
+  "quantityIsNotANumberError": "Количество должно быть числом.",
   "quantityOfSet": "Количество подходов",
   "quantityOfSetIsNegativeError": "Количество подходов не может быть отрицательным.",
   "quantityOfSetIsNullError": "Количество подходов не может быть нулевым.",

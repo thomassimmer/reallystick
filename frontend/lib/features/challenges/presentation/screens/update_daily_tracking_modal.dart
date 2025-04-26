@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:reallystick/core/constants/unit_conversion.dart';
 import 'package:reallystick/core/messages/message.dart';
 import 'package:reallystick/core/messages/message_mapper.dart';
 import 'package:reallystick/core/presentation/widgets/custom_dropdown_button_form_field.dart';
@@ -36,7 +37,7 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
   String? _selectedHabitId;
   int _selectedDayOfProgram = 0;
   String? _selectedUnitId;
-  int? _quantityPerSet;
+  double? _quantityPerSet;
   int _quantityOfSet = 1;
   int _weight = 0;
   String? _selectedWeightUnitId;
@@ -103,7 +104,8 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
     );
     challengeDailyTrackingFormBloc.add(
       ChallengeDailyTrackingUpdateFormQuantityPerSetChangedEvent(
-          _quantityPerSet),
+        _quantityPerSet.toString(),
+      ),
     );
     challengeDailyTrackingFormBloc.add(
       ChallengeDailyTrackingUpdateFormUnitChangedEvent(_selectedUnitId ?? ""),
@@ -395,20 +397,24 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
               Expanded(
                 child: CustomTextField(
                   enabled: canEdit,
-                  initialValue: _quantityPerSet.toString(),
+                  initialValue: formatQuantity(_quantityPerSet ?? 0),
                   keyboardType: TextInputType.number,
                   label: shouldDisplaySportSpecificInputsResult
                       ? AppLocalizations.of(context)!.quantityPerSet
                       : AppLocalizations.of(context)!.quantity,
                   onChanged: (value) {
                     setState(() {
-                      _quantityPerSet = int.tryParse(value);
+                      _quantityPerSet = double.tryParse(
+                        value.replaceAll(',', '.'),
+                      );
                     });
                     BlocProvider.of<ChallengeDailyTrackingUpdateFormBloc>(
                             context)
                         .add(
-                            ChallengeDailyTrackingUpdateFormQuantityPerSetChangedEvent(
-                                int.tryParse(value)));
+                      ChallengeDailyTrackingUpdateFormQuantityPerSetChangedEvent(
+                        value.replaceAll(',', '.'),
+                      ),
+                    );
                   },
                   errorText: displayQuantityPerSetErrorMessage,
                 ),
@@ -432,7 +438,7 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
                               child: Text(
                                 getRightTranslationForUnitFromJson(
                                   unit.longName,
-                                  _quantityPerSet ?? 0,
+                                  _quantityPerSet?.toInt() ?? 0,
                                   userLocale,
                                 ),
                               ),

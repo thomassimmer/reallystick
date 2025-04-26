@@ -40,7 +40,7 @@ pub async fn user_creates_a_habit_daily_tracking(
         .set_json(HabitDailyTrackingCreateRequest {
             habit_id,
             datetime: Utc::now().naive_utc(),
-            quantity_per_set: 10,
+            quantity_per_set: 10.0,
             quantity_of_set: 3,
             unit_id,
             weight: 0,
@@ -75,7 +75,7 @@ pub async fn user_updates_a_habit_daily_tracking(
         .insert_header(ContentType::json())
         .set_json(HabitDailyTrackingUpdateRequest {
             datetime: Utc::now().naive_utc(),
-            quantity_per_set: 10,
+            quantity_per_set: 10.0,
             quantity_of_set: 2,
             unit_id,
             weight: 0,

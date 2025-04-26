@@ -44,7 +44,7 @@ pub async fn user_creates_a_challenge_daily_tracking(
             challenge_id,
             habit_id,
             day_of_program: 1,
-            quantity_per_set: 10,
+            quantity_per_set: 10.0,
             quantity_of_set: 3,
             unit_id,
             weight: 0,
@@ -83,7 +83,7 @@ pub async fn user_updates_a_challenge_daily_tracking(
         .set_json(ChallengeDailyTrackingUpdateRequest {
             habit_id,
             day_of_program: 1,
-            quantity_per_set: 10,
+            quantity_per_set: 10.0,
             quantity_of_set: 2,
             unit_id,
             weight: 0,

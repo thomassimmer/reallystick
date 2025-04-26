@@ -19,17 +19,17 @@ bool checkIfDailyObjectiveWasDone(ChallengeDailyTracking challengeDailyTracking,
     final totalQuantityExpected = challengeDailyTracking.quantityOfSet *
         challengeDailyTracking.quantityPerSet;
     final weightExpected = normalizeUnit(
-      challengeDailyTracking.weight,
+      challengeDailyTracking.weight.toDouble(),
       challengeDailyTracking.unitId,
       units,
     );
-    int totalQuantityFound = 0;
+    double totalQuantityFound = 0;
 
     // We should do at least the total quantity expected for this habit
 
     for (final hdt in habitDailyTrackings) {
       final weightFound = normalizeUnit(
-        hdt.weight,
+        hdt.weight.toDouble(),
         hdt.unitId,
         units,
       );

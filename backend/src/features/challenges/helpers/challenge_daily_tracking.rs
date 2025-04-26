@@ -155,7 +155,7 @@ where
             $3::UUID[],
             $4::INT[],
             $5::TIMESTAMPTZ[],
-            $6::INT[],
+            $6::DOUBLE PRECISION[],
             $7::INT[],
             $8::UUID[],
             $9::FLOAT8[],

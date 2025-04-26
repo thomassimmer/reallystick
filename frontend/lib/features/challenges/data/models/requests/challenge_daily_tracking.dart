@@ -13,7 +13,7 @@ class ChallengeDailyTrackingsGetRequestModel {
 class ChallengeDailyTrackingUpdateRequestModel {
   final String habitId;
   final int dayOfProgram;
-  final int quantityPerSet;
+  final double quantityPerSet;
   final int quantityOfSet;
   final String unitId;
   final int weight;
@@ -49,7 +49,7 @@ class ChallengeDailyTrackingCreateRequestModel {
   final String challengeId;
   final String habitId;
   final int dayOfProgram;
-  final int quantityPerSet;
+  final double quantityPerSet;
   final int quantityOfSet;
   final String unitId;
   final int weight;

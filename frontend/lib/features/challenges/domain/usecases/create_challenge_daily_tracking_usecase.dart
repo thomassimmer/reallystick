@@ -12,7 +12,7 @@ class CreateChallengeDailyTrackingUsecase {
     required String challengeId,
     required String habitId,
     required int dayOfProgram,
-    required int quantityPerSet,
+    required double quantityPerSet,
     required int quantityOfSet,
     required String unitId,
     required int weight,

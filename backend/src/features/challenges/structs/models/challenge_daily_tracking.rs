@@ -10,7 +10,7 @@ pub struct ChallengeDailyTracking {
     pub day_of_program: i32,
     pub created_at: DateTime<Utc>,
 
-    pub quantity_per_set: i32,
+    pub quantity_per_set: f64,
     pub quantity_of_set: i32,
     pub unit_id: Uuid,
     pub weight: i32,
@@ -26,7 +26,7 @@ pub struct ChallengeDailyTrackingData {
     pub challenge_id: Uuid,
     pub day_of_program: i32,
 
-    pub quantity_per_set: i32,
+    pub quantity_per_set: f64,
     pub quantity_of_set: i32,
     pub unit_id: Uuid,
     pub weight: i32,

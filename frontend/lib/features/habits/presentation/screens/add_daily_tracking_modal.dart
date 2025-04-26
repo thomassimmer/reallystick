@@ -31,7 +31,7 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
   String? _selectedHabitId;
   DateTime _selectedDateTime = DateTime.now();
   String? _selectedUnitId;
-  int? _quantityPerSet;
+  double? _quantityPerSet;
   int _quantityOfSet = 1;
   int _weight = 0;
   String? _selectedWeightUnitId;
@@ -88,7 +88,8 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
       HabitDailyTrackingCreationFormQuantityOfSetChangedEvent(_quantityOfSet),
     );
     habitDailyTrackingFormBloc.add(
-      HabitDailyTrackingCreationFormQuantityPerSetChangedEvent(_quantityPerSet),
+      HabitDailyTrackingCreationFormQuantityPerSetChangedEvent(
+          _quantityPerSet.toString()),
     );
     habitDailyTrackingFormBloc.add(
       HabitDailyTrackingCreationFormUnitChangedEvent(_selectedUnitId ?? ""),
@@ -362,12 +363,15 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
                       : AppLocalizations.of(context)!.quantity,
                   onChanged: (value) {
                     setState(() {
-                      _quantityPerSet = int.tryParse(value);
+                      _quantityPerSet =
+                          double.tryParse(value.replaceAll(',', '.'));
                     });
                     BlocProvider.of<HabitDailyTrackingCreationFormBloc>(context)
                         .add(
-                            HabitDailyTrackingCreationFormQuantityPerSetChangedEvent(
-                                int.tryParse(value)));
+                      HabitDailyTrackingCreationFormQuantityPerSetChangedEvent(
+                        value.replaceAll(',', '.'),
+                      ),
+                    );
                   },
                   errorText: displayQuantityPerSetErrorMessage,
                 ),
@@ -386,7 +390,7 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
                       child: Text(
                         getRightTranslationForUnitFromJson(
                           unit.longName,
-                          _quantityPerSet ?? 0,
+                          _quantityPerSet?.toInt() ?? 0,
                           userLocale,
                         ),
                         overflow: TextOverflow.ellipsis,

@@ -34,7 +34,7 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
   String? _selectedHabitId;
   int _selectedDayOfProgram = 0;
   String? _selectedUnitId;
-  int? _quantityPerSet;
+  double? _quantityPerSet;
   int _quantityOfSet = 1;
   int _weight = 0;
   String? _selectedWeightUnitId;
@@ -80,7 +80,8 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
     );
     challengeDailyTrackingFormBloc.add(
       ChallengeDailyTrackingCreationFormQuantityPerSetChangedEvent(
-          _quantityPerSet),
+        _quantityPerSet.toString(),
+      ),
     );
     challengeDailyTrackingFormBloc.add(
       ChallengeDailyTrackingCreationFormUnitChangedEvent(_selectedUnitId ?? ""),
@@ -367,13 +368,17 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
                       : AppLocalizations.of(context)!.quantity,
                   onChanged: (value) {
                     setState(() {
-                      _quantityPerSet = int.tryParse(value);
+                      _quantityPerSet = double.tryParse(
+                        value.replaceAll(',', '.'),
+                      );
                     });
                     BlocProvider.of<ChallengeDailyTrackingCreationFormBloc>(
                             context)
                         .add(
-                            ChallengeDailyTrackingCreationFormQuantityPerSetChangedEvent(
-                                int.tryParse(value)));
+                      ChallengeDailyTrackingCreationFormQuantityPerSetChangedEvent(
+                        value.replaceAll(',', '.'),
+                      ),
+                    );
                   },
                   errorText: displayQuantityPerSetErrorMessage,
                 ),
@@ -396,7 +401,7 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
                             child: Text(
                               getRightTranslationForUnitFromJson(
                                 unit.longName,
-                                _quantityPerSet ?? 0,
+                                _quantityPerSet?.toInt() ?? 0,
                                 userLocale,
                               ),
                               overflow: TextOverflow.ellipsis,

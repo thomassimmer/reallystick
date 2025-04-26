@@ -19,10 +19,11 @@ class HabitDailyTrackingCreationFormHabitChangedEvent
 
 class HabitDailyTrackingCreationFormQuantityPerSetChangedEvent
     extends HabitDailyTrackingCreationEvent {
-  final int? quantityPerSet;
+  final String quantityPerSet;
 
   const HabitDailyTrackingCreationFormQuantityPerSetChangedEvent(
-      this.quantityPerSet);
+    this.quantityPerSet,
+  );
 
   @override
   List<Object?> get props => [quantityPerSet];

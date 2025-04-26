@@ -3,7 +3,7 @@ class ChallengeDailyTracking {
   String habitId;
   String challengeId;
   int dayOfProgram;
-  int quantityPerSet;
+  double quantityPerSet;
   int quantityOfSet;
   String unitId;
   int weight;

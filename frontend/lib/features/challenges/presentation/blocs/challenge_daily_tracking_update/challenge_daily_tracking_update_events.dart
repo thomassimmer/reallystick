@@ -19,7 +19,7 @@ class ChallengeDailyTrackingUpdateFormHabitChangedEvent
 
 class ChallengeDailyTrackingUpdateFormQuantityPerSetChangedEvent
     extends ChallengeDailyTrackingUpdateEvent {
-  final int? quantityPerSet;
+  final String quantityPerSet;
 
   const ChallengeDailyTrackingUpdateFormQuantityPerSetChangedEvent(
       this.quantityPerSet);
