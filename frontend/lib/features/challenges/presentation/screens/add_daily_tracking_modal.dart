@@ -49,14 +49,28 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
     if (_selectedWeightUnitId == null) {
       // Only initialize if it's not already set
       final habitState = context.watch<HabitBloc>().state;
+      final challengeState = context.watch<ChallengeBloc>().state;
 
-      if (habitState is HabitsLoaded) {
+      if (habitState is HabitsLoaded && challengeState is ChallengesLoaded) {
         setState(() {
-          _selectedWeightUnitId = habitState.units.values
-              .where((unit) =>
-                  getRightTranslationFromJson(unit.shortName, 'en') == 'kg')
-              .firstOrNull
-              ?.id;
+          // Set the last daily tracking params as the initial params
+          final lastDailyTrackingsForThisChallenge = challengeState
+              .challengeDailyTrackings[widget.challengeId]?.lastOrNull;
+
+          if (lastDailyTrackingsForThisChallenge != null) {
+            _selectedHabitId = lastDailyTrackingsForThisChallenge.habitId;
+            _selectedUnitId = lastDailyTrackingsForThisChallenge.unitId;
+            _selectedWeightUnitId =
+                lastDailyTrackingsForThisChallenge.weightUnitId;
+          }
+          // If not, show kg before other, it's the most used
+          else {
+            _selectedWeightUnitId = habitState.units.values
+                .where((unit) =>
+                    getRightTranslationFromJson(unit.shortName, 'en') == 'kg')
+                .firstOrNull
+                ?.id;
+          }
         });
       }
     }

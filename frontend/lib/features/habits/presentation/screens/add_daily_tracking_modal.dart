@@ -51,23 +51,32 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
         setState(() {
           _selectedHabitId = widget.habitId;
 
-          // Show minutes before other, it's the most used
-          _selectedUnitId = habit?.unitIds
-                  .where((unitId) =>
-                      habitState.units.containsKey(unitId) &&
-                      getRightTranslationFromJson(
-                              habitState.units[unitId]!.shortName, 'en') ==
-                          'min')
-                  .firstOrNull ??
-              habit?.unitIds
-                  .where((unitId) => habitState.units.containsKey(unitId))
-                  .first;
+          // Set the last daily tracking unit as the initial unit
+          final lastDailyTrackingsForThisHabit = habitState.habitDailyTrackings
+              .where((hdt) => hdt.habitId == widget.habitId)
+              .lastOrNull;
 
-          _selectedWeightUnitId = habitState.units.values
-              .where((unit) =>
-                  getRightTranslationFromJson(unit.shortName, 'en') == 'kg')
-              .firstOrNull
-              ?.id;
+          if (lastDailyTrackingsForThisHabit != null) {
+            _selectedUnitId = lastDailyTrackingsForThisHabit.unitId;
+            _selectedWeightUnitId = lastDailyTrackingsForThisHabit.weightUnitId;
+          }
+          // If not, show minutes before other, it's the most used
+          else {
+            _selectedUnitId = habit?.unitIds
+                    .where((unitId) =>
+                        habitState.units.containsKey(unitId) &&
+                        getRightTranslationFromJson(
+                                habitState.units[unitId]!.shortName, 'en') ==
+                            'min')
+                    .firstOrNull ??
+                habit?.unitIds.first;
+
+            _selectedWeightUnitId = habitState.units.values
+                .where((unit) =>
+                    getRightTranslationFromJson(unit.shortName, 'en') == 'kg')
+                .firstOrNull
+                ?.id;
+          }
         });
       }
     }
