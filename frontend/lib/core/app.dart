@@ -5,6 +5,7 @@ import 'package:get_it/get_it.dart';
 import 'package:reallystick/core/router.dart';
 import 'package:reallystick/core/ui/themes/dark.dart';
 import 'package:reallystick/core/ui/themes/light.dart';
+import 'package:reallystick/core/utils/dom_helper.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_bloc.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth_login/auth_login_bloc.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_bloc.dart';
@@ -36,7 +37,6 @@ import 'package:reallystick/features/public_messages/presentation/blocs/thread/t
 import 'package:reallystick/features/users/presentation/blocs/user/user_bloc.dart';
 import 'package:reallystick/i18n/app_localizations.dart';
 import 'package:universal_io/io.dart';
-import 'package:web/web.dart';
 
 class ReallyStickApp extends StatefulWidget {
   ReallyStickApp({
@@ -85,7 +85,7 @@ class ReallyStickAppState extends State<ReallyStickApp> {
           }
 
           if (kIsWeb) {
-            document.documentElement?.setAttribute("lang", locale.toString());
+            setHtmlLang(locale.toString());
           }
 
           return MaterialApp.router(

@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:reallystick/core/presentation/widgets/app_logo.dart';
 import 'package:reallystick/core/ui/themes/dark.dart';
 import 'package:reallystick/core/ui/themes/light.dart';
+import 'package:reallystick/core/utils/dom_helper.dart';
 import 'package:reallystick/i18n/app_localizations.dart';
 import 'package:universal_io/io.dart';
-import 'package:web/web.dart' as web;
 
 class BackendUnavailableApp extends StatelessWidget {
   final VoidCallback onRetry;
@@ -19,7 +19,7 @@ class BackendUnavailableApp extends StatelessWidget {
     Locale locale = Locale(parts[0]);
 
     if (kIsWeb) {
-      web.document.documentElement?.setAttribute("lang", locale.toString());
+      setHtmlLang(locale.toString());
     }
 
     final brightness =
