@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reallystick/core/ui/extensions.dart';
+import 'package:reallystick/core/utils/open_url.dart';
 import 'package:reallystick/core/utils/preview_data.dart';
 import 'package:reallystick/features/private_messages/domain/entities/private_discussion.dart';
 import 'package:reallystick/features/private_messages/presentation/blocs/private_discussion/private_discussion_bloc.dart';
@@ -280,7 +282,14 @@ class MessageWidget extends StatelessWidget {
                     ],
                   ),
                   SizedBox(height: 10),
-                  Text(message.content),
+                  Markdown(
+                    selectable: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    padding: EdgeInsets.all(0),
+                    data: message.content,
+                    onTapLink: markdownTapLinkCallback,
+                  ),
                   SizedBox(height: 15),
                   Row(
                     children: [

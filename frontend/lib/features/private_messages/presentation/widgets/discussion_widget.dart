@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:reallystick/core/ui/extensions.dart';
@@ -51,14 +52,14 @@ class DiscussionWidget extends StatelessWidget {
           ),
           child: Padding(
             padding: const EdgeInsets.all(16),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            child: Column(
               children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Text(
                         userState.users[discussion.recipientId]?.username ??
                             AppLocalizations.of(context)!.unknown,
                         style: TextStyle(
@@ -66,70 +67,80 @@ class DiscussionWidget extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(height: 5),
-                      if (discussion.hasBlocked) ...[
-                        Text(AppLocalizations.of(context)!.youBlockedThisUser)
-                      ] else ...[
-                        Text(
-                          discussion.lastMessage?.content
-                                  .replaceAll('\\n', '\n') ??
-                              "",
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 3,
-                        ),
-                      ]
-                    ],
-                  ),
-                ),
-                if (discussion.unseenMessages > 0 ||
-                    discussion.lastMessage != null)
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      if (discussion.lastMessage != null)
-                        Text(
-                          discussion.lastMessage!.updateAt == null
-                              ? DateFormat.Hm()
-                                  .format(discussion.lastMessage!.createdAt)
-                              : AppLocalizations.of(context)!.editedAt(
-                                  DateFormat.yMEd(userLocale).add_Hm().format(
-                                      discussion.lastMessage!.updateAt!)),
-                          style: TextStyle(
-                            color: context.colors.hint,
-                            fontSize: 12,
-                          ),
-                        ),
-                      if (discussion.unseenMessages > 0)
-                        Container(
-                          padding: EdgeInsets.all(4),
-                          decoration: BoxDecoration(
-                            color: Colors.red,
-                            shape: BoxShape.circle,
-                          ),
-                          constraints: BoxConstraints(
-                            minWidth: 16,
-                            minHeight: 16,
-                          ),
-                          child: Center(
-                            child: Text(
-                              discussion.unseenMessages > 99
-                                  ? '99+'
-                                  : '${discussion.unseenMessages}',
+                    ),
+                    if (discussion.unseenMessages > 0 ||
+                        discussion.lastMessage != null)
+                      Row(
+                        children: [
+                          if (discussion.lastMessage != null)
+                            Text(
+                              discussion.lastMessage!.updateAt == null
+                                  ? DateFormat.Hm()
+                                      .format(discussion.lastMessage!.createdAt)
+                                  : AppLocalizations.of(context)!.editedAt(
+                                      DateFormat.yMEd(userLocale)
+                                          .add_Hm()
+                                          .format(discussion
+                                              .lastMessage!.updateAt!)),
                               style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
+                                color: context.colors.hint,
+                                fontSize: 12,
                               ),
-                              textAlign: TextAlign.center,
                             ),
-                          ),
-                        ),
-                      if (discussion.lastMessage != null &&
-                          discussion.lastMessage!.creator ==
-                              profileState.profile!.id)
-                        StatusWidget(isSeen: discussion.lastMessage!.seen)
-                    ],
-                  )
+                          if (discussion.unseenMessages > 0) ...[
+                            SizedBox(width: 5),
+                            Container(
+                              padding: EdgeInsets.all(4),
+                              decoration: BoxDecoration(
+                                color: Colors.red,
+                                shape: BoxShape.circle,
+                              ),
+                              constraints: BoxConstraints(
+                                minWidth: 16,
+                                minHeight: 16,
+                              ),
+                              child: Center(
+                                child: Text(
+                                  discussion.unseenMessages > 99
+                                      ? '99+'
+                                      : '${discussion.unseenMessages}',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
+                          ],
+                          if (discussion.lastMessage != null &&
+                              discussion.lastMessage!.creator ==
+                                  profileState.profile!.id) ...[
+                            SizedBox(width: 5),
+                            StatusWidget(isSeen: discussion.lastMessage!.seen)
+                          ],
+                        ],
+                      )
+                  ],
+                ),
+                SizedBox(height: 5),
+                if (discussion.hasBlocked) ...[
+                  Text(AppLocalizations.of(context)!.youBlockedThisUser)
+                ] else if (discussion.lastMessage != null) ...[
+                  SizedBox(
+                    height: 55,
+                    child: Markdown(
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      padding: EdgeInsets.all(0),
+                      data: discussion.lastMessage!.deleted
+                          ? AppLocalizations.of(context)!.messageDeletedError
+                          : discussion.lastMessage!.content
+                              .replaceAll('\\n', '\n'),
+                    ),
+                  ),
+                ]
               ],
             ),
           ),

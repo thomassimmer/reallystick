@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/core/utils/preview_data.dart';
@@ -95,10 +96,14 @@ class ThreadWidget extends StatelessWidget {
                   ],
                 ),
                 SizedBox(height: 5),
-                Text(
-                  thread.content,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 3,
+                SizedBox(
+                  height: 60,
+                  child: Markdown(
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    padding: EdgeInsets.all(0),
+                    data: thread.content,
+                  ),
                 ),
                 SizedBox(height: 10),
                 Row(

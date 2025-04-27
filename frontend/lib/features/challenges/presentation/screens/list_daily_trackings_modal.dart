@@ -7,6 +7,7 @@ import 'package:reallystick/core/constants/dates.dart';
 import 'package:reallystick/core/constants/unit_conversion.dart';
 import 'package:reallystick/core/ui/colors.dart';
 import 'package:reallystick/core/ui/extensions.dart';
+import 'package:reallystick/core/utils/open_url.dart';
 import 'package:reallystick/core/utils/preview_data.dart';
 import 'package:reallystick/features/challenges/domain/entities/challenge.dart';
 import 'package:reallystick/features/challenges/domain/entities/challenge_daily_tracking.dart';
@@ -23,7 +24,6 @@ import 'package:reallystick/features/habits/presentation/helpers/units.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
 import 'package:reallystick/i18n/app_localizations.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class ListDailyTrackingsModal extends StatefulWidget {
   final Challenge challenge;
@@ -122,21 +122,6 @@ class ListDailyTrackingsModalState extends State<ListDailyTrackingsModal> {
             ? widget.challengeParticipation!.color
             : "",
       ).color;
-
-      void markdownTapLinkCallback(
-          String text, String? href, String title) async {
-        if (href != null) {
-          final url = Uri.parse(href);
-
-          if (await canLaunchUrl(url)) {
-            await launchUrl(
-              url,
-              mode: LaunchMode.externalApplication,
-              webOnlyWindowName: '_blank',
-            );
-          }
-        }
-      }
 
       return Padding(
         padding:

@@ -239,6 +239,7 @@ class ThreadScreenState extends State<ThreadScreen> {
                       ),
                     ),
                     if (message != null) ...[
+                      SizedBox(height: 20),
                       CustomMessageInput(
                         readOnly: widget.previewMode,
                         contentController: _contentController,

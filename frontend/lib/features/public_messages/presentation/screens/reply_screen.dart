@@ -319,6 +319,7 @@ class ReplyScreenState extends State<ReplyScreen> {
                       ),
                     ),
                     if (message != null) ...[
+                      SizedBox(height: 20),
                       CustomMessageInput(
                         contentController: _contentController,
                         recipientUsername:

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:reallystick/core/messages/message.dart';
@@ -11,6 +12,7 @@ import 'package:reallystick/core/presentation/widgets/custom_app_bar.dart';
 import 'package:reallystick/core/presentation/widgets/full_width_list_view.dart';
 import 'package:reallystick/core/ui/colors.dart';
 import 'package:reallystick/core/ui/extensions.dart';
+import 'package:reallystick/core/utils/open_url.dart';
 import 'package:reallystick/core/utils/preview_data.dart';
 import 'package:reallystick/features/challenges/domain/entities/challenge_participation.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_bloc.dart';
@@ -623,14 +625,17 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
                                 ),
                                 SizedBox(height: 16),
                               ],
-                              Text(
-                                AppLocalizations.of(context)!
+                              Markdown(
+                                selectable: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                padding: EdgeInsets.all(0),
+                                data: AppLocalizations.of(context)!
                                     .descriptionWithTwoPoints(description),
-                                style: TextStyle(
-                                  color: context.colors.textOnPrimary,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
+                                onTapLink: markdownTapLinkCallback,
+                                styleSheet: MarkdownStyleSheet(
+                                    textAlign: WrapAlignment.center),
+                              )
                             ],
                           )),
                     ),

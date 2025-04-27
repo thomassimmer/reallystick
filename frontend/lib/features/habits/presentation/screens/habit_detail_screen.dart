@@ -2,10 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:reallystick/core/presentation/widgets/custom_app_bar.dart';
 import 'package:reallystick/core/presentation/widgets/full_width_list_view.dart';
 import 'package:reallystick/core/ui/colors.dart';
 import 'package:reallystick/core/ui/extensions.dart';
+import 'package:reallystick/core/utils/open_url.dart';
 import 'package:reallystick/core/utils/preview_data.dart';
 import 'package:reallystick/features/habits/domain/entities/habit_participation.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.dart';
@@ -314,11 +316,16 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
                         ),
                       ),
                       SizedBox(height: 8),
-                      Text(
-                        AppLocalizations.of(context)!
+                      Markdown(
+                        selectable: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        padding: EdgeInsets.all(0),
+                        data: AppLocalizations.of(context)!
                             .descriptionWithTwoPoints(description),
-                        style: TextStyle(color: Colors.white),
-                        textAlign: TextAlign.center,
+                        onTapLink: markdownTapLinkCallback,
+                        styleSheet:
+                            MarkdownStyleSheet(textAlign: WrapAlignment.center),
                       ),
                     ],
                   ),

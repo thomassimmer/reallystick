@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:intl/intl.dart';
 import 'package:reallystick/core/ui/extensions.dart';
+import 'package:reallystick/core/utils/open_url.dart';
 import 'package:reallystick/core/utils/preview_data.dart';
 import 'package:reallystick/features/private_messages/domain/entities/private_message.dart';
 import 'package:reallystick/features/private_messages/presentation/blocs/private_discussion/private_discussion_bloc.dart';
@@ -87,13 +89,15 @@ class PrivateMessageWidgetState extends State<PrivateMessageWidget> {
                   ? CrossAxisAlignment.end
                   : CrossAxisAlignment.start,
               children: [
-                Text(
-                  widget.message.deleted
+                Markdown(
+                  selectable: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  padding: EdgeInsets.all(0),
+                  data: widget.message.deleted
                       ? AppLocalizations.of(context)!.messageDeletedError
                       : widget.message.content.replaceAll('\\n', '\n'),
-                  maxLines: null,
-                  overflow: TextOverflow.visible,
-                  softWrap: true,
+                  onTapLink: markdownTapLinkCallback,
                 ),
                 SizedBox(height: 5),
                 Row(
