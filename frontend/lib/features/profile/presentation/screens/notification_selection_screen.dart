@@ -44,7 +44,7 @@ class NotificationSelectionScreen extends StatelessWidget {
 
     final List<Map<String, dynamic>> notificationSettings = [
       {
-        'label': 'Private Messages',
+        'label': AppLocalizations.of(context)!.privateMessagesReceived,
         'value': profile.notificationsForPrivateMessagesEnabled,
         'onChanged': (bool value) {
           _updateProfile(
@@ -52,7 +52,7 @@ class NotificationSelectionScreen extends StatelessWidget {
         },
       },
       {
-        'label': 'Public Message Likes',
+        'label': AppLocalizations.of(context)!.likesOnMyPublicMessages,
         'value': profile.notificationsForPublicMessageLikedEnabled,
         'onChanged': (bool value) {
           _updateProfile(context,
@@ -60,7 +60,7 @@ class NotificationSelectionScreen extends StatelessWidget {
         },
       },
       {
-        'label': 'Public Message Replies',
+        'label': AppLocalizations.of(context)!.repliesOnMyPublicMessages,
         'value': profile.notificationsForPublicMessageRepliesEnabled,
         'onChanged': (bool value) {
           _updateProfile(context,
@@ -68,7 +68,7 @@ class NotificationSelectionScreen extends StatelessWidget {
         },
       },
       {
-        'label': 'User Joined Your Challenge',
+        'label': AppLocalizations.of(context)!.newParticipantsToMyChallenges,
         'value': profile.notificationsUserJoinedYourChallengeEnabled,
         'onChanged': (bool value) {
           _updateProfile(context,
@@ -76,7 +76,7 @@ class NotificationSelectionScreen extends StatelessWidget {
         },
       },
       {
-        'label': 'User Duplicated Your Challenge',
+        'label': AppLocalizations.of(context)!.duplicationsOfMyChallenges,
         'value': profile.notificationsUserDuplicatedYourChallengeEnabled,
         'onChanged': (bool value) {
           _updateProfile(context,
@@ -88,7 +88,7 @@ class NotificationSelectionScreen extends StatelessWidget {
     return FullWidthListView(
       children: [
         SwitchListTile(
-          title: Text('Enable Notifications'),
+          title: Text(AppLocalizations.of(context)!.enableNotifications),
           value: notificationsEnabled,
           onChanged: (bool value) {
             _updateProfile(context, profile..notificationsEnabled = value);

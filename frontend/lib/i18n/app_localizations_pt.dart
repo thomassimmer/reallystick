@@ -358,6 +358,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get duplicateChallenge => 'Cópia do desafio';
 
   @override
+  String get duplicationsOfMyChallenges => 'Duplicações dos meus desafios';
+
+  @override
   String get edit => 'Editar';
 
   @override
@@ -373,6 +376,9 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get enable => 'Ativar';
+
+  @override
+  String get enableNotifications => 'Ativar notificações';
 
   @override
   String get enableNotificationsReminder => 'Ativar notificações de lembrete';
@@ -671,6 +677,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get light => 'Claro';
 
   @override
+  String get likesOnMyPublicMessages => 'Curtidas nas minhas mensagens públicas';
+
+  @override
   String get likedMessages => 'Mensagens curtidas';
 
   @override
@@ -732,6 +741,9 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get newDiscussion => 'Nova Discussão';
+
+  @override
+  String get newParticipantsToMyChallenges => 'Novos participantes nos meus desafios';
 
   @override
   String get newPassword => 'Nova senha';
@@ -914,6 +926,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get privacyPolicyMarkdown => '# Política de Privacidade\n\n**Data de entrada em vigor:** 5 de abril de 2025  \n**Última atualização:** 5 de abril de 2025\n\nBem-vindo ao **ReallyStick**, uma plataforma social de acompanhamento de hábitos que permite aos usuários monitorar seu progresso diário, participar de desafios e interagir em discussões públicas ou privadas — tudo enquanto mantém o controle sobre seus dados pessoais.\n\n## 1. Informações que coletamos\n\n### Dados obrigatórios\n- Nome de usuário\n- Senha (armazenada de forma segura)\n- Código de recuperação\n- Informações sobre o dispositivo (sistema operacional, plataforma, tipo de dispositivo)\n- Endereço IP\n- Tokens de sessão\n\n### Dados demográficos opcionais\n- Continente\n- País\n- Faixa etária\n- Gênero\n- Nível educacional\n- Nível de riqueza\n- Status profissional\n\n## 2. Mensagens privadas & criptografia\n\n- As mensagens privadas são criptografadas de ponta a ponta  \n- Sua chave privada é armazenada apenas em seu dispositivo  \n- Não podemos ler suas mensagens privadas\n\n## 3. Uso dos seus dados\n\nUsamos seus dados para:\n- Fornecer as funcionalidades do aplicativo\n- Gerenciar sessões em seus dispositivos\n- Gerar estatísticas anônimas\n- Enviar notificações push (via Google Firebase)\n- Prevenir abusos e garantir a segurança\n\nNós **não vendemos nem compartilhamos** seus dados para fins publicitários.\n\n## 4. Compartilhamento de dados\n\nServiço externo utilizado:\n- **Google Firebase** – para envio de notificações push\n\n## 5. Interações públicas\n\n- Apenas os nomes de usuário são visíveis publicamente  \n- As mensagens públicas podem ser denunciadas e moderadas\n\n## 6. Retenção e exclusão de dados\n\nOs usuários podem excluir sua conta e todos os dados associados na página de perfil.\n\n## 7. Medidas de segurança\n\n- Senhas criptografadas  \n- Armazenamento local de tokens de acesso  \n- Criptografia de ponta a ponta  \n- Registro de endereços IP para prevenir abusos\n\n## 8. Anonimato & identidade\n\n- Nenhum e-mail ou nome real é necessário  \n- As contas são pseudônimas por padrão\n\n## 9. Proteção infantil\n\nNosso aplicativo está aberto a todos. No entanto, o consentimento dos pais pode ser necessário de acordo com as leis locais em vigor.\n\n## 10. Direitos dos usuários (LGPD)\n\nVocê tem o direito de:\n- Acessar seus dados\n- Excluir seus dados\n- Recusar fornecer os campos opcionais\n\n## 11. Alterações na política\n\nPodemos atualizar esta política de privacidade. Em caso de mudanças significativas, você será informado através do aplicativo.\n\n## 12. Entre em contato\n\nUse o formulário de contato integrado no aplicativo.\n\nPara questões relacionadas com a privacidade, também pode enviar-nos um e-mail para: **[support@reallystick.com](support@reallystick.com)**';
 
   @override
+  String get privateMessagesReceived => 'Mensagens privadas recebidas';
+
+  @override
   String get profile => 'Perfil';
 
   @override
@@ -1056,6 +1071,9 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get repetitionNumberIsNullError => 'O número de repetições não pode ser nulo.';
+
+  @override
+  String get repliesOnMyPublicMessages => 'Respostas às minhas mensagens públicas';
 
   @override
   String get reply => 'Resposta';

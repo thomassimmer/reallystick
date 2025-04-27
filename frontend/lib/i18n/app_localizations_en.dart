@@ -358,6 +358,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get duplicateChallenge => 'Challenge copy';
 
   @override
+  String get duplicationsOfMyChallenges => 'Duplications of your challenges';
+
+  @override
   String get edit => 'Edit';
 
   @override
@@ -373,6 +376,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get enable => 'Enable';
+
+  @override
+  String get enableNotifications => 'Enable notifications';
 
   @override
   String get enableNotificationsReminder => 'Enable reminder notifications';
@@ -671,6 +677,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get light => 'Light';
 
   @override
+  String get likesOnMyPublicMessages => 'Likes on my public messages';
+
+  @override
   String get likedMessages => 'Liked Messages';
 
   @override
@@ -732,6 +741,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get newDiscussion => 'New Discussion';
+
+  @override
+  String get newParticipantsToMyChallenges => 'New participants to my challenges';
 
   @override
   String get newPassword => 'New password';
@@ -914,6 +926,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get privacyPolicyMarkdown => '# Privacy Policy\n\n**Effective Date:** April 5, 2025  \n**Last Updated:** April 5, 2025\n\nWelcome to **ReallyStick**, a social habit-tracking platform that enables users to track their daily progress, join challenges, and engage in public or private discussions — all while maintaining control over their personal data.\n\n## 1. Information We Collect\n\n### Required Data\n- Username\n- Password (hashed securely)\n- Recovery Code\n- Device Information (OS, platform, type)\n- IP Address\n- Session Tokens\n\n### Optional Demographics\n- Continent\n- Country\n- Age category\n- Gender\n- Level of study\n- Level of wealth\n- Employment status\n\n## 2. Private Messaging & Encryption\n\n- End-to-end encrypted private messages\n- Your private key is stored only on your device\n- We cannot read your private messages\n\n## 3. How We Use Your Data\n\nWe use your data to:\n- Provide app functionality\n- Manage device sessions\n- Generate anonymous analytics\n- Send push notifications (via Google Firebase)\n- Monitor abuse and maintain security\n\nWe do **not** sell or share your data for advertising.\n\n## 4. Data Sharing\n\nOnly external service:  \n- Google Firebase – used for push notifications. Firebase may collect device identifiers and token information to deliver messages. We do not share personally identifiable data with Firebase.\n\n## 5. Public Interactions\n\n- Only usernames are shown publicly\n- Public messages can be reported and moderated\n\n## 6. Data Retention & Deletion\n\nUsers can delete their account and all related data from their profile page.\n\n## 7. Security Measures\n\n- Hashed passwords\n- Local token storage\n- End-to-end encryption\n- IP logging for abuse prevention\n\n## 8. Anonymity & Identity\n\n- No email or real names required\n- Accounts are pseudonymous\n\n## 9. Children’s Privacy\n\nOur app is open to all users, but parental consent may be required depending on your local laws.\n\n## 10. User Rights (GDPR)\n\n- Access your data\n- Delete your data\n- Opt out of optional data fields\n\n## 11. Policy Changes\n\nWe may update this Privacy Policy. You’ll be notified in-app if we make major changes.\n\n## 12. Contact Us\n\nUse the in-app contact form\n\nFor privacy-related inquiries, you may also email us at: **[support@reallystick.com](support@reallystick.com)**';
 
   @override
+  String get privateMessagesReceived => 'Private messages received';
+
+  @override
   String get profile => 'Profile';
 
   @override
@@ -1056,6 +1071,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get repetitionNumberIsNullError => 'The repetition number can\'t be null.';
+
+  @override
+  String get repliesOnMyPublicMessages => 'Replies on my public messages';
 
   @override
   String get reply => 'Reply';

@@ -717,6 +717,12 @@ abstract class AppLocalizations {
   /// **'Challenge copy'**
   String get duplicateChallenge;
 
+  /// No description provided for @duplicationsOfMyChallenges.
+  ///
+  /// In en, this message translates to:
+  /// **'Duplications of your challenges'**
+  String get duplicationsOfMyChallenges;
+
   /// No description provided for @edit.
   ///
   /// In en, this message translates to:
@@ -746,6 +752,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enable'**
   String get enable;
+
+  /// No description provided for @enableNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable notifications'**
+  String get enableNotifications;
 
   /// No description provided for @enableNotificationsReminder.
   ///
@@ -1215,6 +1227,12 @@ abstract class AppLocalizations {
   /// **'Light'**
   String get light;
 
+  /// No description provided for @likesOnMyPublicMessages.
+  ///
+  /// In en, this message translates to:
+  /// **'Likes on my public messages'**
+  String get likesOnMyPublicMessages;
+
   /// No description provided for @likedMessages.
   ///
   /// In en, this message translates to:
@@ -1340,6 +1358,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'New Discussion'**
   String get newDiscussion;
+
+  /// No description provided for @newParticipantsToMyChallenges.
+  ///
+  /// In en, this message translates to:
+  /// **'New participants to my challenges'**
+  String get newParticipantsToMyChallenges;
 
   /// No description provided for @newPassword.
   ///
@@ -1665,6 +1689,12 @@ abstract class AppLocalizations {
   /// **'# Privacy Policy\n\n**Effective Date:** April 5, 2025  \n**Last Updated:** April 5, 2025\n\nWelcome to **ReallyStick**, a social habit-tracking platform that enables users to track their daily progress, join challenges, and engage in public or private discussions — all while maintaining control over their personal data.\n\n## 1. Information We Collect\n\n### Required Data\n- Username\n- Password (hashed securely)\n- Recovery Code\n- Device Information (OS, platform, type)\n- IP Address\n- Session Tokens\n\n### Optional Demographics\n- Continent\n- Country\n- Age category\n- Gender\n- Level of study\n- Level of wealth\n- Employment status\n\n## 2. Private Messaging & Encryption\n\n- End-to-end encrypted private messages\n- Your private key is stored only on your device\n- We cannot read your private messages\n\n## 3. How We Use Your Data\n\nWe use your data to:\n- Provide app functionality\n- Manage device sessions\n- Generate anonymous analytics\n- Send push notifications (via Google Firebase)\n- Monitor abuse and maintain security\n\nWe do **not** sell or share your data for advertising.\n\n## 4. Data Sharing\n\nOnly external service:  \n- Google Firebase – used for push notifications. Firebase may collect device identifiers and token information to deliver messages. We do not share personally identifiable data with Firebase.\n\n## 5. Public Interactions\n\n- Only usernames are shown publicly\n- Public messages can be reported and moderated\n\n## 6. Data Retention & Deletion\n\nUsers can delete their account and all related data from their profile page.\n\n## 7. Security Measures\n\n- Hashed passwords\n- Local token storage\n- End-to-end encryption\n- IP logging for abuse prevention\n\n## 8. Anonymity & Identity\n\n- No email or real names required\n- Accounts are pseudonymous\n\n## 9. Children’s Privacy\n\nOur app is open to all users, but parental consent may be required depending on your local laws.\n\n## 10. User Rights (GDPR)\n\n- Access your data\n- Delete your data\n- Opt out of optional data fields\n\n## 11. Policy Changes\n\nWe may update this Privacy Policy. You’ll be notified in-app if we make major changes.\n\n## 12. Contact Us\n\nUse the in-app contact form\n\nFor privacy-related inquiries, you may also email us at: **[support@reallystick.com](support@reallystick.com)**'**
   String get privacyPolicyMarkdown;
 
+  /// No description provided for @privateMessagesReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'Private messages received'**
+  String get privateMessagesReceived;
+
   /// No description provided for @profile.
   ///
   /// In en, this message translates to:
@@ -1940,6 +1970,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The repetition number can\'t be null.'**
   String get repetitionNumberIsNullError;
+
+  /// No description provided for @repliesOnMyPublicMessages.
+  ///
+  /// In en, this message translates to:
+  /// **'Replies on my public messages'**
+  String get repliesOnMyPublicMessages;
 
   /// No description provided for @reply.
   ///
