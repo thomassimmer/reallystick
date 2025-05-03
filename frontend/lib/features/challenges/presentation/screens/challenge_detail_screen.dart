@@ -62,6 +62,7 @@ class ChallengeDetailsScreen extends StatefulWidget {
 
 class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
   ScrollController controller = ScrollController();
+  bool _modalOpened = false;
 
   void _showAddDailyTrackingBottomSheet() {
     showModalBottomSheet(
@@ -200,7 +201,7 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
     );
   }
 
-  void _openFinishChallengeModal({
+  Future<void> _openFinishChallengeModal({
     required ChallengeParticipation challengeParticipation,
   }) async {
     await showModalBottomSheet(
@@ -293,6 +294,8 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
   @override
   void initState() {
     super.initState();
+
+    _modalOpened = false;
 
     if (widget.previewMode) {
       if (widget.previewForDailyObjectives || widget.previewForDiscussion) {
@@ -422,7 +425,7 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
             final challengeStatistics =
                 challengeState.challengeStatistics[widget.challengeId];
 
-            if (challengeParticipation != null) {
+            if (challengeParticipation != null && !_modalOpened) {
               final finished = checkIfChallengeIsFinished(
                 challengeDailyTrackings: challengeDailyTrackings,
                 challengeStartDate: challenge.startDate,
@@ -430,13 +433,22 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
               );
 
               if (finished && !challengeParticipation.finished) {
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  _openFinishChallengeModal(
-                      challengeParticipation: challengeParticipation!);
-                });
+                if (ModalRoute.of(context)?.isCurrent ?? true) {
+                  WidgetsBinding.instance.addPostFrameCallback(
+                    (_) {
+                      _modalOpened = true;
+                      _openFinishChallengeModal(
+                        challengeParticipation: challengeParticipation!,
+                      ).then(
+                        (_) {
+                          _modalOpened = false;
+                        },
+                      );
+                    },
+                  );
+                }
               }
             }
-
             return Scaffold(
               appBar: CustomAppBar(
                 title: Text(

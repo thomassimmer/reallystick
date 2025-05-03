@@ -69,28 +69,47 @@ class DailyTrackingCarouselWithStartDateWidgetState
   }
 
   void _scrollToToday() {
-    if (scrollController.hasClients) {
-      final now = DateTime.now();
-      final normalizedToday = DateTime(now.year, now.month, now.day);
+    if (!scrollController.hasClients) {
+      Timer(const Duration(milliseconds: 400), _scrollToToday);
+      return;
+    }
 
-      // Find index of today in `lastDays`
-      final todayIndex =
-          lastDays.indexWhere((date) => date.isSameDate(normalizedToday));
+    final now = DateTime.now();
+    final normalizedToday = DateTime(now.year, now.month, now.day);
 
-      if (todayIndex != -1) {
-        double offset =
-            (dayBoxSize + 8.0) * (todayIndex ~/ 7); // Scroll to the right week
-        scrollController.animateTo(
-          offset,
-          duration: Duration(milliseconds: 300),
-          curve: Curves.easeOut,
-        );
-      } else if (lastDays.isNotEmpty &&
-          normalizedToday.isAfter(lastDays.last)) {
-        scrollController.jumpTo(scrollController.position.maxScrollExtent);
-      }
-    } else {
-      Timer(Duration(milliseconds: 400), () => _scrollToToday());
+    // Calculate start and end dates
+    final numberOfDays = (widget.challengeDailyTrackings.isNotEmpty
+            ? widget.challengeDailyTrackings
+                .map((cdt) => cdt.dayOfProgram)
+                .reduce(max)
+            : 0) +
+        1;
+
+    final challengeStartDate = widget.challenge.startDate!;
+    final endDate = challengeStartDate.add(Duration(days: numberOfDays - 1));
+
+    final firstMonday = challengeStartDate.subtract(
+      Duration(days: challengeStartDate.weekday - DateTime.monday),
+    );
+
+    final lastSunday = endDate.add(
+      Duration(days: DateTime.sunday - endDate.weekday),
+    );
+
+    // Compute today's index within `lastDays`
+    final todayIndex = normalizedToday.difference(firstMonday).inDays;
+
+    if (todayIndex >= 0 && todayIndex < lastDays.length) {
+      final weekIndex = todayIndex ~/ 7;
+
+      final offset = (dayBoxSize + 27) * (weekIndex - 1);
+      scrollController.animateTo(
+        offset,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    } else if (normalizedToday.isAfter(lastSunday)) {
+      scrollController.jumpTo(scrollController.position.maxScrollExtent);
     }
   }
 
@@ -173,8 +192,7 @@ class DailyTrackingCarouselWithStartDateWidgetState
           1;
 
       final startDate = widget.challenge.startDate!;
-      final endDate =
-          widget.challenge.startDate!.add(Duration(days: numberOfDays - 1));
+      final endDate = startDate.add(Duration(days: numberOfDays - 1));
 
       final firstMonday = startDate
           .subtract(Duration(days: (startDate.weekday - DateTime.monday)));
@@ -337,7 +355,8 @@ class DailyTrackingCarouselWithStartDateWidgetState
                                     if (widget.canOpenDayBoxes) ...[
                                       GestureDetector(
                                         onTap: () => _openDailyTrackings(
-                                            datetime: datetime),
+                                          datetime: normalizedDatetime,
+                                        ),
                                         child: isToday
                                             ? buildCustomBoxForToday(
                                                 dayBoxSize,

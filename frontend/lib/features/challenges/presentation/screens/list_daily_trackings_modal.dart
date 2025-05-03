@@ -18,6 +18,7 @@ import 'package:reallystick/features/challenges/presentation/helpers/challenge_r
 import 'package:reallystick/features/challenges/presentation/screens/update_daily_tracking_modal.dart';
 import 'package:reallystick/features/habits/domain/entities/habit_daily_tracking.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.dart';
+import 'package:reallystick/features/habits/presentation/blocs/habit/habit_events.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_states.dart';
 import 'package:reallystick/features/habits/presentation/helpers/translations.dart';
 import 'package:reallystick/features/habits/presentation/helpers/units.dart';
@@ -80,6 +81,25 @@ class ListDailyTrackingsModalState extends State<ListDailyTrackingsModal> {
     );
   }
 
+  void _validateDailyObjective(ChallengeDailyTracking tracking) {
+    final now = DateTime.now();
+    final event = CreateHabitDailyTrackingEvent(
+      datetime: widget.datetime.copyWith(
+        hour: now.hour,
+        minute: now.minute,
+        second: now.second,
+      ),
+      habitId: tracking.habitId,
+      quantityOfSet: tracking.quantityOfSet,
+      quantityPerSet: tracking.quantityPerSet,
+      unitId: tracking.unitId,
+      weight: tracking.weight,
+      weightUnitId: tracking.weightUnitId,
+    );
+
+    context.read<HabitBloc>().add(event);
+  }
+
   @override
   Widget build(BuildContext context) {
     final profileState = widget.previewMode
@@ -123,6 +143,8 @@ class ListDailyTrackingsModalState extends State<ListDailyTrackingsModal> {
             : "",
       ).color;
 
+      final today = DateTime.now();
+
       return Padding(
         padding:
             EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
@@ -149,20 +171,11 @@ class ListDailyTrackingsModalState extends State<ListDailyTrackingsModal> {
                   habitState.habitCategories,
                 );
 
-                final challengeDailyTrackingDate =
-                    (widget.challenge.startDate != null
-                            ? widget.challenge.startDate!
-                            : widget.challengeParticipation != null
-                                ? widget.challengeParticipation!.startDate
-                                : DateTime.now())
-                        .add(Duration(days: dailyTracking.dayOfProgram));
-
                 List<HabitDailyTracking> habitDailyTrackingsOnThatDay =
                     widget.challengeParticipation != null
                         ? habitState.habitDailyTrackings
                             .where((hdt) =>
-                                hdt.datetime
-                                    .isSameDate(challengeDailyTrackingDate) &&
+                                hdt.datetime.isSameDate(widget.datetime) &&
                                 hdt.habitId == dailyTracking.habitId)
                             .toList()
                         : [];
@@ -189,25 +202,45 @@ class ListDailyTrackingsModalState extends State<ListDailyTrackingsModal> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              if (dailyObjectivesDone) ...[
-                                Icon(
-                                  Icons.check,
-                                  size: 13,
-                                  color: context.colors.success,
-                                ),
-                                SizedBox(
-                                  width: 20,
+                              Row(
+                                children: [
+                                  if (dailyObjectivesDone) ...[
+                                    Icon(
+                                      Icons.check,
+                                      size: 13,
+                                      color: context.colors.success,
+                                    ),
+                                    SizedBox(width: 10),
+                                  ],
+                                  Text(
+                                    getRightTranslationFromJson(
+                                        habit.name, userLocale),
+                                    style: context.typographies.body.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              if (!dailyObjectivesDone &&
+                                  widget.datetime.compareTo(today) <= 0) ...[
+                                ElevatedButton(
+                                  onPressed: () =>
+                                      _validateDailyObjective(dailyTracking),
+                                  style: ElevatedButton.styleFrom(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 12, vertical: 6),
+                                    backgroundColor: context.colors.success,
+                                    foregroundColor: Colors.white,
+                                    textStyle: context.typographies.bodySmall,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                  ),
+                                  child: Text("Done"),
                                 ),
                               ],
-                              Text(
-                                getRightTranslationFromJson(
-                                  habit.name,
-                                  userLocale,
-                                ),
-                                style: context.typographies.body
-                                    .copyWith(fontWeight: FontWeight.bold),
-                              ),
                             ],
                           ),
                           SizedBox(height: 10),

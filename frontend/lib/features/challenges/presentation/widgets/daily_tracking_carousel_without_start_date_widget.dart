@@ -68,26 +68,37 @@ class DailyTrackingCarouselWithoutStartDateWidgetState
   }
 
   void _scrollToToday() {
-    if (scrollController.hasClients) {
-      final now = DateTime.now();
-      final normalizedToday = DateTime(now.year, now.month, now.day);
+    if (!scrollController.hasClients) {
+      Timer(const Duration(milliseconds: 400), _scrollToToday);
+      return;
+    }
 
-      final todayIndex =
-          lastDays.indexWhere((date) => date.isSameDate(normalizedToday));
+    final now = DateTime.now();
+    final normalizedToday = DateTime(now.year, now.month, now.day);
 
-      if (todayIndex != -1) {
-        double offset =
-            (dayBoxSize + 8.0) * (todayIndex ~/ 7); // Scroll to the right week
-        scrollController.animateTo(
-          offset,
-          duration: Duration(milliseconds: 300),
-          curve: Curves.easeOut,
-        );
-      } else {
-        scrollController.jumpTo(scrollController.position.maxScrollExtent);
-      }
+    final startDate = widget.challengeParticipation?.startDate ??
+        DateTime(now.year, now.month, now.day);
+
+    final todayIndex = normalizedToday
+        .difference(
+          DateTime(startDate.year, startDate.month, startDate.day),
+        )
+        .inDays;
+
+    if (todayIndex >= 0 && todayIndex < lastDays.length) {
+      final weekIndex = todayIndex ~/ 7;
+
+      // Scroll to the start of that week's offset
+      final offset = (dayBoxSize + 39.0) * (weekIndex - 1);
+
+      scrollController.animateTo(
+        offset,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
     } else {
-      Timer(Duration(milliseconds: 400), () => _scrollToToday());
+      // Fallback: jump to the end if today is not in range
+      scrollController.jumpTo(scrollController.position.maxScrollExtent);
     }
   }
 
@@ -153,7 +164,13 @@ class DailyTrackingCarouselWithoutStartDateWidgetState
     if (profileState is ProfileAuthenticated &&
         challengeState is ChallengesLoaded &&
         habitState is HabitsLoaded) {
-      final today = DateTime.now();
+      final now = DateTime.now();
+      final normalizedToday = DateTime(
+        now.year,
+        now.month,
+        now.day,
+      );
+
       final numberOfDays = (widget.challengeDailyTrackings.isNotEmpty
               ? widget.challengeDailyTrackings
                   .map((cdt) => cdt.dayOfProgram)
@@ -161,7 +178,8 @@ class DailyTrackingCarouselWithoutStartDateWidgetState
               : 0) +
           1;
 
-      final startDate = widget.challengeParticipation?.startDate ?? today;
+      final startDate =
+          widget.challengeParticipation?.startDate ?? normalizedToday;
 
       lastDays = List.generate(
         numberOfDays,
@@ -283,7 +301,8 @@ class DailyTrackingCarouselWithoutStartDateWidgetState
                                 }
                               }
 
-                              final isToday = datetime.isSameDate(today);
+                              final isToday =
+                                  datetime.isSameDate(normalizedToday);
                               final numberOfActivitiesOnThatDay =
                                   challengeDailyTrackingsPerDay[datetime]!
                                       .length;
@@ -303,7 +322,8 @@ class DailyTrackingCarouselWithoutStartDateWidgetState
                                     if (widget.canOpenDayBoxes) ...[
                                       GestureDetector(
                                         onTap: () => _openDailyTrackings(
-                                            datetime: datetime),
+                                          datetime: normalizedDatetime,
+                                        ),
                                         child: isToday
                                             ? buildCustomBoxForToday(
                                                 dayBoxSize,

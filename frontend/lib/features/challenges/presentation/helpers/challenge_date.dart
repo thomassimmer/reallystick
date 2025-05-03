@@ -1,6 +1,8 @@
 import 'package:reallystick/features/challenges/domain/entities/challenge_daily_tracking.dart';
 import 'package:reallystick/features/challenges/domain/entities/challenge_participation.dart';
 
+// Returns true if challenge finished yesterday or before.
+// Return false if challenge has no daily tracking yet.
 bool checkIfChallengeIsFinished({
   required List<ChallengeDailyTracking> challengeDailyTrackings,
   required DateTime? challengeStartDate,
@@ -11,6 +13,7 @@ bool checkIfChallengeIsFinished({
   }
 
   final today = DateTime.now();
+  final yesterday = today.subtract(Duration(days: 1));
 
   challengeDailyTrackings
       .sort((a, b) => a.dayOfProgram.compareTo(b.dayOfProgram));
@@ -22,5 +25,5 @@ bool checkIfChallengeIsFinished({
       : challengeParticipation.startDate
           .add(Duration(days: lastDailyTracking.dayOfProgram));
 
-  return today.compareTo(challengeEndDate) >= 0;
+  return yesterday.compareTo(challengeEndDate) >= 0;
 }
