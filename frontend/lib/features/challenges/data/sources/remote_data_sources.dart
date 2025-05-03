@@ -256,12 +256,19 @@ class ChallengeRemoteDataSource {
     );
 
     final jsonBody = customJsonDecode(response.body);
+    final responseCode = jsonBody['code'] as String;
 
     if (response.statusCode == 200) {
       try {
         return ChallengeDataModel.fromJson(jsonBody['challenge']);
       } catch (e) {
         throw ParsingError();
+      }
+    }
+
+    if (response.statusCode == 400) {
+      if (responseCode == 'CHALLENGE_DESCRIPTION_TOO_LONG') {
+        throw ChallengeDescriptionWrongSizeError();
       }
     }
 
@@ -348,6 +355,12 @@ class ChallengeRemoteDataSource {
       }
     }
 
+    if (response.statusCode == 400) {
+      if (responseCode == 'CHALLENGE_DAILY_TRACKING_NOTE_TOO_LONG') {
+        throw ChallengeDailyTrackingNoteTooLongError();
+      }
+    }
+
     if (response.statusCode == 401) {
       throw UnauthorizedError();
     }
@@ -395,6 +408,12 @@ class ChallengeRemoteDataSource {
         return ChallengeDataModel.fromJson(jsonBody['challenge']);
       } catch (e) {
         throw ParsingError();
+      }
+    }
+
+    if (response.statusCode == 400) {
+      if (responseCode == 'CHALLENGE_DESCRIPTION_TOO_LONG') {
+        throw ChallengeDescriptionWrongSizeError();
       }
     }
 
@@ -486,6 +505,12 @@ class ChallengeRemoteDataSource {
             jsonBody['challenge_daily_tracking']);
       } catch (e) {
         throw ParsingError();
+      }
+    }
+
+    if (response.statusCode == 400) {
+      if (responseCode == 'CHALLENGE_DAILY_TRACKING_NOTE_TOO_LONG') {
+        throw ChallengeDailyTrackingNoteTooLongError();
       }
     }
 

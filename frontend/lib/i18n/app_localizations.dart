@@ -315,6 +315,12 @@ abstract class AppLocalizations {
   /// **'Your challenge was successfully deleted.'**
   String get challengeDeleted;
 
+  /// No description provided for @challengeDescriptionWrongSize.
+  ///
+  /// In en, this message translates to:
+  /// **'The challenge description must be less than 2,000 characters.'**
+  String get challengeDescriptionWrongSize;
+
   /// No description provided for @challengeDuplicated.
   ///
   /// In en, this message translates to:
@@ -933,11 +939,11 @@ abstract class AppLocalizations {
   /// **'Your activity was successfully updated.'**
   String get habitDailyTrackingUpdated;
 
-  /// No description provided for @habitDescriptionWrongSizeError.
+  /// No description provided for @habitDescriptionWrongSize.
   ///
   /// In en, this message translates to:
-  /// **'Description must not be empty and less than 200 characters.'**
-  String get habitDescriptionWrongSizeError;
+  /// **'Description must not be empty and less than 2,000 characters.'**
+  String get habitDescriptionWrongSize;
 
   /// No description provided for @habitIsEmptyError.
   ///
@@ -1227,17 +1233,17 @@ abstract class AppLocalizations {
   /// **'Light'**
   String get light;
 
-  /// No description provided for @likesOnMyPublicMessages.
-  ///
-  /// In en, this message translates to:
-  /// **'Likes on my public messages'**
-  String get likesOnMyPublicMessages;
-
   /// No description provided for @likedMessages.
   ///
   /// In en, this message translates to:
   /// **'Liked Messages'**
   String get likedMessages;
+
+  /// No description provided for @likesOnMyPublicMessages.
+  ///
+  /// In en, this message translates to:
+  /// **'Likes on my public messages'**
+  String get likesOnMyPublicMessages;
 
   /// No description provided for @livesInUrbanArea.
   ///
@@ -1689,6 +1695,30 @@ abstract class AppLocalizations {
   /// **'# Privacy Policy\n\n**Effective Date:** April 5, 2025  \n**Last Updated:** April 5, 2025\n\nWelcome to **ReallyStick**, a social habit-tracking platform that enables users to track their daily progress, join challenges, and engage in public or private discussions — all while maintaining control over their personal data.\n\n## 1. Information We Collect\n\n### Required Data\n- Username\n- Password (hashed securely)\n- Recovery Code\n- Device Information (OS, platform, type)\n- IP Address\n- Session Tokens\n\n### Optional Demographics\n- Continent\n- Country\n- Age category\n- Gender\n- Level of study\n- Level of wealth\n- Employment status\n\n## 2. Private Messaging & Encryption\n\n- End-to-end encrypted private messages\n- Your private key is stored only on your device\n- We cannot read your private messages\n\n## 3. How We Use Your Data\n\nWe use your data to:\n- Provide app functionality\n- Manage device sessions\n- Generate anonymous analytics\n- Send push notifications (via Google Firebase)\n- Monitor abuse and maintain security\n\nWe do **not** sell or share your data for advertising.\n\n## 4. Data Sharing\n\nOnly external service:  \n- Google Firebase – used for push notifications. Firebase may collect device identifiers and token information to deliver messages. We do not share personally identifiable data with Firebase.\n\n## 5. Public Interactions\n\n- Only usernames are shown publicly\n- Public messages can be reported and moderated\n\n## 6. Data Retention & Deletion\n\nUsers can delete their account and all related data from their profile page.\n\n## 7. Security Measures\n\n- Hashed passwords\n- Local token storage\n- End-to-end encryption\n- IP logging for abuse prevention\n\n## 8. Anonymity & Identity\n\n- No email or real names required\n- Accounts are pseudonymous\n\n## 9. Children’s Privacy\n\nOur app is open to all users, but parental consent may be required depending on your local laws.\n\n## 10. User Rights (GDPR)\n\n- Access your data\n- Delete your data\n- Opt out of optional data fields\n\n## 11. Policy Changes\n\nWe may update this Privacy Policy. You’ll be notified in-app if we make major changes.\n\n## 12. Contact Us\n\nUse the in-app contact form\n\nFor privacy-related inquiries, you may also email us at: **[support@reallystick.com](support@reallystick.com)**'**
   String get privacyPolicyMarkdown;
 
+  /// No description provided for @privateDiscussionNotFoundError.
+  ///
+  /// In en, this message translates to:
+  /// **'The private discussion could not be found.'**
+  String get privateDiscussionNotFoundError;
+
+  /// No description provided for @privateMessageContentEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'The private message content cannot be empty.'**
+  String get privateMessageContentEmpty;
+
+  /// No description provided for @privateMessageContentTooLong.
+  ///
+  /// In en, this message translates to:
+  /// **'The private message content must be less than 10,000 characters.'**
+  String get privateMessageContentTooLong;
+
+  /// No description provided for @privateMessageNotFoundError.
+  ///
+  /// In en, this message translates to:
+  /// **'The private message could not be found.'**
+  String get privateMessageNotFoundError;
+
   /// No description provided for @privateMessagesReceived.
   ///
   /// In en, this message translates to:
@@ -1719,17 +1749,53 @@ abstract class AppLocalizations {
   /// **'Profile information saved.'**
   String get profileUpdateSuccessful;
 
+  /// No description provided for @publicMessageContentEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'The public message content cannot be empty.'**
+  String get publicMessageContentEmpty;
+
+  /// No description provided for @publicMessageContentTooLong.
+  ///
+  /// In en, this message translates to:
+  /// **'The public message content must be less than 10,000 characters.'**
+  String get publicMessageContentTooLong;
+
   /// No description provided for @publicMessageDeletionSuccessful.
   ///
   /// In en, this message translates to:
   /// **'Your message was successfully deleted.'**
   String get publicMessageDeletionSuccessful;
 
+  /// No description provided for @publicMessageNotFoundError.
+  ///
+  /// In en, this message translates to:
+  /// **'The public message could not be found.'**
+  String get publicMessageNotFoundError;
+
   /// No description provided for @publicMessageReportCreationSuccessful.
   ///
   /// In en, this message translates to:
   /// **'Your report was succesfully sent.'**
   String get publicMessageReportCreationSuccessful;
+
+  /// No description provided for @publicMessageReportNotFoundError.
+  ///
+  /// In en, this message translates to:
+  /// **'The report for the public message could not be found.'**
+  String get publicMessageReportNotFoundError;
+
+  /// No description provided for @publicMessageReportReasonEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'The reason for reporting must not be empty.'**
+  String get publicMessageReportReasonEmpty;
+
+  /// No description provided for @publicMessageReportReasonTooLong.
+  ///
+  /// In en, this message translates to:
+  /// **'The reason for reporting must be less than 10,000 characters.'**
+  String get publicMessageReportReasonTooLong;
 
   /// No description provided for @qrCodeSecretKeyCopied.
   ///

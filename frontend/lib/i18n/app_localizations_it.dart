@@ -116,6 +116,9 @@ class AppLocalizationsIt extends AppLocalizations {
   String get challengeDeleted => 'La tua sfida è stata eliminata con successo.';
 
   @override
+  String get challengeDescriptionWrongSize => 'La descrizione della sfida deve contenere meno di 2.000 caratteri.';
+
+  @override
   String get challengeDuplicated => 'Questa sfida è stata copiata con successo.';
 
   @override
@@ -468,7 +471,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get habitDailyTrackingUpdated => 'I tuoi cambiamenti sono stati salvati con successo.';
 
   @override
-  String get habitDescriptionWrongSizeError => 'La descrizione non deve essere vuota e deve contenere meno di 200 caratteri.';
+  String get habitDescriptionWrongSize => 'La descrizione non deve essere vuota e deve contenere meno di 2.000 caratteri.';
 
   @override
   String get habitIsEmptyError => 'Deve essere selezionata un\'abitudine.';
@@ -677,10 +680,10 @@ class AppLocalizationsIt extends AppLocalizations {
   String get light => 'Chiaro';
 
   @override
-  String get likesOnMyPublicMessages => 'Mi piace sui miei messaggi pubblici';
+  String get likedMessages => 'Messaggi piaciuti';
 
   @override
-  String get likedMessages => 'Messaggi piaciuti';
+  String get likesOnMyPublicMessages => 'Mi piace sui miei messaggi pubblici';
 
   @override
   String get livesInUrbanArea => 'Vivo in una zona urbana';
@@ -926,6 +929,18 @@ class AppLocalizationsIt extends AppLocalizations {
   String get privacyPolicyMarkdown => '# Politica sulla Privacy\n\n**Data di entrata in vigore:** 5 aprile 2025\n**Ultimo aggiornamento:** 5 aprile 2025\n\nBenvenuti su **ReallyStick**, una piattaforma sociale per il monitoraggio delle abitudini che consente agli utenti di tracciare i propri progressi quotidiani, partecipare a sfide e discutere in conversazioni pubbliche o private, mantenendo il controllo sui propri dati personali.\n\n## 1. Informazioni che raccogliamo\n\n### Dati obbligatori\n- Nome utente\n- Password (hashata in modo sicuro)\n- Codice di recupero\n- Informazioni sul dispositivo (sistema operativo, piattaforma, tipo di dispositivo)\n- Indirizzo IP\n- Token di sessione\n\n### Dati demografici opzionali\n- Continente\n- Paese\n- Fascia d\'età\n- Genere\n- Livello di istruzione\n- Livello di ricchezza\n- Stato occupazionale\n\n## 2. Messaggistica privata e crittografia\n\n- I messaggi privati sono crittografati end-to-end\n- La tua chiave privata è memorizzata solo sul tuo dispositivo\n- Non possiamo leggere i tuoi messaggi privati\n\n## 3. Utilizzo dei tuoi dati\n\nUtilizziamo i tuoi dati per:\n- Fornire le funzionalità dell\'applicazione\n- Gestire le sessioni sui tuoi dispositivi\n- Generare statistiche anonime\n- Inviare notifiche push (tramite Google Firebase)\n- Prevenire abusi e garantire la sicurezza\n\nNon vendiamo né condividiamo i tuoi dati per scopi pubblicitari.\n\n## 4. Condivisione dei dati\n\nServizio esterno utilizzato:\n- **Google Firebase** – per l\'invio di notifiche push\n\n## 5. Interazioni pubbliche\n\n- Solo i nomi utente sono visibili pubblicamente\n- I messaggi pubblici possono essere segnalati e moderati\n\n## 6. Conservazione e cancellazione dei dati\n\nGli utenti possono eliminare il proprio account e tutti i dati associati dalla pagina del proprio profilo.\n\n## 7. Misure di sicurezza\n\n- Password hashate\n- Memorizzazione locale dei token di accesso\n- Crittografia end-to-end\n- Registrazione degli indirizzi IP per prevenire abusi\n\n## 8. Anonimato e identità\n\n- Nessun indirizzo email o nome reale richiesto\n- Gli account sono pseudonimi per impostazione predefinita\n\n## 9. Protezione dei minori\n\nLa nostra applicazione è aperta a tutti. Tuttavia, potrebbe essere necessario il consenso dei genitori in base alle leggi locali vigenti.\n\n## 10. Diritti degli utenti (GDPR)\n\nHai il diritto di:\n- Accedere ai tuoi dati\n- Cancellare i tuoi dati\n- Rifiutare di fornire i campi opzionali\n\n## 11. Modifiche alla politica\n\nPossiamo aggiornare questa politica sulla privacy. In caso di modifiche significative, verrai informato tramite l\'applicazione.\n\n## 12. Contattaci\n\nUtilizza il modulo di contatto integrato nell\'applicazione.\n\nPer domande relative alla privacy, puoi anche contattarci via e-mail a: **[support@reallystick.com](support@reallystick.com)**';
 
   @override
+  String get privateDiscussionNotFoundError => 'La conversazione privata non è stata trovata.';
+
+  @override
+  String get privateMessageContentEmpty => 'Il contenuto del messaggio privato non può essere vuoto.';
+
+  @override
+  String get privateMessageContentTooLong => 'Il contenuto del messaggio privato deve contenere meno di 10.000 caratteri.';
+
+  @override
+  String get privateMessageNotFoundError => 'Il messaggio privato non è stato trovato.';
+
+  @override
   String get privateMessagesReceived => 'Messaggi privati ricevuti';
 
   @override
@@ -941,10 +956,28 @@ class AppLocalizationsIt extends AppLocalizations {
   String get profileUpdateSuccessful => 'Le tue informazioni sono state salvate con successo.';
 
   @override
+  String get publicMessageContentEmpty => 'Il contenuto del messaggio pubblico non può essere vuoto.';
+
+  @override
+  String get publicMessageContentTooLong => 'Il contenuto del messaggio pubblico deve contenere meno di 10.000 caratteri.';
+
+  @override
   String get publicMessageDeletionSuccessful => 'Il tuo messaggio è stato eliminato con successo.';
 
   @override
+  String get publicMessageNotFoundError => 'Il messaggio pubblico non è stato trovato.';
+
+  @override
   String get publicMessageReportCreationSuccessful => 'La tua segnalazione è stata inviata con successo.';
+
+  @override
+  String get publicMessageReportNotFoundError => 'Il report del messaggio pubblico non è stato trovato.';
+
+  @override
+  String get publicMessageReportReasonEmpty => 'Il motivo della segnalazione non può essere vuoto.';
+
+  @override
+  String get publicMessageReportReasonTooLong => 'Il motivo della segnalazione deve contenere meno di 10.000 caratteri.';
 
   @override
   String get qrCodeSecretKeyCopied => 'La chiave segreta del QR-code è stata copiata negli appunti.';

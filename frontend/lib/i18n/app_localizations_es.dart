@@ -116,6 +116,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get challengeDeleted => 'Su desafío ha sido eliminado con éxito.';
 
   @override
+  String get challengeDescriptionWrongSize => 'La descripción del desafío debe tener menos de 2.000 caracteres.';
+
+  @override
   String get challengeDuplicated => 'Este desafío ha sido copiado con éxito.';
 
   @override
@@ -468,7 +471,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get habitDailyTrackingUpdated => 'Tus cambios han sido guardados correctamente.';
 
   @override
-  String get habitDescriptionWrongSizeError => 'La descripción no debe estar vacía y debe contener menos de 200 caracteres.';
+  String get habitDescriptionWrongSize => 'La descripción no debe estar vacía y debe contener menos de 2.000 caracteres.';
 
   @override
   String get habitIsEmptyError => 'Debe seleccionarse un hábito.';
@@ -677,10 +680,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get light => 'Claro';
 
   @override
-  String get likesOnMyPublicMessages => 'Me gusta en mis mensajes públicos';
+  String get likedMessages => 'Mensajes que te gustan';
 
   @override
-  String get likedMessages => 'Mensajes que te gustan';
+  String get likesOnMyPublicMessages => 'Me gusta en mis mensajes públicos';
 
   @override
   String get livesInUrbanArea => 'Vivo en una zona urbana';
@@ -926,6 +929,18 @@ class AppLocalizationsEs extends AppLocalizations {
   String get privacyPolicyMarkdown => '# Política de Privacidad\n\n**Fecha de entrada en vigor:** 5 de abril de 2025\n**Última actualización:** 5 de abril de 2025\n\nBienvenido a **ReallyStick**, una plataforma social de seguimiento de hábitos que permite a los usuarios seguir su progreso diario, participar en desafíos y conversar en discusiones públicas o privadas, todo mientras mantienen el control de sus datos personales.\n\n## 1. Información que recopilamos\n\n### Datos obligatorios\n- Nombre de usuario\n- Contraseña (cifrada de manera segura)\n- Código de recuperación\n- Información del dispositivo (sistema operativo, plataforma, tipo de dispositivo)\n- Dirección IP\n- Tokens de sesión\n\n### Datos demográficos opcionales\n- Continente\n- País\n- Rango de edad\n- Género\n- Nivel educativo\n- Nivel de riqueza\n- Estado profesional\n\n## 2. Mensajería privada y cifrado\n\n- Los mensajes privados están cifrados de extremo a extremo\n- Su clave privada se almacena únicamente en su dispositivo\n- No podemos leer sus mensajes privados\n\n## 3. Uso de sus datos\n\nUtilizamos sus datos para:\n- Proporcionar las funcionalidades de la aplicación\n- Gestionar las sesiones en sus dispositivos\n- Generar estadísticas anónimas\n- Enviar notificaciones push (a través de Google Firebase)\n- Prevenir abusos y garantizar la seguridad\n\nNo **vendemos ni compartimos** sus datos con fines publicitarios.\n\n## 4. Compartición de datos\n\nServicio externo utilizado:\n- **Google Firebase** – para el envío de notificaciones push\n\n## 5. Interacciones públicas\n\n- Solo los nombres de usuario son visibles públicamente\n- Los mensajes públicos pueden ser reportados y moderados\n\n## 6. Conservación y eliminación de datos\n\nLos usuarios pueden eliminar su cuenta y todos sus datos asociados desde su página de perfil.\n\n## 7. Medidas de seguridad\n\n- Contraseñas cifradas\n- Almacenamiento local de tokens de acceso\n- Cifrado de extremo a extremo\n- Registro de direcciones IP para prevenir abusos\n\n## 8. Anonimato e identidad\n\n- No se requiere dirección de correo electrónico ni nombre real\n- Las cuentas son pseudónimas por defecto\n\n## 9. Protección de menores\n\nNuestra aplicación está abierta a todos. Sin embargo, puede ser necesario el consentimiento parental según las leyes locales vigentes.\n\n## 10. Derechos de los usuarios (RGPD)\n\nTiene el derecho de:\n- Acceder a sus datos\n- Eliminar sus datos\n- Rechazar proporcionar los campos opcionales\n\n## 11. Modificaciones de la política\n\nPodemos actualizar esta política de privacidad. En caso de cambios importantes, se le informará a través de la aplicación.\n\n## 12. Contactarnos\n\nUtilice el formulario de contacto integrado en la aplicación.\n\nPara consultas relacionadas con la privacidad, también puede enviarnos un correo electrónico a: **[support@reallystick.com](support@reallystick.com)**';
 
   @override
+  String get privateDiscussionNotFoundError => 'No se pudo encontrar la conversación privada.';
+
+  @override
+  String get privateMessageContentEmpty => 'El contenido del mensaje privado no puede estar vacío.';
+
+  @override
+  String get privateMessageContentTooLong => 'El contenido del mensaje privado debe tener menos de 10.000 caracteres.';
+
+  @override
+  String get privateMessageNotFoundError => 'No se pudo encontrar el mensaje privado.';
+
+  @override
   String get privateMessagesReceived => 'Mensajes privados recibidos';
 
   @override
@@ -941,10 +956,28 @@ class AppLocalizationsEs extends AppLocalizations {
   String get profileUpdateSuccessful => 'Su información ha sido guardada correctamente.';
 
   @override
+  String get publicMessageContentEmpty => 'El contenido del mensaje público no puede estar vacío.';
+
+  @override
+  String get publicMessageContentTooLong => 'El contenido del mensaje público debe tener menos de 10.000 caracteres.';
+
+  @override
   String get publicMessageDeletionSuccessful => 'Su mensaje ha sido eliminado correctamente.';
 
   @override
+  String get publicMessageNotFoundError => 'No se pudo encontrar el mensaje público.';
+
+  @override
   String get publicMessageReportCreationSuccessful => 'Su reporte ha sido enviado correctamente.';
+
+  @override
+  String get publicMessageReportNotFoundError => 'No se pudo encontrar el reporte del mensaje público.';
+
+  @override
+  String get publicMessageReportReasonEmpty => 'El motivo del reporte no debe estar vacío.';
+
+  @override
+  String get publicMessageReportReasonTooLong => 'El motivo del reporte debe tener menos de 10.000 caracteres.';
 
   @override
   String get qrCodeSecretKeyCopied => 'La clave secreta del código QR ha sido copiada al portapapeles.';

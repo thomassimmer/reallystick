@@ -116,6 +116,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get challengeDeleted => 'Ihre Herausforderung wurde erfolgreich gelöscht.';
 
   @override
+  String get challengeDescriptionWrongSize => 'Die Beschreibung der Herausforderung darf höchstens 2.000 Zeichen lang sein.';
+
+  @override
   String get challengeDuplicated => 'Diese Herausforderung wurde erfolgreich kopiert.';
 
   @override
@@ -468,7 +471,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get habitDailyTrackingUpdated => 'Ihre Änderungen wurden erfolgreich gespeichert.';
 
   @override
-  String get habitDescriptionWrongSizeError => 'Die Beschreibung darf nicht leer sein und muss weniger als 200 Zeichen enthalten.';
+  String get habitDescriptionWrongSize => 'Die Beschreibung darf nicht leer sein und muss weniger als 2.000 Zeichen enthalten.';
 
   @override
   String get habitIsEmptyError => 'Eine Gewohnheit muss ausgewählt werden.';
@@ -677,10 +680,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get light => 'Hell';
 
   @override
-  String get likesOnMyPublicMessages => 'Likes auf meinen öffentlichen Nachrichten';
+  String get likedMessages => 'Gemocht Nachrichten';
 
   @override
-  String get likedMessages => 'Gemocht Nachrichten';
+  String get likesOnMyPublicMessages => 'Likes auf meinen öffentlichen Nachrichten';
 
   @override
   String get livesInUrbanArea => 'Ich lebe in einem städtischen Gebiet';
@@ -926,6 +929,18 @@ class AppLocalizationsDe extends AppLocalizations {
   String get privacyPolicyMarkdown => '# Datenschutzerklärung\n\n**Gültig ab:** 5. April 2025  \n**Letzte Aktualisierung:** 5. April 2025\n\nWillkommen bei **ReallyStick**, einer sozialen Plattform zur Verfolgung von Gewohnheiten, die es den Nutzern ermöglicht, ihre täglichen Fortschritte zu verfolgen, an Herausforderungen teilzunehmen und in öffentlichen oder privaten Diskussionen zu interagieren – und dabei die Kontrolle über ihre persönlichen Daten zu behalten.\n\n## 1. Informationen, die wir sammeln\n\n### Erforderliche Daten\n- Benutzername\n- Passwort (sicher verschlüsselt)\n- Wiederherstellungscode\n- Geräteinformationen (Betriebssystem, Plattform, Gerätetyp)\n- IP-Adresse\n- Sitzungstoken\n\n### Optionale demografische Daten\n- Kontinent\n- Land\n- Altersgruppe\n- Geschlecht\n- Bildungsniveau\n- Wohlstandsniveau\n- Berufsstatus\n\n## 2. Private Nachrichten & Verschlüsselung\n\n- Private Nachrichten sind Ende-zu-Ende verschlüsselt  \n- Ihr privater Schlüssel wird nur auf Ihrem Gerät gespeichert  \n- Wir können Ihre privaten Nachrichten nicht lesen\n\n## 3. Verwendung Ihrer Daten\n\nWir verwenden Ihre Daten, um: \n- Die Funktionen der App bereitzustellen\n- Sitzungen auf Ihren Geräten zu verwalten\n- Anonyme Statistiken zu generieren\n- Push-Benachrichtigungen zu senden (über Google Firebase)\n- Missbrauch zu verhindern und Sicherheit zu gewährleisten\n\nWir **verkaufen oder teilen Ihre Daten nicht** zu Werbezwecken.\n\n## 4. Datenaustausch\n\nVerwendeter externer Dienst: \n- **Google Firebase** – für den Versand von Push-Benachrichtigungen\n\n## 5. Öffentliche Interaktionen\n\n- Nur Benutzernamen sind öffentlich sichtbar  \n- Öffentliche Nachrichten können gemeldet und moderiert werden\n\n## 6. Datenaufbewahrung und -löschung\n\nBenutzer können ihr Konto und alle damit verbundenen Daten auf ihrer Profilseite löschen.\n\n## 7. Sicherheitsmaßnahmen\n\n- Verschlüsselte Passwörter  \n- Lokale Speicherung von Zugriffstoken  \n- Ende-zu-Ende-Verschlüsselung  \n- Protokollierung von IP-Adressen zur Missbrauchsverhinderung\n\n## 8. Anonymität & Identität\n\n- Keine E-Mail-Adresse oder echten Namen erforderlich  \n- Konten sind standardmäßig pseudonym\n\n## 9. Kinderschutz\n\nUnsere App steht allen offen. Je nach geltendem lokalen Gesetz kann jedoch eine elterliche Zustimmung erforderlich sein.\n\n## 10. Rechte der Nutzer (DSGVO)\n\nSie haben das Recht: \n- Auf Ihre Daten zuzugreifen\n- Ihre Daten zu löschen\n- Die optionalen Felder nicht bereitzustellen\n\n## 11. Änderungen der Richtlinie\n\nWir können diese Datenschutzerklärung aktualisieren. Bei wesentlichen Änderungen werden Sie über die App informiert.\n\n## 12. Kontaktieren Sie uns\n\nVerwenden Sie das Kontaktformular in der App.\n\nBei Fragen zum Datenschutz können Sie uns auch per E-Mail kontaktieren unter: **[support@reallystick.com](support@reallystick.com)**';
 
   @override
+  String get privateDiscussionNotFoundError => 'Die private Unterhaltung wurde nicht gefunden.';
+
+  @override
+  String get privateMessageContentEmpty => 'Der Inhalt der privaten Nachricht darf nicht leer sein.';
+
+  @override
+  String get privateMessageContentTooLong => 'Der Inhalt der privaten Nachricht darf höchstens 10.000 Zeichen lang sein.';
+
+  @override
+  String get privateMessageNotFoundError => 'Die private Nachricht wurde nicht gefunden.';
+
+  @override
   String get privateMessagesReceived => 'Empfangene private Nachrichten';
 
   @override
@@ -941,10 +956,28 @@ class AppLocalizationsDe extends AppLocalizations {
   String get profileUpdateSuccessful => 'Ihre Informationen wurden erfolgreich gespeichert.';
 
   @override
+  String get publicMessageContentEmpty => 'Der Inhalt der öffentlichen Nachricht darf nicht leer sein.';
+
+  @override
+  String get publicMessageContentTooLong => 'Der Inhalt der öffentlichen Nachricht darf höchstens 10.000 Zeichen lang sein.';
+
+  @override
   String get publicMessageDeletionSuccessful => 'Ihre Nachricht wurde erfolgreich gelöscht.';
 
   @override
+  String get publicMessageNotFoundError => 'Die öffentliche Nachricht wurde nicht gefunden.';
+
+  @override
   String get publicMessageReportCreationSuccessful => 'Ihr Bericht wurde erfolgreich gesendet.';
+
+  @override
+  String get publicMessageReportNotFoundError => 'Der Bericht zur öffentlichen Nachricht wurde nicht gefunden.';
+
+  @override
+  String get publicMessageReportReasonEmpty => 'Der Grund für die Meldung darf nicht leer sein.';
+
+  @override
+  String get publicMessageReportReasonTooLong => 'Der Grund für die Meldung darf höchstens 10.000 Zeichen lang sein.';
 
   @override
   String get qrCodeSecretKeyCopied => 'Der QR-Code geheime Schlüssel wurde in die Zwischenablage kopiert.';

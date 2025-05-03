@@ -3,7 +3,8 @@ use crate::{
     features::habits::{
         helpers::{habit, habit_category::get_habit_category_by_id, unit::get_unit_by_id},
         structs::{
-            models::habit::Habit, requests::habit::HabitCreateRequest,
+            models::habit::{Habit, HABIT_DESCRIPTION_MAX_LENGTH},
+            requests::habit::HabitCreateRequest,
             responses::habit::HabitResponse,
         },
     },
@@ -29,6 +30,15 @@ pub async fn create_habit(pool: Data<PgPool>, body: Json<HabitCreateRequest>) ->
                 .json(AppError::DatabaseConnection.to_response());
         }
     };
+
+    if body
+        .description
+        .iter()
+        .any(|(_language_code, description)| description.len() > HABIT_DESCRIPTION_MAX_LENGTH)
+    {
+        return HttpResponse::BadRequest()
+            .json(AppError::HabitDescriptionTooLong.to_response());
+    }
 
     let category = match get_habit_category_by_id(&mut *transaction, body.category_id).await {
         Ok(r) => match r {

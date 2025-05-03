@@ -19,3 +19,13 @@ class PublicMessageContentTooLong implements DomainError {
   @override
   final String messageKey = 'publicMessageContentTooLong';
 }
+
+class PublicMessageReportReasonEmpty implements DomainError {
+  @override
+  final String messageKey = 'publicMessageReportReasonEmpty';
+}
+
+class PublicMessageReportReasonTooLong implements DomainError {
+  @override
+  final String messageKey = 'publicMessageReportReasonTooLong';
+}

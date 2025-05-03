@@ -1,8 +1,16 @@
 use crate::{
     core::structs::responses::GenericResponse,
     features::{
+        challenges::structs::models::{
+            challenge::CHALLENGE_DESCRIPTION_MAX_LENGTH,
+            challenge_daily_tracking::CHALLENGE_DAILY_TRACKING_NOTE_MAX_LENGTH,
+        },
+        habits::structs::models::habit::HABIT_DESCRIPTION_MAX_LENGTH,
         private_discussions::structs::models::private_message::PRIVATE_MESSAGE_CONTENT_MAX_LENGTH,
-        public_discussions::structs::models::public_message::PUBLIC_MESSAGE_CONTENT_MAX_LENGTH,
+        public_discussions::structs::models::{
+            public_message::PUBLIC_MESSAGE_CONTENT_MAX_LENGTH,
+            public_message_report::PUBLIC_MESSAGE_REPORT_CONTENT_MAX_LENGTH,
+        },
     },
 };
 
@@ -17,6 +25,7 @@ pub enum AppError {
     ChallengeDailyTrackingNotFound,
     ChallengeDailyTrackingUpdate,
     ChallengeDelete,
+    ChallengeDescriptionTooLong,
     ChallengeNotFound,
     ChallengeParticipationAlreadyExisting,
     ChallengeParticipationCreation,
@@ -46,6 +55,7 @@ pub enum AppError {
     HabitDailyTrackingNotFound,
     HabitDailyTrackingUpdate,
     HabitDelete,
+    HabitDescriptionTooLong,
     HabitMerge,
     HabitNotFound,
     HabitParticipationCreation,
@@ -82,6 +92,7 @@ pub enum AppError {
     PublicMessageReportCreation,
     PublicMessageReportDeletion,
     PublicMessageReportNotFound,
+    PublicMessageReportReasonEmpty,
     PublicMessageReportReasonTooLong,
     PublicMessageReportReporterIsNotRequestUser,
     PublicMessageNeedsHabitOrChallenge,
@@ -131,8 +142,10 @@ impl AppError {
             },
             AppError::ChallengeDailyTrackingNoteTooLong => GenericResponse {
                 code: "CHALLENGE_DAILY_TRACKING_NOTE_TOO_LONG".to_string(),
-                message: "The note is too long. It has to be no more than 10000 characters."
-                    .to_string(),
+                message: format!(
+                    "The note is too long. It has to be no more than {} characters.",
+                    CHALLENGE_DAILY_TRACKING_NOTE_MAX_LENGTH
+                ),
             },
             AppError::ChallengeDailyTrackingNotFound => GenericResponse {
                 code: "CHALLENGE_DAILY_TRACKING_NOT_FOUND".to_string(),
@@ -141,6 +154,13 @@ impl AppError {
             AppError::ChallengeDailyTrackingUpdate => GenericResponse {
                 code: "CHALLENGE_DAILY_TRACKING_NOT_UPDATED".to_string(),
                 message: "Failed to update challenge daily tracking".to_string(),
+            },
+            AppError::ChallengeDescriptionTooLong => GenericResponse {
+                code: "CHALLENGE_DESCRIPTION_TOO_LONG".to_string(),
+                message: format!(
+                    "One translation of the description is more than {}",
+                    CHALLENGE_DESCRIPTION_MAX_LENGTH
+                ),
             },
             AppError::ChallengeDelete => GenericResponse {
                 code: "CHALLENGE_NOT_DELETED".to_string(),
@@ -152,7 +172,8 @@ impl AppError {
             },
             AppError::ChallengeParticipationAlreadyExisting => GenericResponse {
                 code: "CHALLENGE_PARTICIPATION_ALREADY_EXISTING".to_string(),
-                message: "You already have an ongoing participation existing for this challenge".to_string(),
+                message: "You already have an ongoing participation existing for this challenge"
+                    .to_string(),
             },
             AppError::ChallengeParticipationCreation => GenericResponse {
                 code: "CHALLENGE_PARTICIPATION_NOT_CREATED".to_string(),
@@ -261,6 +282,13 @@ impl AppError {
             AppError::HabitDelete => GenericResponse {
                 code: "HABIT_NOT_DELETED".to_string(),
                 message: "Failed to delete this habit".to_string(),
+            },
+            AppError::HabitDescriptionTooLong => GenericResponse {
+                code: "HABIT_DESCRIPTION_TOO_LONG".to_string(),
+                message: format!(
+                    "One translation of the description is more than {}",
+                    HABIT_DESCRIPTION_MAX_LENGTH
+                ),
             },
             AppError::HabitMerge => GenericResponse {
                 code: "HABITS_NOT_MERGED".to_string(),
@@ -412,11 +440,15 @@ impl AppError {
                 code: "PUBLIC_MESSAGE_REPORT_NOT_FOUND".to_string(),
                 message: "This message report does not exist".to_string(),
             },
+            AppError::PublicMessageReportReasonEmpty => GenericResponse {
+                code: "PUBLIC_MESSAGE_REPORT_REASON_EMPTY".to_string(),
+                message: "A public message report's reason must not be empty.".to_string(),
+            },
             AppError::PublicMessageReportReasonTooLong => GenericResponse {
                 code: "PUBLIC_MESSAGE_REPORT_REASON_TOO_LONG".to_string(),
                 message: format!(
                     "A public message report's reason must be less than {} characters.",
-                    PUBLIC_MESSAGE_CONTENT_MAX_LENGTH
+                    PUBLIC_MESSAGE_REPORT_CONTENT_MAX_LENGTH
                 ),
             },
             AppError::PublicMessageReportReporterIsNotRequestUser => GenericResponse {

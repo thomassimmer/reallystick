@@ -116,6 +116,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get challengeDeleted => 'Ваш вызов успешно удалён.';
 
   @override
+  String get challengeDescriptionWrongSize => 'Описание задания должно содержать не более 2 000 символов.';
+
+  @override
   String get challengeDuplicated => 'Этот вызов успешно скопирован.';
 
   @override
@@ -468,7 +471,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get habitDailyTrackingUpdated => 'Ваши изменения были успешно сохранены.';
 
   @override
-  String get habitDescriptionWrongSizeError => 'Описание не должно быть пустым и должно содержать меньше 200 символов.';
+  String get habitDescriptionWrongSize => 'Описание не должно быть пустым и должно содержать меньше 2 000 символов.';
 
   @override
   String get habitIsEmptyError => 'Привычка должна быть выбрана.';
@@ -677,10 +680,10 @@ class AppLocalizationsRu extends AppLocalizations {
   String get light => 'Светлый';
 
   @override
-  String get likesOnMyPublicMessages => 'Лайки на моих публичных сообщениях';
+  String get likedMessages => 'Понравившиеся сообщения';
 
   @override
-  String get likedMessages => 'Понравившиеся сообщения';
+  String get likesOnMyPublicMessages => 'Лайки на моих публичных сообщениях';
 
   @override
   String get livesInUrbanArea => 'Живу в городской зоне';
@@ -926,6 +929,18 @@ class AppLocalizationsRu extends AppLocalizations {
   String get privacyPolicyMarkdown => '# Политика конфиденциальности\n\n**Дата вступления в силу:** 5 апреля 2025 г.\n**Последнее обновление:** 5 апреля 2025 г.\n\nДобро пожаловать в **ReallyStick** — платформу для отслеживания привычек, которая позволяет пользователям следить за своим прогрессом, участвовать в челленджах и обсуждениях — публичных или частных — сохраняя при этом контроль над своими личными данными.\n\n## 1. Информация, которую мы собираем\n\n### Обязательные данные\n- Имя пользователя\n- Пароль (надёжно хэшируется)\n- Код восстановления\n- Информация об устройстве (ОС, платформа, тип)\n- IP-адрес\n- Сессионные токены\n\n### Дополнительные демографические данные\n- Континент\n- Страна\n- Возрастная категория\n- Пол\n- Уровень образования\n- Уровень благосостояния\n- Статус занятости\n\n## 2. Личные сообщения и шифрование\n\n- Личные сообщения с сквозным шифрованием\n- Ваш приватный ключ хранится только на вашем устройстве\n- Мы не имеем доступа к вашим личным сообщениям\n\n## 3. Как мы используем ваши данные\n\nМы используем ваши данные для:\n- Обеспечения функциональности приложения\n- Управления сессиями устройств\n- Генерации анонимной аналитики\n- Отправки push-уведомлений (через Google Firebase)\n- Мониторинга нарушений и обеспечения безопасности\n\nМы **не** продаём и не передаём ваши данные для рекламы.\n\n## 4. Передача данных\n\nЕдинственный внешний сервис:  \n- Google Firebase – используется для push-уведомлений. Firebase может собирать идентификаторы устройств и токены для доставки сообщений. Мы не передаём личные данные в Firebase.\n\n## 5. Публичные взаимодействия\n\n- Публично отображаются только имена пользователей\n- Публичные сообщения можно пожаловаться и модерировать\n\n## 6. Хранение и удаление данных\n\nПользователи могут удалить свою учётную запись и все связанные данные со страницы профиля.\n\n## 7. Меры безопасности\n\n- Хэшированные пароли\n- Локальное хранение токенов\n- Сквозное шифрование\n- Логирование IP-адресов для предотвращения нарушений\n\n## 8. Анонимность и идентичность\n\n- Электронная почта и настоящее имя не требуются\n- Учётные записи являются псевдонимными\n\n## 9. Конфиденциальность детей\n\nНаше приложение доступно для всех пользователей, однако может потребоваться согласие родителей в зависимости от местного законодательства.\n\n## 10. Права пользователей (GDPR)\n\n- Доступ к своим данным\n- Удаление данных\n- Отказ от предоставления необязательных данных\n\n## 11. Изменения в политике\n\nМы можем обновлять данную Политику конфиденциальности. В случае значительных изменений вы получите уведомление в приложении.\n\n## 12. Связь с нами\n\nИспользуйте форму обратной связи в приложении\n\nПо вопросам, связанным с конфиденциальностью, вы также можете написать нам по адресу: **[support@reallystick.com](support@reallystick.com)**';
 
   @override
+  String get privateDiscussionNotFoundError => 'Личное обсуждение не найдено.';
+
+  @override
+  String get privateMessageContentEmpty => 'Содержание личного сообщения не может быть пустым.';
+
+  @override
+  String get privateMessageContentTooLong => 'Содержание личного сообщения должно быть меньше 10 000 символов.';
+
+  @override
+  String get privateMessageNotFoundError => 'Личное сообщение не найдено.';
+
+  @override
   String get privateMessagesReceived => 'Полученные личные сообщения';
 
   @override
@@ -941,10 +956,28 @@ class AppLocalizationsRu extends AppLocalizations {
   String get profileUpdateSuccessful => 'Ваши данные были успешно сохранены.';
 
   @override
+  String get publicMessageContentEmpty => 'Содержание публичного сообщения не может быть пустым.';
+
+  @override
+  String get publicMessageContentTooLong => 'Содержание публичного сообщения должно быть меньше 10 000 символов.';
+
+  @override
   String get publicMessageDeletionSuccessful => 'Ваше сообщение было успешно удалено.';
 
   @override
+  String get publicMessageNotFoundError => 'Публичное сообщение не найдено.';
+
+  @override
   String get publicMessageReportCreationSuccessful => 'Ваше сообщение было успешно отправлено.';
+
+  @override
+  String get publicMessageReportNotFoundError => 'Жалоба на публичное сообщение не найдена.';
+
+  @override
+  String get publicMessageReportReasonEmpty => 'Причина жалобы не может быть пустой.';
+
+  @override
+  String get publicMessageReportReasonTooLong => 'Причина жалобы должна быть меньше 10 000 символов.';
 
   @override
   String get qrCodeSecretKeyCopied => 'Секретный ключ QR-кода был скопирован в буфер обмена.';

@@ -1,8 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:formz/formz.dart';
-import 'package:reallystick/core/validators/description.dart';
 import 'package:reallystick/core/validators/habit.dart';
 import 'package:reallystick/core/validators/habit_category.dart';
+import 'package:reallystick/core/validators/habit_description.dart';
 import 'package:reallystick/core/validators/habit_name.dart';
 import 'package:reallystick/core/validators/icon.dart';
 import 'package:reallystick/core/validators/unit.dart';
@@ -87,14 +87,15 @@ class HabitMergeFormBloc
 
   Future<void> _descriptionChanged(
       HabitMergeFormDescriptionChangedEvent event, Emitter emit) async {
-    final Map<String, DescriptionValidator> descriptionMap = {};
+    final Map<String, HabitDescriptionValidator> descriptionMap = {};
 
     if (event.description.entries.isEmpty) {
       descriptionMap['en'] =
-          DescriptionValidator.dirty('No translation entered');
+          HabitDescriptionValidator.dirty('No translation entered');
     } else {
       for (final entry in event.description.entries) {
-        descriptionMap[entry.key] = DescriptionValidator.dirty(entry.value);
+        descriptionMap[entry.key] =
+            HabitDescriptionValidator.dirty(entry.value);
       }
     }
 

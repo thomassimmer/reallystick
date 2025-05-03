@@ -3,6 +3,8 @@ use serde::{Deserialize, Serialize};
 use sqlx::prelude::FromRow;
 use uuid::Uuid;
 
+pub const CHALLENGE_DESCRIPTION_MAX_LENGTH: usize = 2_000;
+
 #[derive(Debug, Deserialize, Serialize, Clone, FromRow)]
 pub struct Challenge {
     pub id: Uuid,

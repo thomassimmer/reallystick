@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:formz/formz.dart';
-import 'package:reallystick/core/validators/description.dart';
 import 'package:reallystick/core/validators/habit_category.dart';
+import 'package:reallystick/core/validators/habit_description.dart';
 import 'package:reallystick/core/validators/habit_name.dart';
 import 'package:reallystick/core/validators/icon.dart';
 import 'package:reallystick/core/validators/unit.dart';
@@ -56,7 +56,7 @@ class HabitCreationFormBloc
 
   Future<void> _descriptionChanged(
       HabitCreationFormDescriptionChangedEvent event, Emitter emit) async {
-    final description = DescriptionValidator.dirty(event.description);
+    final description = HabitDescriptionValidator.dirty(event.description);
 
     emit(
       state.copyWith(

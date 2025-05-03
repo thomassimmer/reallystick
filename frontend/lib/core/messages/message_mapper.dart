@@ -66,8 +66,8 @@ String getTranslatedMessage(BuildContext context, Message message) {
         return localizations.habitDailyTrackingNotFoundError;
       case 'habitNameWrongSizeError':
         return localizations.habitNameWrongSizeError;
-      case 'habitDescriptionWrongSizeError':
-        return localizations.habitDescriptionWrongSizeError;
+      case 'habitDescriptionWrongSize':
+        return localizations.habitDescriptionWrongSize;
       case 'iconNotFoundError':
         return localizations.iconNotFoundError;
       case 'iconEmptyError':
@@ -110,6 +110,8 @@ String getTranslatedMessage(BuildContext context, Message message) {
         return localizations.repetitionNumberIsNegativeError;
       case 'challengeDailyTrackingNoteTooLong':
         return localizations.challengeDailyTrackingNoteTooLong;
+      case 'challengeDescriptionWrongSize':
+        return localizations.challengeDescriptionWrongSize;
 
       // Profile
       case 'passwordNotExpiredError':
@@ -120,6 +122,28 @@ String getTranslatedMessage(BuildContext context, Message message) {
         return localizations.recipientMissingPublicKey;
       case 'creatorMissingPublicKey':
         return localizations.creatorMissingPublicKey;
+      case 'privateDiscussionNotFoundError':
+        return localizations.privateDiscussionNotFoundError;
+      case 'privateMessageNotFoundError':
+        return localizations.privateMessageNotFoundError;
+      case 'privateMessageContentEmpty':
+        return localizations.privateMessageContentEmpty;
+      case 'privateMessageContentTooLong':
+        return localizations.privateMessageContentTooLong;
+
+      // Public messages
+      case 'publicMessageReportNotFoundError':
+        return localizations.publicMessageReportNotFoundError;
+      case 'publicMessageNotFoundError':
+        return localizations.publicMessageNotFoundError;
+      case 'publicMessageContentEmpty':
+        return localizations.publicMessageContentEmpty;
+      case 'publicMessageContentTooLong':
+        return localizations.publicMessageContentTooLong;
+      case 'publicMessageReportReasonEmpty':
+        return localizations.publicMessageReportReasonEmpty;
+      case 'publicMessageReportReasonTooLong':
+        return localizations.publicMessageReportReasonTooLong;
 
       default:
         return localizations.defaultError;

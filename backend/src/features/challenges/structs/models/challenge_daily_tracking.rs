@@ -2,6 +2,8 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
+pub const CHALLENGE_DAILY_TRACKING_NOTE_MAX_LENGTH: usize = 10_000;
+
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct ChallengeDailyTracking {
     pub id: Uuid,

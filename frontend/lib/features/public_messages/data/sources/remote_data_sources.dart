@@ -427,11 +427,11 @@ class PublicMessageRemoteDataSource {
     }
 
     if (response.statusCode == 400) {
-      if (responseCode == 'PUBLIC_MESSAGE_CONTENT_TOO_LONG') {
-        throw PublicMessageContentTooLongError();
+      if (responseCode == 'PUBLIC_MESSAGE_REPORT_REASON_TOO_LONG') {
+        throw PublicMessageReportReasonTooLongError();
       }
-      if (responseCode == 'PUBLIC_MESSAGE_CONTENT_EMPTY') {
-        throw PublicMessageContentEmptyError();
+      if (responseCode == 'PUBLIC_MESSAGE_REPORT_REASON_EMPTY') {
+        throw PublicMessageReportReasonEmptyError();
       }
     }
 

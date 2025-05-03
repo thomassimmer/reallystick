@@ -116,6 +116,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get challengeDeleted => 'Votre défi a été supprimé avec succès.';
 
   @override
+  String get challengeDescriptionWrongSize => 'La description du défi doit contenir moins de 2 000 caractères.';
+
+  @override
   String get challengeDuplicated => 'Ce défi a été copié avec succès.';
 
   @override
@@ -468,7 +471,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get habitDailyTrackingUpdated => 'Vos changements ont bien été sauvegardés.';
 
   @override
-  String get habitDescriptionWrongSizeError => 'La description ne doit pas être vide et doit contenir moins de 200 caractères.';
+  String get habitDescriptionWrongSize => 'La description ne doit pas être vide et doit contenir moins de 2 000 caractères.';
 
   @override
   String get habitIsEmptyError => 'Une habitude doit être sélectionnée.';
@@ -677,10 +680,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get light => 'Clair';
 
   @override
-  String get likesOnMyPublicMessages => 'J\'aime sur mes messages publics';
+  String get likedMessages => 'Messages aimés';
 
   @override
-  String get likedMessages => 'Messages aimés';
+  String get likesOnMyPublicMessages => 'J\'aime sur mes messages publics';
 
   @override
   String get livesInUrbanArea => 'Je vis en zone urbaine';
@@ -926,6 +929,18 @@ class AppLocalizationsFr extends AppLocalizations {
   String get privacyPolicyMarkdown => '# Politique de Confidentialité\n\n**Date d\'entrée en vigueur :** 5 avril 2025  \n**Dernière mise à jour :** 5 avril 2025\n\nBienvenue sur **ReallyStick**, une plateforme sociale de suivi d\'habitudes qui permet aux utilisateurs de suivre leurs progrès quotidiens, de participer à des défis, et d’échanger dans des discussions publiques ou privées — tout en gardant le contrôle de leurs données personnelles.\n\n## 1. Informations que nous collectons\n\n### Données obligatoires\n- Nom d\'utilisateur\n- Mot de passe (haché de manière sécurisée)\n- Code de récupération\n- Informations sur l\'appareil (système d’exploitation, plateforme, type d’appareil)\n- Adresse IP\n- Jetons de session\n\n### Données démographiques optionnelles\n- Continent\n- Pays\n- Tranche d\'âge\n- Genre\n- Niveau d\'études\n- Niveau de richesse\n- Statut professionnel\n\n## 2. Messagerie privée & chiffrement\n\n- Les messages privés sont chiffrés de bout en bout  \n- Votre clé privée est stockée uniquement sur votre appareil  \n- Nous ne pouvons pas lire vos messages privés\n\n## 3. Utilisation de vos données\n\nNous utilisons vos données pour :\n- Fournir les fonctionnalités de l’application\n- Gérer les sessions sur vos appareils\n- Générer des statistiques anonymes\n- Envoyer des notifications push (via Google Firebase)\n- Prévenir les abus et garantir la sécurité\n\nNous **ne vendons ni ne partageons** vos données à des fins publicitaires.\n\n## 4. Partage de données\n\nService externe utilisé :\n- **Google Firebase** – pour l’envoi de notifications push\n\n## 5. Interactions publiques\n\n- Seuls les noms d\'utilisateur sont visibles publiquement  \n- Les messages publics peuvent être signalés et modérés\n\n## 6. Conservation et suppression des données\n\nLes utilisateurs peuvent supprimer leur compte et toutes leurs données associées depuis leur page de profil.\n\n## 7. Mesures de sécurité\n\n- Mots de passe hachés  \n- Stockage local des jetons d’accès  \n- Chiffrement de bout en bout  \n- Journalisation des adresses IP pour prévenir les abus\n\n## 8. Anonymat & identité\n\n- Aucune adresse e-mail ni nom réel requis  \n- Les comptes sont pseudonymes par défaut\n\n## 9. Protection des enfants\n\nNotre application est ouverte à tous. Toutefois, un consentement parental peut être nécessaire selon les lois locales en vigueur.\n\n## 10. Droits des utilisateurs (RGPD)\n\nVous avez le droit de :\n- Accéder à vos données\n- Supprimer vos données\n- Refuser de fournir les champs optionnels\n\n## 11. Modifications de la politique\n\nNous pouvons mettre à jour cette politique de confidentialité. En cas de changement important, vous en serez informé via l’application.\n\n## 12. Nous contacter\n\nUtilisez le formulaire de contact intégré à l’application.\n\nPour toute question relative à la vie privée, vous pouvez également nous contacter par e-mail à : **[support@reallystick.com](support@reallystick.com)**';
 
   @override
+  String get privateDiscussionNotFoundError => 'La discussion privée est introuvable.';
+
+  @override
+  String get privateMessageContentEmpty => 'Le contenu du message privé ne peut pas être vide.';
+
+  @override
+  String get privateMessageContentTooLong => 'Le contenu du message privé doit contenir moins de 10 000 caractères.';
+
+  @override
+  String get privateMessageNotFoundError => 'Le message privé est introuvable.';
+
+  @override
   String get privateMessagesReceived => 'Messages privés reçus';
 
   @override
@@ -941,10 +956,28 @@ class AppLocalizationsFr extends AppLocalizations {
   String get profileUpdateSuccessful => 'Vos informations ont bien été sauvegardées.';
 
   @override
+  String get publicMessageContentEmpty => 'Le contenu du message public ne peut pas être vide.';
+
+  @override
+  String get publicMessageContentTooLong => 'Le contenu du message public doit contenir moins de 10 000 caractères.';
+
+  @override
   String get publicMessageDeletionSuccessful => 'Votre message a bien été supprimé.';
 
   @override
+  String get publicMessageNotFoundError => 'Le message public est introuvable.';
+
+  @override
   String get publicMessageReportCreationSuccessful => 'Votre signalement a bien été envoyé.';
+
+  @override
+  String get publicMessageReportNotFoundError => 'Le signalement du message public est introuvable.';
+
+  @override
+  String get publicMessageReportReasonEmpty => 'La raison du signalement ne doit pas être vide.';
+
+  @override
+  String get publicMessageReportReasonTooLong => 'La raison du signalement doit contenir moins de 10 000 caractères.';
 
   @override
   String get qrCodeSecretKeyCopied => 'La clé secrète du QR-code a été copiée dans le presse-papiers.';

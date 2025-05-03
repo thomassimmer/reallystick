@@ -1,8 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:reallystick/core/validators/challenge_datetime.dart';
+import 'package:reallystick/core/validators/challenge_description.dart';
 import 'package:reallystick/core/validators/challenge_name.dart';
-import 'package:reallystick/core/validators/description.dart';
 import 'package:reallystick/core/validators/icon.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge_creation/challenge_creation_events.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge_creation/challenge_creation_states.dart';
@@ -42,14 +42,15 @@ class ChallengeCreationFormBloc
 
   Future<void> _descriptionChanged(
       ChallengeCreationFormDescriptionChangedEvent event, Emitter emit) async {
-    final Map<String, DescriptionValidator> descriptionMap = {};
+    final Map<String, ChallengeDescriptionValidator> descriptionMap = {};
 
     if (event.description.entries.isEmpty) {
       descriptionMap['en'] =
-          DescriptionValidator.dirty('No translation entered');
+          ChallengeDescriptionValidator.dirty('No translation entered');
     } else {
       for (final entry in event.description.entries) {
-        descriptionMap[entry.key] = DescriptionValidator.dirty(entry.value);
+        descriptionMap[entry.key] =
+            ChallengeDescriptionValidator.dirty(entry.value);
       }
     }
 

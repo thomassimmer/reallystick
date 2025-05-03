@@ -211,6 +211,12 @@ class HabitRemoteDataSource {
       }
     }
 
+    if (response.statusCode == 400) {
+      if (responseCode == 'HABIT_DESCRIPTION_TOO_LONG') {
+        throw HabitDescriptionWrongSizeError();
+      }
+    }
+
     if (response.statusCode == 401) {
       throw UnauthorizedError();
     }
@@ -395,6 +401,12 @@ class HabitRemoteDataSource {
         return HabitDataModel.fromJson(jsonBody['habit']);
       } catch (e) {
         throw ParsingError();
+      }
+    }
+
+    if (response.statusCode == 400) {
+      if (responseCode == 'HABIT_DESCRIPTION_TOO_LONG') {
+        throw HabitDescriptionWrongSizeError();
       }
     }
 
@@ -727,6 +739,12 @@ class HabitRemoteDataSource {
         return HabitDataModel.fromJson(jsonBody['habit']);
       } catch (e) {
         throw ParsingError();
+      }
+    }
+
+    if (response.statusCode == 400) {
+      if (responseCode == 'HABIT_DESCRIPTION_TOO_LONG') {
+        throw HabitDescriptionWrongSizeError();
       }
     }
 

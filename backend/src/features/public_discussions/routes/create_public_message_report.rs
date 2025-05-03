@@ -5,9 +5,8 @@ use crate::{
         public_discussions::{
             helpers::{public_message::get_public_message_by_id, public_message_report},
             structs::{
-                models::{
-                    public_message::PUBLIC_MESSAGE_CONTENT_MAX_LENGTH,
-                    public_message_report::PublicMessageReport,
+                models::public_message_report::{
+                    PublicMessageReport, PUBLIC_MESSAGE_REPORT_CONTENT_MAX_LENGTH,
                 },
                 requests::public_message_report::PublicMessageReportCreateRequest,
                 responses::public_message_report::PublicMessageReportResponse,
@@ -54,11 +53,12 @@ pub async fn create_public_message_report(
     };
 
     // Check content size
-    if body.reason.len() > PUBLIC_MESSAGE_CONTENT_MAX_LENGTH {
+    if body.reason.len() > PUBLIC_MESSAGE_REPORT_CONTENT_MAX_LENGTH {
         return HttpResponse::BadRequest()
-            .json(AppError::PublicMessageContentTooLong.to_response());
+            .json(AppError::PublicMessageReportReasonTooLong.to_response());
     } else if body.reason.is_empty() {
-        return HttpResponse::BadRequest().json(AppError::PublicMessageContentEmpty.to_response());
+        return HttpResponse::BadRequest()
+            .json(AppError::PublicMessageReportReasonEmpty.to_response());
     }
 
     let public_message_report = PublicMessageReport {

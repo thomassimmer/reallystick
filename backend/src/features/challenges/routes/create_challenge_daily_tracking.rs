@@ -5,7 +5,9 @@ use crate::{
         challenges::{
             helpers::{challenge::get_challenge_by_id, challenge_daily_tracking},
             structs::{
-                models::challenge_daily_tracking::ChallengeDailyTracking,
+                models::challenge_daily_tracking::{
+                    ChallengeDailyTracking, CHALLENGE_DAILY_TRACKING_NOTE_MAX_LENGTH,
+                },
                 requests::challenge_daily_tracking::ChallengeDailyTrackingCreateRequest,
                 responses::challenge_daily_tracking::ChallengeDailyTrackingsResponse,
             },
@@ -37,6 +39,13 @@ pub async fn create_challenge_daily_tracking(
                 .json(AppError::DatabaseConnection.to_response());
         }
     };
+
+    if let Some(note) = &body.note {
+        if note.len() > CHALLENGE_DAILY_TRACKING_NOTE_MAX_LENGTH {
+            return HttpResponse::BadRequest()
+                .json(AppError::ChallengeDailyTrackingNoteTooLong.to_response());
+        }
+    }
 
     match get_challenge_by_id(&mut *transaction, body.challenge_id).await {
         Ok(r) => match r {

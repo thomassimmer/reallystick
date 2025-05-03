@@ -116,6 +116,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get challengeDeleted => 'Your challenge was successfully deleted.';
 
   @override
+  String get challengeDescriptionWrongSize => 'The challenge description must be less than 2,000 characters.';
+
+  @override
   String get challengeDuplicated => 'This challenge was successfully copied.';
 
   @override
@@ -468,7 +471,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get habitDailyTrackingUpdated => 'Your activity was successfully updated.';
 
   @override
-  String get habitDescriptionWrongSizeError => 'Description must not be empty and less than 200 characters.';
+  String get habitDescriptionWrongSize => 'Description must not be empty and less than 2,000 characters.';
 
   @override
   String get habitIsEmptyError => 'A habit must be selected.';
@@ -677,10 +680,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get light => 'Light';
 
   @override
-  String get likesOnMyPublicMessages => 'Likes on my public messages';
+  String get likedMessages => 'Liked Messages';
 
   @override
-  String get likedMessages => 'Liked Messages';
+  String get likesOnMyPublicMessages => 'Likes on my public messages';
 
   @override
   String get livesInUrbanArea => 'Living in urban area';
@@ -926,6 +929,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get privacyPolicyMarkdown => '# Privacy Policy\n\n**Effective Date:** April 5, 2025  \n**Last Updated:** April 5, 2025\n\nWelcome to **ReallyStick**, a social habit-tracking platform that enables users to track their daily progress, join challenges, and engage in public or private discussions — all while maintaining control over their personal data.\n\n## 1. Information We Collect\n\n### Required Data\n- Username\n- Password (hashed securely)\n- Recovery Code\n- Device Information (OS, platform, type)\n- IP Address\n- Session Tokens\n\n### Optional Demographics\n- Continent\n- Country\n- Age category\n- Gender\n- Level of study\n- Level of wealth\n- Employment status\n\n## 2. Private Messaging & Encryption\n\n- End-to-end encrypted private messages\n- Your private key is stored only on your device\n- We cannot read your private messages\n\n## 3. How We Use Your Data\n\nWe use your data to:\n- Provide app functionality\n- Manage device sessions\n- Generate anonymous analytics\n- Send push notifications (via Google Firebase)\n- Monitor abuse and maintain security\n\nWe do **not** sell or share your data for advertising.\n\n## 4. Data Sharing\n\nOnly external service:  \n- Google Firebase – used for push notifications. Firebase may collect device identifiers and token information to deliver messages. We do not share personally identifiable data with Firebase.\n\n## 5. Public Interactions\n\n- Only usernames are shown publicly\n- Public messages can be reported and moderated\n\n## 6. Data Retention & Deletion\n\nUsers can delete their account and all related data from their profile page.\n\n## 7. Security Measures\n\n- Hashed passwords\n- Local token storage\n- End-to-end encryption\n- IP logging for abuse prevention\n\n## 8. Anonymity & Identity\n\n- No email or real names required\n- Accounts are pseudonymous\n\n## 9. Children’s Privacy\n\nOur app is open to all users, but parental consent may be required depending on your local laws.\n\n## 10. User Rights (GDPR)\n\n- Access your data\n- Delete your data\n- Opt out of optional data fields\n\n## 11. Policy Changes\n\nWe may update this Privacy Policy. You’ll be notified in-app if we make major changes.\n\n## 12. Contact Us\n\nUse the in-app contact form\n\nFor privacy-related inquiries, you may also email us at: **[support@reallystick.com](support@reallystick.com)**';
 
   @override
+  String get privateDiscussionNotFoundError => 'The private discussion could not be found.';
+
+  @override
+  String get privateMessageContentEmpty => 'The private message content cannot be empty.';
+
+  @override
+  String get privateMessageContentTooLong => 'The private message content must be less than 10,000 characters.';
+
+  @override
+  String get privateMessageNotFoundError => 'The private message could not be found.';
+
+  @override
   String get privateMessagesReceived => 'Private messages received';
 
   @override
@@ -941,10 +956,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileUpdateSuccessful => 'Profile information saved.';
 
   @override
+  String get publicMessageContentEmpty => 'The public message content cannot be empty.';
+
+  @override
+  String get publicMessageContentTooLong => 'The public message content must be less than 10,000 characters.';
+
+  @override
   String get publicMessageDeletionSuccessful => 'Your message was successfully deleted.';
 
   @override
+  String get publicMessageNotFoundError => 'The public message could not be found.';
+
+  @override
   String get publicMessageReportCreationSuccessful => 'Your report was succesfully sent.';
+
+  @override
+  String get publicMessageReportNotFoundError => 'The report for the public message could not be found.';
+
+  @override
+  String get publicMessageReportReasonEmpty => 'The reason for reporting must not be empty.';
+
+  @override
+  String get publicMessageReportReasonTooLong => 'The reason for reporting must be less than 10,000 characters.';
 
   @override
   String get qrCodeSecretKeyCopied => 'QR code secret key copied to clipboard.';

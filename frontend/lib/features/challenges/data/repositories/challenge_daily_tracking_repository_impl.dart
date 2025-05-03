@@ -227,6 +227,9 @@ class ChallengeDailyTrackingRepositoryImpl
     } on UnitNotFoundError {
       logger.e('UnitNotFoundError occured.');
       return Left(UnitNotFoundDomainError());
+    } on ChallengeDailyTrackingNoteTooLongError {
+      logger.e('ChallengeDailyTrackingNoteTooLongError occured');
+      return Left(ChallengeDailyTrackingNoteTooLong());
     } catch (e) {
       logger.e('Data error occurred: ${e.toString()}');
       return Left(UnknownDomainError());

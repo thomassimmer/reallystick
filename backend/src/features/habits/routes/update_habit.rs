@@ -9,6 +9,7 @@ use crate::{
                 unit::get_unit_by_id,
             },
             structs::{
+                models::habit::HABIT_DESCRIPTION_MAX_LENGTH,
                 requests::habit::{HabitUpdateRequest, UpdateHabitParams},
                 responses::habit::HabitResponse,
             },
@@ -43,6 +44,14 @@ pub async fn update_habit(
                 .json(AppError::DatabaseConnection.to_response());
         }
     };
+
+    if body
+        .description
+        .iter()
+        .any(|(_language_code, description)| description.len() > HABIT_DESCRIPTION_MAX_LENGTH)
+    {
+        return HttpResponse::BadRequest().json(AppError::HabitDescriptionTooLong.to_response());
+    }
 
     let get_habit_result = get_habit_by_id(&mut *transaction, params.habit_id).await;
 

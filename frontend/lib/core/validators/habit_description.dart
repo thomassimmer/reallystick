@@ -2,16 +2,16 @@ import 'package:formz/formz.dart';
 import 'package:reallystick/core/messages/errors/domain_error.dart';
 import 'package:reallystick/features/habits/domain/errors/domain_error.dart';
 
-class DescriptionValidator extends FormzInput<String, DomainError> {
-  const DescriptionValidator.pure() : super.pure('');
+class HabitDescriptionValidator extends FormzInput<String, DomainError> {
+  const HabitDescriptionValidator.pure() : super.pure('');
 
-  const DescriptionValidator.dirty([super.value = '']) : super.dirty();
+  const HabitDescriptionValidator.dirty([super.value = '']) : super.dirty();
 
   @override
   DomainError? validator(String? value) {
     // Length check
-    if (value == null || value.isEmpty || value.length > 200) {
-      return HabitDescriptionWrongSizeError();
+    if (value == null || value.isEmpty || value.length > 2000) {
+      return HabitDescriptionWrongSize();
     }
 
     // No translation entered

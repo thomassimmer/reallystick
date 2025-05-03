@@ -7,3 +7,7 @@ class PublicMessageReportNotFoundError extends DataError {}
 class PublicMessageContentTooLongError extends DataError {}
 
 class PublicMessageContentEmptyError extends DataError {}
+
+class PublicMessageReportReasonTooLongError extends DataError {}
+
+class PublicMessageReportReasonEmptyError extends DataError {}

@@ -5,7 +5,8 @@ use crate::{
         challenges::{
             helpers::challenge,
             structs::{
-                models::challenge::Challenge, requests::challenge::ChallengeCreateRequest,
+                models::challenge::{Challenge, CHALLENGE_DESCRIPTION_MAX_LENGTH},
+                requests::challenge::ChallengeCreateRequest,
                 responses::challenge::ChallengeResponse,
             },
         },
@@ -36,6 +37,15 @@ pub async fn create_challenge(
                 .json(AppError::DatabaseConnection.to_response());
         }
     };
+
+    if body
+        .description
+        .iter()
+        .any(|(_language_code, description)| description.len() > CHALLENGE_DESCRIPTION_MAX_LENGTH)
+    {
+        return HttpResponse::BadRequest()
+            .json(AppError::ChallengeDescriptionTooLong.to_response());
+    }
 
     let challenge = Challenge {
         id: Uuid::new_v4(),

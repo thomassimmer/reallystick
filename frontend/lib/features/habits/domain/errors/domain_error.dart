@@ -30,9 +30,9 @@ class HabitNameWrongSizeError implements DomainError {
   final String messageKey = 'habitNameWrongSizeError';
 }
 
-class HabitDescriptionWrongSizeError implements DomainError {
+class HabitDescriptionWrongSize implements DomainError {
   @override
-  final String messageKey = 'habitDescriptionWrongSizeError';
+  final String messageKey = 'habitDescriptionWrongSize';
 }
 
 class IconNotFoundError implements DomainError {

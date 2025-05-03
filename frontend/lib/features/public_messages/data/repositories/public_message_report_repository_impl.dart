@@ -147,6 +147,12 @@ class PublicMessageReportRepositoryImpl
     } on PublicMessageNotFoundError {
       logger.e('PublicMessageNotFoundError occurred.');
       return Left(PublicMessageNotFoundDomainError());
+    } on PublicMessageReportReasonTooLongError {
+      logger.e('PublicMessageReportReasonTooLongError occured.');
+      return Left(PublicMessageReportReasonTooLong());
+    } on PublicMessageReportReasonEmptyError {
+      logger.e('PublicMessageReportReasonEmptyError occured.');
+      return Left(PublicMessageReportReasonEmpty());
     } catch (e) {
       logger.e('Data error occurred: ${e.toString()}');
       return Left(UnknownDomainError());

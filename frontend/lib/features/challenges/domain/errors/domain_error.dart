@@ -39,3 +39,8 @@ class ChallengeDailyTrackingNoteTooLong implements DomainError {
   @override
   final String messageKey = 'challengeDailyTrackingNoteTooLong';
 }
+
+class ChallengeDescriptionWrongSize implements DomainError {
+  @override
+  final String messageKey = 'challengeDescriptionWrongSize';
+}

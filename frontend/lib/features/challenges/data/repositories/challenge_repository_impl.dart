@@ -160,6 +160,9 @@ class ChallengeRepositoryImpl implements ChallengeRepository {
     } on InternalServerError {
       logger.e('InternalServerError occured.');
       return Left(InternalServerDomainError());
+    } on ChallengeDescriptionWrongSizeError {
+      logger.e('ChallengeDescriptionWrongSizeError occured.');
+      return Left(ChallengeDescriptionWrongSize());
     } catch (e) {
       logger.e('Data error occurred: ${e.toString()}');
       return Left(UnknownDomainError());
@@ -207,6 +210,9 @@ class ChallengeRepositoryImpl implements ChallengeRepository {
     } on ChallengeNotFoundError {
       logger.e('ChallengeNotFoundError occurred.');
       return Left(ChallengeNotFoundDomainError());
+    } on ChallengeDescriptionWrongSizeError {
+      logger.e('ChallengeDescriptionWrongSizeError occured.');
+      return Left(ChallengeDescriptionWrongSize());
     } catch (e) {
       logger.e('Data error occurred: ${e.toString()}');
       return Left(UnknownDomainError());

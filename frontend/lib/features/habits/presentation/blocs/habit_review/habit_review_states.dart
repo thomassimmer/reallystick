@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:reallystick/core/validators/description.dart';
 import 'package:reallystick/core/validators/habit_category.dart';
+import 'package:reallystick/core/validators/habit_description.dart';
 import 'package:reallystick/core/validators/habit_name.dart';
 import 'package:reallystick/core/validators/icon.dart';
 import 'package:reallystick/core/validators/password.dart';
@@ -8,7 +8,7 @@ import 'package:reallystick/core/validators/unit.dart';
 
 final class HabitReviewFormState extends Equatable {
   final Map<String, HabitNameValidator> name;
-  final Map<String, DescriptionValidator> description;
+  final Map<String, HabitDescriptionValidator> description;
   final HabitCategoryValidator habitCategory;
   final IconValidator icon;
   final Map<String, UnitValidator> unitIds;
@@ -38,7 +38,7 @@ final class HabitReviewFormState extends Equatable {
 
   HabitReviewFormState copyWith({
     Map<String, HabitNameValidator>? name,
-    Map<String, DescriptionValidator>? description,
+    Map<String, HabitDescriptionValidator>? description,
     HabitCategoryValidator? habitCategory,
     IconValidator? icon,
     Map<String, UnitValidator>? unitIds,

@@ -9,6 +9,7 @@ use crate::{
                 habit_daily_tracking, habit_participation,
             },
             structs::{
+                models::habit::HABIT_DESCRIPTION_MAX_LENGTH,
                 requests::habit::{HabitUpdateRequest, MergeHabitsParams},
                 responses::habit::HabitResponse,
             },
@@ -43,6 +44,14 @@ pub async fn merge_habits(
                 .json(AppError::DatabaseConnection.to_response());
         }
     };
+
+    if body
+        .description
+        .iter()
+        .any(|(_language_code, description)| description.len() > HABIT_DESCRIPTION_MAX_LENGTH)
+    {
+        return HttpResponse::BadRequest().json(AppError::HabitDescriptionTooLong.to_response());
+    }
 
     let habit_to_delete = match get_habit_by_id(&mut *transaction, params.habit_to_delete_id).await
     {

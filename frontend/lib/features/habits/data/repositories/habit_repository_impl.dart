@@ -96,6 +96,9 @@ class HabitRepositoryImpl implements HabitRepository {
     } on HabitCategoryNotFoundError {
       logger.e('HabitCategoryNotFoundError occurred.');
       return Left(HabitCategoryNotFoundDomainError());
+    } on HabitDescriptionWrongSizeError {
+      logger.e('HabitDescriptionWrongSizeError occured.');
+      return Left(HabitDescriptionWrongSize());
     } catch (e) {
       logger.e('Data error occurred: ${e.toString()}');
       return Left(UnknownDomainError());
@@ -150,6 +153,9 @@ class HabitRepositoryImpl implements HabitRepository {
     } on HabitNotFoundError {
       logger.e('HabitNotFoundError occurred.');
       return Left(HabitNotFoundDomainError());
+    } on HabitDescriptionWrongSizeError {
+      logger.e('HabitDescriptionWrongSizeError occured.');
+      return Left(HabitDescriptionWrongSize());
     } catch (e) {
       logger.e('Data error occurred: ${e.toString()}');
       return Left(UnknownDomainError());
@@ -247,6 +253,9 @@ class HabitRepositoryImpl implements HabitRepository {
     } on HabitsNotMergedError {
       logger.e('HabitsNotMergedError occurred.');
       return Left(HabitsNotMergedDomainError());
+    } on HabitDescriptionWrongSizeError {
+      logger.e('HabitDescriptionWrongSizeError occured.');
+      return Left(HabitDescriptionWrongSize());
     } catch (e) {
       logger.e('Data error occurred: ${e.toString()}');
       return Left(UnknownDomainError());

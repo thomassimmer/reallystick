@@ -2,6 +2,8 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
+pub const PUBLIC_MESSAGE_REPORT_CONTENT_MAX_LENGTH: usize = 2000;
+
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct PublicMessageReport {
     pub id: Uuid,

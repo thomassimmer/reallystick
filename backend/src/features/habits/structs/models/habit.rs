@@ -3,6 +3,8 @@ use serde::{Deserialize, Serialize};
 use sqlx::prelude::FromRow;
 use uuid::Uuid;
 
+pub const HABIT_DESCRIPTION_MAX_LENGTH: usize = 2_000;
+
 #[derive(Debug, Deserialize, Serialize, Clone, FromRow)]
 pub struct Habit {
     pub id: Uuid,

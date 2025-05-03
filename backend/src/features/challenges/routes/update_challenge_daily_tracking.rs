@@ -8,6 +8,7 @@ use crate::{
                 challenge_daily_tracking::{self, get_challenge_daily_tracking_by_id},
             },
             structs::{
+                models::challenge_daily_tracking::CHALLENGE_DAILY_TRACKING_NOTE_MAX_LENGTH,
                 requests::challenge_daily_tracking::{
                     ChallengeDailyTrackingUpdateRequest, UpdateChallengeDailyTrackingParams,
                 },
@@ -114,8 +115,8 @@ pub async fn update_challenge_daily_tracking(
     }
 
     if let Some(note) = &body.note {
-        if note.len() > 10000 {
-            return HttpResponse::InternalServerError()
+        if note.len() > CHALLENGE_DAILY_TRACKING_NOTE_MAX_LENGTH {
+            return HttpResponse::BadRequest()
                 .json(AppError::ChallengeDailyTrackingNoteTooLong.to_response());
         }
     }
