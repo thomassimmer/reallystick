@@ -1,7 +1,7 @@
 use crate::{
     core::constants::errors::AppError,
     features::profile::{
-        helpers::profile::get_user_by_username,
+        helpers::profile::get_user_by_username_even_deleted,
         structs::{requests::IsOtpEnabledRequest, responses::IsOtpEnabledResponse},
     },
 };
@@ -15,7 +15,7 @@ pub async fn is_otp_enabled(
     pool: web::Data<PgPool>,
 ) -> impl Responder {
     // Check if user already exists
-    let existing_user = get_user_by_username(&**pool, &body.username).await;
+    let existing_user = get_user_by_username_even_deleted(&**pool, &body.username).await;
 
     match existing_user {
         Ok(existing_user) => match existing_user {

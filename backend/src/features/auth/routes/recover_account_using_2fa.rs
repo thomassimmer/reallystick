@@ -10,7 +10,7 @@ use crate::{
         },
         profile::helpers::{
             device_info::get_user_agent,
-            profile::{get_user_by_username, update_user},
+            profile::{get_user_by_username_even_deleted, update_user},
         },
     },
 };
@@ -40,7 +40,7 @@ pub async fn recover_account_using_2fa(
     let username_lower = body.username.to_lowercase();
 
     // Check if user already exists
-    let existing_user = get_user_by_username(&mut *transaction, &username_lower).await;
+    let existing_user = get_user_by_username_even_deleted(&mut *transaction, &username_lower).await;
 
     let mut user = match existing_user {
         Ok(existing_user) => {

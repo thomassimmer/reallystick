@@ -186,6 +186,28 @@ where
     Ok(user)
 }
 
+pub async fn get_user_by_username_even_deleted<'a, E>(
+    executor: E,
+    username: &str,
+) -> Result<Option<User>, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
+    let user = sqlx::query_as!(
+        User,
+        r#"
+        SELECT *
+        FROM users
+        WHERE username = $1
+        "#,
+        username
+    )
+    .fetch_optional(executor)
+    .await?;
+
+    Ok(user)
+}
+
 pub async fn get_user_by_id<'a, E>(
     executor: E,
     id: Uuid,
