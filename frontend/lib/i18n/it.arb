@@ -320,12 +320,14 @@
   "discussion": "Discussione",
   "discussions": "Discussioni",
   "discussionsComingSoon": "Discussioni interessanti arriveranno presto...",
+  "done": "Completato",
   "duplicate": "Crea una copia",
   "duplicateChallenge": "Copia della sfida",
   "duplicationsOfMyChallenges": "Duplicazioni delle mie sfide",
   "edit": "Modifica",
   "editActivity": "Modifica questa attività",
   "editChallenge": "Modifica questa sfida",
+  "editMessage": "Modifica messaggio",
   "editedAt": "Modificato il {time}",
   "enable": "Attiva",
   "enableNotifications": "Abilita le notifiche",
@@ -629,5 +631,6 @@
   "yes": "Sì",
   "youAreNotAlone": "Non sei solo. Parla, condividi, cresci.",
   "youAreNotTheCreatorOfThisChallenge": "Non sei il creatore di questa sfida.",
-  "youBlockedThisUser": "Hai bloccato questo utente."
+  "youBlockedThisUser": "Hai bloccato questo utente.",
+  "yourMessagesAreLoading": "I tuoi messaggi sono in caricamento..."
 }

@@ -717,6 +717,12 @@ abstract class AppLocalizations {
   /// **'Some interesting discussions coming soon here...'**
   String get discussionsComingSoon;
 
+  /// No description provided for @done.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get done;
+
   /// No description provided for @duplicate.
   ///
   /// In en, this message translates to:
@@ -752,6 +758,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Edit this challenge'**
   String get editChallenge;
+
+  /// No description provided for @editMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit message'**
+  String get editMessage;
 
   /// No description provided for @editedAt.
   ///
@@ -2576,6 +2588,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You blocked this user.'**
   String get youBlockedThisUser;
+
+  /// No description provided for @yourMessagesAreLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Your messages are loading...'**
+  String get yourMessagesAreLoading;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -486,7 +486,7 @@ class PrivateDiscussionScreenState extends State<PrivateDiscussionScreen> {
               children: [
                 CircularProgressIndicator(),
                 SizedBox(height: 10),
-                Text("Your messages are loading...")
+                Text(AppLocalizations.of(context)!.yourMessagesAreLoading)
               ],
             )),
       ),

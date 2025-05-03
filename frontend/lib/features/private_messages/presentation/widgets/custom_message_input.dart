@@ -72,9 +72,11 @@ class CustomMessageInputState extends State<CustomMessageInput> {
             color: Theme.of(context).colorScheme.primary,
           ),
         ),
-        labelText: widget.isEditing ? 'Edit Message' : null,
-        hintText:
-            'Reply to ${widget.recipientUsername ?? AppLocalizations.of(context)!.unknown}',
+        labelText:
+            widget.isEditing ? AppLocalizations.of(context)!.editMessage : null,
+        hintText: AppLocalizations.of(context)!.replyTo(
+          widget.recipientUsername ?? AppLocalizations.of(context)!.unknown,
+        ),
         suffixIcon: IconButton(
           icon: Icon(
             Icons.send,

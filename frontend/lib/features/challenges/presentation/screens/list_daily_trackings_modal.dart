@@ -240,7 +240,8 @@ class ListDailyTrackingsModalState extends State<ListDailyTrackingsModal> {
                                         color: context.colors.background,
                                         width: 1.0,
                                       )),
-                                  child: Text("Done"),
+                                  child:
+                                      Text(AppLocalizations.of(context)!.done),
                                 ),
                               ],
                             ],

@@ -358,6 +358,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get discussionsComingSoon => 'Интересные обсуждения скоро появятся...';
 
   @override
+  String get done => 'Done';
+
+  @override
   String get duplicate => 'Создать копию';
 
   @override
@@ -374,6 +377,9 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get editChallenge => 'Изменить этот вызов';
+
+  @override
+  String get editMessage => 'Edit message';
 
   @override
   String editedAt(String time) {
@@ -1388,4 +1394,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get youBlockedThisUser => 'Вы заблокировали этого пользователя.';
+
+  @override
+  String get yourMessagesAreLoading => 'Your messages are loading...';
 }

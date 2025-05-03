@@ -62,6 +62,7 @@ class TwoFactorAuthenticationScreen extends StatelessWidget {
                 children: [
                   Text(
                     AppLocalizations.of(context)!.twoFAIsWellSetup,
+                    textAlign: TextAlign.center,
                   ),
                   SizedBox(height: 16),
                   ElevatedButton(
@@ -115,6 +116,7 @@ class TwoFactorAuthenticationScreen extends StatelessWidget {
                 children: [
                   Text(
                     AppLocalizations.of(context)!.twoFAScanQrCode,
+                    textAlign: TextAlign.center,
                   ),
                   SizedBox(height: 16),
                   QrImageView(
@@ -219,6 +221,7 @@ class TwoFactorAuthenticationScreen extends StatelessWidget {
                 child: Column(children: [
                   Text(
                     AppLocalizations.of(context)!.twoFASetup,
+                    textAlign: TextAlign.center,
                   ),
                   SizedBox(height: 16),
                   ElevatedButton(
