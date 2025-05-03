@@ -81,8 +81,9 @@ where
             unit_id = $4,
             weight = $5,
             weight_unit_id = $6,
-            note = $7
-        WHERE id = $8
+            note = $7,
+            habit_id = $8
+        WHERE id = $9
         "#,
         challenge_daily_tracking.day_of_program,
         challenge_daily_tracking.quantity_per_set,
@@ -91,6 +92,7 @@ where
         challenge_daily_tracking.weight,
         challenge_daily_tracking.weight_unit_id,
         challenge_daily_tracking.note,
+        challenge_daily_tracking.habit_id,
         challenge_daily_tracking.id
     )
     .execute(executor)
