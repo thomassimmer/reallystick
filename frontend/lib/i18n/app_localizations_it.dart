@@ -173,6 +173,9 @@ class AppLocalizationsIt extends AppLocalizations {
   String get changeRecoveryCode => 'Cambia il mio codice di recupero';
 
   @override
+  String get chooseAnIcon => 'Scegli un\'icona';
+
+  @override
   String get comeBack => 'Torna indietro';
 
   @override
@@ -1150,6 +1153,9 @@ class AppLocalizationsIt extends AppLocalizations {
   String get selectLanguage => 'Selezione della lingua';
 
   @override
+  String get selectLanguageToAddTranslation => 'Seleziona una lingua per aggiungere una traduzione';
+
+  @override
   String get selectTheme => 'Selezione del tema';
 
   @override
@@ -1250,6 +1256,11 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get topRelationshipStatusesCardTitle => 'Stato relazionale';
+
+  @override
+  String translationForLanguage(String language) {
+    return 'Traduzione in: $language';
+  }
 
   @override
   String get twoFA => 'Autenticazione a due fattori';

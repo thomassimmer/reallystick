@@ -194,6 +194,13 @@
       }
     }
   },
+  "@translationForLanguage": {
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
+  },
   "@twoFASecretKey": {
     "placeholders": {
       "secretKey": {
@@ -272,6 +279,7 @@
   "changeColor": "Cambiar color",
   "changePassword": "Cambiar mi contraseña",
   "changeRecoveryCode": "Cambiar mi código de recuperación",
+  "chooseAnIcon": "Elige un ícono",
   "comeBack": "Volver atrás",
   "comingSoon": "Disponible en breve...",
   "confirm": "Confirmar",
@@ -554,6 +562,7 @@
   "searchUser": "Buscar un usuario",
   "selectIcon": "Selección del ícono",
   "selectLanguage": "Selección del idioma",
+  "selectLanguageToAddTranslation": "Selecciona un idioma para añadir una traducción",
   "selectTheme": "Selección del tema",
   "selectUnits": "Seleccione unidades de medida para este hábito",
   "setNewPassword": "Introduzca su nueva contraseña.",
@@ -586,6 +595,7 @@
   "topLivesInUrbanAreaCardTitle": "Zona de residencia",
   "topRegionsCardTitle": "Regiones",
   "topRelationshipStatusesCardTitle": "Estado de relación",
+  "translationForLanguage": "Traducción en: {language}",
   "twoFA": "Autenticación de dos factores",
   "twoFAInvitation": "La seguridad y la privacidad son nuestras principales prioridades.\n\nPor favor, active la autenticación de dos factores para proteger su cuenta de ataques de fuerza bruta.",
   "twoFAIsWellSetup": "La autenticación de dos factores está configurada correctamente en su cuenta.",

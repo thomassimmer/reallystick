@@ -93,8 +93,10 @@ class HabitsScreenState extends State<HabitsScreen> {
             right: 16.0,
             top: 16.0,
           ),
-          child: Wrap(
-            children: [AddDailyTrackingModal()],
+          child: SingleChildScrollView(
+            child: Wrap(
+              children: [AddDailyTrackingModal()],
+            ),
           ),
         );
       },

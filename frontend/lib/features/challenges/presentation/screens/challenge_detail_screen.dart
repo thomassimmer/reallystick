@@ -79,14 +79,17 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
       builder: (BuildContext context) {
         return Padding(
           padding: EdgeInsets.only(
-            bottom:
-                MediaQuery.of(context).viewInsets.bottom, // Adjust for keyboard
+            bottom: MediaQuery.of(context).viewInsets.bottom,
             left: 16.0,
             right: 16.0,
             top: 16.0,
           ),
-          child: Wrap(
-            children: [AddDailyTrackingModal(challengeId: widget.challengeId)],
+          child: SingleChildScrollView(
+            child: Wrap(
+              children: [
+                AddDailyTrackingModal(challengeId: widget.challengeId)
+              ],
+            ),
           ),
         );
       },
@@ -163,19 +166,20 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
       builder: (BuildContext context) {
         return Padding(
           padding: EdgeInsets.only(
-            bottom:
-                MediaQuery.of(context).viewInsets.bottom, // Adjust for keyboard
+            bottom: MediaQuery.of(context).viewInsets.bottom,
             left: 16.0,
             right: 16.0,
             top: 16.0,
           ),
-          child: Wrap(
-            children: [
-              SetReminderModal(
-                challengeParticipation: challengeParticipation,
-                challengeName: challengeName,
-              )
-            ],
+          child: SingleChildScrollView(
+            child: Wrap(
+              children: [
+                SetReminderModal(
+                  challengeParticipation: challengeParticipation,
+                  challengeName: challengeName,
+                )
+              ],
+            ),
           ),
         );
       },

@@ -19,7 +19,7 @@ class HabitCreationFormCategoryChangedEvent extends HabitCreationFormEvent {
 }
 
 class HabitCreationFormNameChangedEvent extends HabitCreationFormEvent {
-  final String name;
+  final Map<String, String> name;
 
   const HabitCreationFormNameChangedEvent(this.name);
 
@@ -28,7 +28,7 @@ class HabitCreationFormNameChangedEvent extends HabitCreationFormEvent {
 }
 
 class HabitCreationFormDescriptionChangedEvent extends HabitCreationFormEvent {
-  final String description;
+  final Map<String, String> description;
 
   const HabitCreationFormDescriptionChangedEvent(this.description);
 

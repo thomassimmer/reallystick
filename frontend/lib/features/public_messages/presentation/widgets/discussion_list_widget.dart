@@ -49,13 +49,15 @@ class DiscussionListState extends State<DiscussionListWidget> {
             right: 16.0,
             top: 16.0,
           ),
-          child: Wrap(
-            children: [
-              AddThreadModal(
-                habitId: widget.habitId,
-                challengeId: widget.challengeId,
-              )
-            ],
+          child: SingleChildScrollView(
+            child: Wrap(
+              children: [
+                AddThreadModal(
+                  habitId: widget.habitId,
+                  challengeId: widget.challengeId,
+                )
+              ],
+            ),
           ),
         );
       },

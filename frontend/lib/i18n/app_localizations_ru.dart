@@ -173,6 +173,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get changeRecoveryCode => 'Изменить мой код восстановления';
 
   @override
+  String get chooseAnIcon => 'Выберите значок';
+
+  @override
   String get comeBack => 'Вернуться назад';
 
   @override
@@ -1150,6 +1153,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get selectLanguage => 'Выбрать язык';
 
   @override
+  String get selectLanguageToAddTranslation => 'Выберите язык для добавления перевода';
+
+  @override
   String get selectTheme => 'Выбрать тему';
 
   @override
@@ -1250,6 +1256,11 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get topRelationshipStatusesCardTitle => 'Семейное положение';
+
+  @override
+  String translationForLanguage(String language) {
+    return 'Перевод на: $language';
+  }
 
   @override
   String get twoFA => 'Двухфакторная аутентификация';

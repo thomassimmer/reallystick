@@ -61,10 +61,13 @@ class ListDailyTrackingsModalState extends State<ListDailyTrackingsModal> {
             right: 16.0,
             top: 16.0,
           ),
-          child: Wrap(
-            children: [
-              UpdateDailyTrackingModal(habitDailyTracking: habitDailyTracking),
-            ],
+          child: SingleChildScrollView(
+            child: Wrap(
+              children: [
+                UpdateDailyTrackingModal(
+                    habitDailyTracking: habitDailyTracking),
+              ],
+            ),
           ),
         );
       },

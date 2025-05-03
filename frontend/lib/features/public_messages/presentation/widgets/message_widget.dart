@@ -87,12 +87,14 @@ class MessageWidget extends StatelessWidget {
             right: 16.0,
             top: 16.0,
           ),
-          child: Wrap(
-            children: [
-              CreateMessageReportModal(
-                message: message,
-              )
-            ],
+          child: SingleChildScrollView(
+            child: Wrap(
+              children: [
+                CreateMessageReportModal(
+                  message: message,
+                )
+              ],
+            ),
           ),
         );
       },

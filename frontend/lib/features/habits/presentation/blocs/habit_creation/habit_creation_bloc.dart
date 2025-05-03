@@ -27,8 +27,8 @@ class HabitCreationFormBloc
         habitCategory: habitCategory,
         isValid: Formz.validate([
           habitCategory,
-          state.name,
-          state.description,
+          ...state.name.values,
+          ...state.description.values,
           state.icon,
           ...state.unitIds.values
         ]),
@@ -38,15 +38,22 @@ class HabitCreationFormBloc
 
   Future<void> _nameChanged(
       HabitCreationFormNameChangedEvent event, Emitter emit) async {
-    final name = HabitNameValidator.dirty(event.name);
+    final Map<String, HabitNameValidator> nameMap = {};
+
+    if (event.name.entries.isEmpty) {
+      nameMap['en'] = HabitNameValidator.dirty('No translation entered');
+    } else {
+      for (final entry in event.name.entries) {
+        nameMap[entry.key] = HabitNameValidator.dirty(entry.value);
+      }
+    }
 
     emit(
       state.copyWith(
-        name: name,
+        name: nameMap,
         isValid: Formz.validate([
           state.habitCategory,
-          name,
-          state.description,
+          ...state.description.values,
           state.icon,
           ...state.unitIds.values
         ]),
@@ -56,15 +63,23 @@ class HabitCreationFormBloc
 
   Future<void> _descriptionChanged(
       HabitCreationFormDescriptionChangedEvent event, Emitter emit) async {
-    final description = HabitDescriptionValidator.dirty(event.description);
+    final Map<String, HabitDescriptionValidator> descriptionMap = {};
 
+    if (event.description.entries.isEmpty) {
+      descriptionMap['en'] =
+          HabitDescriptionValidator.dirty('No translation entered');
+    } else {
+      for (final entry in event.description.entries) {
+        descriptionMap[entry.key] =
+            HabitDescriptionValidator.dirty(entry.value);
+      }
+    }
     emit(
       state.copyWith(
-        description: description,
+        description: descriptionMap,
         isValid: Formz.validate([
           state.habitCategory,
-          state.name,
-          description,
+          ...state.name.values,
           state.icon,
           ...state.unitIds.values
         ]),
@@ -81,8 +96,8 @@ class HabitCreationFormBloc
         icon: icon,
         isValid: Formz.validate([
           state.habitCategory,
-          state.name,
-          state.description,
+          ...state.name.values,
+          ...state.description.values,
           icon,
           ...state.unitIds.values
         ]),
@@ -103,8 +118,8 @@ class HabitCreationFormBloc
         unitIds: unitIdsMap,
         isValid: Formz.validate([
           state.habitCategory,
-          state.name,
-          state.description,
+          ...state.name.values,
+          ...state.description.values,
           state.icon,
           ...unitIdsMap.values
         ]),

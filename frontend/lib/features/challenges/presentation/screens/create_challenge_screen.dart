@@ -27,7 +27,7 @@ class CreateChallengeScreen extends StatefulWidget {
 class CreateChallengeScreenState extends State<CreateChallengeScreen> {
   Map<String, String> _nameControllerForChallenge = {};
   Map<String, String> _descriptionControllerForChallenge = {};
-  bool _isFixedDatesEnabled = true;
+  bool _isFixedDatesEnabled = false;
   String? _icon;
   DateTime _startDateTime = DateTime.now();
 
@@ -196,6 +196,7 @@ class CreateChallengeScreenState extends State<CreateChallengeScreen> {
                             },
                             label: AppLocalizations.of(context)!.challengeName,
                             errors: nameErrorMap,
+                            userLocale: userLocale,
                           ),
 
                           const SizedBox(height: 16.0),
@@ -216,6 +217,7 @@ class CreateChallengeScreenState extends State<CreateChallengeScreen> {
                             },
                             label: AppLocalizations.of(context)!.description,
                             errors: descriptionErrorMap,
+                            userLocale: userLocale,
                           ),
 
                           const SizedBox(height: 16.0),
@@ -227,19 +229,20 @@ class CreateChallengeScreenState extends State<CreateChallengeScreen> {
                             onPressed: () =>
                                 _showEmojiPicker(context, userLocale),
                             iconData: null,
-                            label: _icon ?? "Choose an icon",
+                            label: _icon ?? AppLocalizations.of(context)!.chooseAnIcon,
                             errorText: displayIconErrorMessage,
                             labelSize: _icon != null ? 20 : null,
                           ),
 
                           const SizedBox(height: 16.0),
 
-                          // Toggle Switch for "Precise Dates"
+                          // Precise Dates Section
+
+                          // Start Date & Time Selector
                           Row(
                             children: [
-                              Text(
-                                AppLocalizations.of(context)!.fixedDates,
-                              ),
+                              Text(AppLocalizations.of(context)!.startDate),
+                              const SizedBox(width: 8),
                               Switch(
                                 value: _isFixedDatesEnabled,
                                 onChanged: (value) {
@@ -251,10 +254,7 @@ class CreateChallengeScreenState extends State<CreateChallengeScreen> {
                             ],
                           ),
 
-                          // Precise Dates Section
                           if (_isFixedDatesEnabled) ...[
-                            // Start Date & Time Selector
-                            Text(AppLocalizations.of(context)!.startDate),
                             const SizedBox(height: 8),
                             Row(
                               children: [
@@ -330,7 +330,6 @@ class CreateChallengeScreenState extends State<CreateChallengeScreen> {
                                 ),
                               ],
                             ),
-
                             if (displayStartDateTimeErrorMessage != null)
                               Padding(
                                 padding: const EdgeInsets.symmetric(
@@ -343,7 +342,6 @@ class CreateChallengeScreenState extends State<CreateChallengeScreen> {
                                   ),
                                 ),
                               ),
-
                             const SizedBox(height: 16),
                           ],
 

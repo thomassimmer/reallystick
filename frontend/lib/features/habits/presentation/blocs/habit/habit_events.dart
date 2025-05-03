@@ -12,11 +12,10 @@ abstract class HabitEvent extends Equatable {
 class HabitInitializeEvent extends HabitEvent {}
 
 class CreateHabitEvent extends HabitEvent {
-  final String name;
-  final String description;
+  final Map<String, String> name;
+  final Map<String, String> description;
   final String categoryId;
   final String icon;
-  final String locale;
   final HashSet<String> unitIds;
 
   const CreateHabitEvent({
@@ -24,7 +23,6 @@ class CreateHabitEvent extends HabitEvent {
     required this.description,
     required this.categoryId,
     required this.icon,
-    required this.locale,
     required this.unitIds,
   });
 
@@ -34,7 +32,6 @@ class CreateHabitEvent extends HabitEvent {
         description,
         categoryId,
         icon,
-        locale,
         unitIds,
       ];
 }

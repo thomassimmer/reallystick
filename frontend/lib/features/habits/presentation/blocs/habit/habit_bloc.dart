@@ -206,8 +206,8 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
     final currentState = state as HabitsLoaded;
     final resultCreateHabitUsecase = await createHabitUsecase.call(
       categoryId: event.categoryId,
-      name: Map.from({event.locale: event.name}),
-      description: Map.from({event.locale: event.description}),
+      name: event.name,
+      description: event.description,
       icon: event.icon,
       unitIds: event.unitIds,
     );

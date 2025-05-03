@@ -8,8 +8,8 @@ import 'package:reallystick/core/messages/message_mapper.dart';
 import 'package:reallystick/core/presentation/widgets/custom_app_bar.dart';
 import 'package:reallystick/core/presentation/widgets/custom_dropdown_button_form_field.dart';
 import 'package:reallystick/core/presentation/widgets/custom_elevated_button_form_field.dart';
-import 'package:reallystick/core/presentation/widgets/custom_text_field.dart';
 import 'package:reallystick/core/presentation/widgets/emoji_selector.dart';
+import 'package:reallystick/core/presentation/widgets/multi_language_input_field.dart';
 import 'package:reallystick/core/presentation/widgets/multi_unit_select_dropdown.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/habits/domain/entities/habit_category.dart';
@@ -29,9 +29,8 @@ class CreateHabitScreen extends StatefulWidget {
 }
 
 class CreateHabitScreenState extends State<CreateHabitScreen> {
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _descriptionController = TextEditingController();
-
+  Map<String, String> _nameController = {};
+  Map<String, String> _descriptionController = {};
   String? _selectedCategoryId;
   String? _icon;
   HashSet<String> _selectedUnitIds = HashSet();
@@ -64,9 +63,9 @@ class CreateHabitScreenState extends State<CreateHabitScreen> {
     // Dispatch validation events for all fields
     habitFormBloc
         .add(HabitCreationFormCategoryChangedEvent(_selectedCategoryId ?? ""));
-    habitFormBloc.add(HabitCreationFormNameChangedEvent(_nameController.text));
-    habitFormBloc.add(
-        HabitCreationFormDescriptionChangedEvent(_descriptionController.text));
+    habitFormBloc.add(HabitCreationFormNameChangedEvent(_nameController));
+    habitFormBloc
+        .add(HabitCreationFormDescriptionChangedEvent(_descriptionController));
     habitFormBloc.add(HabitCreationFormIconChangedEvent(_icon ?? ""));
 
     // Allow time for the validation states to update
@@ -75,11 +74,10 @@ class CreateHabitScreenState extends State<CreateHabitScreen> {
       () {
         if (habitFormBloc.state.isValid) {
           final newHabitEvent = CreateHabitEvent(
-            name: _nameController.text,
-            description: _descriptionController.text,
+            name: _nameController,
+            description: _descriptionController,
             categoryId: _selectedCategoryId ?? "",
             icon: _icon ?? "",
-            locale: locale,
             unitIds: _selectedUnitIds,
           );
 
@@ -131,24 +129,37 @@ class CreateHabitScreenState extends State<CreateHabitScreen> {
                         ErrorMessage(displayHabitCategoryError.messageKey))
                     : null;
 
-            final displayNameError = context.select(
-              (HabitCreationFormBloc habitCreationFormBloc) =>
-                  habitCreationFormBloc.state.name.displayError,
+            final nameErrorMap = context.select(
+              (HabitCreationFormBloc habitCreationFormBloc) => Map.fromEntries(
+                habitCreationFormBloc.state.name.entries.map(
+                  (entry) => MapEntry(
+                    entry.key,
+                    entry.value.displayError != null
+                        ? getTranslatedMessage(
+                            context,
+                            ErrorMessage(entry.value.displayError!.messageKey),
+                          )
+                        : null,
+                  ),
+                ),
+              ),
             );
-            final displayNameErrorMessage = displayNameError != null
-                ? getTranslatedMessage(
-                    context, ErrorMessage(displayNameError.messageKey))
-                : null;
 
-            final displayDescriptionError = context.select(
-              (HabitCreationFormBloc habitCreationFormBloc) =>
-                  habitCreationFormBloc.state.description.displayError,
+            final descriptionErrorMap = context.select(
+              (HabitCreationFormBloc habitCreationFormBloc) => Map.fromEntries(
+                habitCreationFormBloc.state.description.entries.map(
+                  (entry) => MapEntry(
+                    entry.key,
+                    entry.value.displayError != null
+                        ? getTranslatedMessage(
+                            context,
+                            ErrorMessage(entry.value.displayError!.messageKey),
+                          )
+                        : null,
+                  ),
+                ),
+              ),
             );
-            final displayDescriptionErrorMessage = displayDescriptionError !=
-                    null
-                ? getTranslatedMessage(
-                    context, ErrorMessage(displayDescriptionError.messageKey))
-                : null;
 
             final displayIconError = context.select(
               (HabitCreationFormBloc habitCreationFormBloc) =>
@@ -191,6 +202,8 @@ class CreateHabitScreenState extends State<CreateHabitScreen> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           // Category Selector
+                          Text(AppLocalizations.of(context)!.category),
+                          const SizedBox(height: 16),
                           CustomDropdownButtonFormField(
                             value: _selectedCategoryId,
                             items: habitCategories.entries
@@ -214,41 +227,46 @@ class CreateHabitScreenState extends State<CreateHabitScreen> {
                                 _selectedCategoryId = value;
                               });
                             },
-                            label: AppLocalizations.of(context)!.category,
+                            hint: AppLocalizations.of(context)!.category,
                             errorText: displayHabitCategoryErrorMessage,
                           ),
 
                           const SizedBox(height: 16.0),
 
                           // Name Input
-                          CustomTextField(
-                            controller: _nameController,
-                            onChanged: (name) => BlocProvider.of<
-                                    HabitCreationFormBloc>(context)
-                                .add(HabitCreationFormNameChangedEvent(name)),
+                          MultiLanguageInputField(
+                            initialTranslations: _nameController,
+                            onTranslationsChanged: (translations) =>
+                                BlocProvider.of<HabitCreationFormBloc>(context)
+                                    .add(
+                              HabitCreationFormNameChangedEvent(translations),
+                            ),
                             label: AppLocalizations.of(context)!.habitName,
-                            errorText: displayNameErrorMessage,
+                            errors: nameErrorMap,
+                            userLocale: userLocale,
                           ),
 
                           const SizedBox(height: 16.0),
 
-                          const SizedBox(height: 16.0),
-
                           // Description Input
-                          CustomTextField(
-                            controller: _descriptionController,
-                            maxLines: 3,
-                            onChanged: (description) => BlocProvider.of<
-                                    HabitCreationFormBloc>(context)
-                                .add(HabitCreationFormDescriptionChangedEvent(
-                                    description)),
+                          MultiLanguageInputField(
+                            initialTranslations: _descriptionController,
+                            onTranslationsChanged: (translations) =>
+                                BlocProvider.of<HabitCreationFormBloc>(context)
+                                    .add(
+                              HabitCreationFormDescriptionChangedEvent(
+                                  translations),
+                            ),
                             label: AppLocalizations.of(context)!.description,
-                            errorText: displayDescriptionErrorMessage,
+                            errors: descriptionErrorMap,
+                            userLocale: userLocale,
                           ),
 
                           const SizedBox(height: 16.0),
 
                           // Unit Selector
+                          Text(AppLocalizations.of(context)!.unit),
+                          const SizedBox(height: 16),
                           MultiUnitSelectDropdown(
                             initialSelectedValues: _selectedUnitIds.toList(),
                             options: habitState.units,
@@ -263,12 +281,13 @@ class CreateHabitScreenState extends State<CreateHabitScreen> {
 
                           // Icon Selector with error display
                           Text(AppLocalizations.of(context)!.icon),
-                          const SizedBox(height: 8),
+                          const SizedBox(height: 16),
                           CustomElevatedButtonFormField(
                             onPressed: () =>
                                 _showEmojiPicker(context, userLocale),
                             iconData: null,
-                            label: _icon ?? "Choose an icon",
+                            label: _icon ??
+                                AppLocalizations.of(context)!.chooseAnIcon,
                             errorText: displayIconErrorMessage,
                             labelSize: _icon != null ? 20 : null,
                           ),

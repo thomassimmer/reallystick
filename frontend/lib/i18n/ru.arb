@@ -194,6 +194,13 @@
       }
     }
   },
+  "@translationForLanguage": {
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
+  },
   "@twoFASecretKey": {
     "placeholders": {
       "secretKey": {
@@ -272,6 +279,7 @@
   "changeColor": "Изменить цвет",
   "changePassword": "Изменить мой пароль",
   "changeRecoveryCode": "Изменить мой код восстановления",
+  "chooseAnIcon": "Выберите значок",
   "comeBack": "Вернуться назад",
   "comingSoon": "Скоро будет доступно...",
   "confirm": "Подтвердить",
@@ -554,6 +562,7 @@
   "searchUser": "Искать пользователя",
   "selectIcon": "Выбрать иконку",
   "selectLanguage": "Выбрать язык",
+  "selectLanguageToAddTranslation": "Выберите язык для добавления перевода",
   "selectTheme": "Выбрать тему",
   "selectUnits": "Выберите единицы измерения для этой привычки",
   "setNewPassword": "Введите новый пароль.",
@@ -586,6 +595,7 @@
   "topLivesInUrbanAreaCardTitle": "Зона проживания",
   "topRegionsCardTitle": "Регионы",
   "topRelationshipStatusesCardTitle": "Семейное положение",
+  "translationForLanguage": "Перевод на: {language}",
   "twoFA": "Двухфакторная аутентификация",
   "twoFAInvitation": "Безопасность и конфиденциальность — наши главные приоритеты.\n\nПожалуйста, активируйте двухфакторную аутентификацию, чтобы защитить ваш аккаунт от атак методом подбора пароля.",
   "twoFAIsWellSetup": "Двухфакторная аутентификация настроена правильно на вашем аккаунте.",

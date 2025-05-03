@@ -4,7 +4,8 @@ import 'package:reallystick/core/ui/extensions.dart';
 class CustomDropdownButtonFormField extends StatelessWidget {
   final String? value;
   final List<DropdownMenuItem<String>> items;
-  final String label;
+  final String? label;
+  final String? hint;
   final String? Function(String?)? validator;
   final String? errorText;
   final ValueChanged<String?>? onChanged;
@@ -12,7 +13,8 @@ class CustomDropdownButtonFormField extends StatelessWidget {
   CustomDropdownButtonFormField({
     required this.value,
     required this.items,
-    required this.label,
+    this.label,
+    this.hint,
     this.validator,
     this.errorText,
     this.onChanged,
@@ -26,6 +28,7 @@ class CustomDropdownButtonFormField extends StatelessWidget {
       onChanged: onChanged,
       decoration: InputDecoration(
         labelText: label,
+        hintText: hint,
         errorMaxLines: 10,
         filled: true,
         focusedBorder: OutlineInputBorder(

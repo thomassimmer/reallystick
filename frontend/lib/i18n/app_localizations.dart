@@ -429,6 +429,12 @@ abstract class AppLocalizations {
   /// **'Change Recovery Code'**
   String get changeRecoveryCode;
 
+  /// No description provided for @chooseAnIcon.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose an icon'**
+  String get chooseAnIcon;
+
   /// No description provided for @comeBack.
   ///
   /// In en, this message translates to:
@@ -2121,6 +2127,12 @@ abstract class AppLocalizations {
   /// **'Select Language'**
   String get selectLanguage;
 
+  /// No description provided for @selectLanguageToAddTranslation.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a language to add a translation'**
+  String get selectLanguageToAddTranslation;
+
   /// No description provided for @selectTheme.
   ///
   /// In en, this message translates to:
@@ -2312,6 +2324,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Relationship status'**
   String get topRelationshipStatusesCardTitle;
+
+  /// No description provided for @translationForLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Translation in: {language}'**
+  String translationForLanguage(String language);
 
   /// No description provided for @twoFA.
   ///

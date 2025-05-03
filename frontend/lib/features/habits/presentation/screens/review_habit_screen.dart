@@ -438,6 +438,7 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
                         },
                         label: AppLocalizations.of(context)!.habitName,
                         errors: shortNameErrorMapForCurrentHabit,
+                        userLocale: userLocale,
                       ),
 
                       // Description Input
@@ -453,6 +454,7 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
                         },
                         label: AppLocalizations.of(context)!.description,
                         errors: descriptionErrorMapForCurrentHabit,
+                        userLocale: userLocale,
                       ),
 
                       const SizedBox(height: 16.0),
@@ -478,7 +480,7 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
                         onPressed: () =>
                             _showEmojiPicker(context, userLocale, true),
                         iconData: null,
-                        label: _iconForCurrentHabit ?? "Choose an icon",
+                        label: _iconForCurrentHabit ?? AppLocalizations.of(context)!.chooseAnIcon,
                         errorText: displayIconErrorMessageForCurrentHabit,
                         labelSize: _iconForCurrentHabit != null ? 20 : null,
                       ),
@@ -579,6 +581,7 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
                           },
                           label: AppLocalizations.of(context)!.habitName,
                           errors: nameErrorMapForHabitToMergeWith,
+                          userLocale: userLocale,
                         ),
 
                         // Description Input
@@ -595,6 +598,7 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
                           },
                           label: AppLocalizations.of(context)!.description,
                           errors: descriptionErrorMapForHabitToMergeWith,
+                          userLocale: userLocale,
                         ),
 
                         const SizedBox(height: 16.0),
@@ -620,7 +624,7 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
                           onPressed: () =>
                               _showEmojiPicker(context, userLocale, false),
                           iconData: null,
-                          label: _iconForHabitToMergeWith ?? "Choose an icon",
+                          label: _iconForHabitToMergeWith ?? AppLocalizations.of(context)!.chooseAnIcon,
                           errorText: displayIconErrorMessageForHabitToMergeWith,
                           labelSize:
                               _iconForHabitToMergeWith != null ? 20 : null,

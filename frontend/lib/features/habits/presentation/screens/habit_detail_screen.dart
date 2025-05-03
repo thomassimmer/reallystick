@@ -68,8 +68,10 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
             right: 16.0,
             top: 16.0,
           ),
-          child: Wrap(
-            children: [AddDailyTrackingModal(habitId: widget.habitId)],
+          child: SingleChildScrollView(
+            child: Wrap(
+              children: [AddDailyTrackingModal(habitId: widget.habitId)],
+            ),
           ),
         );
       },
@@ -100,13 +102,15 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
             right: 16.0,
             top: 16.0,
           ),
-          child: Wrap(
-            children: [
-              SetReminderModal(
-                habitParticipation: habitParticipation,
-                habitName: habitName,
-              )
-            ],
+          child: SingleChildScrollView(
+            child: Wrap(
+              children: [
+                SetReminderModal(
+                  habitParticipation: habitParticipation,
+                  habitName: habitName,
+                )
+              ],
+            ),
           ),
         );
       },
