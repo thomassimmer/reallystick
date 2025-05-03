@@ -168,7 +168,6 @@ class ProfileScreen extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-                  backgroundColor: context.colors.primary,
                 ),
                 child: Text(AppLocalizations.of(context)!.logout),
               ),
@@ -219,7 +218,6 @@ class ProfileScreen extends StatelessWidget {
                                       style: ElevatedButton.styleFrom(
                                         padding: const EdgeInsets.symmetric(
                                             horizontal: 32, vertical: 12),
-                                        backgroundColor: context.colors.primary,
                                       ),
                                       child: Text(
                                           AppLocalizations.of(context)!.cancel),
@@ -231,7 +229,8 @@ class ProfileScreen extends StatelessWidget {
                                       style: ElevatedButton.styleFrom(
                                         padding: const EdgeInsets.symmetric(
                                             horizontal: 32, vertical: 12),
-                                        backgroundColor: context.colors.error,
+                                        side: BorderSide(
+                                            color: context.colors.error),
                                       ),
                                       child: Text(AppLocalizations.of(context)!
                                           .confirm),
@@ -255,7 +254,7 @@ class ProfileScreen extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-                  backgroundColor: context.colors.error,
+                  side: BorderSide(color: context.colors.error),
                 ),
                 child: Text(AppLocalizations.of(context)!.deleteAccount),
               ),

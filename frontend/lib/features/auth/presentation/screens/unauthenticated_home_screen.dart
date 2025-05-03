@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:reallystick/i18n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reallystick/core/presentation/widgets/app_logo.dart';
 import 'package:reallystick/core/presentation/widgets/global_snack_bar.dart';
@@ -15,6 +14,7 @@ import 'package:reallystick/features/auth/presentation/widgets/habits_screen_scr
 import 'package:reallystick/features/auth/presentation/widgets/language_selector.dart';
 import 'package:reallystick/features/auth/presentation/widgets/private_discussion_screenshot.dart';
 import 'package:reallystick/features/auth/presentation/widgets/public_discussion_thread_screenshot.dart';
+import 'package:reallystick/i18n/app_localizations.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class UnauthenticatedHomeScreen extends StatefulWidget {
@@ -157,8 +157,9 @@ class UnauthenticatedHomeScreenState extends State<UnauthenticatedHomeScreen>
           onPressed: () {
             context.goNamed('login');
           },
-          style: ButtonStyle(
-            backgroundColor: WidgetStatePropertyAll(context.colors.primary),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: context.colors.primary,
+            foregroundColor: Colors.white,
           ),
           child: Text(
             AppLocalizations.of(context)!.logIn,
@@ -169,8 +170,9 @@ class UnauthenticatedHomeScreenState extends State<UnauthenticatedHomeScreen>
           onPressed: () {
             context.goNamed('signup');
           },
-          style: ButtonStyle(
-            backgroundColor: WidgetStatePropertyAll(context.colors.secondary),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: context.colors.secondary,
+            foregroundColor: Colors.white,
           ),
           child: Text(
             AppLocalizations.of(context)!.signUp,
@@ -320,6 +322,8 @@ class UnauthenticatedHomeScreenState extends State<UnauthenticatedHomeScreen>
             },
             style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              backgroundColor: Colors.transparent,
+              foregroundColor: Colors.white,
             ),
             child: Text(AppLocalizations.of(context)!.jumpOnTop),
           ),

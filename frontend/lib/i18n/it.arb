@@ -201,13 +201,6 @@
       }
     }
   },
-  "@twoFASecretKey": {
-    "placeholders": {
-      "secretKey": {
-        "type": "String"
-      }
-    }
-  },
   "@weightWithQuantity": {
     "placeholders": {
       "quantity": {
@@ -600,7 +593,7 @@
   "twoFAInvitation": "La sicurezza e la riservatezza sono le nostre principali priorità.\n\nSi prega di attivare l'autenticazione a due fattori per proteggere il tuo account dagli attacchi di forza bruta.",
   "twoFAIsWellSetup": "L'autenticazione a due fattori è configurata correttamente sul tuo account.",
   "twoFAScanQrCode": "Scansiona questo QR code nella tua app di autenticazione.",
-  "twoFASecretKey": "La tua chiave segreta del QR code è: {secretKey}",
+  "twoFASecretKey": "La tua chiave segreta del QR code è:",
   "twoFASetup": "Attiva l'autenticazione a due fattori per proteggere il tuo account.",
   "twoFactorAuthenticationNotEnabledError": "L'autenticazione a due fattori non è attivata sul tuo account.",
   "unableToLoadRecoveryCode": "Impossibile caricare il codice di recupero.",

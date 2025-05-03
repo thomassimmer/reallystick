@@ -231,15 +231,15 @@ class ListDailyTrackingsModalState extends State<ListDailyTrackingsModal> {
                                   onPressed: () =>
                                       _validateDailyObjective(dailyTracking),
                                   style: ElevatedButton.styleFrom(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 12, vertical: 6),
-                                    backgroundColor: context.colors.success,
-                                    foregroundColor: Colors.white,
-                                    textStyle: context.typographies.bodySmall,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 12, vertical: 6),
+                                      backgroundColor: context.colors.success,
+                                      foregroundColor: Colors.white,
+                                      textStyle: context.typographies.bodySmall,
+                                      side: BorderSide(
+                                        color: context.colors.background,
+                                        width: 1.0,
+                                      )),
                                   child: Text("Done"),
                                 ),
                               ],

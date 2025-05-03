@@ -194,13 +194,6 @@
       }
     }
   },
-  "@twoFASecretKey": {
-    "placeholders": {
-      "secretKey": {
-        "type": "String"
-      }
-    }
-  },
   "@weightWithQuantity": {
     "placeholders": {
       "quantity": {
@@ -593,7 +586,7 @@
   "twoFAInvitation": "Sicherheit und Datenschutz sind unsere obersten Prioritäten.\n\nBitte aktivieren Sie die Zwei-Faktor-Authentifizierung, um Ihr Konto vor Brute-Force-Angriffen zu schützen.",
   "twoFAIsWellSetup": "Die Zwei-Faktor-Authentifizierung ist korrekt auf Ihrem Konto eingerichtet.",
   "twoFAScanQrCode": "Scannen Sie diesen QR-Code in Ihrer Authentifizierungs-App.",
-  "twoFASecretKey": "Ihr QR-Code-Geheimschlüssel lautet: {secretKey}",
+  "twoFASecretKey": "Ihr QR-Code-Geheimschlüssel lautet:",
   "twoFASetup": "Aktivieren Sie die Zwei-Faktor-Authentifizierung, um Ihr Konto zu sichern.",
   "twoFactorAuthenticationNotEnabledError": "Die Zwei-Faktor-Authentifizierung ist auf Ihrem Konto nicht aktiviert.",
   "unableToLoadRecoveryCode": "Wiederherstellungscode konnte nicht geladen werden.",

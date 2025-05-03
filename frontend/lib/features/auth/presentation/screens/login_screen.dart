@@ -77,6 +77,9 @@ class LoginScreenState extends State<LoginScreen>
                           ),
                           SizedBox(height: 16),
                           ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.transparent,
+                            ),
                             child: Text(
                               AppLocalizations.of(context)!.comeBack,
                             ),
@@ -127,6 +130,7 @@ class LoginScreenState extends State<LoginScreen>
       SizedBox(height: 40),
       Text(
         AppLocalizations.of(context)!.enterOneTimePassword,
+        textAlign: TextAlign.center,
       ),
       SizedBox(height: 40),
       AutofillGroup(

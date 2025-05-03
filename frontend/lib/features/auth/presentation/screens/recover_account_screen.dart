@@ -89,6 +89,9 @@ class RecoverAccountScreenState extends State<RecoverAccountScreen>
                             ),
                             SizedBox(height: 16),
                             ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.transparent,
+                            ),
                               onPressed: () {
                                 context.goNamed('home');
                               },

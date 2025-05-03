@@ -291,6 +291,7 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
           if (challenge.startDate != null) ...[
             // Date & Time Selector
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Day Selector
                 Expanded(
@@ -372,6 +373,7 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
 
           // Quantity & Unit Selector
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Quantity Input
               Expanded(
@@ -462,6 +464,7 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
             ),
             SizedBox(height: 16),
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
                   child: CustomTextField(

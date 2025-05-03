@@ -1275,9 +1275,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get twoFAScanQrCode => 'Scansiona questo QR code nella tua app di autenticazione.';
 
   @override
-  String twoFASecretKey(String secretKey) {
-    return 'La tua chiave segreta del QR code è: $secretKey';
-  }
+  String get twoFASecretKey => 'La tua chiave segreta del QR code è:';
 
   @override
   String get twoFASetup => 'Attiva l\'autenticazione a due fattori per proteggere il tuo account.';

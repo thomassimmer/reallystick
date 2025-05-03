@@ -78,6 +78,9 @@ class SignupScreenState extends State<SignupScreen>
                           ),
                           SizedBox(height: 16),
                           ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.transparent,
+                            ),
                             onPressed: () {
                               context.goNamed('home');
                             },

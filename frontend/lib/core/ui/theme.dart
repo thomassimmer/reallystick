@@ -83,12 +83,25 @@ class AppTheme extends ThemeExtension<AppTheme> {
             backgroundColor: WidgetStateProperty.resolveWith((states) {
               return states.contains(WidgetState.disabled)
                   ? colors.disabled
-                  : null; // Defer to the widget's default.
+                  : colors.backgroundDark;
             }),
             foregroundColor: WidgetStateProperty.resolveWith((states) {
               return states.contains(WidgetState.disabled)
                   ? colors.disabled
-                  : null; // Defer to the widget's default.
+                  : colors.text;
+            }),
+            shape: WidgetStateProperty.all(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            side: WidgetStateProperty.resolveWith((states) {
+              return BorderSide(
+                color: states.contains(WidgetState.disabled)
+                    ? colors.disabled
+                    : colors.primary,
+                width: 1.0,
+              );
             }),
           ),
         ),

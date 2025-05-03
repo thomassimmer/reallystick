@@ -2358,8 +2358,8 @@ abstract class AppLocalizations {
   /// No description provided for @twoFASecretKey.
   ///
   /// In en, this message translates to:
-  /// **'Your QR code secret key is: {secretKey}'**
-  String twoFASecretKey(String secretKey);
+  /// **'Your QR code secret key is:'**
+  String get twoFASecretKey;
 
   /// No description provided for @twoFASetup.
   ///

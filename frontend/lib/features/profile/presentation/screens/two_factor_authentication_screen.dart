@@ -103,6 +103,8 @@ class TwoFactorAuthenticationScreen extends StatelessWidget {
       );
     }
 
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -118,7 +120,7 @@ class TwoFactorAuthenticationScreen extends StatelessWidget {
                   QrImageView(
                     data: state.profile.otpAuthUrl!,
                     version: QrVersions.auto,
-                    size: 200.0,
+                    size: screenWidth * 0.4,
                     backgroundColor: Colors.white,
                   ),
                   SizedBox(height: 16),
@@ -128,37 +130,34 @@ class TwoFactorAuthenticationScreen extends StatelessWidget {
                         ProfileGenerateTwoFactorAuthenticationConfigEvent(),
                       );
                     },
-                    style: context.styles.buttonMedium.copyWith(
-                      backgroundColor:
-                          WidgetStatePropertyAll(context.colors.secondary),
-                    ),
+                    style: context.styles.buttonMedium,
                     child: Text(AppLocalizations.of(context)!.regenerateQrCode),
                   ),
                   SizedBox(height: 16),
-                  Wrap(
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    alignment: WrapAlignment.center,
-                    spacing: 8.0,
-                    direction: Axis.horizontal,
-                    children: [
-                      SelectableText(AppLocalizations.of(context)!
-                          .twoFASecretKey(state.profile.otpBase32!)),
-                      IconButton(
-                        icon: Icon(
-                          Icons.copy,
-                        ),
-                        onPressed: () {
-                          Clipboard.setData(
-                              ClipboardData(text: state.profile.otpBase32!));
-
-                          final message = InfoMessage('qrCodeSecretKeyCopied');
-                          GlobalSnackBar.show(
-                              context: context, message: message);
-                        },
-                      )
-                    ],
+                  Text(AppLocalizations.of(context)!.twoFASecretKey),
+                  SizedBox(height: 16),
+                  SelectableText(
+                    state.profile.otpBase32!,
+                    style: TextStyle(
+                      color: context.colors.primary,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                  SizedBox(height: 24),
+                  SizedBox(height: 16),
+                  IconButton(
+                    icon: Icon(
+                      Icons.copy,
+                      size: 15,
+                    ),
+                    onPressed: () {
+                      Clipboard.setData(
+                          ClipboardData(text: state.profile.otpBase32!));
+
+                      final message = InfoMessage('qrCodeSecretKeyCopied');
+                      GlobalSnackBar.show(context: context, message: message);
+                    },
+                  ),
+                  SizedBox(height: 16),
                   IntrinsicWidth(
                     child: Column(
                       children: [

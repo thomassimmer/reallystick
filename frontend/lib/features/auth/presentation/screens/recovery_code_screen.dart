@@ -77,6 +77,9 @@ class RecoveryCodeScreen extends StatelessWidget {
                           onPressed: () {
                             context.goNamed('home');
                           },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.transparent,
+                          ),
                           child: Text(AppLocalizations.of(context)!.home),
                         )
                       ])))),
@@ -112,20 +115,17 @@ class RecoveryCodeScreen extends StatelessWidget {
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 16),
-          SelectionArea(
-            child: Column(
-              children: [
-                SelectableText(
-                  state.recoveryCode!,
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                )
-              ],
+          SelectableText(
+            state.recoveryCode!,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: context.colors.primary,
             ),
           ),
           IconButton(
             icon: Icon(
               Icons.copy,
-              size: 12,
+              size: 15,
             ),
             onPressed: () {
               Clipboard.setData(ClipboardData(text: state.recoveryCode!));
@@ -147,7 +147,10 @@ class RecoveryCodeScreen extends StatelessWidget {
               );
             },
             style: context.styles.buttonMedium,
-            child: Text(AppLocalizations.of(context)!.goToTwoFASetup),
+            child: Text(
+              AppLocalizations.of(context)!.goToTwoFASetup,
+              textAlign: TextAlign.center,
+            ),
           ),
         ],
       );
@@ -156,6 +159,8 @@ class RecoveryCodeScreen extends StatelessWidget {
 
   Widget _buildTwoFactorAuthenticationSetupView(BuildContext context,
       AuthGenerateTwoFactorAuthenticationConfigState state) {
+    final screenWidth = MediaQuery.of(context).size.width;
+
     void triggerNextAction() {
       BlocProvider.of<AuthBloc>(context).add(
         AuthVerifyOneTimePasswordEvent(
@@ -170,37 +175,44 @@ class RecoveryCodeScreen extends StatelessWidget {
       children: [
         Text(
           AppLocalizations.of(context)!.twoFASetup,
+          textAlign: TextAlign.center,
         ),
         SizedBox(height: 16),
         QrImageView(
           data: state.otpAuthUrl,
           version: QrVersions.auto,
-          size: 200.0,
+          size: screenWidth * 0.4,
+          backgroundColor: Colors.white,
         ),
         SizedBox(height: 16),
-        Wrap(
-            crossAxisAlignment: WrapCrossAlignment.center,
-            alignment: WrapAlignment.center, // Align the elements to the center
-            spacing: 8.0, // Add spacing between elements
-            direction:
-                Axis.horizontal, // Horizontal direction for the initial layout
-            children: [
-              SelectableText(AppLocalizations.of(context)!
-                  .twoFASecretKey(state.otpBase32)),
-              IconButton(
-                icon: Icon(
-                  Icons.copy,
-                ),
-                onPressed: () {
-                  Clipboard.setData(ClipboardData(text: state.otpBase32));
+        Text(
+          AppLocalizations.of(context)!.twoFASecretKey,
+          textAlign: TextAlign.center,
+        ),
+        SizedBox(height: 16),
+        SelectableText(
+          state.otpBase32,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: context.colors.primary,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(height: 16),
+        IconButton(
+          icon: Icon(
+            Icons.copy,
+            size: 15,
+          ),
+          onPressed: () {
+            Clipboard.setData(ClipboardData(text: state.otpBase32));
 
-                  // Create an InfoMessage for successfully copying the codes
-                  final message = InfoMessage('qrCodeSecretKeyCopied');
-                  GlobalSnackBar.show(context: context, message: message);
-                },
-              )
-            ]),
-        SizedBox(height: 24),
+            // Create an InfoMessage for successfully copying the codes
+            final message = InfoMessage('qrCodeSecretKeyCopied');
+            GlobalSnackBar.show(context: context, message: message);
+          },
+        ),
+        SizedBox(height: 16),
         AutofillGroup(
           child: CustomTextField(
             controller: _otpController,

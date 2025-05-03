@@ -40,6 +40,9 @@ class DeviceScreen extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       backgroundColor: context.colors.background,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
+      ),
       builder: (BuildContext context) {
         return Container(
           padding: EdgeInsets.all(16),
@@ -60,11 +63,16 @@ class DeviceScreen extends StatelessWidget {
                     onPressed: () {
                       Navigator.pop(context);
                     },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.transparent,
+                    ),
                     child: Text(AppLocalizations.of(context)!.cancel),
                   ),
                   ElevatedButton(
-                    style:
-                        ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.transparent,
+                      side: BorderSide(color: context.colors.error),
+                    ),
                     onPressed: () {
                       BlocProvider.of<ProfileBloc>(context)
                           .add(DeleteDeviceEvent(deviceId: deviceId));

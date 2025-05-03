@@ -22,6 +22,7 @@ class AppThemeStyles {
           EdgeInsets.symmetric(vertical: 10, horizontal: 12)),
       textStyle: WidgetStatePropertyAll(
         TextStyle(
+          fontFamily: 'Montserrat',
           fontSize: 12,
           fontWeight: FontWeight.w500,
         ),
@@ -30,10 +31,11 @@ class AppThemeStyles {
     this.buttonMedium = const ButtonStyle(
       minimumSize: WidgetStatePropertyAll(Size.zero),
       padding: WidgetStatePropertyAll(
-          EdgeInsets.symmetric(vertical: 8, horizontal: 24)),
+          EdgeInsets.symmetric(vertical: 12, horizontal: 18)),
       textStyle: WidgetStatePropertyAll(
         TextStyle(
-          fontSize: 16,
+          fontFamily: 'Montserrat',
+          fontSize: 14,
           fontWeight: FontWeight.w500,
         ),
       ),
@@ -45,6 +47,7 @@ class AppThemeStyles {
       ),
       textStyle: WidgetStatePropertyAll(
         TextStyle(
+          fontFamily: 'Montserrat',
           fontSize: 16,
           fontWeight: FontWeight.w500,
         ),
@@ -57,6 +60,7 @@ class AppThemeStyles {
       splashFactory: NoSplash.splashFactory,
       textStyle: WidgetStatePropertyAll(
         TextStyle(
+          fontFamily: 'Montserrat',
           fontSize: 16,
           fontWeight: FontWeight.w500,
           height: 1,

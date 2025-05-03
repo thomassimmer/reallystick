@@ -141,6 +141,7 @@ class QuestionnaireModalState extends State<QuestionnaireModal> {
                 padding: const EdgeInsets.all(16.0),
                 child: ElevatedButton(
                   onPressed: nextStep,
+                  style: context.styles.buttonMedium,
                   child: Text(AppLocalizations.of(context)!.next),
                 ),
               ),

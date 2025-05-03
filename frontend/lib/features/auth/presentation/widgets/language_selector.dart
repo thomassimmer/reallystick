@@ -37,7 +37,7 @@ class LanguageSelector extends StatelessWidget {
               boxShadow: [
                 BoxShadow(
                   color: Colors.black12,
-                  blurRadius: 4,
+                  blurRadius: 10,
                   offset: Offset(0, 2),
                 ),
               ],
