@@ -49,6 +49,22 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
   HashSet<String> _selectedUnitIdsForCurrentHabit = HashSet();
   HashSet<String> _selectedUnitIdsForHabitToMergeWith = HashSet();
 
+  @override
+  void initState() {
+    super.initState();
+
+    final profileState = context.read<ProfileBloc>().state;
+
+    if (profileState is ProfileAuthenticated) {
+      final userLocale = profileState.profile.locale;
+
+      _nameControllerForCurrentHabit = {userLocale: ''};
+      _descriptionControllerForCurrentHabit = {userLocale: ''};
+      _nameControllerForHabitToMergeWith = {userLocale: ''};
+      _descriptionControllerForHabitToMergeWith = {userLocale: ''};
+    }
+  }
+
   void _showEmojiPicker(
       BuildContext context, String userLocale, bool forCurrentHabit) {
     showModalBottomSheet(
@@ -480,7 +496,8 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
                         onPressed: () =>
                             _showEmojiPicker(context, userLocale, true),
                         iconData: null,
-                        label: _iconForCurrentHabit ?? AppLocalizations.of(context)!.chooseAnIcon,
+                        label: _iconForCurrentHabit ??
+                            AppLocalizations.of(context)!.chooseAnIcon,
                         errorText: displayIconErrorMessageForCurrentHabit,
                         labelSize: _iconForCurrentHabit != null ? 20 : null,
                       ),
@@ -624,7 +641,8 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
                           onPressed: () =>
                               _showEmojiPicker(context, userLocale, false),
                           iconData: null,
-                          label: _iconForHabitToMergeWith ?? AppLocalizations.of(context)!.chooseAnIcon,
+                          label: _iconForHabitToMergeWith ??
+                              AppLocalizations.of(context)!.chooseAnIcon,
                           errorText: displayIconErrorMessageForHabitToMergeWith,
                           labelSize:
                               _iconForHabitToMergeWith != null ? 20 : null,

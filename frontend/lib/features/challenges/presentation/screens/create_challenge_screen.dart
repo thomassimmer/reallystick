@@ -31,6 +31,20 @@ class CreateChallengeScreenState extends State<CreateChallengeScreen> {
   String? _icon;
   DateTime _startDateTime = DateTime.now();
 
+  @override
+  void initState() {
+    super.initState();
+
+    final profileState = context.read<ProfileBloc>().state;
+
+    if (profileState is ProfileAuthenticated) {
+      final userLocale = profileState.profile.locale;
+
+      _nameControllerForChallenge = {userLocale: ''};
+      _descriptionControllerForChallenge = {userLocale: ''};
+    }
+  }
+
   void _showEmojiPicker(BuildContext context, String userLocale) {
     showModalBottomSheet(
       context: context,
@@ -229,7 +243,8 @@ class CreateChallengeScreenState extends State<CreateChallengeScreen> {
                             onPressed: () =>
                                 _showEmojiPicker(context, userLocale),
                             iconData: null,
-                            label: _icon ?? AppLocalizations.of(context)!.chooseAnIcon,
+                            label: _icon ??
+                                AppLocalizations.of(context)!.chooseAnIcon,
                             errorText: displayIconErrorMessage,
                             labelSize: _icon != null ? 20 : null,
                           ),

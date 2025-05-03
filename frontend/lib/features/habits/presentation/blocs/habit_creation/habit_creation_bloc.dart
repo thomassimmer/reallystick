@@ -40,8 +40,9 @@ class HabitCreationFormBloc
       HabitCreationFormNameChangedEvent event, Emitter emit) async {
     final Map<String, HabitNameValidator> nameMap = {};
 
-    if (event.name.entries.isEmpty) {
-      nameMap['en'] = HabitNameValidator.dirty('No translation entered');
+    if (event.name.values.every((value) => value.isEmpty)) {
+      nameMap[event.name.keys.first] =
+          HabitNameValidator.dirty('No translation entered');
     } else {
       for (final entry in event.name.entries) {
         nameMap[entry.key] = HabitNameValidator.dirty(entry.value);
@@ -65,8 +66,8 @@ class HabitCreationFormBloc
       HabitCreationFormDescriptionChangedEvent event, Emitter emit) async {
     final Map<String, HabitDescriptionValidator> descriptionMap = {};
 
-    if (event.description.entries.isEmpty) {
-      descriptionMap['en'] =
+    if (event.description.values.every((value) => value.isEmpty)) {
+      descriptionMap[event.description.keys.first] =
           HabitDescriptionValidator.dirty('No translation entered');
     } else {
       for (final entry in event.description.entries) {

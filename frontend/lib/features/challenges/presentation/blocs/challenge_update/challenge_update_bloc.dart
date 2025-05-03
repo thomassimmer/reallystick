@@ -20,8 +20,9 @@ class ChallengeUpdateFormBloc
       ChallengeUpdateFormNameChangedEvent event, Emitter emit) async {
     final Map<String, ChallengeNameValidator> nameMap = {};
 
-    if (event.name.entries.isEmpty) {
-      nameMap['en'] = ChallengeNameValidator.dirty('No translation entered');
+    if (event.name.values.every((value) => value.isEmpty)) {
+      nameMap[event.name.keys.first] =
+          ChallengeNameValidator.dirty('No translation entered');
     } else {
       for (final entry in event.name.entries) {
         nameMap[entry.key] = ChallengeNameValidator.dirty(entry.value);
@@ -44,8 +45,8 @@ class ChallengeUpdateFormBloc
       ChallengeUpdateFormDescriptionChangedEvent event, Emitter emit) async {
     final Map<String, ChallengeDescriptionValidator> descriptionMap = {};
 
-    if (event.description.entries.isEmpty) {
-      descriptionMap['en'] =
+    if (event.description.values.every((value) => value.isEmpty)) {
+      descriptionMap[event.description.keys.first] =
           ChallengeDescriptionValidator.dirty('No translation entered');
     } else {
       for (final entry in event.description.entries) {

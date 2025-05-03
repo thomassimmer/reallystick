@@ -35,6 +35,20 @@ class CreateHabitScreenState extends State<CreateHabitScreen> {
   String? _icon;
   HashSet<String> _selectedUnitIds = HashSet();
 
+  @override
+  void initState() {
+    super.initState();
+
+    final profileState = context.read<ProfileBloc>().state;
+
+    if (profileState is ProfileAuthenticated) {
+      final userLocale = profileState.profile.locale;
+
+      _nameController = {userLocale: ''};
+      _descriptionController = {userLocale: ''};
+    }
+  }
+
   void _showEmojiPicker(BuildContext context, String userLocale) {
     showModalBottomSheet(
       context: context,
