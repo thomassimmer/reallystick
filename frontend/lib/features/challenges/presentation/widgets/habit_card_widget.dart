@@ -49,7 +49,7 @@ class HabitCardWidget extends StatelessWidget {
             gradient: LinearGradient(
               colors: [
                 color.withAlpha(100),
-                color.withBlue(100).withAlpha(100)
+                color.withBlue(150).withRed(150).withGreen(150).withAlpha(100)
               ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
@@ -97,7 +97,6 @@ class HabitCardWidget extends StatelessWidget {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8.0),
                         ),
-                        textColor: context.colors.textOnPrimary,
                         onPressed: () {
                           startTrackingThisHabit();
                         },

@@ -577,7 +577,9 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
                               AppLocalizations.of(context)!.joinThisChallenge),
                           backgroundColor: context.colors.primary,
                           extendedTextStyle: TextStyle(
-                              letterSpacing: 1, fontFamily: 'Montserrat'),
+                            letterSpacing: 1,
+                            fontFamily: 'Montserrat',
+                          ),
                         )
                       : null,
               body: RefreshIndicator(
@@ -587,7 +589,18 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
                   children: [
                     Container(
                       decoration: BoxDecoration(
-                        color: challengeColor.withAlpha(155),
+                        gradient: LinearGradient(
+                          colors: [
+                            challengeColor.withAlpha(100),
+                            challengeColor
+                                .withBlue(150)
+                                .withRed(150)
+                                .withGreen(150)
+                                .withAlpha(100)
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
                         border: Border.all(width: 1, color: challengeColor),
                         borderRadius: BorderRadius.circular(16.0),
                       ),
@@ -616,8 +629,6 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
                                                   userLocale.toString())
                                               .format(challenge.startDate!),
                                         ),
-                                  style: TextStyle(
-                                      color: context.colors.textOnPrimary),
                                   overflow: TextOverflow.ellipsis,
                                   maxLines: 1,
                                 ),
@@ -630,8 +641,6 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
                                       challengeParticipation.startDate,
                                     ),
                                   ),
-                                  style: TextStyle(
-                                      color: context.colors.textOnPrimary),
                                   overflow: TextOverflow.ellipsis,
                                   maxLines: 1,
                                 ),

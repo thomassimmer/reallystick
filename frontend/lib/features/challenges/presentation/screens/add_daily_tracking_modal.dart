@@ -521,8 +521,6 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
             ),
           ],
 
-          const SizedBox(height: 16),
-
           // Toggle Switch for "Precise Dates"
           Row(
             children: [

@@ -152,8 +152,6 @@ class ChallengesCarouselWidget extends StatelessWidget {
                                               userLocale,
                                             ),
                                             style: TextStyle(
-                                              color:
-                                                  context.colors.textOnPrimary,
                                               fontSize: 16,
                                               fontWeight: FontWeight.bold,
                                             ),
@@ -184,8 +182,6 @@ class ChallengesCarouselWidget extends StatelessWidget {
                                                         challenge.startDate!),
                                               ),
                                               style: TextStyle(
-                                                color: context
-                                                    .colors.textOnPrimary,
                                                 fontSize: 11,
                                                 fontWeight: FontWeight.bold,
                                               ),
@@ -202,7 +198,6 @@ class ChallengesCarouselWidget extends StatelessWidget {
                                       children: [
                                         Icon(
                                           Icons.people,
-                                          color: context.colors.textOnPrimary,
                                           size: 12,
                                         ),
                                         SizedBox(width: 10),
@@ -214,8 +209,6 @@ class ChallengesCarouselWidget extends StatelessWidget {
                                                     challengeStatistics
                                                         .participantsCount),
                                             style: TextStyle(
-                                              color:
-                                                  context.colors.textOnPrimary,
                                               fontSize: 11,
                                               fontWeight: FontWeight.bold,
                                             ),
@@ -232,8 +225,6 @@ class ChallengesCarouselWidget extends StatelessWidget {
                                                   .creatorUsername,
                                             ),
                                             style: TextStyle(
-                                              color:
-                                                  context.colors.textOnPrimary,
                                               fontSize: 11,
                                               fontWeight: FontWeight.bold,
                                             ),

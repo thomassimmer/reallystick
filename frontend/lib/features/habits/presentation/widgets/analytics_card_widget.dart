@@ -63,7 +63,11 @@ class _AnalyticsCardWidgetState extends State<AnalyticsCardWidget> {
         gradient: LinearGradient(
           colors: [
             widget.color.withAlpha(100),
-            widget.color.withBlue(100).withAlpha(100)
+            widget.color
+                .withBlue(150)
+                .withRed(150)
+                .withGreen(150)
+                .withAlpha(100)
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -86,14 +90,12 @@ class _AnalyticsCardWidgetState extends State<AnalyticsCardWidget> {
               children: [
                 Icon(
                   widget.analyticsCardInfo.icon,
-                  color: Colors.white,
                   size: 20,
                 ),
                 SizedBox(width: 10),
                 Text(
                   widget.analyticsCardInfo.title,
                   style: TextStyle(
-                    color: Colors.white,
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
                   ),
@@ -101,10 +103,11 @@ class _AnalyticsCardWidgetState extends State<AnalyticsCardWidget> {
               ],
             ),
             SizedBox(height: 5),
-            Text(widget.analyticsCardInfo.text,
-                overflow: _detailsOpen ? null : TextOverflow.ellipsis,
-                maxLines: _detailsOpen ? null : 3,
-                style: TextStyle(color: Colors.white)),
+            Text(
+              widget.analyticsCardInfo.text,
+              overflow: _detailsOpen ? null : TextOverflow.ellipsis,
+              maxLines: _detailsOpen ? null : 3,
+            ),
             if (_isOverflowing) ...[
               SizedBox(height: 10),
               Align(
@@ -120,7 +123,6 @@ class _AnalyticsCardWidgetState extends State<AnalyticsCardWidget> {
                         ? AppLocalizations.of(context)!.tapToSeeLess
                         : AppLocalizations.of(context)!.tapForMoreDetails,
                     style: TextStyle(
-                      color: Colors.white.withValues(alpha: 0.7),
                       fontSize: 12,
                     ),
                   ),

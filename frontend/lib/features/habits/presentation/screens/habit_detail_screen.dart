@@ -304,7 +304,18 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
             children: [
               Container(
                 decoration: BoxDecoration(
-                  color: habitColor.withAlpha(155),
+                  gradient: LinearGradient(
+                    colors: [
+                      habitColor.withAlpha(100),
+                      habitColor
+                          .withBlue(150)
+                          .withRed(150)
+                          .withGreen(150)
+                          .withAlpha(100)
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
                   border: Border.all(width: 1, color: habitColor),
                   borderRadius: BorderRadius.circular(16.0),
                 ),
