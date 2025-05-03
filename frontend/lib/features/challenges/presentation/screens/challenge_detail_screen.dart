@@ -443,10 +443,6 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
                       _modalOpened = true;
                       _openFinishChallengeModal(
                         challengeParticipation: challengeParticipation!,
-                      ).then(
-                        (_) {
-                          _modalOpened = false;
-                        },
                       );
                     },
                   );
