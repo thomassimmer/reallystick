@@ -1,10 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:reallystick/core/presentation/widgets/app_logo.dart';
+import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/core/ui/themes/dark.dart';
 import 'package:reallystick/core/ui/themes/light.dart';
 import 'package:reallystick/core/utils/check_version.dart';
 import 'package:reallystick/core/utils/dom_helper.dart';
+import 'package:reallystick/features/auth/presentation/widgets/background.dart';
 import 'package:reallystick/i18n/app_localizations.dart';
 import 'package:universal_io/io.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -51,35 +53,42 @@ class _UpdateRequiredScreen extends StatelessWidget {
     final loc = AppLocalizations.of(context)!;
 
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              AppLogo(size: 100),
-              const SizedBox(height: 40),
-              Text(
-                loc.updateRequired,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 40),
-              ElevatedButton(
-                onPressed: () {
-                  final storeUrl = Platform.isAndroid
-                      ? versionInfo.storeUrl.android
-                      : versionInfo.storeUrl.ios;
+      body: Stack(
+        children: [
+          Background(),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  AppLogo(size: 100),
+                  const SizedBox(height: 40),
+                  Text(
+                    loc.updateRequired,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  const SizedBox(height: 40),
+                  ElevatedButton(
+                    style: context.styles.buttonMedium,
+                    onPressed: () {
+                      final storeUrl = Platform.isAndroid
+                          ? versionInfo.storeUrl.android
+                          : versionInfo.storeUrl.ios;
 
-                  launchUrl(
-                    Uri.parse(storeUrl),
-                    mode: LaunchMode.externalApplication,
-                  );
-                },
-                child: Text(loc.updateNow),
+                      launchUrl(
+                        Uri.parse(storeUrl),
+                        mode: LaunchMode.externalApplication,
+                      );
+                    },
+                    child: Text(loc.updateNow),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

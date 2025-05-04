@@ -27,10 +27,17 @@ class ErrorScreen extends StatelessWidget {
                 },
                 child: Row(
                   children: [
-                    AppLogo(size: 50),
-                    SizedBox(width: 10),
-                    Text('Really', style: context.typographies.headingSmall),
-                    Text('Stick', style: context.typographies.headingSmall),
+                    AppLogo(size: 70),
+                    Text(
+                      'Really',
+                      style: context.typographies.headingSmall
+                          .copyWith(color: Colors.white),
+                    ),
+                    Text(
+                      'Stick',
+                      style: context.typographies.headingSmall
+                          .copyWith(color: Colors.white),
+                    ),
                   ],
                 ),
               ),
