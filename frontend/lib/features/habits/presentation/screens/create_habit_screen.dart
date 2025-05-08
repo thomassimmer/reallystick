@@ -259,6 +259,7 @@ class CreateHabitScreenState extends State<CreateHabitScreen> {
                             label: AppLocalizations.of(context)!.habitName,
                             errors: nameErrorMap,
                             userLocale: userLocale,
+                            multiline: false,
                           ),
 
                           const SizedBox(height: 16.0),
@@ -270,11 +271,13 @@ class CreateHabitScreenState extends State<CreateHabitScreen> {
                                 BlocProvider.of<HabitCreationFormBloc>(context)
                                     .add(
                               HabitCreationFormDescriptionChangedEvent(
-                                  translations),
+                                translations,
+                              ),
                             ),
                             label: AppLocalizations.of(context)!.description,
                             errors: descriptionErrorMap,
                             userLocale: userLocale,
+                            multiline: true,
                           ),
 
                           const SizedBox(height: 16.0),

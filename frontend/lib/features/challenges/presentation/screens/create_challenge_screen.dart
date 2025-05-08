@@ -211,6 +211,7 @@ class CreateChallengeScreenState extends State<CreateChallengeScreen> {
                             label: AppLocalizations.of(context)!.challengeName,
                             errors: nameErrorMap,
                             userLocale: userLocale,
+                            multiline: false,
                           ),
 
                           const SizedBox(height: 16.0),
@@ -232,6 +233,7 @@ class CreateChallengeScreenState extends State<CreateChallengeScreen> {
                             label: AppLocalizations.of(context)!.description,
                             errors: descriptionErrorMap,
                             userLocale: userLocale,
+                            multiline: true,
                           ),
 
                           const SizedBox(height: 16.0),

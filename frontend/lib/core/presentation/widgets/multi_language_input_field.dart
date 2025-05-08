@@ -10,6 +10,7 @@ class MultiLanguageInputField extends StatefulWidget {
   final String label;
   final Map<String, String?> errors;
   final String userLocale;
+  final bool multiline;
 
   const MultiLanguageInputField({
     super.key,
@@ -18,6 +19,7 @@ class MultiLanguageInputField extends StatefulWidget {
     required this.label,
     required this.errors,
     required this.userLocale,
+    required this.multiline,
   });
 
   @override
@@ -63,10 +65,17 @@ class _MultiLanguageInputFieldState extends State<MultiLanguageInputField> {
   }
 
   void _notifyChange() {
-    final updatedTranslations = {
-      for (var entry in controllers.entries)
-        if (entry.value.text.isNotEmpty) entry.key: entry.value.text,
-    };
+    Map<String, String> updatedTranslations = {};
+
+    // We need to return a map with at least a key so that can display a
+    // missing translation error.
+
+    for (var entry in controllers.entries) {
+      if (entry.value.text.isNotEmpty || updatedTranslations.isEmpty) {
+        updatedTranslations[entry.key] = entry.value.text;
+      }
+    }
+
     widget.onTranslationsChanged(updatedTranslations);
   }
 
@@ -105,6 +114,11 @@ class _MultiLanguageInputFieldState extends State<MultiLanguageInputField> {
                         .translationForLanguage(langLabel),
                     onChanged: (_) => _notifyChange(),
                     errorText: widget.errors[langCode],
+                    maxLines: widget.multiline ? null : 1,
+                    minLines: widget.multiline ? 3 : 1,
+                    keyboardType: widget.multiline
+                        ? TextInputType.multiline
+                        : TextInputType.text,
                   ),
                 ),
                 if (activeLanguages.length > 1)

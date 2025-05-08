@@ -188,14 +188,8 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
       final habit = habitState.habits[widget.habitId]!;
 
       setState(() {
-        if (_nameControllerForCurrentHabit.values.isEmpty) {
-          _nameControllerForCurrentHabit = habit.name;
-        }
-
-        if (_descriptionControllerForCurrentHabit.values.isEmpty) {
-          _descriptionControllerForCurrentHabit = habit.description;
-        }
-
+        _nameControllerForCurrentHabit = habit.name;
+        _descriptionControllerForCurrentHabit = habit.description;
         _selectedCategoryIdForCurrentHabit = habit.categoryId;
         _selectedUnitIdsForCurrentHabit = habit.unitIds;
         _iconForCurrentHabit = habit.icon;
@@ -270,11 +264,13 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
                 displayHabitCategoryErrorForCurrentHabit != null
                     ? getTranslatedMessage(
                         context,
-                        ErrorMessage(displayHabitCategoryErrorForCurrentHabit
-                            .messageKey))
+                        ErrorMessage(
+                          displayHabitCategoryErrorForCurrentHabit.messageKey,
+                        ),
+                      )
                     : null;
 
-            final shortNameErrorMapForCurrentHabit = context.select(
+            final nameErrorMapForCurrentHabit = context.select(
               (HabitReviewFormBloc habitReviewFormBloc) => Map.fromEntries(
                 habitReviewFormBloc.state.name.entries.map(
                   (entry) => MapEntry(
@@ -315,7 +311,9 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
                     ? getTranslatedMessage(
                         context,
                         ErrorMessage(
-                            displayIconErrorForCurrentHabit.messageKey))
+                          displayIconErrorForCurrentHabit.messageKey,
+                        ),
+                      )
                     : null;
 
             final displayHabitCategoryErrorForHabitToMergeWith = context.select(
@@ -327,8 +325,10 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
                     ? getTranslatedMessage(
                         context,
                         ErrorMessage(
-                            displayHabitCategoryErrorForHabitToMergeWith
-                                .messageKey))
+                          displayHabitCategoryErrorForHabitToMergeWith
+                              .messageKey,
+                        ),
+                      )
                     : null;
 
             final nameErrorMapForHabitToMergeWith = context.select(
@@ -372,7 +372,9 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
                     ? getTranslatedMessage(
                         context,
                         ErrorMessage(
-                            displayIconErrorForHabitToMergeWith.messageKey))
+                          displayIconErrorForHabitToMergeWith.messageKey,
+                        ),
+                      )
                     : null;
 
             final unitsErrorMapForCurrentHabit = context.select(
@@ -457,8 +459,9 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
                           );
                         },
                         label: AppLocalizations.of(context)!.habitName,
-                        errors: shortNameErrorMapForCurrentHabit,
+                        errors: nameErrorMapForCurrentHabit,
                         userLocale: userLocale,
+                        multiline: false,
                       ),
 
                       // Description Input
@@ -475,6 +478,7 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
                         label: AppLocalizations.of(context)!.description,
                         errors: descriptionErrorMapForCurrentHabit,
                         userLocale: userLocale,
+                        multiline: true,
                       ),
 
                       const SizedBox(height: 16.0),
@@ -603,6 +607,7 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
                           label: AppLocalizations.of(context)!.habitName,
                           errors: nameErrorMapForHabitToMergeWith,
                           userLocale: userLocale,
+                          multiline: false,
                         ),
 
                         // Description Input
@@ -620,6 +625,7 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
                           label: AppLocalizations.of(context)!.description,
                           errors: descriptionErrorMapForHabitToMergeWith,
                           userLocale: userLocale,
+                          multiline: true,
                         ),
 
                         const SizedBox(height: 16.0),
