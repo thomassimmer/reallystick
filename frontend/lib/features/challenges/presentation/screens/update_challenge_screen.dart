@@ -168,7 +168,7 @@ class UpdateChallengeScreenState extends State<UpdateChallengeScreen> {
               }
             }
 
-            if (challenge.creator != profileState.profile.id ||
+            if (challenge.creator != profileState.profile.id &&
                 !profileState.profile.isAdmin) {
               return UserIsNotChallengeCreatorScreen();
             }
