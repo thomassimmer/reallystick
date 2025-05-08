@@ -3,8 +3,9 @@ use std::time::Duration;
 use actix_web::get;
 use actix_web::web::{Data, Query};
 use actix_web::{rt, web, HttpRequest, HttpResponse, Responder};
-use actix_ws::{self};
+use actix_ws::{self, Message};
 use chrono::{DateTime, Utc};
+use futures::{select, FutureExt, StreamExt};
 use jsonwebtoken::{decode, DecodingKey, Validation};
 use sqlx::PgPool;
 use tracing::{debug, error, info};
@@ -47,7 +48,7 @@ async fn broadcast_ws(
         }
     };
 
-    let (res, mut session, _msg_stream) = match actix_ws::handle(&req, stream) {
+    let (res, mut session, msg_stream) = match actix_ws::handle(&req, stream) {
         Ok(r) => r,
         Err(e) => {
             error!("Error: {}", e);
@@ -87,17 +88,41 @@ async fn broadcast_ws(
     // spawn websocket handler (and don't await it) so that the response is returned immediately
     rt::spawn(async move {
         let mut interval = tokio::time::interval(Duration::from_secs(3));
+        let mut msg_stream = msg_stream.fuse();
 
         loop {
-            interval.tick().await;
+            select! {
+                _ = interval.tick().fuse() => {
+                    debug!("Sending ping to {}", request_claims.username);
 
-            debug!("Sent a ping to {}.", request_claims.username);
+                    if session.ping(b"").await.is_err() {
+                        break;
+                    }
+                }
 
-            if session.ping(b"").await.is_err() {
-                break;
+                msg = msg_stream.next() => {
+                    match msg {
+                        Some(Ok(Message::Close(reason))) => {
+                            info!("{} closed socket: {:?}", request_claims.username, reason);
+                            break;
+                        }
+                        Some(Ok(Message::Pong(_))) => {
+                            debug!("Received pong from {}", request_claims.username);
+                        }
+                        Some(Ok(_)) => {
+                            // You can handle other messages here
+                        }
+                        Some(Err(e)) => {
+                            error!("WebSocket error: {:?}", e);
+                            break;
+                        }
+                        None => {
+                            debug!("WebSocket stream ended for {}", request_claims.username);
+                            break;
+                        }
+                    }
+                }
             }
-
-            debug!("Received a pong from {}.", request_claims.username);
         }
 
         channels_data
