@@ -430,6 +430,7 @@
   "messages": "Messages",
   "messagesAreEncrypted": "Messages are end-to-end encrypted.\nNo one outside of this chat, not even our team, can read them.",
   "missingDateTimeError": "The date can't be left empty.",
+  "missingUnitError": "A unit must be selected.",
   "newDiscussion": "New Discussion",
   "newParticipantsToMyChallenges": "New participants to my challenges",
   "newPassword": "New password",

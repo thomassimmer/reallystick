@@ -430,6 +430,7 @@
   "messages": "Mensagens",
   "messagesAreEncrypted": "As mensagens são criptografadas de ponta a ponta.\nNinguém fora desta conversa, nem mesmo nossa equipe, pode lê-las.",
   "missingDateTimeError": "A data não pode ser deixada em branco.",
+  "missingUnitError": "Uma unidade deve ser selecionada.",
   "newDiscussion": "Nova Discussão",
   "newParticipantsToMyChallenges": "Novos participantes nos meus desafios",
   "newPassword": "Nova senha",

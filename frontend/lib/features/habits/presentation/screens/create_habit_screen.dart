@@ -81,6 +81,7 @@ class CreateHabitScreenState extends State<CreateHabitScreen> {
     habitFormBloc
         .add(HabitCreationFormDescriptionChangedEvent(_descriptionController));
     habitFormBloc.add(HabitCreationFormIconChangedEvent(_icon ?? ""));
+    habitFormBloc.add(HabitCreationFormUnitsChangedEvent(_selectedUnitIds));
 
     // Allow time for the validation states to update
     Future.delayed(

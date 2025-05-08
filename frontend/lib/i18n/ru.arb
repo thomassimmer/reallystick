@@ -430,6 +430,7 @@
   "messages": "Сообщения",
   "messagesAreEncrypted": "Сообщения зашифрованы end-to-end.\nНикто, кроме участников, не может их прочитать.",
   "missingDateTimeError": "Дата не может быть пустой.",
+  "missingUnitError": "Необходимо выбрать единиц.",
   "newDiscussion": "Новый разговор",
   "newParticipantsToMyChallenges": "Новые участники в моих челленджах",
   "newPassword": "Новый пароль",

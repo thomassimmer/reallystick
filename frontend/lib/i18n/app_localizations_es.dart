@@ -752,6 +752,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get missingDateTimeError => 'La fecha no puede dejarse vacía.';
 
   @override
+  String get missingUnitError => 'Se debe seleccionar una unidad.';
+
+  @override
   String get newDiscussion => 'Nueva Discusión';
 
   @override

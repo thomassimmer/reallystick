@@ -430,6 +430,7 @@
   "messages": "Messaggi",
   "messagesAreEncrypted": "I messaggi sono crittografati end-to-end.\nNessuno al di fuori di questa discussione, nemmeno il nostro team, può leggerli.",
   "missingDateTimeError": "La data non può essere lasciata vuota.",
+  "missingUnitError": "È necessario selezionare un'unità.",
   "newDiscussion": "Nuova Discussione",
   "newParticipantsToMyChallenges": "Nuovi partecipanti alle mie sfide",
   "newPassword": "Nuova password",

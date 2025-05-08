@@ -752,6 +752,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get missingDateTimeError => 'A data não pode ser deixada em branco.';
 
   @override
+  String get missingUnitError => 'Uma unidade deve ser selecionada.';
+
+  @override
   String get newDiscussion => 'Nova Discussão';
 
   @override

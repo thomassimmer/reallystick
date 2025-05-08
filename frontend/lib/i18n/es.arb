@@ -430,6 +430,7 @@
   "messages": "Mensajes",
   "messagesAreEncrypted": "Los mensajes están cifrados de extremo a extremo.\nNadie fuera de esta discusión, ni siquiera nuestro equipo, puede leerlos.",
   "missingDateTimeError": "La fecha no puede dejarse vacía.",
+  "missingUnitError": "Se debe seleccionar una unidad.",
   "newDiscussion": "Nueva Discusión",
   "newParticipantsToMyChallenges": "Nuevos participantes en mis desafíos",
   "newPassword": "Nueva contraseña",

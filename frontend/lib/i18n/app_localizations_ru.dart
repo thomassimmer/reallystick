@@ -752,6 +752,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get missingDateTimeError => 'Дата не может быть пустой.';
 
   @override
+  String get missingUnitError => 'Необходимо выбрать единиц.';
+
+  @override
   String get newDiscussion => 'Новый разговор';
 
   @override

@@ -423,6 +423,7 @@
   "messages": "Nachrichten",
   "messagesAreEncrypted": "Nachrichten sind Ende-zu-Ende verschlüsselt.\nNiemand außerhalb dieses Gesprächs, nicht einmal unser Team, kann sie lesen.",
   "missingDateTimeError": "Das Datum darf nicht leer sein.",
+  "missingUnitError": "Eine Einheit muss ausgewählt werden.",
   "newDiscussion": "Neue Diskussion",
   "newParticipantsToMyChallenges": "Neue Teilnehmer an meinen Herausforderungen",
   "newPassword": "Neues Passwort",

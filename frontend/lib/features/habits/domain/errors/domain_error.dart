@@ -55,6 +55,11 @@ class UnitNotFoundDomainError implements DomainError {
   final String messageKey = 'unitNotFoundError';
 }
 
+class MissingUnitError implements DomainError {
+  @override
+  final String messageKey = 'missingUnitError';
+}
+
 class QuantityOfSetIsNullError implements DomainError {
   @override
   final String messageKey = 'quantityOfSetIsNullError';

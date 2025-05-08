@@ -112,6 +112,10 @@ class HabitReviewFormBloc
       HabitReviewFormUnitsChangedEvent event, Emitter emit) async {
     final Map<String, UnitValidator> unitIdsMap = {};
 
+    if (event.unitIds.isEmpty) {
+      unitIdsMap['error'] = UnitValidator.dirty('No unit selected');
+    }
+
     for (final entry in event.unitIds) {
       unitIdsMap[entry] = UnitValidator.dirty(entry);
     }

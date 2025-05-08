@@ -76,6 +76,8 @@ String getTranslatedMessage(BuildContext context, Message message) {
         return localizations.habitsNotMergedError;
       case 'unitNotFoundError':
         return localizations.unitNotFoundError;
+      case 'missingUnitError':
+        return localizations.missingUnitError;
       case 'quantityOfSetIsNullError':
         return localizations.quantityOfSetIsNullError;
       case 'quantityPerSetIsNullError':

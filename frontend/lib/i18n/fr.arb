@@ -430,6 +430,7 @@
   "messages": "Messages",
   "messagesAreEncrypted": "Les messages sont chiffrés de bout en bout.\nPersonne en dehors de cette discussion, pas même notre équipe, ne peut les lire.",
   "missingDateTimeError": "La date ne peut pas être laissée vide.",
+  "missingUnitError": "Une unité doit être sélectionnée.",
   "newDiscussion": "Nouvelle Discussion",
   "newParticipantsToMyChallenges": "Nouveaux participants à mes défis",
   "newPassword": "Nouveau mot de passe",

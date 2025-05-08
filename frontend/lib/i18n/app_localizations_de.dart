@@ -752,6 +752,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get missingDateTimeError => 'Das Datum darf nicht leer sein.';
 
   @override
+  String get missingUnitError => 'Eine Einheit muss ausgewählt werden.';
+
+  @override
   String get newDiscussion => 'Neue Diskussion';
 
   @override

@@ -1377,6 +1377,12 @@ abstract class AppLocalizations {
   /// **'The date can\'t be left empty.'**
   String get missingDateTimeError;
 
+  /// No description provided for @missingUnitError.
+  ///
+  /// In en, this message translates to:
+  /// **'A unit must be selected.'**
+  String get missingUnitError;
+
   /// No description provided for @newDiscussion.
   ///
   /// In en, this message translates to:

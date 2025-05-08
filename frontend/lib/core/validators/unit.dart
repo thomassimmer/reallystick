@@ -14,8 +14,12 @@ class UnitValidator extends FormzInput<String, DomainError> {
       caseSensitive: false,
     );
 
+    if (value == null || value == 'No unit selected') {
+      return MissingUnitError();
+    }
+
     // Regex pattern check
-    if (value != null && pattern.hasMatch(value)) {
+    if (pattern.hasMatch(value)) {
       return null;
     }
 

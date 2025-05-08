@@ -113,6 +113,8 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
         _descriptionControllerForCurrentHabit));
     habitFormBloc.add(HabitReviewFormIconChangedEvent(
         _iconForCurrentHabit != null ? _iconForCurrentHabit! : ""));
+    habitFormBloc
+        .add(HabitReviewFormUnitsChangedEvent(_selectedUnitIdsForCurrentHabit));
 
     // Allow time for the validation states to update
     Future.delayed(
@@ -150,6 +152,8 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
         _descriptionControllerForHabitToMergeWith));
     habitFormBloc
         .add(HabitMergeFormIconChangedEvent(_iconForHabitToMergeWith ?? ""));
+    habitFormBloc.add(
+        HabitMergeFormUnitsChangedEvent(_selectedUnitIdsForHabitToMergeWith));
 
     // Allow time for the validation states to update
     Future.delayed(
