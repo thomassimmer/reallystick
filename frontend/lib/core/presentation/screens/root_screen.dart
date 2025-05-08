@@ -131,7 +131,10 @@ class RootScreenState extends State<RootScreen> {
                     },
                     child: Row(
                       children: [
-                        AppLogo(size: 70),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 5),
+                          child: AppLogo(size: 50),
+                        ),
                         Text(
                           'Really',
                           style: context.typographies.headingSmall

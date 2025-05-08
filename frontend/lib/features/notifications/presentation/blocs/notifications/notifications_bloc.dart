@@ -64,7 +64,7 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState>
             add(InitializeNotificationsEvent());
           }
         } else {
-          webSocketService.disconnect();
+          await webSocketService.disconnect();
         }
       },
     );
@@ -88,8 +88,8 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState>
         state == AppLifecycleState.inactive ||
         state == AppLifecycleState.detached) {
       Future.microtask(
-        () {
-          webSocketService.disconnect();
+        () async {
+          await webSocketService.disconnect();
         },
       );
     }
