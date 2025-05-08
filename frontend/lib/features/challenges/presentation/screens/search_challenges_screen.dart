@@ -129,27 +129,34 @@ class SearchChallengesScreenState extends State<SearchChallengesScreen> {
                       children: [
                         ListTile(
                           contentPadding: EdgeInsets.symmetric(vertical: 5),
-                          leading: Column(
+                          leading: SizedBox(
+                            width: 40,
+                            child: Center(
+                              child: Text(
+                                challenge.icon,
+                                style: TextStyle(fontSize: 15),
+                              ),
+                            ),
+                          ),
+                          title: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
                             children: [
-                              Text(challenge.icon,
-                                  style: TextStyle(fontSize: 15)),
+                              Text(
+                                getRightTranslationFromJson(
+                                    challenge.name, userLocale),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              Text(
+                                getRightTranslationFromJson(
+                                    challenge.description, userLocale),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 2,
+                                style: TextStyle(
+                                    color: Colors.grey[600], fontSize: 12),
+                              ),
                             ],
-                          ),
-                          title: Text(
-                            getRightTranslationFromJson(
-                              challenge.name,
-                              userLocale,
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          subtitle: Text(
-                            getRightTranslationFromJson(
-                              challenge.description,
-                              userLocale,
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 2,
                           ),
                           onTap: () {
                             context.pushNamed(
