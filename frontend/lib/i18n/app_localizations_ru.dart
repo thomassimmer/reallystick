@@ -203,7 +203,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get confirmMessageDeletion => 'Нажав \'Подтвердить\', ваше сообщение и все ответы, связанные с ним, будут удалены навсегда.';
 
   @override
-  String get connected => 'Подключено';
+  String get connected => 'В сети';
 
   @override
   String get continent => 'Континент';
@@ -252,7 +252,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get currentPassword => 'Текущий пароль';
 
   @override
-  String get dark => 'Тёмный';
+  String get dark => 'Тёмная';
 
   @override
   String get date => 'Дата';
@@ -631,8 +631,8 @@ class AppLocalizationsRu extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'через $count часов',
-      one: 'через $count час',
+      other: '$count часов назад',
+      one: '$count час назад',
     );
     return '$_temp0';
   }
@@ -642,8 +642,8 @@ class AppLocalizationsRu extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'через $count минут',
-      one: 'через $count минуту',
+      other: '$count минут назад',
+      one: '$count минуту назад',
     );
     return '$_temp0';
   }
@@ -653,8 +653,8 @@ class AppLocalizationsRu extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'через $count месяцев',
-      one: 'через $count месяц',
+      other: '$count месяцев назад',
+      one: '$count месяц назад',
     );
     return '$_temp0';
   }
@@ -664,8 +664,8 @@ class AppLocalizationsRu extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'через $count секунд',
-      one: 'через $count секунду',
+      other: '$count секунд назад',
+      one: '$count секунду назад',
       zero: 'только что',
     );
     return '$_temp0';
@@ -676,8 +676,8 @@ class AppLocalizationsRu extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'через $count лет',
-      one: 'через $count год',
+      other: '$count лет назад',
+      one: '$count год назад',
     );
     return '$_temp0';
   }
@@ -686,7 +686,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get levelOfEducation => 'Уровень образования';
 
   @override
-  String get light => 'Светлый';
+  String get light => 'Светлая';
 
   @override
   String get likedMessages => 'Понравившиеся сообщения';
@@ -1373,7 +1373,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get whatIsThis => 'Что это?';
 
   @override
-  String get worker => 'Рабочий';
+  String get worker => 'Работающий';
 
   @override
   String writeTo(String user) {
