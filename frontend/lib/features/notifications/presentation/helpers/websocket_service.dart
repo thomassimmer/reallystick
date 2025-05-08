@@ -1,18 +1,19 @@
 import 'dart:async';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:logger/web.dart';
 import 'package:reallystick/features/auth/data/storage/token_storage.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class WebSocketService {
   WebSocketChannel? _channel;
-  String? _token;
   bool _isConnected = false;
-  bool _shouldReconnect = false;
-  bool _isReconnecting = false; // Prevent race conditions in reconnection
+  bool _shouldReconnect = true;
+  bool _isReconnecting = false;
 
+  final logger = Logger();
   final StreamController<String> _messageController =
-      StreamController.broadcast();
+      StreamController<String>.broadcast();
   final StreamController<bool> _connectionController =
       StreamController<bool>.broadcast();
 
@@ -22,9 +23,9 @@ class WebSocketService {
   StreamSubscription? _webSocketSubscription;
 
   /// Connect to WebSocket
-  void connect() async {
-    if (_isConnected || _channel != null || _isReconnecting) {
-      return; // Prevent opening multiple connections
+  void connect() {
+    if (_isConnected || _isReconnecting) {
+      return;
     }
 
     _shouldReconnect = true;
@@ -33,70 +34,74 @@ class WebSocketService {
 
   /// Initialize WebSocket Connection
   Future<void> _initializeWebSocket() async {
-    if (_channel != null) {
-      return; // Ensure only one socket is open
-    }
+    if (_isConnected) return;
 
     final token = await TokenStorage().getAccessToken();
-
-    if (token != null) {
-      _token = token;
-    } else {
-      print("No token found. Retrying.");
+    if (token == null) {
+      logger.i("No token found. Retrying in 3 seconds...");
       _handleReconnect();
       return;
     }
 
     try {
       final baseUrl = dotenv.env['WS_BASE_URL']?.replaceAll('http', 'ws') ?? "";
-      final uri = Uri.parse("$baseUrl/api/ws?access_token=$_token");
+      final uri = Uri.parse("$baseUrl/api/ws?access_token=$token");
 
       _channel = WebSocketChannel.connect(uri);
-      await _channel!.ready;
+      _isConnected = true;
+      _connectionController.add(true);
+      logger.i("WebSocket connected");
+
+      // Listen for incoming messages
+      _webSocketSubscription = _channel!.stream.listen(
+        (message) {
+          logger.i("WebSocket message received: $message");
+          _messageController.add(message);
+        },
+        onError: (error) async {
+          logger.i("WebSocket stream error: $error");
+          await _webSocketSubscription?.cancel();
+          _webSocketSubscription = null;
+          _handleReconnect();
+        },
+        onDone: () async {
+          logger.i("WebSocket connection closed by server.");
+          await _webSocketSubscription?.cancel();
+          logger.i("subscription cancelled");
+          _webSocketSubscription = null;
+          logger.i("reconnecting..");
+          _handleReconnect();
+        },
+        cancelOnError: true,
+      );
     } catch (e) {
-      print("WebSocket connection error: $e");
+      logger.i("WebSocket connection error: $e");
       _handleReconnect();
-      return;
     }
-
-    _isConnected = true;
-    _connectionController.add(true); // Notify about successful connection
-
-    // Listen for incoming messages
-    _webSocketSubscription = _channel!.stream.listen(
-      (message) {
-        _messageController.add(message);
-      },
-      onError: (error) {
-        _handleReconnect();
-      },
-      onDone: () {
-        _handleReconnect();
-      },
-      cancelOnError: true,
-    );
   }
 
   /// Handle WebSocket Reconnection
   void _handleReconnect() async {
+    _isConnected = false;
     _channel = null;
+    _connectionController.add(false);
 
     if (!_shouldReconnect || _isReconnecting) {
-      return; // Prevent multiple reconnections
+      logger.i(
+          "returning because _shouldReconnect : $_shouldReconnect and _isReconnecting : $_isReconnecting");
+      return;
     }
 
-    _isConnected = false;
-    _connectionController.add(false);
     _isReconnecting = true;
 
     while (!_isConnected && _shouldReconnect) {
       await Future.delayed(Duration(seconds: 3));
 
-      if (_isConnected || _channel != null) {
-        _isReconnecting = false;
-        return;
+      if (_isConnected) {
+        break;
       }
 
+      logger.i("Reconnecting WebSocket...");
       await _initializeWebSocket();
     }
 
@@ -108,19 +113,23 @@ class WebSocketService {
     _shouldReconnect = false;
     _isReconnecting = false;
 
-    if (_channel != null) {
-      try {
-        await _channel!.sink.close(1000, "App moved to background");
-        await _webSocketSubscription?.cancel();
-      } catch (e) {
-        print("Error closing WebSocket: $e");
-      }
-
-      _webSocketSubscription = null;
-      _channel = null;
+    try {
+      await _webSocketSubscription?.cancel();
+      await _channel?.sink.close(1000, "App moved to background");
+    } catch (e) {
+      logger.i("Error during WebSocket disconnect: $e");
     }
 
+    _webSocketSubscription = null;
+    _channel = null;
     _isConnected = false;
     _connectionController.add(false);
+  }
+
+  /// Dispose resources (if needed)
+  Future<void> dispose() async {
+    await disconnect();
+    await _messageController.close();
+    await _connectionController.close();
   }
 }
