@@ -129,8 +129,7 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
                 UpdateChallengeParticipationEvent(
               challengeParticipationId: challengeParticipation.id,
               color: selectedColor.toShortString(),
-              startDate: DateTime
-                  .now(), // TODO : Modal to create if user started this challenge before
+              startDate: challengeParticipation.startDate,
               notificationsReminderEnabled:
                   challengeParticipation.notificationsReminderEnabled,
               reminderTime: challengeParticipation.reminderTime,
