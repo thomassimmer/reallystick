@@ -78,6 +78,7 @@ class PrivateMessageBloc extends Bloc<PrivateMessageEvent, PrivateMessageState>
     on<AddNewMessageEvent>(onAddNewMessage);
     on<UpdateMessageEvent>(onUpdateMessage);
     on<DeleteMessageEvent>(onDeleteMessage);
+    on<FetchOlderMessagesEvent>(onFetchOlderMessages);
 
     WidgetsBinding.instance.addObserver(this);
   }
@@ -109,6 +110,7 @@ class PrivateMessageBloc extends Bloc<PrivateMessageEvent, PrivateMessageState>
 
     final result = await getPrivateMessagesOfDiscussionUsecase.call(
       discussionId: event.discussionId,
+      beforeDate: null,
     );
 
     List<PrivateMessage> messages = await result.fold(
@@ -152,7 +154,9 @@ class PrivateMessageBloc extends Bloc<PrivateMessageEvent, PrivateMessageState>
             );
 
             clearContent = await decryptMessageUsingAesUsecase.call(
-                encryptedContent: message.content, aesKey: aesKey);
+              encryptedContent: message.content,
+              aesKey: aesKey,
+            );
           }
 
           message.content = clearContent;
@@ -183,6 +187,102 @@ class PrivateMessageBloc extends Bloc<PrivateMessageEvent, PrivateMessageState>
         lastPrivateMessageReceivedEvent: null,
       ),
     );
+  }
+
+  Future<void> onFetchOlderMessages(
+    FetchOlderMessagesEvent event,
+    Emitter<PrivateMessageState> emit,
+  ) async {
+    final currentState = state;
+
+    final result = await getPrivateMessagesOfDiscussionUsecase.call(
+      discussionId: event.discussionId,
+      beforeDate: event.beforeDate,
+    );
+
+    List<PrivateMessage> olderMessages = await result.fold(
+      (error) {
+        if (error is ShouldLogoutError) {
+          authBloc.add(
+            AuthLogoutEvent(
+              message: ErrorMessage(error.messageKey),
+            ),
+          );
+        } else {
+          emit(
+            PrivateMessageState(
+              discussionId: currentState.discussionId,
+              messagesByDiscussion: currentState.messagesByDiscussion,
+              lastPrivateMessageReceivedEvent: null,
+              message: ErrorMessage(error.messageKey),
+            ),
+          );
+        }
+        return [];
+      },
+      (messages) async {
+        final privateKey = await PrivateMessageKeyStorage().getPrivateKey();
+
+        for (final message in messages) {
+          final isCreator = message.creator == userId;
+
+          String clearContent =
+              "Failed to find private key. Can't decrypt this message";
+
+          if (message.creatorEncryptedSessionKey == 'NOT_ENCRYPTED') {
+            clearContent = message.content;
+          } else if (privateKey != null) {
+            final aesKey =
+                await decryptSymmetricKeyWithRsaPrivateKeyUsecase.call(
+              encryptedAesKey: isCreator
+                  ? message.creatorEncryptedSessionKey
+                  : message.recipientEncryptedSessionKey,
+              rsaPrivateKeyPem: privateKey,
+            );
+
+            clearContent = await decryptMessageUsingAesUsecase.call(
+              encryptedContent: message.content,
+              aesKey: aesKey,
+            );
+          }
+
+          message.content = clearContent;
+        }
+
+        return messages;
+      },
+    );
+
+    // Check if we are missing some user info
+    userBloc.add(
+      GetUserPublicDataEvent(
+        userIds: olderMessages.map((m) => m.creator).toList(),
+        username: null,
+      ),
+    );
+
+    final existingMessagesMap = Map<String, PrivateMessage>.from(
+      currentState.messagesByDiscussion[event.discussionId] ?? {},
+    );
+
+    for (final message in olderMessages) {
+      existingMessagesMap[message.id] = message;
+    }
+
+    final updatedMessagesByDiscussion =
+        Map<String, Map<String, PrivateMessage>>.from(
+            currentState.messagesByDiscussion)
+          ..[event.discussionId] = existingMessagesMap;
+
+    emit(
+      PrivateMessageState(
+        discussionId: event.discussionId,
+        messagesByDiscussion: updatedMessagesByDiscussion,
+        lastPrivateMessageReceivedEvent: null,
+      ),
+    );
+
+    event.completer?.complete(olderMessages.length);
   }
 
   Future<void> onMessageReceived(

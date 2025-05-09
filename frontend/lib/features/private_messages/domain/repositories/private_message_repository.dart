@@ -19,6 +19,7 @@ abstract class PrivateMessageRepository {
   Future<Either<DomainError, List<PrivateMessage>>>
       getPrivateMessagesOfDiscussion({
     required String discussionId,
+    required DateTime? beforeDate,
   });
   Future<Either<DomainError, PrivateMessage>> markPrivateMessageAsSeen({
     required String privateMessageId,

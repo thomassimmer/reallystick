@@ -1,3 +1,4 @@
+use chrono::{DateTime, Utc};
 use sqlx::{postgres::PgQueryResult, Executor, Postgres};
 use uuid::Uuid;
 
@@ -26,21 +27,42 @@ where
 pub async fn get_messages_for_discussion<'a, E>(
     executor: E,
     discussion_id: Uuid,
+    before_date: Option<DateTime<Utc>>,
 ) -> Result<Vec<PrivateMessage>, sqlx::Error>
 where
     E: Executor<'a, Database = Postgres>,
 {
-    sqlx::query_as!(
-        PrivateMessage,
-        r#"
-        SELECT *
-        FROM private_messages
-        WHERE discussion_id = $1
-        "#,
-        discussion_id,
-    )
-    .fetch_all(executor)
-    .await
+    if let Some(before) = before_date {
+        sqlx::query_as!(
+            PrivateMessage,
+            r#"
+            SELECT *
+            FROM private_messages
+            WHERE discussion_id = $1
+              AND created_at < $2
+            ORDER BY created_at DESC
+            LIMIT 50
+            "#,
+            discussion_id,
+            before
+        )
+        .fetch_all(executor)
+        .await
+    } else {
+        sqlx::query_as!(
+            PrivateMessage,
+            r#"
+            SELECT *
+            FROM private_messages
+            WHERE discussion_id = $1
+            ORDER BY created_at DESC
+            LIMIT 50
+            "#,
+            discussion_id
+        )
+        .fetch_all(executor)
+        .await
+    }
 }
 
 pub async fn get_last_messages_for_discussions<'a, E>(

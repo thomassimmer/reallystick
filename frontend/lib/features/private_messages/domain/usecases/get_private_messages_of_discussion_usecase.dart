@@ -10,9 +10,11 @@ class GetPrivateMessagesOfDiscussionUsecase {
 
   Future<Either<DomainError, List<PrivateMessage>>> call({
     required String discussionId,
+    required DateTime? beforeDate,
   }) async {
     return await privateMessageRepository.getPrivateMessagesOfDiscussion(
       discussionId: discussionId,
+      beforeDate: beforeDate,
     );
   }
 }

@@ -1,10 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:reallystick/core/messages/message.dart';
 import 'package:reallystick/core/presentation/widgets/custom_app_bar.dart';
-import 'package:reallystick/core/presentation/widgets/full_width_list_view.dart';
+import 'package:reallystick/core/presentation/widgets/full_width_positionned_list_view.dart';
 import 'package:reallystick/core/presentation/widgets/global_snack_bar.dart';
 import 'package:reallystick/core/ui/colors.dart';
 import 'package:reallystick/core/ui/extensions.dart';
@@ -28,6 +30,7 @@ import 'package:reallystick/features/users/presentation/blocs/user/user_bloc.dar
 import 'package:reallystick/features/users/presentation/blocs/user/user_events.dart';
 import 'package:reallystick/features/users/presentation/blocs/user/user_states.dart';
 import 'package:reallystick/i18n/app_localizations.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class PrivateDiscussionScreen extends StatefulWidget {
   final String discussionId;
@@ -46,7 +49,16 @@ class PrivateDiscussionScreen extends StatefulWidget {
 class PrivateDiscussionScreenState extends State<PrivateDiscussionScreen> {
   final TextEditingController _contentController = TextEditingController();
   PrivateMessage? _messageBeingEdited;
-  final ScrollController _scrollController = ScrollController();
+  bool _isFetchingOlderMessages = false;
+  bool noMoreMessagesToFetch = false;
+
+  final ItemScrollController _itemScrollController = ItemScrollController();
+  final ItemPositionsListener _itemPositionsListener =
+      ItemPositionsListener.create();
+  final ScrollOffsetListener _scrollOffsetListener =
+      ScrollOffsetListener.create();
+  final ScrollOffsetController scrollOffsetController =
+      ScrollOffsetController();
 
   @override
   void initState() {
@@ -65,61 +77,89 @@ class PrivateDiscussionScreenState extends State<PrivateDiscussionScreen> {
         ),
       );
     }
+
+    _itemPositionsListener.itemPositions.addListener(() async {
+      final positions = _itemPositionsListener.itemPositions.value;
+
+      // Find the top visible message index
+      final topVisibleIndex = positions
+          .where((position) => position.itemLeadingEdge >= 0)
+          .map((p) => p.index)
+          .fold<int?>(
+              null,
+              (prev, index) =>
+                  prev == null ? index : (index < prev ? index : prev));
+
+      // Trigger fetch when the first item is visible
+      if (topVisibleIndex == 0 &&
+          positions.isNotEmpty &&
+          !_isFetchingOlderMessages &&
+          !noMoreMessagesToFetch) {
+        setState(() {
+          _isFetchingOlderMessages = true;
+        });
+
+        // Just here to make the fetching more natural
+        await Future.delayed(Duration(milliseconds: 500));
+
+        if (mounted) {
+          final privateMessageState = context.read<PrivateMessageBloc>().state;
+          final messages = privateMessageState
+              .messagesByDiscussion[widget.discussionId]?.values
+              .toList();
+
+          if (messages != null && messages.isNotEmpty) {
+            messages.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+            final oldestMessage = messages.first;
+
+            _pullOlderMessages(oldestMessage).then((_) {
+              setState(() {
+                _isFetchingOlderMessages = false;
+              });
+            });
+          }
+        }
+      }
+    });
   }
 
   @override
   void dispose() {
     _contentController.dispose();
-    _scrollController.dispose();
 
     super.dispose();
   }
 
-  void _sendMessage() {
-    final userState = BlocProvider.of<UserBloc>(context, listen: false).state;
-    final profileState =
-        BlocProvider.of<ProfileBloc>(context, listen: false).state;
-    final privateDiscussionState =
-        BlocProvider.of<PrivateDiscussionBloc>(context, listen: false).state;
+  void _sendMessage(String? recipientPublicKey, String? creatorPublicKey) {
+    final privateMessageCreationFormBloc =
+        context.read<PrivateMessageCreationFormBloc>();
 
-    if (userState is UsersLoaded && profileState is ProfileAuthenticated) {
-      final discussion =
-          privateDiscussionState.discussions[widget.discussionId]!;
-      final recipient = userState.users[discussion.recipientId]!;
+    privateMessageCreationFormBloc.add(
+      PrivateMessageCreationFormContentChangedEvent(_contentController.text),
+    );
 
-      final recipientPublicKey = recipient.publicKey;
-      final creatorPublicKey = profileState.profile.publicKey;
+    Future.delayed(
+      const Duration(milliseconds: 50),
+      () {
+        if (privateMessageCreationFormBloc.state.isValid) {
+          final newMessageEvent = AddNewMessageEvent(
+            discussionId: widget.discussionId,
+            content: _contentController.text,
+            creatorPublicKey: creatorPublicKey!,
+            recipientPublicKey: recipientPublicKey!,
+          );
 
-      final privateMessageCreationFormBloc =
-          context.read<PrivateMessageCreationFormBloc>();
-
-      privateMessageCreationFormBloc.add(
-        PrivateMessageCreationFormContentChangedEvent(_contentController.text),
-      );
-
-      Future.delayed(
-        const Duration(milliseconds: 50),
-        () {
-          if (privateMessageCreationFormBloc.state.isValid) {
-            final newMessageEvent = AddNewMessageEvent(
-              discussionId: widget.discussionId,
-              content: _contentController.text,
-              creatorPublicKey: creatorPublicKey!,
-              recipientPublicKey: recipientPublicKey!,
-            );
-
-            if (mounted) {
-              context.read<PrivateMessageBloc>().add(newMessageEvent);
-            }
-
-            setState(() {
-              _contentController.text = "";
-              _messageBeingEdited = null;
-            });
+          if (mounted) {
+            context.read<PrivateMessageBloc>().add(newMessageEvent);
           }
-        },
-      );
-    }
+
+          setState(() {
+            _contentController.text = "";
+            _messageBeingEdited = null;
+          });
+        }
+      },
+    );
   }
 
   void _editMessage() {
@@ -135,15 +175,17 @@ class PrivateDiscussionScreenState extends State<PrivateDiscussionScreen> {
       () {
         if (privateMessageUpdateFormBloc.state.isValid) {
           // If editing, trigger update event
-          context.read<PrivateMessageBloc>().add(
-                UpdateMessageEvent(
-                  discussionId: widget.discussionId,
-                  creatorEncryptedSessionKey:
-                      _messageBeingEdited!.creatorEncryptedSessionKey,
-                  messageId: _messageBeingEdited!.id,
-                  content: _contentController.text,
-                ),
-              );
+          final updateMessageEvent = UpdateMessageEvent(
+            discussionId: widget.discussionId,
+            creatorEncryptedSessionKey:
+                _messageBeingEdited!.creatorEncryptedSessionKey,
+            messageId: _messageBeingEdited!.id,
+            content: _contentController.text,
+          );
+
+          if (mounted) {
+            context.read<PrivateMessageBloc>().add(updateMessageEvent);
+          }
 
           setState(() {
             _contentController.text = "";
@@ -161,6 +203,41 @@ class PrivateDiscussionScreenState extends State<PrivateDiscussionScreen> {
             messageId: messageId,
           ),
         );
+  }
+
+  Future<void> _pullOlderMessages(PrivateMessage? oldestMessage) async {
+    // We need to keep the scroll position on the first message
+    final visibleIndexes = _itemPositionsListener.itemPositions.value
+        .where((position) => position.itemLeadingEdge >= 0)
+        .map((e) => e.index)
+        .toList();
+
+    final topIndex = visibleIndexes.isNotEmpty
+        ? visibleIndexes.reduce((a, b) => a < b ? a : b)
+        : null;
+
+    final completer = Completer<int>();
+    context.read<PrivateMessageBloc>().add(
+          FetchOlderMessagesEvent(
+            discussionId: widget.discussionId,
+            beforeDate: oldestMessage?.createdAt,
+            completer: completer,
+          ),
+        );
+
+    final newlyInsertedMessageCount = await completer.future;
+
+    if (newlyInsertedMessageCount == 0) {
+      noMoreMessagesToFetch = true;
+    }
+
+    if (topIndex != null && newlyInsertedMessageCount > 0) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _itemScrollController.jumpTo(
+          index: topIndex + newlyInsertedMessageCount + 1,
+        );
+      });
+    }
   }
 
   void _openColorPicker(PrivateDiscussion discussion) async {
@@ -297,12 +374,6 @@ class PrivateDiscussionScreenState extends State<PrivateDiscussionScreen> {
 
       messages.sort((a, b) => a.createdAt.compareTo(b.createdAt));
 
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (_scrollController.hasClients) {
-          _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
-        }
-      });
-
       return Scaffold(
         appBar: CustomAppBar(
           title: Text(
@@ -348,9 +419,16 @@ class PrivateDiscussionScreenState extends State<PrivateDiscussionScreen> {
                   Text(AppLocalizations.of(context)!.youBlockedThisUser)
                 ] else ...[
                   Expanded(
-                    child: FullWidthListView(
-                      controller: _scrollController,
+                    child: FullWidthPositionnedListView(
+                      itemScrollController: _itemScrollController,
+                      itemPositionsListener: _itemPositionsListener,
+                      scrollOffsetListener: _scrollOffsetListener,
                       children: [
+                        if (_isFetchingOlderMessages)
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Center(child: CircularProgressIndicator()),
+                          ),
                         Container(
                           decoration: BoxDecoration(
                               border: Border.all(color: Colors.yellow),
@@ -370,6 +448,7 @@ class PrivateDiscussionScreenState extends State<PrivateDiscussionScreen> {
                           messages.length,
                           (index) {
                             final message = messages[index];
+
                             return Column(
                               children: [
                                 if (index > 0 &&
@@ -457,7 +536,10 @@ class PrivateDiscussionScreenState extends State<PrivateDiscussionScreen> {
                     child: CustomMessageInput(
                       contentController: _contentController,
                       recipientUsername: recipient.username,
-                      onSendMessage: _sendMessage,
+                      onSendMessage: () => _sendMessage(
+                        recipient.publicKey,
+                        profileState.profile.publicKey,
+                      ),
                       isEditing: _messageBeingEdited != null,
                       onEditMessage: _editMessage,
                     ),

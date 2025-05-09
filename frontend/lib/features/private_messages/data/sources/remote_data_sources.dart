@@ -118,8 +118,15 @@ class PrivateMessageRemoteDataSource {
   }
 
   Future<List<PrivateMessageDataModel>> getPrivateMessagesOfDiscussion(
-      String discussionId) async {
-    final url = Uri.parse('$baseUrl/private-messages/$discussionId');
+    String discussionId,
+    DateTime? beforeDate,
+  ) async {
+    Uri url = Uri.parse('$baseUrl/private-messages/$discussionId');
+
+    if (beforeDate != null) {
+      url = url.addParameters({"before_date": beforeDate});
+    }
+
     final response = await apiClient.get(
       url,
     );

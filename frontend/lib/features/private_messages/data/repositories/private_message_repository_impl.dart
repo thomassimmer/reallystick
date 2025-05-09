@@ -87,11 +87,13 @@ class PrivateMessageRepositoryImpl implements PrivateMessageRepository {
   Future<Either<DomainError, List<PrivateMessage>>>
       getPrivateMessagesOfDiscussion({
     required String discussionId,
+    required DateTime? beforeDate,
   }) async {
     try {
       final messagesDataModels =
           await remoteDataSource.getPrivateMessagesOfDiscussion(
         discussionId,
+        beforeDate,
       );
 
       return Right(messagesDataModels.map((m) => m.toDomain()).toList());

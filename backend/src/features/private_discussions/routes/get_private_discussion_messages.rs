@@ -6,14 +6,16 @@ use crate::{
             private_message::get_messages_for_discussion,
         },
         structs::{
-            requests::private_discussion::GetPrivateDiscussionMessagesParams,
+            requests::private_discussion::{
+                GetPrivateDiscussionMessagesParams, GetPrivateDiscussionMessagesQuery,
+            },
             responses::private_message::PrivateMessagesResponse,
         },
     },
 };
 use actix_web::{
     get,
-    web::{Data, Path},
+    web::{Data, Path, Query},
     HttpResponse, Responder,
 };
 use sqlx::PgPool;
@@ -22,8 +24,11 @@ use tracing::error;
 #[get("/{discussion_id}")]
 pub async fn get_private_discussion_messages(
     pool: Data<PgPool>,
+    query: Query<GetPrivateDiscussionMessagesQuery>,
     params: Path<GetPrivateDiscussionMessagesParams>,
 ) -> impl Responder {
+    let query = query.into_inner();
+
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
         Err(e) => {
@@ -48,7 +53,12 @@ pub async fn get_private_discussion_messages(
         }
     };
 
-    let messages = match get_messages_for_discussion(&mut *transaction, params.discussion_id).await
+    let messages = match get_messages_for_discussion(
+        &mut *transaction,
+        params.discussion_id,
+        query.before_date,
+    )
+    .await
     {
         Ok(r) => r,
         Err(e) => {

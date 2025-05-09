@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:equatable/equatable.dart';
 import 'package:reallystick/features/private_messages/domain/entities/private_message.dart';
 
@@ -62,5 +64,17 @@ class DeleteMessageEvent extends PrivateMessageEvent {
   const DeleteMessageEvent({
     required this.discussionId,
     required this.messageId,
+  });
+}
+
+class FetchOlderMessagesEvent extends PrivateMessageEvent {
+  final String discussionId;
+  final DateTime? beforeDate;
+  final Completer<int>? completer;
+
+  const FetchOlderMessagesEvent({
+    required this.discussionId,
+    required this.beforeDate,
+    required this.completer,
   });
 }
