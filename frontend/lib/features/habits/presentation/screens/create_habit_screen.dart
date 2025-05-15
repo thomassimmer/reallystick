@@ -251,11 +251,13 @@ class CreateHabitScreenState extends State<CreateHabitScreen> {
                           // Name Input
                           MultiLanguageInputField(
                             initialTranslations: _nameController,
-                            onTranslationsChanged: (translations) =>
-                                BlocProvider.of<HabitCreationFormBloc>(context)
-                                    .add(
-                              HabitCreationFormNameChangedEvent(translations),
-                            ),
+                            onTranslationsChanged: (translations) {
+                              BlocProvider.of<HabitCreationFormBloc>(context)
+                                  .add(
+                                HabitCreationFormNameChangedEvent(translations),
+                              );
+                              _nameController = translations;
+                            },
                             label: AppLocalizations.of(context)!.habitName,
                             errors: nameErrorMap,
                             userLocale: userLocale,
@@ -267,13 +269,15 @@ class CreateHabitScreenState extends State<CreateHabitScreen> {
                           // Description Input
                           MultiLanguageInputField(
                             initialTranslations: _descriptionController,
-                            onTranslationsChanged: (translations) =>
-                                BlocProvider.of<HabitCreationFormBloc>(context)
-                                    .add(
-                              HabitCreationFormDescriptionChangedEvent(
-                                translations,
-                              ),
-                            ),
+                            onTranslationsChanged: (translations) {
+                              BlocProvider.of<HabitCreationFormBloc>(context)
+                                  .add(
+                                HabitCreationFormDescriptionChangedEvent(
+                                  translations,
+                                ),
+                              );
+                              _descriptionController = translations;
+                            },
                             label: AppLocalizations.of(context)!.description,
                             errors: descriptionErrorMap,
                             userLocale: userLocale,
