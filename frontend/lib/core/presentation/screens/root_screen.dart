@@ -164,112 +164,117 @@ class RootScreenState extends State<RootScreen> {
                 ),
               ],
             ),
-            body: Row(
-              children: [
-                if (isLargeScreen) ...[
-                  Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          context.colors.primary,
-                          context.colors.secondary
-                        ],
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
+            body: GestureDetector(
+              onTap: () {
+                FocusScope.of(context).unfocus(); // Dismiss keyboard
+              },
+              child: Row(
+                children: [
+                  if (isLargeScreen) ...[
+                    Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            context.colors.primary,
+                            context.colors.secondary
+                          ],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                        ),
                       ),
-                    ),
-                    child: NavigationRail(
-                      backgroundColor: Colors.transparent,
-                      indicatorColor: context.colors.background,
-                      useIndicator: true,
-                      unselectedLabelTextStyle: TextStyle(
-                        color: context.colors.textOnPrimary,
-                        height: 1.5,
-                      ),
-                      selectedLabelTextStyle: TextStyle(
-                        color: context.colors.textOnPrimary,
-                        height: 1.5,
-                      ),
-                      selectedIconTheme:
-                          IconThemeData(color: context.colors.primary),
-                      unselectedIconTheme:
-                          IconThemeData(color: context.colors.textOnPrimary),
-                      selectedIndex: _calculateSelectedIndex(context),
-                      onDestinationSelected: onItemTapped,
-                      labelType: NavigationRailLabelType.all,
-                      destinations: <NavigationRailDestination>[
-                        NavigationRailDestination(
-                          icon: Icon(Icons.check_circle_outline),
-                          selectedIcon: Icon(
-                            Icons.check_circle,
-                          ),
-                          label: Text(
-                            AppLocalizations.of(context)!.habits,
-                          ),
+                      child: NavigationRail(
+                        backgroundColor: Colors.transparent,
+                        indicatorColor: context.colors.background,
+                        useIndicator: true,
+                        unselectedLabelTextStyle: TextStyle(
+                          color: context.colors.textOnPrimary,
+                          height: 1.5,
                         ),
-                        NavigationRailDestination(
-                          icon: Icon(Icons.flag_outlined),
-                          selectedIcon: Icon(Icons.flag),
-                          label: Text(
-                            AppLocalizations.of(context)!.challenges,
-                          ),
+                        selectedLabelTextStyle: TextStyle(
+                          color: context.colors.textOnPrimary,
+                          height: 1.5,
                         ),
-                        NavigationRailDestination(
-                          icon: PrivateMessageIcon(
-                            iconData: Icons.message_outlined,
-                          ),
-                          selectedIcon: PrivateMessageIcon(
-                            iconData: Icons.message,
-                          ),
-                          label: Text(
-                            AppLocalizations.of(context)!.messages,
-                          ),
-                        ),
-                        NavigationRailDestination(
-                          icon: IconWithWarning(
-                              iconData: Icons.person_outline,
-                              shouldBeWarning: shouldBeWarning),
-                          selectedIcon: IconWithWarning(
-                            iconData: Icons.person,
-                            shouldBeWarning: shouldBeWarning,
-                          ),
-                          label: Text(
-                            AppLocalizations.of(context)!.profile,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-                isLargeScreen
-                    ? Expanded(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(borderRadius),
-                              topRight: Radius.zero,
-                              bottomLeft: Radius.zero,
-                              bottomRight: Radius.zero,
+                        selectedIconTheme:
+                            IconThemeData(color: context.colors.primary),
+                        unselectedIconTheme:
+                            IconThemeData(color: context.colors.textOnPrimary),
+                        selectedIndex: _calculateSelectedIndex(context),
+                        onDestinationSelected: onItemTapped,
+                        labelType: NavigationRailLabelType.all,
+                        destinations: <NavigationRailDestination>[
+                          NavigationRailDestination(
+                            icon: Icon(Icons.check_circle_outline),
+                            selectedIcon: Icon(
+                              Icons.check_circle,
                             ),
-                            color: context.colors.background,
+                            label: Text(
+                              AppLocalizations.of(context)!.habits,
+                            ),
                           ),
-                          clipBehavior: Clip.antiAlias,
-                          child: notificationState.notificationScreenIsVisible
-                              ? NotificationsScreen()
-                              : widget.child,
-                        ),
-                      )
-                    : Expanded(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: context.colors.background,
+                          NavigationRailDestination(
+                            icon: Icon(Icons.flag_outlined),
+                            selectedIcon: Icon(Icons.flag),
+                            label: Text(
+                              AppLocalizations.of(context)!.challenges,
+                            ),
                           ),
-                          child: notificationState.notificationScreenIsVisible
-                              ? NotificationsScreen()
-                              : widget.child,
-                        ),
+                          NavigationRailDestination(
+                            icon: PrivateMessageIcon(
+                              iconData: Icons.message_outlined,
+                            ),
+                            selectedIcon: PrivateMessageIcon(
+                              iconData: Icons.message,
+                            ),
+                            label: Text(
+                              AppLocalizations.of(context)!.messages,
+                            ),
+                          ),
+                          NavigationRailDestination(
+                            icon: IconWithWarning(
+                                iconData: Icons.person_outline,
+                                shouldBeWarning: shouldBeWarning),
+                            selectedIcon: IconWithWarning(
+                              iconData: Icons.person,
+                              shouldBeWarning: shouldBeWarning,
+                            ),
+                            label: Text(
+                              AppLocalizations.of(context)!.profile,
+                            ),
+                          ),
+                        ],
                       ),
-              ],
+                    ),
+                  ],
+                  isLargeScreen
+                      ? Expanded(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(borderRadius),
+                                topRight: Radius.zero,
+                                bottomLeft: Radius.zero,
+                                bottomRight: Radius.zero,
+                              ),
+                              color: context.colors.background,
+                            ),
+                            clipBehavior: Clip.antiAlias,
+                            child: notificationState.notificationScreenIsVisible
+                                ? NotificationsScreen()
+                                : widget.child,
+                          ),
+                        )
+                      : Expanded(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: context.colors.background,
+                            ),
+                            child: notificationState.notificationScreenIsVisible
+                                ? NotificationsScreen()
+                                : widget.child,
+                          ),
+                        ),
+                ],
+              ),
             ),
             bottomNavigationBar: isLargeScreen
                 ? null
