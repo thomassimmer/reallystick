@@ -13,6 +13,7 @@ import 'package:reallystick/features/challenges/domain/entities/challenge_partic
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_bloc.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_states.dart';
 import 'package:reallystick/features/challenges/presentation/helpers/challenge_result.dart';
+import 'package:reallystick/features/challenges/presentation/screens/add_daily_tracking_modal.dart';
 import 'package:reallystick/features/challenges/presentation/screens/list_daily_trackings_modal.dart';
 import 'package:reallystick/features/habits/domain/entities/habit_daily_tracking.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.dart';
@@ -160,6 +161,38 @@ class DailyTrackingCarouselWithStartDateWidgetState
     );
   }
 
+  void _showAddDailyTrackingBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      isDismissible: true,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
+      ),
+      constraints: BoxConstraints(
+        maxWidth: 700,
+      ),
+      backgroundColor: context.colors.background,
+      builder: (BuildContext context) {
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+            left: 16.0,
+            right: 16.0,
+            top: 16.0,
+          ),
+          child: SingleChildScrollView(
+            child: Wrap(
+              children: [
+                AddDailyTrackingModal(challengeId: widget.challenge.id)
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final profileState = widget.previewMode
@@ -239,6 +272,15 @@ class DailyTrackingCarouselWithStartDateWidgetState
                     color: widget.challengeColor,
                   ),
                 ),
+                Spacer(),
+                InkWell(
+                  onTap: _showAddDailyTrackingBottomSheet,
+                  child: Icon(
+                    Icons.add_outlined,
+                    size: 25,
+                    color: widget.challengeColor.withValues(alpha: 0.8),
+                  ),
+                )
               ],
             ),
             SizedBox(height: 10),

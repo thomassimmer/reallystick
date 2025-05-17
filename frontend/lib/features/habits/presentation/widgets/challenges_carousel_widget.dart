@@ -153,7 +153,7 @@ class ChallengesCarouselWidget extends StatelessWidget {
                                             ),
                                             style: TextStyle(
                                               fontSize: 16,
-                                              fontWeight: FontWeight.bold,
+                                              fontWeight: FontWeight.w500,
                                             ),
                                             overflow: TextOverflow.ellipsis,
                                             maxLines: 1,
@@ -183,7 +183,7 @@ class ChallengesCarouselWidget extends StatelessWidget {
                                               ),
                                               style: TextStyle(
                                                 fontSize: 11,
-                                                fontWeight: FontWeight.bold,
+                                                fontWeight: FontWeight.w500,
                                               ),
                                               textAlign: TextAlign.end,
                                               overflow: TextOverflow.ellipsis,
@@ -210,7 +210,7 @@ class ChallengesCarouselWidget extends StatelessWidget {
                                                         .participantsCount),
                                             style: TextStyle(
                                               fontSize: 11,
-                                              fontWeight: FontWeight.bold,
+                                              fontWeight: FontWeight.w500,
                                             ),
                                             overflow: TextOverflow.ellipsis,
                                           ),
@@ -226,7 +226,7 @@ class ChallengesCarouselWidget extends StatelessWidget {
                                             ),
                                             style: TextStyle(
                                               fontSize: 11,
-                                              fontWeight: FontWeight.bold,
+                                              fontWeight: FontWeight.w500,
                                             ),
                                             textAlign: TextAlign.end,
                                             overflow: TextOverflow.ellipsis,

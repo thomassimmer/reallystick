@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:reallystick/core/ui/extensions.dart';
@@ -129,14 +128,13 @@ class DiscussionWidget extends StatelessWidget {
                 ] else if (discussion.lastMessage != null) ...[
                   SizedBox(
                     height: 55,
-                    child: Markdown(
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      padding: EdgeInsets.all(0),
-                      data: discussion.lastMessage!.deleted
+                    width: double.infinity,
+                    child: Text(
+                      discussion.lastMessage!.deleted
                           ? AppLocalizations.of(context)!.messageDeletedError
-                          : discussion.lastMessage!.content
-                              .replaceAll('\\n', '\n'),
+                          : discussion.lastMessage!.content,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 3,
                     ),
                   ),
                 ]

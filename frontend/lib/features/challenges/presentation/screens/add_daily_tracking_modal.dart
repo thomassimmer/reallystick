@@ -242,6 +242,13 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
 
       final weightUnits = getWeightUnits(units);
 
+      final List<String> selectableUnits = (_selectedHabitId != null
+          ? habits[_selectedHabitId]!
+              .unitIds
+              .where((unitId) => units.containsKey(unitId))
+              .toList()
+          : []);
+
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -405,27 +412,24 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
               // Unit Selector
               Expanded(
                 child: CustomDropdownButtonFormField(
-                  value: _selectedUnitId,
-                  items: (_selectedHabitId != null
-                      ? habits[_selectedHabitId]!
-                          .unitIds
-                          .where((unitId) => units.containsKey(unitId))
-                          .map((unitId) {
-                          final unit = units[unitId]!;
-                          return DropdownMenuItem(
-                            value: unitId,
-                            child: Text(
-                              getRightTranslationForUnitFromJson(
-                                unit.longName,
-                                _quantityPerSet?.toInt() ?? 0,
-                                userLocale,
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                            ),
-                          );
-                        }).toList()
-                      : []),
+                  value: selectableUnits.contains(_selectedUnitId)
+                      ? _selectedUnitId
+                      : null,
+                  items: selectableUnits.map((unitId) {
+                    final unit = units[unitId]!;
+                    return DropdownMenuItem(
+                      value: unitId,
+                      child: Text(
+                        getRightTranslationForUnitFromJson(
+                          unit.longName,
+                          _quantityPerSet?.toInt() ?? 0,
+                          userLocale,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                    );
+                  }).toList(),
                   onChanged: (value) {
                     setState(() {
                       _selectedUnitId = value;
