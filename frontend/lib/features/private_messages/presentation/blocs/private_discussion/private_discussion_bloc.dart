@@ -248,7 +248,9 @@ class PrivateDiscussionBloc
         }
       },
       (newDiscussion) {
-        currentState.discussions[newDiscussion.id] = newDiscussion;
+        final updatedDiscussions =
+            Map<String, PrivateDiscussion>.from(currentState.discussions);
+        updatedDiscussions[newDiscussion.id] = newDiscussion;
 
         privateMessageBloc.add(
           AddNewMessageEvent(
@@ -261,7 +263,7 @@ class PrivateDiscussionBloc
 
         emit(
           PrivateDiscussionState(
-            discussions: currentState.discussions,
+            discussions: updatedDiscussions,
           ),
         );
       },
@@ -371,8 +373,11 @@ class PrivateDiscussionBloc
 
           Set<String> usersToGetInfoFor = <String>{};
 
+          final updatedDiscussions =
+              Map<String, PrivateDiscussion>.from(currentState.discussions);
+
           if (newDiscussion != null) {
-            currentState.discussions[newDiscussion.id] = newDiscussion;
+            updatedDiscussions[newDiscussion.id] = newDiscussion;
             usersToGetInfoFor.add(newDiscussion.recipientId);
           }
 
@@ -386,7 +391,7 @@ class PrivateDiscussionBloc
 
           emit(
             PrivateDiscussionState(
-              discussions: currentState.discussions,
+              discussions: updatedDiscussions,
             ),
           );
         },

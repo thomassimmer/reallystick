@@ -114,10 +114,14 @@ class NewPrivateDiscussionScreenState
 
       if (existingDiscussion != null) {
         Future.microtask(
-          () => context.goNamed(
-            'discussion',
-            pathParameters: {'discussionId': existingDiscussion.id},
-          ),
+          () {
+            if (mounted) {
+              context.goNamed(
+                'discussion',
+                pathParameters: {'discussionId': existingDiscussion.id},
+              );
+            }
+          },
         );
         return;
       }
@@ -128,11 +132,13 @@ class NewPrivateDiscussionScreenState
       if (recipientPublicKey == null) {
         Future.microtask(
           () {
-            GlobalSnackBar.show(
-              context: context,
-              message: ErrorMessage("recipientMissingPublicKey"),
-            );
-            context.pop();
+            if (mounted) {
+              GlobalSnackBar.show(
+                context: context,
+                message: ErrorMessage("recipientMissingPublicKey"),
+              );
+              context.pop();
+            }
           },
         );
       }
@@ -140,11 +146,13 @@ class NewPrivateDiscussionScreenState
       if (creatorPublicKey == null) {
         Future.microtask(
           () {
-            GlobalSnackBar.show(
-              context: context,
-              message: ErrorMessage("creatorMissingPublicKey"),
-            );
-            context.pop();
+            if (mounted) {
+              GlobalSnackBar.show(
+                context: context,
+                message: ErrorMessage("creatorMissingPublicKey"),
+              );
+              context.pop();
+            }
           },
         );
       }
@@ -169,36 +177,43 @@ class NewPrivateDiscussionScreenState
         ),
         body: Padding(
           padding: EdgeInsets.all(16),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                    border: Border.all(color: Colors.yellow),
-                    borderRadius: BorderRadius.circular(16),
-                    color: Colors.yellow.withValues(alpha: 0.1)),
-                child: Padding(
-                  padding: EdgeInsets.all(16),
-                  child: Text(
-                    AppLocalizations.of(context)!.messagesAreEncrypted,
-                    textAlign: TextAlign.center,
-                  ),
-                ),
+          child: Center(
+            child: Container(
+              constraints: BoxConstraints(
+                maxWidth: 700,
               ),
-              Expanded(
-                child: Center(
-                  child: Text(
-                    AppLocalizations.of(context)!.noMessagesYet,
-                    textAlign: TextAlign.center,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.yellow),
+                        borderRadius: BorderRadius.circular(16),
+                        color: Colors.yellow.withValues(alpha: 0.1)),
+                    child: Padding(
+                      padding: EdgeInsets.all(16),
+                      child: Text(
+                        AppLocalizations.of(context)!.messagesAreEncrypted,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
                   ),
-                ),
+                  Expanded(
+                    child: Center(
+                      child: Text(
+                        AppLocalizations.of(context)!.noMessagesYet,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                  CustomMessageInput(
+                    contentController: _contentController,
+                    recipientUsername: recipient.username,
+                    onSendMessage: _sendMessage,
+                  )
+                ],
               ),
-              CustomMessageInput(
-                contentController: _contentController,
-                recipientUsername: recipient.username,
-                onSendMessage: _sendMessage,
-              )
-            ],
+            ),
           ),
         ),
       );
