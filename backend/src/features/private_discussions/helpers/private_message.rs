@@ -139,7 +139,7 @@ where
         PrivateMessage,
         r#"
         UPDATE private_messages
-        SET deleted = true
+        SET deleted = true, content = ''
         WHERE id = $1
         "#,
         message_id,
@@ -243,4 +243,24 @@ where
     .await?;
 
     Ok(row.count.unwrap_or(0))
+}
+
+pub async fn delete_private_messages_for_user<'a, E>(
+    executor: E,
+    user_id: Uuid,
+) -> Result<PgQueryResult, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
+    sqlx::query_as!(
+        PrivateMessage,
+        r#"
+        DELETE
+        from private_messages
+        WHERE creator = $1
+        "#,
+        user_id,
+    )
+    .execute(executor)
+    .await
 }

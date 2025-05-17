@@ -462,7 +462,7 @@ abstract class AppLocalizations {
   /// No description provided for @confirmDeleteMessage.
   ///
   /// In en, this message translates to:
-  /// **'By clicking \"Confirm\", your account and all associated activity will be scheduled for permanent deletion in 3 days.\n\nIf you log in again before this period expires, the deletion will be cancelled.'**
+  /// **'By clicking \"Confirm\", your account and all associated activity will be scheduled for permanent deletion in 7 days.\n\nIf you log in again before this period expires, the deletion will be cancelled.'**
   String get confirmDeleteMessage;
 
   /// No description provided for @confirmDeletion.
@@ -632,6 +632,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Delete'**
   String get delete;
+
+  /// No description provided for @deletedUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted user'**
+  String get deletedUser;
 
   /// No description provided for @deleteAccount.
   ///
@@ -2468,6 +2474,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'A user with this username already exists. Please choose another.'**
   String get userAlreadyExistingError;
+
+  /// No description provided for @userHasBeenDeletedError.
+  ///
+  /// In en, this message translates to:
+  /// **'User has been deleted.'**
+  String get userHasBeenDeletedError;
 
   /// No description provided for @userNotFoundError.
   ///

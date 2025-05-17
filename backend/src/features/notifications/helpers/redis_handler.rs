@@ -35,7 +35,8 @@ pub async fn handle_redis_messages(
     let mut pub_sub = redis_conn.as_pubsub();
 
     pub_sub.subscribe("user_updated").unwrap();
-    pub_sub.subscribe("user_removed").unwrap();
+    pub_sub.subscribe("user_marked_as_deleted").unwrap();
+    pub_sub.subscribe("user_deleted").unwrap();
     pub_sub.subscribe("user_token_updated").unwrap();
     pub_sub.subscribe("user_token_removed").unwrap();
     pub_sub.subscribe("private_message_created").unwrap();
@@ -55,7 +56,7 @@ pub async fn handle_redis_messages(
 
         if msg_type == "user_updated" {
             handle_user_update(&users_data, payload).await;
-        } else if msg_type == "user_removed" {
+        } else if msg_type == "user_marked_as_deleted" || msg_type == "user_deleted" {
             handle_user_deletion(&users_data, payload).await;
         } else if msg_type == "user_token_updated" {
             handle_user_token_update(&users_data, payload).await;

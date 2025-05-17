@@ -30,6 +30,8 @@ String getTranslatedMessage(BuildContext context, Message message) {
         return localizations.invalidUsernameOrRecoveryCodeError;
       case 'invalidUsernameOrPasswordOrRecoveryCodeError':
         return localizations.invalidUsernameOrPasswordOrRecoveryCodeError;
+      case 'userHasBeenDeletedError':
+        return localizations.userHasBeenDeletedError;
       case 'userNotFoundError':
         return localizations.userNotFoundError;
       case 'invalidOneTimePasswordError':

@@ -28,9 +28,12 @@ class ChallengeDataModel extends Equatable {
     return ChallengeDataModel(
       id: jsonObject['id'] as String,
       creator: jsonObject['creator'] as String,
-      name: Map<String, String>.from(json.decode(jsonObject['name'])),
-      description:
-          Map<String, String>.from(json.decode(jsonObject['description'])),
+      name: jsonObject['name'] != ''
+          ? Map<String, String>.from(json.decode(jsonObject['name']))
+          : <String, String>{},
+      description: jsonObject['description'] != ''
+          ? Map<String, String>.from(json.decode(jsonObject['description']))
+          : <String, String>{},
       startDate: jsonObject['start_date'] != null
           ? DateTime.parse(jsonObject['start_date'] as String)
           : null,

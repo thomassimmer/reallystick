@@ -124,3 +124,22 @@ where
 
     Ok(row.count.unwrap_or(0))
 }
+
+pub async fn delete_public_message_reports_for_user<'a, E>(
+    executor: E,
+    user_id: Uuid,
+) -> Result<PgQueryResult, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
+    sqlx::query_as!(
+        PublicMessageReport,
+        r#"
+        DELETE FROM public_message_reports
+        WHERE reporter = $1
+        "#,
+        user_id,
+    )
+    .execute(executor)
+    .await
+}

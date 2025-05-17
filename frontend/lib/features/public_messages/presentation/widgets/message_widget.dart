@@ -268,8 +268,7 @@ class MessageWidget extends StatelessWidget {
                             }
                         },
                         child: Text(
-                          userState.users[message.creator]?.username ??
-                              AppLocalizations.of(context)!.unknown,
+                          userState.getUsername(context, message.creator),
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.bold,

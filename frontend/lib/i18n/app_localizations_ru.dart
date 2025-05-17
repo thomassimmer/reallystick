@@ -188,7 +188,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get confirmDelete => 'Подтверждение удаления аккаунта';
 
   @override
-  String get confirmDeleteMessage => 'Нажимая «Подтвердить», вы запланируете удаление своей учётной записи и всей связанной активности через 3 дня.\n\nЕсли вы снова войдёте в систему до истечения этого срока, удаление будет отменено.';
+  String get confirmDeleteMessage => 'Нажимая «Подтвердить», вы запланируете удаление своей учётной записи и всей связанной активности через 7 дня.\n\nЕсли вы снова войдёте в систему до истечения этого срока, удаление будет отменено.';
 
   @override
   String get confirmDeletion => 'Подтвердить удаление';
@@ -281,6 +281,9 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get delete => 'Удалить';
+
+  @override
+  String get deletedUser => 'Удалённый пользователь';
 
   @override
   String get deleteAccount => 'Удалить мой аккаунт';
@@ -1330,6 +1333,9 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get userAlreadyExistingError => 'Пользователь с таким именем уже существует. Пожалуйста, выберите другое.';
+
+  @override
+  String get userHasBeenDeletedError => 'Пользователь был удалён.';
 
   @override
   String get userNotFoundError => 'Пользователь не найден.';

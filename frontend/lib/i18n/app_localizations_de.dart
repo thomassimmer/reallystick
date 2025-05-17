@@ -188,7 +188,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get confirmDelete => 'Konto-Löschung bestätigen';
 
   @override
-  String get confirmDeleteMessage => 'Wenn Sie auf „Bestätigen“ klicken, wird Ihr Konto sowie alle zugehörigen Aktivitäten zur endgültigen Löschung in 3 Tagen vorgemerkt.\n\nWenn Sie sich vor Ablauf dieser Frist erneut anmelden, wird die Löschung aufgehoben.';
+  String get confirmDeleteMessage => 'Wenn Sie auf „Bestätigen“ klicken, wird Ihr Konto sowie alle zugehörigen Aktivitäten zur endgültigen Löschung in 7 Tagen vorgemerkt.\n\nWenn Sie sich vor Ablauf dieser Frist erneut anmelden, wird die Löschung aufgehoben.';
 
   @override
   String get confirmDeletion => 'Löschung bestätigen';
@@ -281,6 +281,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get delete => 'Löschen';
+
+  @override
+  String get deletedUser => 'Gelöschter Benutzer';
 
   @override
   String get deleteAccount => 'Mein Konto löschen';
@@ -1330,6 +1333,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get userAlreadyExistingError => 'Ein Benutzer mit diesem Benutzernamen existiert bereits. Bitte wählen Sie einen anderen.';
+
+  @override
+  String get userHasBeenDeletedError => 'Der Benutzer wurde gelöscht.';
 
   @override
   String get userNotFoundError => 'Benutzer nicht gefunden.';

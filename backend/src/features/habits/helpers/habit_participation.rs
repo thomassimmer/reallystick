@@ -236,3 +236,23 @@ where
         .map(|a| (a.user_id, a.habit_id, a.reminder_body.clone()))
         .collect())
 }
+
+pub async fn delete_habit_participations_for_user<'a, E>(
+    executor: E,
+    user_id: Uuid,
+) -> Result<PgQueryResult, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
+    sqlx::query_as!(
+        Habit,
+        r#"
+        DELETE
+        from habit_participations
+        WHERE user_id = $1
+        "#,
+        user_id,
+    )
+    .execute(executor)
+    .await
+}

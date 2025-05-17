@@ -40,7 +40,7 @@ use crate::{
         profile::{
             helpers::{
                 device_info::get_user_agent,
-                profile::{create_user, get_user_by_username, get_user_by_username_even_deleted},
+                profile::{create_user, get_user_by_username},
             },
             structs::models::User,
         },
@@ -68,7 +68,7 @@ pub async fn register_user(
     let username_lower = body.username.to_lowercase();
 
     // Check if user already exists
-    let existing_user = get_user_by_username_even_deleted(&mut *transaction, &username_lower).await;
+    let existing_user = get_user_by_username(&mut *transaction, &username_lower).await;
 
     match existing_user {
         Ok(existing_user) => {
@@ -121,6 +121,7 @@ pub async fn register_user(
         created_at: now(),
         updated_at: now(),
         deleted_at: None,
+        is_deleted: false,
         password_is_expired: false,
         has_seen_questions: false,
         age_category: None,

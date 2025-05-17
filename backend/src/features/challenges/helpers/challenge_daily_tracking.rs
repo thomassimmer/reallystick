@@ -203,6 +203,26 @@ where
     .await
 }
 
+pub async fn delete_all_daily_trackings_for_challenge<'a, E>(
+    executor: E,
+    challenge_id: Uuid,
+) -> Result<PgQueryResult, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
+    sqlx::query_as!(
+        ChallengeDailyTracking,
+        r#"
+        DELETE
+        from challenge_daily_trackings
+        WHERE challenge_id = $1
+        "#,
+        challenge_id,
+    )
+    .execute(executor)
+    .await
+}
+
 pub async fn replace_daily_tracking_challenge<'a, E>(
     executor: E,
     old_habit_id: Uuid,

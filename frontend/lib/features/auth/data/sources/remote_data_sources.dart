@@ -102,6 +102,10 @@ class AuthRemoteDataSource {
     }
 
     if (response.statusCode == 401) {
+      if (responseCode == 'USER_HAS_BEEN_DELETED') {
+        throw UserHasBeenDeletedError();
+      }
+
       if (responseCode == 'INVALID_USERNAME_OR_PASSWORD') {
         throw InvalidUsernameOrPasswordError();
       }
@@ -318,6 +322,10 @@ class AuthRemoteDataSource {
     }
 
     if (response.statusCode == 401) {
+      if (responseCode == 'USER_HAS_BEEN_DELETED') {
+        throw UserHasBeenDeletedError();
+      }
+
       if (responseCode == 'INVALID_USERNAME_OR_PASSWORD_OR_RECOVERY_CODE') {
         throw InvalidUsernameOrPasswordOrRecoveryCodeError();
       }
@@ -365,6 +373,10 @@ class AuthRemoteDataSource {
     }
 
     if (response.statusCode == 401) {
+      if (responseCode == 'USER_HAS_BEEN_DELETED') {
+        throw UserHasBeenDeletedError();
+      }
+
       if (responseCode == 'INVALID_USERNAME_OR_CODE_OR_RECOVERY_CODE') {
         throw InvalidUsernameOrCodeOrRecoveryCodeError();
       }
@@ -410,6 +422,10 @@ class AuthRemoteDataSource {
     }
 
     if (response.statusCode == 401) {
+      if (responseCode == 'USER_HAS_BEEN_DELETED') {
+        throw UserHasBeenDeletedError();
+      }
+
       if (responseCode == 'INVALID_USERNAME_OR_RECOVERY_CODE') {
         throw InvalidUsernameOrRecoveryCodeError();
       }

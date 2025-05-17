@@ -12,7 +12,7 @@ use crate::{
         },
         profile::helpers::{
             device_info::get_user_agent,
-            profile::{get_user_by_username_even_deleted, update_user},
+            profile::{get_user_by_username, update_user},
         },
     },
 };
@@ -41,11 +41,16 @@ pub async fn recover_account_without_2fa_enabled(
     let username_lower = body.username.to_lowercase();
 
     // Check if user already exists
-    let existing_user = get_user_by_username_even_deleted(&mut *transaction, &username_lower).await;
+    let existing_user = get_user_by_username(&mut *transaction, &username_lower).await;
 
     let mut user = match existing_user {
         Ok(existing_user) => {
             if let Some(user) = existing_user {
+                if user.is_deleted {
+                    return HttpResponse::Unauthorized()
+                        .json(AppError::UserHasBeenDeleted.to_response());
+                }
+
                 user
             } else {
                 return HttpResponse::Unauthorized()

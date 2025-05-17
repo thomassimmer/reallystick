@@ -222,3 +222,23 @@ where
         .map(|a| (a.user_id, a.challenge_id, a.reminder_body.clone()))
         .collect())
 }
+
+pub async fn delete_challenge_participations_for_user<'a, E>(
+    executor: E,
+    user_id: Uuid,
+) -> Result<PgQueryResult, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
+    sqlx::query_as!(
+        Challenge,
+        r#"
+        DELETE
+        from challenge_participations
+        WHERE user_id = $1
+        "#,
+        user_id,
+    )
+    .execute(executor)
+    .await
+}

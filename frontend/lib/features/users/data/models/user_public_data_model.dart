@@ -5,11 +5,13 @@ class UserPublicDataModel extends Equatable {
   final String id;
   final String username;
   final String? publicKey;
+  final bool isDeleted;
 
   const UserPublicDataModel({
     required this.id,
     required this.username,
     required this.publicKey,
+    required this.isDeleted,
   });
 
   factory UserPublicDataModel.fromJson(Map<String, dynamic> json) {
@@ -17,6 +19,7 @@ class UserPublicDataModel extends Equatable {
       id: json['id'] as String,
       username: json['username'] as String,
       publicKey: json['public_key'] as String,
+      isDeleted: json['is_deleted'] as bool,
     );
   }
 
@@ -24,6 +27,7 @@ class UserPublicDataModel extends Equatable {
         id: id,
         username: username,
         publicKey: publicKey,
+        isDeleted: isDeleted,
       );
 
   @override
@@ -31,5 +35,6 @@ class UserPublicDataModel extends Equatable {
         id,
         username,
         publicKey,
+        isDeleted,
       ];
 }

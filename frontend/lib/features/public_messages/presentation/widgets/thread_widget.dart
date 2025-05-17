@@ -9,7 +9,6 @@ import 'package:reallystick/features/public_messages/presentation/blocs/public_m
 import 'package:reallystick/features/public_messages/presentation/blocs/public_message/public_message_states.dart';
 import 'package:reallystick/features/users/presentation/blocs/user/user_bloc.dart';
 import 'package:reallystick/features/users/presentation/blocs/user/user_states.dart';
-import 'package:reallystick/i18n/app_localizations.dart';
 
 class ThreadWidget extends StatelessWidget {
   final PublicMessage thread;
@@ -86,8 +85,7 @@ class ThreadWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      userState.users[thread.creator]?.username ??
-                          AppLocalizations.of(context)!.unknown,
+                      userState.getUsername(context, thread.creator),
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,

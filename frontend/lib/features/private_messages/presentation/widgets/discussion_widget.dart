@@ -60,8 +60,7 @@ class DiscussionWidget extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        userState.users[discussion.recipientId]?.username ??
-                            AppLocalizations.of(context)!.unknown,
+                        userState.getUsername(context, discussion.recipientId),
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.bold,

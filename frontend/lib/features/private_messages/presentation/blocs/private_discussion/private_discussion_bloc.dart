@@ -163,18 +163,19 @@ class PrivateDiscussionBloc
       },
       (discussions) async {
         Set<String> usersToGetInfoFor = <String>{};
+        final privateKey = await PrivateMessageKeyStorage().getPrivateKey();
 
         // Decrypt last messages of discussions to show a preview in DiscussionWidget
         for (final discussion in discussions) {
+          usersToGetInfoFor.add(discussion.recipientId);
+
           if (discussion.lastMessage == null) {
             continue;
           }
 
           usersToGetInfoFor.add(discussion.lastMessage!.creator);
-          usersToGetInfoFor.add(discussion.recipientId);
 
           final isCreator = discussion.lastMessage!.creator == userId;
-          final privateKey = await PrivateMessageKeyStorage().getPrivateKey();
 
           String clearContent =
               "Failed to find private key. Can't decrypt this message";

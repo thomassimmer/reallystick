@@ -2,9 +2,11 @@ use clap::Parser;
 use reallystick::configuration::get_configuration;
 use reallystick::core::helpers::startup::{
     create_missing_discussions_with_reallystick_user, populate_database,
-    remove_expired_user_tokens, remove_users_marked_as_deleted_after_3_days, reset_database,
+    remove_expired_user_tokens, reset_database,
 };
+use reallystick::core::helpers::user_deletion::remove_users_marked_as_deleted;
 use reallystick::startup::get_connection_pool;
+use redis::Client;
 use tracing::{error, info};
 use tracing_subscriber::{EnvFilter, FmtSubscriber};
 
@@ -24,6 +26,7 @@ async fn main() {
     let action = args.action;
     let configuration = get_configuration().expect("Failed to read configuration.");
     let pool = get_connection_pool(&configuration.database);
+    let redis_client = Client::open("redis://redis:6379").unwrap();
 
     match action.as_str() {
         "reset" => {
@@ -52,12 +55,9 @@ async fn main() {
                 info!("Success !");
             }
         }
-        "remove_users_marked_as_deleted_after_3_days" => {
-            if let Err(e) = remove_users_marked_as_deleted_after_3_days(&pool).await {
-                error!(
-                    "Failed to remove users marked as deleted after 3 days: {}",
-                    e
-                );
+        "remove_users_marked_as_deleted" => {
+            if let Err(e) = remove_users_marked_as_deleted(&pool, &redis_client).await {
+                error!("Failed to remove users marked as deleted: {}", e);
             }
         }
         "delete_expired_tokens" => {

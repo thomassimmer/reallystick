@@ -171,3 +171,23 @@ where
 
     Ok(row.count.unwrap_or(0))
 }
+
+pub async fn delete_habit_daily_tracking_for_user<'a, E>(
+    executor: E,
+    user_id: Uuid,
+) -> Result<PgQueryResult, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
+    sqlx::query_as!(
+        HabitDailyTracking,
+        r#"
+        DELETE
+        from habit_daily_trackings
+        WHERE user_id = $1
+        "#,
+        user_id,
+    )
+    .execute(executor)
+    .await
+}

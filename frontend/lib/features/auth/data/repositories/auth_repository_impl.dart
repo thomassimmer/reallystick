@@ -121,6 +121,9 @@ class AuthRepositoryImpl implements AuthRepository {
     } on InternalServerError {
       logger.e('InternalServerError occured.');
       return Left(InternalServerDomainError());
+    } on UserHasBeenDeletedError {
+      logger.e('UserHasBeenDeletedError occured.');
+      return Left(UserHasBeenDeletedDomainError());
     } catch (e) {
       logger.e('Data error occurred: ${e.toString()}');
       return Left(UnknownDomainError());
@@ -307,6 +310,9 @@ class AuthRepositoryImpl implements AuthRepository {
     } on TwoFactorAuthenticationNotEnabledError {
       logger.e('TwoFactorAuthenticationNotEnabledError occured.');
       return Left(TwoFactorAuthenticationNotEnabledDomainError());
+    } on UserHasBeenDeletedError {
+      logger.e('UserHasBeenDeletedError occured.');
+      return Left(UserHasBeenDeletedDomainError());
     } catch (e) {
       logger.e('Data error occurred: ${e.toString()}');
       return Left(UnknownDomainError());
@@ -342,6 +348,9 @@ class AuthRepositoryImpl implements AuthRepository {
     } on TwoFactorAuthenticationNotEnabledError {
       logger.e('TwoFactorAuthenticationNotEnabledError occured.');
       return Left(TwoFactorAuthenticationNotEnabledDomainError());
+    } on UserHasBeenDeletedError {
+      logger.e('UserHasBeenDeletedError occured.');
+      return Left(UserHasBeenDeletedDomainError());
     } catch (e) {
       logger.e('Data error occurred: ${e.toString()}');
       return Left(UnknownDomainError());
@@ -376,6 +385,9 @@ class AuthRepositoryImpl implements AuthRepository {
     } on InvalidUsernameOrRecoveryCodeError {
       logger.e('InvalidUsernameOrRecoveryCodeError occured.');
       return Left(InvalidUsernameOrRecoveryCodeDomainError());
+    } on UserHasBeenDeletedError {
+      logger.e('UserHasBeenDeletedError occured.');
+      return Left(UserHasBeenDeletedDomainError());
     } catch (e) {
       logger.e('Data error occurred: ${e.toString()}');
       return Left(UnknownDomainError());
@@ -431,9 +443,6 @@ class AuthRepositoryImpl implements AuthRepository {
     } on InternalServerError {
       logger.e('InternalServerError occured.');
       return Left(InternalServerDomainError());
-    } on InvalidUsernameOrRecoveryCodeError {
-      logger.e('InvalidUsernameOrRecoveryCodeError occured.');
-      return Left(InvalidUsernameOrRecoveryCodeDomainError());
     } on UserNotFoundError {
       logger.e('UserNotFoundError occured.');
       return Left(UserNotFoundDomainError());
@@ -472,9 +481,6 @@ class AuthRepositoryImpl implements AuthRepository {
     } on InternalServerError {
       logger.e('InternalServerError occured.');
       return Left(InternalServerDomainError());
-    } on InvalidUsernameOrRecoveryCodeError {
-      logger.e('InvalidUsernameOrRecoveryCodeError occured.');
-      return Left(InvalidUsernameOrRecoveryCodeDomainError());
     } catch (e) {
       logger.e('Data error occurred: ${e.toString()}');
       return Left(UnknownDomainError());

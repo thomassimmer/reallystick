@@ -64,7 +64,7 @@ pub async fn spawn_app(
     .await
 }
 
-async fn configure_database(config: &DatabaseSettings) -> Pool<Postgres> {
+pub async fn configure_database(config: &DatabaseSettings) -> Pool<Postgres> {
     // Create database
     let mut connection = PgConnection::connect_with(&config.without_db())
         .await
@@ -109,6 +109,7 @@ async fn configure_database(config: &DatabaseSettings) -> Pool<Postgres> {
         created_at: now(),
         updated_at: now(),
         deleted_at: None,
+        is_deleted: false,
         public_key: None,
         private_key_encrypted: None,
         salt_used_to_derive_key_from_password: None,
@@ -147,6 +148,7 @@ async fn configure_database(config: &DatabaseSettings) -> Pool<Postgres> {
         created_at: now(),
         updated_at: now(),
         deleted_at: None,
+        is_deleted: false,
         public_key: None,
         private_key_encrypted: None,
         salt_used_to_derive_key_from_password: None,

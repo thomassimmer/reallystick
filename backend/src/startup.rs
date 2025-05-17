@@ -75,6 +75,7 @@ use crate::features::private_discussions::routes::get_private_discussions::get_p
 use crate::features::private_discussions::routes::mark_message_as_seen::mark_message_as_seen;
 use crate::features::private_discussions::routes::update_private_discussion_participation::update_private_discussion_participation;
 use crate::features::private_discussions::routes::update_private_message::update_private_message;
+use crate::features::profile::helpers::redis_handler::handle_redis_messages;
 use crate::features::profile::routes::delete_account::delete_account;
 use crate::features::profile::routes::delete_device::delete_device;
 use crate::features::profile::routes::get_devices::get_devices;
@@ -114,6 +115,7 @@ use actix_web::{web, App, Error, HttpServer};
 use redis::Client;
 use sqlx::postgres::PgPoolOptions;
 use sqlx::{PgPool, Pool, Postgres};
+use tokio::task;
 
 pub fn run(listener: TcpListener, configuration: Settings) -> Result<Server, std::io::Error> {
     let connection_pool = get_connection_pool(&configuration.database);
@@ -123,6 +125,17 @@ pub fn run(listener: TcpListener, configuration: Settings) -> Result<Server, std
     let token_cache = TokenCache::default();
     let user_public_data_cache = UserPublicDataCache::default();
     let redis_client = redis::Client::open("redis://redis:6379").unwrap();
+
+    let redis_client_for_redis_handler = redis_client.clone();
+    let user_public_data_cache_for_redis_handler = user_public_data_cache.clone();
+
+    task::spawn(async move {
+        handle_redis_messages(
+            redis_client_for_redis_handler,
+            user_public_data_cache_for_redis_handler,
+        )
+        .await;
+    });
 
     let server = HttpServer::new(move || {
         let translator = Arc::new(Translator::new());

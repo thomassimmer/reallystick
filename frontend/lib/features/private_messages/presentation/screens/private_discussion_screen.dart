@@ -332,7 +332,9 @@ class PrivateDiscussionScreenState extends State<PrivateDiscussionScreen> {
       return Scaffold(
         appBar: CustomAppBar(
           title: Text(
-            recipient.username,
+            recipient.isDeleted
+                ? AppLocalizations.of(context)!.deletedUser
+                : recipient.username,
             style: context.typographies.headingSmall,
             overflow: TextOverflow.ellipsis,
             maxLines: 1,
@@ -485,19 +487,20 @@ class PrivateDiscussionScreenState extends State<PrivateDiscussionScreen> {
                       ],
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsets.all(16),
-                    child: CustomMessageInput(
-                      contentController: _contentController,
-                      recipientUsername: recipient.username,
-                      onSendMessage: () => _sendMessage(
-                        recipient.publicKey,
-                        profileState.profile.publicKey,
+                  if (!recipient.isDeleted)
+                    Padding(
+                      padding: EdgeInsets.all(16),
+                      child: CustomMessageInput(
+                        contentController: _contentController,
+                        recipientUsername: recipient.username,
+                        onSendMessage: () => _sendMessage(
+                          recipient.publicKey,
+                          profileState.profile.publicKey,
+                        ),
+                        isEditing: _messageBeingEdited != null,
+                        onEditMessage: _editMessage,
                       ),
-                      isEditing: _messageBeingEdited != null,
-                      onEditMessage: _editMessage,
                     ),
-                  ),
                 ],
               ],
             ),

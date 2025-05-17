@@ -176,29 +176,6 @@ where
         SELECT *
         FROM users
         WHERE username = $1
-        AND deleted_at is null
-        "#,
-        username
-    )
-    .fetch_optional(executor)
-    .await?;
-
-    Ok(user)
-}
-
-pub async fn get_user_by_username_even_deleted<'a, E>(
-    executor: E,
-    username: &str,
-) -> Result<Option<User>, sqlx::Error>
-where
-    E: Executor<'a, Database = Postgres>,
-{
-    let user = sqlx::query_as!(
-        User,
-        r#"
-        SELECT *
-        FROM users
-        WHERE username = $1
         "#,
         username
     )
@@ -220,7 +197,6 @@ E: Executor<'a, Database = Postgres>,
         SELECT *
         FROM users
         WHERE id = $1
-        AND deleted_at is null
         "#,
         id,
     )
@@ -240,7 +216,6 @@ E: Executor<'a, Database = Postgres>,
         SELECT *
         FROM users
         WHERE id = ANY($1)
-        AND deleted_at is null
         "#,
         &ids,
     )
@@ -266,7 +241,7 @@ E: Executor<'a, Database = Postgres>,
 }
 
 
-pub async fn get_all_users_marked_as_deleted<'a, E>(
+pub async fn get_not_deleted_but_marked_as_deleted_users<'a, E>(
     executor: E,
 ) -> Result<Vec<User>, sqlx::Error> where
 E: Executor<'a, Database = Postgres>,
@@ -276,14 +251,16 @@ E: Executor<'a, Database = Postgres>,
         r#"
         SELECT *
         FROM users
-        WHERE deleted_at is not null
+        WHERE
+            deleted_at is not null AND
+            is_deleted = false
         "#,
     )
     .fetch_all(executor)
     .await
 }
 
-pub async fn delete_user_by_id<'a, E>(
+pub async fn mark_user_as_deleted<'a, E>(
     executor: E,
     user_id: Uuid,
 ) -> Result<PgQueryResult, sqlx::Error> where
@@ -292,8 +269,20 @@ E: Executor<'a, Database = Postgres>,
     sqlx::query_as!(
         User,
         r#"
-        DELETE
-        from users
+        UPDATE users
+        SET
+            is_deleted = true,
+            age_category = null,
+            gender = null,
+            continent = null,
+            country = null,
+            region = null,
+            activity = null,
+            financial_situation = null,
+            lives_in_urban_area = null,
+            relationship_status = null,
+            level_of_education = null,
+            has_children = null
         WHERE id = $1
         "#,
         user_id,
@@ -313,7 +302,8 @@ E: Executor<'a, Database = Postgres>,
         User,
         r#"
         UPDATE users
-        SET deleted_at = $1
+        SET deleted_at = $1, 
+            notifications_enabled = false
         WHERE id = $2
         "#,
         deleted_at,

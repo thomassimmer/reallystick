@@ -31,6 +31,7 @@ class ChallengeRemoteDataSource {
       try {
         final jsonBody = customJsonDecode(response.body);
         final List<dynamic> challenges = jsonBody['challenges'];
+
         return challenges
             .map((challenge) => ChallengeDataModel.fromJson(challenge))
             .toList();

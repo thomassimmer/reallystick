@@ -9,6 +9,7 @@ import 'package:reallystick/features/challenges/domain/entities/challenge.dart';
 import 'package:reallystick/features/challenges/domain/entities/challenge_daily_tracking.dart';
 import 'package:reallystick/features/challenges/domain/entities/challenge_participation.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_bloc.dart';
+import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_events.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_states.dart';
 import 'package:reallystick/features/challenges/presentation/helpers/challenge_date.dart';
 import 'package:reallystick/features/challenges/presentation/widgets/daily_tracking_carousel_with_start_date_widget.dart';
@@ -17,7 +18,7 @@ import 'package:reallystick/features/habits/presentation/helpers/translations.da
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 import 'package:reallystick/i18n/app_localizations.dart';
 
-class ChallengeWidget extends StatelessWidget {
+class ChallengeWidget extends StatefulWidget {
   final Challenge challenge;
   final ChallengeParticipation? challengeParticipation;
   final List<ChallengeDailyTracking> challengeDailyTrackings;
@@ -30,15 +31,26 @@ class ChallengeWidget extends StatelessWidget {
     required this.challengeDailyTrackings,
     required this.previewMode,
   });
+  @override
+  ChallengeWidgetState createState() => ChallengeWidgetState();
+}
+
+class ChallengeWidgetState extends State<ChallengeWidget> {
+  void _quitChallenge() {
+    final deleteChallengeParticipationEvent = DeleteChallengeParticipationEvent(
+      challengeParticipationId: widget.challengeParticipation!.id,
+    );
+    context.read<ChallengeBloc>().add(deleteChallengeParticipationEvent);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Builder(
       builder: (context) {
-        final profileState = previewMode
+        final profileState = widget.previewMode
             ? getProfileAuthenticatedForPreview(context)
             : context.watch<ProfileBloc>().state;
-        final challengeState = previewMode
+        final challengeState = widget.previewMode
             ? getChallengeStateForPreview(context)
             : context.watch<ChallengeBloc>().state;
 
@@ -46,31 +58,31 @@ class ChallengeWidget extends StatelessWidget {
           final userLocale = profileState.profile!.locale;
 
           final name = getRightTranslationFromJson(
-            challenge.name,
+            widget.challenge.name,
             userLocale,
           );
 
-          final challengeColor =
-              AppColorExtension.fromString(challengeParticipation?.color ?? "")
-                  .color;
+          final challengeColor = AppColorExtension.fromString(
+                  widget.challengeParticipation?.color ?? "")
+              .color;
 
           final bool isLargeScreen = checkIfLargeScreen(context);
 
           final bool finished = checkIfChallengeIsFinished(
-            challengeDailyTrackings: challengeDailyTrackings,
-            challengeStartDate: challenge.startDate,
-            challengeParticipation: challengeParticipation,
+            challengeDailyTrackings: widget.challengeDailyTrackings,
+            challengeStartDate: widget.challenge.startDate,
+            challengeParticipation: widget.challengeParticipation,
           );
 
-          return !challenge.deleted
+          return !widget.challenge.deleted
               ? InkWell(
                   onTap: () {
                     context.goNamed(
                       'challengeDetails',
                       pathParameters: {
-                        'challengeId': challenge.id,
+                        'challengeId': widget.challenge.id,
                         'challengeParticipationId':
-                            challengeParticipation?.id ?? "null",
+                            widget.challengeParticipation?.id ?? "null",
                       },
                     );
                   },
@@ -134,7 +146,7 @@ class ChallengeWidget extends StatelessWidget {
                                               padding: const EdgeInsets.only(
                                                   right: 16.0),
                                               child: Text(
-                                                challenge.icon,
+                                                widget.challenge.icon,
                                                 style: TextStyle(
                                                   fontSize: 25,
                                                 ),
@@ -154,10 +166,11 @@ class ChallengeWidget extends StatelessWidget {
                                             ),
                                           ],
                                         ),
-                                        if (challengeParticipation != null) ...[
+                                        if (widget.challengeParticipation !=
+                                            null) ...[
                                           SizedBox(height: 10),
                                           Text(
-                                            "${AppLocalizations.of(context)!.challengeParticipationStartDate} ${DateFormat.yMMMd(userLocale).format(challengeParticipation!.startDate)}",
+                                            "${AppLocalizations.of(context)!.challengeParticipationStartDate} ${DateFormat.yMMMd(userLocale).format(widget.challengeParticipation!.startDate)}",
                                           ),
                                           SizedBox(height: 20),
                                         ],
@@ -165,58 +178,59 @@ class ChallengeWidget extends StatelessWidget {
                                     ),
                                   ),
                                   if (isLargeScreen &&
-                                      challengeParticipation != null) ...[
-                                    challenge.startDate != null
+                                      widget.challengeParticipation !=
+                                          null) ...[
+                                    widget.challenge.startDate != null
                                         ? DailyTrackingCarouselWithStartDateWidget(
                                             challengeParticipation:
-                                                challengeParticipation,
-                                            challenge: challenge,
+                                                widget.challengeParticipation,
+                                            challenge: widget.challenge,
                                             challengeDailyTrackings:
-                                                challengeDailyTrackings,
+                                                widget.challengeDailyTrackings,
                                             challengeColor: challengeColor,
                                             canOpenDayBoxes: false,
                                             displayTitle: false,
-                                            previewMode: previewMode,
+                                            previewMode: widget.previewMode,
                                           )
                                         : DailyTrackingCarouselWithoutStartDateWidget(
                                             challengeParticipation:
-                                                challengeParticipation,
-                                            challenge: challenge,
+                                                widget.challengeParticipation,
+                                            challenge: widget.challenge,
                                             challengeDailyTrackings:
-                                                challengeDailyTrackings,
+                                                widget.challengeDailyTrackings,
                                             challengeColor: challengeColor,
                                             canOpenDayBoxes: false,
                                             displayTitle: false,
-                                            previewMode: previewMode,
+                                            previewMode: widget.previewMode,
                                           ),
                                   ],
                                 ],
                               ),
                               if (!isLargeScreen &&
-                                  challengeParticipation != null) ...[
+                                  widget.challengeParticipation != null) ...[
                                 const SizedBox(height: 8),
-                                challenge.startDate != null
+                                widget.challenge.startDate != null
                                     ? DailyTrackingCarouselWithStartDateWidget(
                                         challengeParticipation:
-                                            challengeParticipation,
-                                        challenge: challenge,
+                                            widget.challengeParticipation,
+                                        challenge: widget.challenge,
                                         challengeDailyTrackings:
-                                            challengeDailyTrackings,
+                                            widget.challengeDailyTrackings,
                                         challengeColor: challengeColor,
                                         canOpenDayBoxes: false,
                                         displayTitle: false,
-                                        previewMode: previewMode,
+                                        previewMode: widget.previewMode,
                                       )
                                     : DailyTrackingCarouselWithoutStartDateWidget(
                                         challengeParticipation:
-                                            challengeParticipation,
-                                        challenge: challenge,
+                                            widget.challengeParticipation,
+                                        challenge: widget.challenge,
                                         challengeDailyTrackings:
-                                            challengeDailyTrackings,
+                                            widget.challengeDailyTrackings,
                                         challengeColor: challengeColor,
                                         canOpenDayBoxes: false,
                                         displayTitle: false,
-                                        previewMode: previewMode,
+                                        previewMode: widget.previewMode,
                                       ),
                               ],
                             ],
@@ -245,13 +259,44 @@ class ChallengeWidget extends StatelessWidget {
                               ),
                             ),
                             Expanded(
-                              child: Text(
-                                AppLocalizations.of(context)!
-                                    .challengeWasDeletedByCreator,
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w500,
-                                  color: challengeColor,
+                              child: GestureDetector(
+                                onLongPressStart: (details) async {
+                                  final offset = details.globalPosition;
+
+                                  if (widget.challengeParticipation != null) {
+                                    showMenu(
+                                      context: context,
+                                      position: RelativeRect.fromLTRB(
+                                        offset.dx,
+                                        offset.dy,
+                                        MediaQuery.of(context).size.width -
+                                            offset.dx,
+                                        MediaQuery.of(context).size.height -
+                                            offset.dy,
+                                      ),
+                                      items: [
+                                        PopupMenuItem(
+                                          value: 'delete',
+                                          child: Text(
+                                              AppLocalizations.of(context)!
+                                                  .delete),
+                                        ),
+                                      ],
+                                    ).then(
+                                      (value) {
+                                        _quitChallenge();
+                                      },
+                                    );
+                                  }
+                                },
+                                child: Text(
+                                  AppLocalizations.of(context)!
+                                      .challengeWasDeletedByCreator,
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w500,
+                                    color: challengeColor,
+                                  ),
                                 ),
                               ),
                             ),

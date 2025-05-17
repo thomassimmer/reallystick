@@ -1,6 +1,8 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:reallystick/core/messages/message.dart';
 import 'package:reallystick/features/users/domain/entities/user_public_data.dart';
+import 'package:reallystick/i18n/app_localizations.dart';
 
 abstract class UserState extends Equatable {
   final Message? message;
@@ -41,4 +43,12 @@ class UsersLoaded extends UserState {
         users,
         user,
       ];
+
+  String getUsername(BuildContext context, String userId) {
+    return users[userId] != null
+        ? users[userId]!.isDeleted
+            ? AppLocalizations.of(context)!.deletedUser
+            : users[userId]!.username
+        : AppLocalizations.of(context)!.unknown;
+  }
 }

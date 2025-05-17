@@ -110,6 +110,7 @@ pub enum AppError {
     UsernameNotRespectingRules,
     UsernameWrongSize,
     UserAlreadyHasKeys,
+    UserHasBeenDeleted,
     UserNotFound,
     UserTokenDeletion,
     UserTokenNotFound,
@@ -515,6 +516,10 @@ impl AppError {
             AppError::UserAlreadyHasKeys => GenericResponse {
                 code: "USER_HAS_ALREADY_KEYS".to_string(),
                 message: "You already have keys".to_string(),
+            },
+            AppError::UserHasBeenDeleted => GenericResponse {
+                code: "USER_HAS_BEEN_DELETED".to_string(),
+                message: "This user account has been deleted".to_string(),
             },
             AppError::UserNotFound => GenericResponse {
                 code: "USER_NOT_FOUND".to_string(),

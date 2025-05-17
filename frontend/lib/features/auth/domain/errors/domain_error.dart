@@ -38,6 +38,11 @@ class InvalidUsernameOrPasswordOrRecoveryCodeDomainError
   final String messageKey = 'invalidUsernameOrPasswordOrRecoveryCodeError';
 }
 
+class UserHasBeenDeletedDomainError implements DomainError {
+  @override
+  final String messageKey = 'userHasBeenDeletedError';
+}
+
 class UserNotFoundDomainError implements DomainError {
   @override
   final String messageKey = 'userNotFoundError';

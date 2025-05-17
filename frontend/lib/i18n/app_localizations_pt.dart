@@ -188,7 +188,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get confirmDelete => 'Confirmação de exclusão de conta';
 
   @override
-  String get confirmDeleteMessage => 'Ao clicar em \"Confirmar\", a sua conta e todas as atividades associadas serão agendadas para exclusão permanente em 3 dias.\n\nSe voltar a iniciar sessão antes do fim deste prazo, a exclusão será cancelada.';
+  String get confirmDeleteMessage => 'Ao clicar em \"Confirmar\", a sua conta e todas as atividades associadas serão agendadas para exclusão permanente em 7 dias.\n\nSe voltar a iniciar sessão antes do fim deste prazo, a exclusão será cancelada.';
 
   @override
   String get confirmDeletion => 'Confirmar exclusão';
@@ -281,6 +281,9 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get delete => 'Excluir';
+
+  @override
+  String get deletedUser => 'Usuário excluído';
 
   @override
   String get deleteAccount => 'Excluir minha conta';
@@ -1330,6 +1333,9 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get userAlreadyExistingError => 'Já existe um usuário com este nome de usuário. Por favor, escolha outro.';
+
+  @override
+  String get userHasBeenDeletedError => 'O usuário foi excluído.';
 
   @override
   String get userNotFoundError => 'Usuário não encontrado.';

@@ -834,22 +834,26 @@ UsersLoaded getUserStateForPreview(BuildContext context) {
         id: '2',
         username: 'reallystick',
         publicKey: 'publicKey',
+        isDeleted: false,
       ),
       '3': UserPublicData(
         id: '3',
         username: 'thomas',
         publicKey: 'publicKey',
+        isDeleted: false,
       ),
       '4': UserPublicData(
         id: '4',
         username: 'tatiana',
         publicKey: 'publicKey',
+        isDeleted: false,
       ),
     },
     user: UserPublicData(
       id: '2',
       username: 'reallystick',
       publicKey: 'publicKey',
+      isDeleted: false,
     ),
   );
 }

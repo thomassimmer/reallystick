@@ -188,7 +188,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get confirmDelete => 'Conferma eliminazione account';
 
   @override
-  String get confirmDeleteMessage => 'Cliccando su \"Conferma\", il tuo account e tutte le attività associate saranno programmati per l\'eliminazione definitiva tra 3 giorni.\n\nSe effettui nuovamente l\'accesso prima della scadenza, la cancellazione verrà annullata.';
+  String get confirmDeleteMessage => 'Cliccando su \"Conferma\", il tuo account e tutte le attività associate saranno programmati per l\'eliminazione definitiva tra 7 giorni.\n\nSe effettui nuovamente l\'accesso prima della scadenza, la cancellazione verrà annullata.';
 
   @override
   String get confirmDeletion => 'Conferma eliminazione';
@@ -281,6 +281,9 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get delete => 'Elimina';
+
+  @override
+  String get deletedUser => 'Utente eliminato';
 
   @override
   String get deleteAccount => 'Elimina il mio account';
@@ -1330,6 +1333,9 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get userAlreadyExistingError => 'Un utente con questo nome utente esiste già. Scegline un altro.';
+
+  @override
+  String get userHasBeenDeletedError => 'L\'utente è stato eliminato.';
 
   @override
   String get userNotFoundError => 'Utente non trovato.';

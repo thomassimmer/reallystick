@@ -20,6 +20,8 @@ class InvalidOneTimePasswordError extends DataError {}
 
 class InvalidUsernameOrPasswordError extends DataError {}
 
+class UserHasBeenDeletedError extends DataError {}
+
 class PasswordMustBeChangedError extends DataError {}
 
 class UserAlreadyExistingError extends DataError {}

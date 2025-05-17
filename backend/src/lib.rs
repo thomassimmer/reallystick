@@ -18,6 +18,7 @@ pub mod core {
         pub mod mock_now;
         pub mod startup;
         pub mod translation;
+        pub mod user_deletion;
     }
 
     pub mod structs {
@@ -81,6 +82,7 @@ pub mod features {
         pub mod helpers {
             pub mod device_info;
             pub mod profile;
+            pub mod redis_handler;
         }
 
         pub mod structs {

@@ -172,11 +172,15 @@ where
         PublicMessage,
         r#"
         UPDATE public_messages
-        SET deleted_by_admin = $1, deleted_by_creator = $2
-        WHERE id = $3
+        SET
+            deleted_by_admin = $1,
+            deleted_by_creator = $2,
+            content = $3
+        WHERE id = $4
         "#,
         public_message.deleted_by_admin,
         public_message.deleted_by_creator,
+        "",
         public_message.id,
     )
     .execute(executor)
@@ -306,4 +310,28 @@ where
     .await?;
 
     Ok(row.count.unwrap_or(0))
+}
+
+pub async fn mark_public_messages_as_deleted_for_user<'a, E>(
+    executor: E,
+    user_id: Uuid,
+) -> Result<PgQueryResult, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
+    sqlx::query_as!(
+        PublicMessage,
+        r#"
+        UPDATE public_messages
+        SET
+            deleted_by_creator = $1,
+            content = $2
+        WHERE creator = $3
+        "#,
+        true,
+        "",
+        user_id,
+    )
+    .execute(executor)
+    .await
 }

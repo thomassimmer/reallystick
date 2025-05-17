@@ -404,8 +404,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         );
       },
       (_) async {
-        await TokenStorage().deleteTokens();
-
         if (event.message == null) {
           emit(
             AuthUnauthenticatedState(
@@ -419,6 +417,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         }
       },
     );
+
+    await TokenStorage().deleteTokens();
   }
 
   void _recoverAccountForUsername(

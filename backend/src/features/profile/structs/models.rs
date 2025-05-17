@@ -28,6 +28,7 @@ pub struct User {
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
     pub deleted_at: Option<DateTime<Utc>>,
+    pub is_deleted: bool,
 
     pub password_is_expired: bool,
     pub public_key: Option<String>,
@@ -105,6 +106,7 @@ impl User {
             username: self.username.to_owned(),
             public_key: self.public_key.to_owned(),
             locale: self.locale.to_owned(),
+            is_deleted: self.is_deleted,
         }
     }
 }
@@ -167,6 +169,7 @@ pub struct UserPublicData {
     pub username: String,
     pub public_key: Option<String>,
     pub locale: String,
+    pub is_deleted: bool,
 }
 
 #[derive(Default, Clone)]

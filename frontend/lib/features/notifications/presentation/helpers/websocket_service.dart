@@ -60,16 +60,18 @@ class WebSocketService {
         },
         onError: (error) async {
           logger.i("WebSocket stream error: $error");
-          await _webSocketSubscription?.cancel();
+          if (_webSocketSubscription != null) {
+            await _webSocketSubscription!.cancel();
+          }
           _webSocketSubscription = null;
           _handleReconnect();
         },
         onDone: () async {
           logger.i("WebSocket connection closed by server.");
-          await _webSocketSubscription?.cancel();
-          logger.i("subscription cancelled");
+          if (_webSocketSubscription != null) {
+            await _webSocketSubscription!.cancel();
+          }
           _webSocketSubscription = null;
-          logger.i("reconnecting..");
           _handleReconnect();
         },
         cancelOnError: true,
@@ -114,8 +116,12 @@ class WebSocketService {
     _isReconnecting = false;
 
     try {
-      await _webSocketSubscription?.cancel();
-      await _channel?.sink.close(1000, "App moved to background");
+      if (_webSocketSubscription != null) {
+        await _webSocketSubscription!.cancel();
+      }
+      if (_channel != null) {
+        await _channel!.sink.close(1000, "App moved to background");
+      }
     } catch (e) {
       logger.i("Error during WebSocket disconnect: $e");
     }

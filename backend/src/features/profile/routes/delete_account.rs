@@ -4,7 +4,7 @@ use crate::{
         structs::redis_messages::UserRemovedEvent,
     },
     features::{
-        auth::structs::models::Claims,
+        auth::{helpers::token::delete_user_tokens, structs::models::Claims},
         profile::{
             helpers::profile::update_user_deleted_at, structs::responses::DeleteAccountResponse,
         },
@@ -43,6 +43,14 @@ pub async fn delete_account(
         return HttpResponse::InternalServerError().json(AppError::UserUpdate.to_response());
     }
 
+    // Delete immediately all user tokens
+    let delete_result = delete_user_tokens(request_claims.user_id, &mut *transaction).await;
+
+    if let Err(e) = delete_result {
+        error!("Error: {}", e);
+        return HttpResponse::InternalServerError().json(AppError::UserTokenDeletion.to_response());
+    }
+
     if let Err(e) = transaction.commit().await {
         error!("Error: {}", e);
         return HttpResponse::InternalServerError()
@@ -53,7 +61,7 @@ pub async fn delete_account(
         Ok(mut con) => {
             let result: Result<(), redis::RedisError> = con
                 .publish(
-                    "user_removed",
+                    "user_marked_as_deleted",
                     json!(UserRemovedEvent {
                         user_id: request_claims.user_id,
                     })

@@ -188,7 +188,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get confirmDelete => 'Confirm account deletion';
 
   @override
-  String get confirmDeleteMessage => 'By clicking \"Confirm\", your account and all associated activity will be scheduled for permanent deletion in 3 days.\n\nIf you log in again before this period expires, the deletion will be cancelled.';
+  String get confirmDeleteMessage => 'By clicking \"Confirm\", your account and all associated activity will be scheduled for permanent deletion in 7 days.\n\nIf you log in again before this period expires, the deletion will be cancelled.';
 
   @override
   String get confirmDeletion => 'Confirm Deletion';
@@ -281,6 +281,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get delete => 'Delete';
+
+  @override
+  String get deletedUser => 'Deleted user';
 
   @override
   String get deleteAccount => 'Delete account';
@@ -1330,6 +1333,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get userAlreadyExistingError => 'A user with this username already exists. Please choose another.';
+
+  @override
+  String get userHasBeenDeletedError => 'User has been deleted.';
 
   @override
   String get userNotFoundError => 'User not found.';

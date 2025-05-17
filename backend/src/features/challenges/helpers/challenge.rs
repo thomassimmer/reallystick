@@ -42,6 +42,26 @@ where
     .await
 }
 
+pub async fn get_created_challenges<'a, E>(
+    executor: E,
+    user_id: Uuid,
+) -> Result<Vec<Challenge>, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
+    sqlx::query_as!(
+        Challenge,
+        r#"
+        SELECT *
+        from challenges
+        WHERE creator = $1
+        "#,
+        user_id,
+    )
+    .fetch_all(executor)
+    .await
+}
+
 pub async fn get_created_and_joined_challenges<'a, E>(
     executor: E,
     user_id: Uuid,
@@ -472,4 +492,24 @@ where
     .await?;
 
     Ok(row.count.unwrap_or(0))
+}
+
+pub async fn mark_challenges_as_deleted_for_user<'a, E>(
+    executor: E,
+    user_id: Uuid,
+) -> Result<PgQueryResult, sqlx::Error>
+where
+    E: Executor<'a, Database = Postgres>,
+{
+    sqlx::query_as!(
+        Challenge,
+        r#"
+        UPDATE challenges
+        SET deleted = true, name = '', description = ''
+        WHERE creator = $1
+        "#,
+        user_id,
+    )
+    .execute(executor)
+    .await
 }
