@@ -5,7 +5,6 @@ import 'package:reallystick/core/validators/challenge_daily_tracking_note.dart';
 import 'package:reallystick/core/validators/habit.dart';
 import 'package:reallystick/core/validators/quantity_of_set.dart';
 import 'package:reallystick/core/validators/quantity_per_set.dart';
-import 'package:reallystick/core/validators/repeat.dart';
 import 'package:reallystick/core/validators/unit.dart';
 import 'package:reallystick/core/validators/weight.dart';
 
@@ -17,7 +16,6 @@ final class ChallengeDailyTrackingCreationFormState extends Equatable {
   final ChallengeDailyTrackingDatetime dayOfProgram;
   final WeightValidator weight;
   final UnitValidator weightUnitId;
-  final RepeatValidator repeat;
   final ChallengeDailyTrackingNoteValidator note;
   final bool isValid;
   final String? errorMessage;
@@ -30,7 +28,6 @@ final class ChallengeDailyTrackingCreationFormState extends Equatable {
     this.dayOfProgram = const ChallengeDailyTrackingDatetime.pure(),
     this.weight = const WeightValidator.pure(),
     this.weightUnitId = const UnitValidator.pure(),
-    this.repeat = const RepeatValidator.pure(),
     this.note = const ChallengeDailyTrackingNoteValidator.pure(),
     this.isValid = true,
     this.errorMessage,
@@ -45,7 +42,6 @@ final class ChallengeDailyTrackingCreationFormState extends Equatable {
         dayOfProgram,
         weight,
         weightUnitId,
-        repeat,
         note,
         isValid,
         errorMessage,
@@ -60,7 +56,6 @@ final class ChallengeDailyTrackingCreationFormState extends Equatable {
     ChallengeDailyTrackingDatetime? dayOfProgram,
     WeightValidator? weight,
     UnitValidator? weightUnitId,
-    RepeatValidator? repeat,
     ChallengeDailyTrackingNoteValidator? note,
     bool? isValid,
     String? errorMessage,
@@ -73,7 +68,6 @@ final class ChallengeDailyTrackingCreationFormState extends Equatable {
       dayOfProgram: dayOfProgram ?? this.dayOfProgram,
       weight: weight ?? this.weight,
       weightUnitId: weightUnitId ?? this.weightUnitId,
-      repeat: repeat ?? this.repeat,
       note: note ?? this.note,
       isValid: isValid ?? this.isValid,
       errorMessage: errorMessage ?? this.errorMessage,

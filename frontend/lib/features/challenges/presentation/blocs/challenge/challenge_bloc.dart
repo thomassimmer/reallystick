@@ -322,7 +322,7 @@ class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
       unitId: event.unitId,
       weight: event.weight,
       weightUnitId: event.weightUnitId,
-      repeat: event.repeat,
+      daysToRepeatOn: event.daysToRepeatOn,
       note: event.note,
     );
 
@@ -344,11 +344,23 @@ class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
         }
       },
       (challengeDailyTrackings) {
-        currentState.challengeDailyTrackings[event.challengeId]!
-            .addAll(challengeDailyTrackings);
+        final updatedTrackings = Map<String, List<ChallengeDailyTracking>>.from(
+          currentState.challengeDailyTrackings,
+        );
+
+        // Create a new list for the updated challengeId
+        final existing = List<ChallengeDailyTracking>.from(
+          updatedTrackings[event.challengeId] ?? [],
+        );
+        existing.addAll(challengeDailyTrackings);
+
+        // Update the map
+        updatedTrackings[event.challengeId] = existing;
+
+        // Emit new state with a new copy of the map
         emit(
           ChallengesLoaded(
-            challengeDailyTrackings: currentState.challengeDailyTrackings,
+            challengeDailyTrackings: updatedTrackings,
             challengeParticipations: currentState.challengeParticipations,
             challenges: currentState.challenges,
             challengeStatistics: currentState.challengeStatistics,
@@ -374,6 +386,7 @@ class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
       weight: event.weight,
       weightUnitId: event.weightUnitId,
       note: event.note,
+      daysToRepeatOn: event.daysToRepeatOn,
     );
 
     resultUpdateChallengeDailyTrackingUsecase.fold(

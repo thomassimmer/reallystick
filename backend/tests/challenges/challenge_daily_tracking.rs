@@ -49,7 +49,7 @@ pub async fn user_creates_a_challenge_daily_tracking(
             unit_id,
             weight: 0,
             weight_unit_id: unit_id,
-            repeat: 1,
+            days_to_repeat_on: HashSet::from([3]),
             note: None,
         })
         .to_request();
@@ -61,7 +61,7 @@ pub async fn user_creates_a_challenge_daily_tracking(
     let response: ChallengeDailyTrackingsResponse = serde_json::from_slice(&body).unwrap();
 
     assert_eq!(response.code, "CHALLENGE_DAILY_TRACKINGS_CREATED");
-    assert!(response.challenge_daily_trackings.len() == 1);
+    assert_eq!(response.challenge_daily_trackings.len(), 2);
 
     response.challenge_daily_trackings.first().unwrap().id
 }
@@ -89,6 +89,7 @@ pub async fn user_updates_a_challenge_daily_tracking(
             weight: 0,
             weight_unit_id: unit_id,
             note: None,
+            days_to_repeat_on: HashSet::from([5]),
         })
         .to_request();
     let response = test::call_service(&app, req).await;
@@ -176,7 +177,7 @@ pub async fn creator_can_create_a_challenge_daily_tracking() {
 
     let challenge_daily_trackings =
         user_gets_challenge_daily_trackings(&app, &access_token, challenge_id).await;
-    assert!(!challenge_daily_trackings.is_empty());
+    assert_eq!(challenge_daily_trackings.len(), 2);
 }
 
 #[tokio::test]
@@ -240,7 +241,7 @@ pub async fn creator_can_delete_a_challenge_daily_tracking() {
 
     let challenge_daily_trackings =
         user_gets_challenge_daily_trackings(&app, &access_token, challenge_id).await;
-    assert!(challenge_daily_trackings.is_empty());
+    assert_eq!(challenge_daily_trackings.len(), 0);
 
     let challenge_daily_tracking_id = user_creates_a_challenge_daily_tracking(
         &app,
@@ -253,11 +254,11 @@ pub async fn creator_can_delete_a_challenge_daily_tracking() {
 
     let challenge_daily_trackings =
         user_gets_challenge_daily_trackings(&app, &access_token, challenge_id).await;
-    assert!(!challenge_daily_trackings.is_empty());
+    assert_eq!(challenge_daily_trackings.len(), 2);
 
     user_deletes_a_challenge_daily_tracking(&app, &access_token, challenge_daily_tracking_id).await;
 
     let challenge_daily_trackings =
         user_gets_challenge_daily_trackings(&app, &access_token, challenge_id).await;
-    assert!(challenge_daily_trackings.is_empty());
+    assert_eq!(challenge_daily_trackings.len(), 1);
 }

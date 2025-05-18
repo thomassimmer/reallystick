@@ -15,6 +15,8 @@ import 'package:reallystick/features/challenges/presentation/blocs/challenge/cha
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_states.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge_daily_tracking_update/challenge_daily_tracking_update_bloc.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge_daily_tracking_update/challenge_daily_tracking_update_events.dart';
+import 'package:reallystick/features/challenges/presentation/widgets/repeat_on_other_day_selector_with_start_date.dart';
+import 'package:reallystick/features/challenges/presentation/widgets/repeat_on_other_day_selector_without_start_date.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_states.dart';
 import 'package:reallystick/features/habits/presentation/helpers/translations.dart';
@@ -42,6 +44,7 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
   int _weight = 0;
   String? _selectedWeightUnitId;
   String? _note;
+  Set<int> _selectedDaysToRepeat = {};
 
   @override
   void didChangeDependencies() {
@@ -138,6 +141,7 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
             weight: _weight,
             weightUnitId: _selectedWeightUnitId!,
             note: _note,
+            daysToRepeatOn: _selectedDaysToRepeat,
           );
           if (mounted) {
             context.read<ChallengeBloc>().add(newChallengeDailyTrackingEvent);
@@ -162,6 +166,10 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
       final units = habitState.units;
       final challenge =
           challengeState.challenges[widget.challengeDailyTracking.challengeId]!;
+
+      final challengeDailyTrackings = challengeState.challengeDailyTrackings[
+              widget.challengeDailyTracking.challengeId] ??
+          [];
 
       final canEdit = challenge.creator == profileState.profile.id;
 
@@ -567,6 +575,39 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
             },
             errorText: displayNoteErrorMessage,
           ),
+
+          const SizedBox(height: 16),
+
+          // Toggle Switch for "Precise Dates"
+          if (challenge.startDate != null) ...[
+            RepeatOnOtherDaysSelectorWithStartDate(
+              startDate: challenge.startDate!,
+              endDate: challenge.startDate!.add(Duration(days: 365)),
+              userLocale: userLocale,
+              challengeDailyTrackings: challengeDailyTrackings,
+              challengeColor: context.colors.primary,
+              onChange: (value) {
+                setState(
+                  () {
+                    _selectedDaysToRepeat = value;
+                  },
+                );
+              },
+            ),
+          ] else ...[
+            RepeatOnOtherDaysSelectorWithoutStartDate(
+              userLocale: userLocale,
+              challengeDailyTrackings: challengeDailyTrackings,
+              challengeColor: context.colors.primary,
+              onChange: (value) {
+                setState(
+                  () {
+                    _selectedDaysToRepeat = value;
+                  },
+                );
+              },
+            ),
+          ],
 
           const SizedBox(height: 16),
 

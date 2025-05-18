@@ -13,6 +13,8 @@ import 'package:reallystick/features/challenges/presentation/blocs/challenge/cha
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_states.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge_daily_tracking_creation/challenge_daily_tracking_creation_bloc.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge_daily_tracking_creation/challenge_daily_tracking_creation_events.dart';
+import 'package:reallystick/features/challenges/presentation/widgets/repeat_on_other_day_selector_with_start_date.dart';
+import 'package:reallystick/features/challenges/presentation/widgets/repeat_on_other_day_selector_without_start_date.dart';
 import 'package:reallystick/features/habits/domain/entities/habit.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_states.dart';
@@ -39,8 +41,7 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
   int _quantityOfSet = 1;
   int _weight = 0;
   String? _selectedWeightUnitId;
-  int _selectedRepeat = 1;
-  bool _isRepeatEnabled = false;
+  Set<int> _selectedDaysToRepeat = {};
   String? _note;
 
   @override
@@ -109,9 +110,6 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
           _selectedWeightUnitId ?? ""),
     );
     challengeDailyTrackingFormBloc.add(
-      ChallengeDailyTrackingCreationFormRepeatChangedEvent(_selectedRepeat),
-    );
-    challengeDailyTrackingFormBloc.add(
       ChallengeDailyTrackingCreationFormNoteChangedEvent(_note),
     );
 
@@ -130,7 +128,7 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
             unitId: _selectedUnitId!,
             weight: _weight,
             weightUnitId: _selectedWeightUnitId!,
-            repeat: _selectedRepeat,
+            daysToRepeatOn: _selectedDaysToRepeat,
             note: _note,
           );
           if (mounted) {
@@ -319,15 +317,6 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
         },
       );
 
-      final displayRepeatErrorMessage = context.select(
-        (ChallengeDailyTrackingCreationFormBloc bloc) {
-          final error = bloc.state.repeat.displayError;
-          return error != null
-              ? getTranslatedMessage(context, ErrorMessage(error.messageKey))
-              : null;
-        },
-      );
-
       final displayNoteErrorMessage = context.select(
         (ChallengeDailyTrackingCreationFormBloc bloc) {
           final error = bloc.state.note.displayError;
@@ -426,7 +415,7 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
                             pickedDate.day,
                             0,
                             0,
-                          ).difference(challenge.startDate!).inDays;
+                          ).difference(challenge.startDate!).inDays + 1;
                         });
                       }
                       BlocProvider.of<ChallengeDailyTrackingCreationFormBloc>(
@@ -630,53 +619,8 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
                 ),
               ],
             ),
+            const SizedBox(height: 16),
           ],
-
-          // Toggle Switch for "Precise Dates"
-          Row(
-            children: [
-              Text(
-                AppLocalizations.of(context)!.repeatOnMultipleDaysAfter,
-              ),
-              Switch(
-                value: _isRepeatEnabled,
-                onChanged: (value) {
-                  setState(() {
-                    _isRepeatEnabled = value;
-                    if (!_isRepeatEnabled) {
-                      _selectedRepeat = 1;
-                    }
-                  });
-                },
-              ),
-            ],
-          ),
-
-          if (_isRepeatEnabled) ...[
-            // Day of program selector
-            CustomTextField(
-              initialValue: _selectedRepeat.toString(),
-              label: AppLocalizations.of(context)!
-                  .numberOfDaysToRepeatThisObjective,
-              keyboardType: TextInputType.number,
-              inputFormatters: <TextInputFormatter>[
-                FilteringTextInputFormatter.digitsOnly
-              ],
-              onChanged: (value) {
-                setState(() {
-                  _selectedRepeat = int.tryParse(value) ?? 1;
-                });
-                BlocProvider.of<ChallengeDailyTrackingCreationFormBloc>(context)
-                    .add(
-                  ChallengeDailyTrackingCreationFormRepeatChangedEvent(
-                      _selectedRepeat),
-                );
-              },
-              errorText: displayRepeatErrorMessage,
-            ),
-          ],
-
-          const SizedBox(height: 16),
 
           CustomTextField(
             initialValue: _note,
@@ -695,6 +639,39 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
             },
             errorText: displayNoteErrorMessage,
           ),
+
+          const SizedBox(height: 16),
+
+          // Toggle Switch for "Precise Dates"
+          if (challenge.startDate != null) ...[
+            RepeatOnOtherDaysSelectorWithStartDate(
+              startDate: challenge.startDate!,
+              endDate: challenge.startDate!.add(Duration(days: 365)),
+              userLocale: userLocale,
+              challengeDailyTrackings: challengeDailyTrackings,
+              challengeColor: context.colors.primary,
+              onChange: (value) {
+                setState(
+                  () {
+                    _selectedDaysToRepeat = value;
+                  },
+                );
+              },
+            ),
+          ] else ...[
+            RepeatOnOtherDaysSelectorWithoutStartDate(
+              userLocale: userLocale,
+              challengeDailyTrackings: challengeDailyTrackings,
+              challengeColor: context.colors.primary,
+              onChange: (value) {
+                setState(
+                  () {
+                    _selectedDaysToRepeat = value;
+                  },
+                );
+              },
+            ),
+          ],
 
           const SizedBox(height: 16),
 

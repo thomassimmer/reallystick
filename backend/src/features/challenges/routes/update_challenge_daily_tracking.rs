@@ -8,7 +8,9 @@ use crate::{
                 challenge_daily_tracking::{self, get_challenge_daily_tracking_by_id},
             },
             structs::{
-                models::challenge_daily_tracking::CHALLENGE_DAILY_TRACKING_NOTE_MAX_LENGTH,
+                models::challenge_daily_tracking::{
+                    ChallengeDailyTracking, CHALLENGE_DAILY_TRACKING_NOTE_MAX_LENGTH,
+                },
                 requests::challenge_daily_tracking::{
                     ChallengeDailyTrackingUpdateRequest, UpdateChallengeDailyTrackingParams,
                 },
@@ -23,8 +25,10 @@ use actix_web::{
     web::{Data, Json, Path, ReqData},
     HttpResponse, Responder,
 };
+use chrono::Utc;
 use sqlx::PgPool;
 use tracing::error;
+use uuid::Uuid;
 
 #[put("/{challenge_daily_tracking_id}")]
 pub async fn update_challenge_daily_tracking(
@@ -136,6 +140,24 @@ pub async fn update_challenge_daily_tracking(
             &challenge_daily_tracking,
         )
         .await;
+
+    let mut challenge_daily_trackings = Vec::<ChallengeDailyTracking>::new();
+
+    for day_of_program_to_repeat_on in body.days_to_repeat_on.clone() {
+        challenge_daily_trackings.push(ChallengeDailyTracking {
+            id: Uuid::new_v4(),
+            habit_id: body.habit_id,
+            created_at: Utc::now(),
+            challenge_id: challenge_daily_tracking.challenge_id,
+            day_of_program: day_of_program_to_repeat_on,
+            quantity_per_set: body.quantity_per_set,
+            quantity_of_set: body.quantity_of_set,
+            unit_id: body.unit_id,
+            weight: body.weight,
+            weight_unit_id: body.weight_unit_id,
+            note: body.note.to_owned(),
+        });
+    }
 
     if let Err(e) = transaction.commit().await {
         error!("Error: {}", e);

@@ -224,16 +224,19 @@ class DailyTrackingCarouselWithStartDateWidgetState
               : 0) +
           1;
 
-      final startDate = widget.challenge.startDate!;
+      final startDate = DateTime(
+        widget.challenge.startDate!.year,
+        widget.challenge.startDate!.month,
+        widget.challenge.startDate!.day,
+      );
       final endDate = startDate.add(Duration(days: numberOfDays - 1));
 
-      final firstMonday = startDate
-          .subtract(Duration(days: (startDate.weekday - DateTime.monday)));
-      final lastSunday =
-          endDate.add(Duration(days: DateTime.sunday - endDate.weekday));
+      final firstMonday =
+          startDate.subtract(Duration(days: (startDate.weekday - 1)));
+      final lastSunday = endDate.add(Duration(days: 7 - endDate.weekday));
 
       lastDays = List.generate(
-        lastSunday.difference(firstMonday).inDays,
+        lastSunday.difference(firstMonday).inDays + 1,
         (index) => firstMonday.add(Duration(days: index)),
       );
 

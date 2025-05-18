@@ -103,13 +103,27 @@ pub async fn create_challenge_daily_tracking(
 
     let mut challenge_daily_trackings = Vec::<ChallengeDailyTracking>::new();
 
-    for i in 1..=body.repeat {
+    challenge_daily_trackings.push(ChallengeDailyTracking {
+        id: Uuid::new_v4(),
+        habit_id: body.habit_id,
+        created_at: Utc::now(),
+        challenge_id: body.challenge_id,
+        day_of_program: body.day_of_program,
+        quantity_per_set: body.quantity_per_set,
+        quantity_of_set: body.quantity_of_set,
+        unit_id: body.unit_id,
+        weight: body.weight,
+        weight_unit_id: body.weight_unit_id,
+        note: body.note.to_owned(),
+    });
+
+    for day_of_program_to_repeat_on in body.days_to_repeat_on.clone() {
         challenge_daily_trackings.push(ChallengeDailyTracking {
             id: Uuid::new_v4(),
             habit_id: body.habit_id,
             created_at: Utc::now(),
             challenge_id: body.challenge_id,
-            day_of_program: body.day_of_program + i - 1,
+            day_of_program: day_of_program_to_repeat_on,
             quantity_per_set: body.quantity_per_set,
             quantity_of_set: body.quantity_of_set,
             unit_id: body.unit_id,

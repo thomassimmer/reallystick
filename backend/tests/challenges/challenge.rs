@@ -246,9 +246,12 @@ pub async fn user_can_duplicate_a_challenge() {
 
     let challenge_daily_trackings =
         user_gets_challenge_daily_trackings(&app, &access_token, challenge_id).await;
-    assert!(challenge_daily_trackings.len() == 1);
-    assert!(challenge_daily_trackings[0].id == challenge_daily_tracking_id);
-    assert!(challenge_daily_trackings[0].challenge_id == initial_challenge.id);
+    assert_eq!(challenge_daily_trackings.len(), 2);
+    assert_eq!(challenge_daily_trackings[0].id, challenge_daily_tracking_id);
+    assert_eq!(
+        challenge_daily_trackings[0].challenge_id,
+        initial_challenge.id
+    );
 
     let (access_token, _) = user_signs_up(&app, None).await;
 
@@ -261,15 +264,18 @@ pub async fn user_can_duplicate_a_challenge() {
     let challenges = user_gets_challenges(&app, &access_token).await;
     assert_eq!(challenges.len(), 2);
     assert_eq!(challenges[1].id, duplicated_challenge_id);
-    assert!(challenges[1].name == initial_challenge.name);
-    assert!(challenges[1].description == initial_challenge.description);
-    assert!(challenges[1].creator != initial_challenge.creator);
+    assert_eq!(challenges[1].name, initial_challenge.name);
+    assert_eq!(challenges[1].description, initial_challenge.description);
+    assert_ne!(challenges[1].creator, initial_challenge.creator);
 
     let challenge_daily_trackings =
         user_gets_challenge_daily_trackings(&app, &access_token, duplicated_challenge_id).await;
-    assert!(challenge_daily_trackings.len() == 1);
-    assert!(challenge_daily_trackings[0].id != challenge_daily_tracking_id);
-    assert!(challenge_daily_trackings[0].challenge_id == duplicated_challenge_id);
+    assert_eq!(challenge_daily_trackings.len(), 2);
+    assert_ne!(challenge_daily_trackings[0].id, challenge_daily_tracking_id);
+    assert_eq!(
+        challenge_daily_trackings[0].challenge_id,
+        duplicated_challenge_id
+    );
 }
 
 #[tokio::test]

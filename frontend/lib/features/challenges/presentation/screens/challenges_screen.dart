@@ -270,7 +270,11 @@ class ChallengesScreenState extends State<ChallengesScreen> {
                               children: markedAsFinishedParticipations.map(
                                 (challengeParticipation) {
                                   final challenge = challengeState.challenges[
-                                      challengeParticipation.challengeId]!;
+                                      challengeParticipation.challengeId];
+
+                                  if (challenge == null) {
+                                    return SizedBox.shrink();
+                                  }
 
                                   var challengeDailyTrackings = challengeState
                                       .challengeDailyTrackings[challenge.id];

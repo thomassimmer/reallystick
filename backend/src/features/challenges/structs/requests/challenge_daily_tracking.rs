@@ -1,3 +1,5 @@
+use std::collections::HashSet;
+
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
@@ -31,6 +33,7 @@ pub struct ChallengeDailyTrackingUpdateRequest {
     pub weight: i32,
     pub weight_unit_id: Uuid,
     pub note: Option<String>,
+    pub days_to_repeat_on: HashSet<i32>,
 }
 
 #[derive(Deserialize, Serialize)]
@@ -43,6 +46,6 @@ pub struct ChallengeDailyTrackingCreateRequest {
     pub unit_id: Uuid,
     pub weight: i32,
     pub weight_unit_id: Uuid,
-    pub repeat: i32,
+    pub days_to_repeat_on: HashSet<i32>,
     pub note: Option<String>,
 }

@@ -18,6 +18,7 @@ class UpdateChallengeDailyTrackingUsecase {
     required int weight,
     required String weightUnitId,
     required String? note,
+    required Set<int> daysToRepeatOn,
   }) async {
     return await challengeDailyTrackingRepository.updateChallengeDailyTracking(
       challengeDailyTrackingId: challengeDailyTrackingId,
@@ -29,6 +30,7 @@ class UpdateChallengeDailyTrackingUsecase {
       weight: weight,
       weightUnitId: weightUnitId,
       note: note,
+      daysToRepeatOn: daysToRepeatOn,
     );
   }
 }

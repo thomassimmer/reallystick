@@ -19,6 +19,7 @@ class ChallengeDailyTrackingUpdateRequestModel {
   final int weight;
   final String weightUnitId;
   final String? note;
+  final Set<int> daysToRepeatOn;
 
   const ChallengeDailyTrackingUpdateRequestModel({
     required this.habitId,
@@ -29,6 +30,7 @@ class ChallengeDailyTrackingUpdateRequestModel {
     required this.weight,
     required this.weightUnitId,
     required this.note,
+    required this.daysToRepeatOn,
   });
 
   Map<String, dynamic> toJson() {
@@ -41,6 +43,7 @@ class ChallengeDailyTrackingUpdateRequestModel {
       'weight': weight,
       'weight_unit_id': weightUnitId,
       'note': note,
+      'days_to_repeat_on': daysToRepeatOn.toList(),
     };
   }
 }
@@ -54,8 +57,8 @@ class ChallengeDailyTrackingCreateRequestModel {
   final String unitId;
   final int weight;
   final String weightUnitId;
-  final int repeat;
   final String? note;
+  final Set<int> daysToRepeatOn;
 
   const ChallengeDailyTrackingCreateRequestModel({
     required this.challengeId,
@@ -66,8 +69,8 @@ class ChallengeDailyTrackingCreateRequestModel {
     required this.unitId,
     required this.weight,
     required this.weightUnitId,
-    required this.repeat,
     required this.note,
+    required this.daysToRepeatOn,
   });
 
   Map<String, dynamic> toJson() {
@@ -80,8 +83,8 @@ class ChallengeDailyTrackingCreateRequestModel {
       'unit_id': unitId,
       'weight': weight,
       'weight_unit_id': weightUnitId,
-      'repeat': repeat,
       'note': note,
+      'days_to_repeat_on': daysToRepeatOn.toList(),
     };
   }
 }

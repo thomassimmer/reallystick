@@ -82,16 +82,6 @@ class ChallengeDailyTrackingCreationFormWeightUnitIdChangedEvent
   List<Object?> get props => [weightUnitId];
 }
 
-class ChallengeDailyTrackingCreationFormRepeatChangedEvent
-    extends ChallengeDailyTrackingCreationEvent {
-  final int repeat;
-
-  const ChallengeDailyTrackingCreationFormRepeatChangedEvent(this.repeat);
-
-  @override
-  List<Object?> get props => [repeat];
-}
-
 class ChallengeDailyTrackingCreationFormNoteChangedEvent
     extends ChallengeDailyTrackingCreationEvent {
   final String? note;
