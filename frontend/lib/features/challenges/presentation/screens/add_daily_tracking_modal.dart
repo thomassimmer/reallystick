@@ -13,6 +13,7 @@ import 'package:reallystick/features/challenges/presentation/blocs/challenge/cha
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_states.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge_daily_tracking_creation/challenge_daily_tracking_creation_bloc.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge_daily_tracking_creation/challenge_daily_tracking_creation_events.dart';
+import 'package:reallystick/features/habits/domain/entities/habit.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_states.dart';
 import 'package:reallystick/features/habits/presentation/helpers/translations.dart';
@@ -151,7 +152,125 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
         habitState is HabitsLoaded &&
         profileState is ProfileAuthenticated) {
       final userLocale = profileState.profile.locale;
-      final habits = habitState.habits;
+
+      final habits = habitState.habits.values.toList();
+      final habitCategories = habitState.habitCategories;
+      final challengeDailyTrackings =
+          challengeState.challengeDailyTrackings[widget.challengeId] ?? [];
+      final usedHabitIds =
+          Set.from(challengeDailyTrackings.map((cdt) => cdt.habitId));
+
+      // Group habits by usage
+      final usedHabits =
+          habits.where((h) => usedHabitIds.contains(h.id)).toList();
+      final unusedHabits =
+          habits.where((h) => !usedHabitIds.contains(h.id)).toList();
+
+      // Helper to group by category and return sorted items
+      List<DropdownMenuItem<String>> buildGroupedItemsByCategory(
+        List<Habit> habitList,
+        String usageLabel,
+      ) {
+        final Map<String, List<Habit>> grouped = {};
+        for (final habit in habitList) {
+          grouped.putIfAbsent(habit.categoryId, () => []).add(habit);
+        }
+
+        final List<String> sortedCategoryIds = grouped.keys.toList()
+          ..sort((a, b) {
+            final aName = habitCategories[a]?.name.values.first ?? '';
+            final bName = habitCategories[b]?.name.values.first ?? '';
+            return aName.compareTo(bName);
+          });
+
+        final List<DropdownMenuItem<String>> items = [];
+
+        // Section header
+        items.add(
+          DropdownMenuItem<String>(
+            enabled: false,
+            child: Text(
+              usageLabel,
+              style: const TextStyle(
+                  fontWeight: FontWeight.bold, color: Colors.grey),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        );
+
+        for (final categoryId in sortedCategoryIds) {
+          final category = habitCategories[categoryId];
+          if (category == null) continue;
+
+          // Category header
+          items.add(
+            DropdownMenuItem<String>(
+              enabled: false,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: Text(
+                  getRightTranslationFromJson(category.name, userLocale),
+                  style: const TextStyle(
+                      fontStyle: FontStyle.italic, color: Colors.grey),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ),
+          );
+
+          final sortedHabits = grouped[categoryId]!;
+          sortedHabits.sort((a, b) {
+            return getRightTranslationFromJson(a.name, userLocale)
+                .toLowerCase()
+                .compareTo(getRightTranslationFromJson(b.name, userLocale)
+                    .toLowerCase());
+          });
+
+          for (final habit in sortedHabits) {
+            items.add(
+              DropdownMenuItem<String>(
+                value: habit.id,
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: 40,
+                      child: Center(
+                        child: Text(
+                          habit.icon,
+                          style: const TextStyle(fontSize: 15),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Flexible(
+                      child: Text(
+                        getRightTranslationFromJson(habit.name, userLocale),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }
+        }
+
+        return items;
+      }
+
+      final dropdownItems = [
+        ...buildGroupedItemsByCategory(
+          usedHabits,
+          AppLocalizations.of(context)!.previouslyUsedInThisChallenge,
+        ),
+        ...buildGroupedItemsByCategory(
+          unusedHabits,
+          AppLocalizations.of(context)!.notYetUsedInThisChallenge,
+        ),
+      ];
+
+      final selectedHabit = habitState.habits[_selectedHabitId];
+
       final units = habitState.units;
       final challenge = challengeState.challenges[widget.challengeId]!;
 
@@ -238,13 +357,12 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
 
       final shouldDisplaySportSpecificInputsResult =
           shouldDisplaySportSpecificInputs(
-              habits[_selectedHabitId], habitState.habitCategories);
+              selectedHabit, habitState.habitCategories);
 
       final weightUnits = getWeightUnits(units);
 
       final List<String> selectableUnits = (_selectedHabitId != null
-          ? habits[_selectedHabitId]!
-              .unitIds
+          ? selectedHabit!.unitIds
               .where((unitId) => units.containsKey(unitId))
               .toList()
           : []);
@@ -263,27 +381,16 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
           // Habit Selector
           CustomDropdownButtonFormField(
             value: _selectedHabitId,
-            items: habits.entries.map(
-              (entry) {
-                final habit = entry.value;
-                return DropdownMenuItem(
-                  value: entry.key,
-                  child: Text(getRightTranslationFromJson(
-                    habit.name,
-                    userLocale,
-                  )),
-                );
-              },
-            ).toList(),
+            items: dropdownItems,
             onChanged: (value) {
               BlocProvider.of<ChallengeDailyTrackingCreationFormBloc>(context)
-                  .add(ChallengeDailyTrackingCreationFormHabitChangedEvent(
-                      value));
+                  .add(
+                ChallengeDailyTrackingCreationFormHabitChangedEvent(value),
+              );
               setState(() {
                 _selectedHabitId = value;
                 _selectedUnitId = _selectedHabitId != null
-                    ? habits[_selectedHabitId]!
-                        .unitIds
+                    ? habitState.habits[_selectedHabitId]!.unitIds
                         .where((unitId) => units.containsKey(unitId))
                         .first
                     : null;

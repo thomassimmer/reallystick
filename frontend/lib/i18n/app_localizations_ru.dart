@@ -854,6 +854,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get notifications => 'Уведомления';
 
   @override
+  String get notYetUsedInThisChallenge => 'Еще не использовано в этом челлендже';
+
+  @override
   String get numberOfDaysToRepeatThisObjective => 'Количество дней для повторения этой цели';
 
   @override
@@ -936,6 +939,9 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get previous => 'Предыдущий';
+
+  @override
+  String get previouslyUsedInThisChallenge => 'Ранее использовано в этом челлендже';
 
   @override
   String get privacyPolicy => 'Политика конфиденциальности';

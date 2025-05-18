@@ -1581,6 +1581,12 @@ abstract class AppLocalizations {
   /// **'Notifications'**
   String get notifications;
 
+  /// No description provided for @notYetUsedInThisChallenge.
+  ///
+  /// In en, this message translates to:
+  /// **'Not Yet Used in This Challenge'**
+  String get notYetUsedInThisChallenge;
+
   /// No description provided for @numberOfDaysToRepeatThisObjective.
   ///
   /// In en, this message translates to:
@@ -1712,6 +1718,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Previous'**
   String get previous;
+
+  /// No description provided for @previouslyUsedInThisChallenge.
+  ///
+  /// In en, this message translates to:
+  /// **'Previously Used in This Challenge'**
+  String get previouslyUsedInThisChallenge;
 
   /// No description provided for @privacyPolicy.
   ///

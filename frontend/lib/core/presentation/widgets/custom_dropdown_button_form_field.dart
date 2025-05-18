@@ -24,6 +24,7 @@ class CustomDropdownButtonFormField extends StatelessWidget {
   Widget build(BuildContext context) {
     return DropdownButtonFormField(
       value: value,
+      isExpanded: true,
       items: items,
       onChanged: onChanged,
       decoration: InputDecoration(

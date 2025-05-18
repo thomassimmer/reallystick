@@ -854,6 +854,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get notifications => 'Notificações';
 
   @override
+  String get notYetUsedInThisChallenge => 'Ainda não usado neste desafio';
+
+  @override
   String get numberOfDaysToRepeatThisObjective => 'Número de dias para repetir este objetivo';
 
   @override
@@ -936,6 +939,9 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get previous => 'Anterior';
+
+  @override
+  String get previouslyUsedInThisChallenge => 'Usado anteriormente neste desafio';
 
   @override
   String get privacyPolicy => 'Política de Privacidade';
