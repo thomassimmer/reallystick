@@ -147,7 +147,11 @@ class DiscussionListState extends State<DiscussionListWidget> {
                 child: Center(
                   child: Text(
                     threads.isEmpty
-                        ? AppLocalizations.of(context)!.noDiscussionsForHabitYet
+                        ? widget.habitId != null
+                            ? AppLocalizations.of(context)!
+                                .noDiscussionsForHabitYet
+                            : AppLocalizations.of(context)!
+                                .noDiscussionsForChallengeYet
                         : AppLocalizations.of(context)!.addNewDiscussion,
                     style: TextStyle(color: context.colors.text),
                     textAlign: TextAlign.center,
