@@ -8,6 +8,7 @@ import 'package:reallystick/core/presentation/widgets/custom_dropdown_button_for
 import 'package:reallystick/core/presentation/widgets/custom_text_button.dart';
 import 'package:reallystick/core/presentation/widgets/custom_text_field.dart';
 import 'package:reallystick/core/ui/extensions.dart';
+import 'package:reallystick/features/challenges/domain/entities/challenge_daily_tracking.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_bloc.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_events.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_states.dart';
@@ -78,7 +79,8 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
     }
   }
 
-  void addChallengeDailyTracking() {
+  void addChallengeDailyTracking(
+      List<ChallengeDailyTracking> challengeDailyTrackings) {
     final challengeDailyTrackingFormBloc =
         context.read<ChallengeDailyTrackingCreationFormBloc>();
 
@@ -118,6 +120,10 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
       const Duration(milliseconds: 50),
       () {
         if (challengeDailyTrackingFormBloc.state.isValid) {
+          final dailyTrackingsOnThatDay = challengeDailyTrackings
+              .where((cdt) => cdt.dayOfProgram == _selectedDayOfProgram)
+              .length;
+
           final newChallengeDailyTrackingEvent =
               CreateChallengeDailyTrackingEvent(
             challengeId: widget.challengeId,
@@ -130,6 +136,7 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
             weightUnitId: _selectedWeightUnitId!,
             daysToRepeatOn: _selectedDaysToRepeat,
             note: _note,
+            orderInDay: dailyTrackingsOnThatDay,
           );
           if (mounted) {
             context.read<ChallengeBloc>().add(newChallengeDailyTrackingEvent);
@@ -410,12 +417,13 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
                       if (pickedDate != null) {
                         setState(() {
                           _selectedDayOfProgram = DateTime(
-                            pickedDate.year,
-                            pickedDate.month,
-                            pickedDate.day,
-                            0,
-                            0,
-                          ).difference(challenge.startDate!).inDays + 1;
+                                pickedDate.year,
+                                pickedDate.month,
+                                pickedDate.day,
+                                0,
+                                0,
+                              ).difference(challenge.startDate!).inDays +
+                              1;
                         });
                       }
                       BlocProvider.of<ChallengeDailyTrackingCreationFormBloc>(
@@ -677,7 +685,7 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
 
           // Save Button
           ElevatedButton(
-            onPressed: addChallengeDailyTracking,
+            onPressed: () => addChallengeDailyTracking(challengeDailyTrackings),
             child: Text(AppLocalizations.of(context)!.save),
           ),
 

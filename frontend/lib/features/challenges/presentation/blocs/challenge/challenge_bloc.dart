@@ -324,6 +324,7 @@ class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
       weightUnitId: event.weightUnitId,
       daysToRepeatOn: event.daysToRepeatOn,
       note: event.note,
+      orderInDay: event.orderInDay,
     );
 
     resultCreateChallengeDailyTrackingUsecase.fold(
@@ -387,6 +388,7 @@ class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
       weightUnitId: event.weightUnitId,
       note: event.note,
       daysToRepeatOn: event.daysToRepeatOn,
+      orderInDay: event.orderInDay,
     );
 
     resultUpdateChallengeDailyTrackingUsecase.fold(

@@ -133,6 +133,7 @@ pub async fn update_challenge_daily_tracking(
     challenge_daily_tracking.weight = body.weight;
     challenge_daily_tracking.weight_unit_id = body.weight_unit_id;
     challenge_daily_tracking.note = body.note.to_owned();
+    challenge_daily_tracking.order_in_day = body.order_in_day;
 
     if let Err(e) = challenge_daily_tracking::update_challenge_daily_tracking(
         &mut *transaction,
@@ -160,6 +161,7 @@ pub async fn update_challenge_daily_tracking(
             weight: body.weight,
             weight_unit_id: body.weight_unit_id,
             note: body.note.to_owned(),
+            order_in_day: body.order_in_day,
         });
     }
 

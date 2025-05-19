@@ -113,6 +113,7 @@ pub async fn duplicate_challenge(
             weight: cdt.weight,
             weight_unit_id: cdt.weight_unit_id,
             note: cdt.note,
+            order_in_day: cdt.order_in_day,
         });
     }
 

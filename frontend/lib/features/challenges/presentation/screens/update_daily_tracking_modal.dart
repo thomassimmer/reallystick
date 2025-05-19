@@ -142,6 +142,7 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
             weightUnitId: _selectedWeightUnitId!,
             note: _note,
             daysToRepeatOn: _selectedDaysToRepeat,
+            orderInDay: widget.challengeDailyTracking.orderInDay,
           );
           if (mounted) {
             context.read<ChallengeBloc>().add(newChallengeDailyTrackingEvent);

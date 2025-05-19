@@ -34,6 +34,7 @@ pub struct ChallengeDailyTrackingUpdateRequest {
     pub weight_unit_id: Uuid,
     pub note: Option<String>,
     pub days_to_repeat_on: HashSet<i32>,
+    pub order_in_day: i32,
 }
 
 #[derive(Deserialize, Serialize)]
@@ -48,4 +49,5 @@ pub struct ChallengeDailyTrackingCreateRequest {
     pub weight_unit_id: Uuid,
     pub days_to_repeat_on: HashSet<i32>,
     pub note: Option<String>,
+    pub order_in_day: i32,
 }

@@ -9,6 +9,7 @@ class ChallengeDailyTracking {
   int weight;
   String weightUnitId;
   String? note;
+  int orderInDay;
 
   ChallengeDailyTracking({
     required this.id,
@@ -21,5 +22,6 @@ class ChallengeDailyTracking {
     required this.weight,
     required this.weightUnitId,
     required this.note,
+    required this.orderInDay,
   });
 }

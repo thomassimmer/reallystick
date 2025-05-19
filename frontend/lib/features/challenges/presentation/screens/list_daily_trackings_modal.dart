@@ -13,6 +13,7 @@ import 'package:reallystick/features/challenges/domain/entities/challenge.dart';
 import 'package:reallystick/features/challenges/domain/entities/challenge_daily_tracking.dart';
 import 'package:reallystick/features/challenges/domain/entities/challenge_participation.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_bloc.dart';
+import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_events.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_states.dart';
 import 'package:reallystick/features/challenges/presentation/helpers/challenge_result.dart';
 import 'package:reallystick/features/challenges/presentation/screens/update_daily_tracking_modal.dart';
@@ -139,6 +140,8 @@ class ListDailyTrackingsModalState extends State<ListDailyTrackingsModal> {
             .isSameDate(widget.datetime);
       }).toList();
 
+      dailyTrackings.sort((a, b) => a.orderInDay - b.orderInDay);
+
       final challengeColor = AppColorExtension.fromString(
         widget.challengeParticipation != null
             ? widget.challengeParticipation!.color
@@ -146,6 +149,178 @@ class ListDailyTrackingsModalState extends State<ListDailyTrackingsModal> {
       ).color;
 
       final today = DateTime.now();
+
+      final reorderableElements = dailyTrackings
+          .asMap()
+          .map(
+            (index, dailyTracking) {
+              final habit = habitState.habits[dailyTracking.habitId]!;
+              final unit = habitState.units[dailyTracking.unitId]!;
+              final weightUnit = habitState.units[dailyTracking.weightUnitId]!;
+
+              final shouldDisplaySportSpecificInputsResult =
+                  shouldDisplaySportSpecificInputs(
+                habit,
+                habitState.habitCategories,
+              );
+
+              List<HabitDailyTracking> habitDailyTrackingsOnThatDay =
+                  widget.challengeParticipation != null
+                      ? habitState.habitDailyTrackings
+                          .where((hdt) =>
+                              hdt.datetime.isSameDate(widget.datetime) &&
+                              hdt.habitId == dailyTracking.habitId)
+                          .toList()
+                      : [];
+
+              final dailyObjectivesDone = checkIfDailyObjectiveWasDone(
+                dailyTracking,
+                habitDailyTrackingsOnThatDay,
+                habitState.units,
+              );
+
+              return MapEntry(
+                index,
+                GestureDetector(
+                  key: Key('$index'),
+                  onTap: () {
+                    if (widget.challenge.creator == profileState.profile.id) {
+                      _openDailyTrackingUpdateModal(
+                        challengeDailyTracking: dailyTracking,
+                      );
+                    }
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                if (dailyObjectivesDone) ...[
+                                  Icon(
+                                    Icons.check,
+                                    size: 13,
+                                    color: context.colors.success,
+                                  ),
+                                  SizedBox(width: 10),
+                                ],
+                                Text(
+                                  getRightTranslationFromJson(
+                                      habit.name, userLocale),
+                                  style: context.typographies.body.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                if (!dailyObjectivesDone &&
+                                    widget.datetime.compareTo(today) <= 0) ...[
+                                  ElevatedButton(
+                                    onPressed: () =>
+                                        _validateDailyObjective(dailyTracking),
+                                    style: ElevatedButton.styleFrom(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 12, vertical: 6),
+                                        backgroundColor: context.colors.success,
+                                        foregroundColor: Colors.white,
+                                        textStyle:
+                                            context.typographies.bodySmall,
+                                        side: BorderSide(
+                                          color: context.colors.background,
+                                          width: 1.0,
+                                        )),
+                                    child: Text(
+                                        AppLocalizations.of(context)!.done),
+                                  ),
+                                  SizedBox(width: 10),
+                                ],
+                                if (widget.challenge.creator ==
+                                    profileState.profile.id)
+                                  Icon(Icons.drag_handle),
+                              ],
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 10),
+                        Row(
+                          children: [
+                            if (dailyTracking.quantityOfSet > 1) ...[
+                              Text(
+                                AppLocalizations.of(context)!
+                                    .quantityPerSetWithQuantity(formatQuantity(
+                                        dailyTracking.quantityPerSet)),
+                                style: context.typographies.body,
+                              ),
+                            ] else ...[
+                              Text(
+                                AppLocalizations.of(context)!
+                                    .quantityWithQuantity(formatQuantity(
+                                        dailyTracking.quantityPerSet)),
+                                style: context.typographies.body,
+                              ),
+                            ],
+                            if (unit.shortName['en'] != '')
+                              Text(
+                                " ${getRightTranslationForUnitFromJson(unit.longName, dailyTracking.quantityPerSet.toInt(), userLocale)}",
+                                style: context.typographies.body,
+                              ),
+                          ],
+                        ),
+                        if (shouldDisplaySportSpecificInputsResult) ...[
+                          if (dailyTracking.quantityOfSet > 1) ...[
+                            Text(
+                              AppLocalizations.of(context)!
+                                  .quantityOfSetWithQuantity(
+                                      dailyTracking.quantityOfSet),
+                              style: context.typographies.body,
+                            ),
+                          ],
+                          if (weightUnit.shortName['en'] != '' &&
+                              dailyTracking.weight > 0) ...[
+                            Text(
+                              AppLocalizations.of(context)!.weightWithQuantity(
+                                  dailyTracking.weight,
+                                  getRightTranslationForUnitFromJson(
+                                      weightUnit.longName,
+                                      dailyTracking.weight,
+                                      userLocale)),
+                              style: context.typographies.body,
+                            ),
+                          ],
+                        ],
+                        if (dailyTracking.note != null &&
+                            dailyTracking.note!.isNotEmpty) ...[
+                          Text(
+                            AppLocalizations.of(context)!.noteWithNote,
+                            style: context.typographies.body,
+                          ),
+                          Markdown(
+                            selectable: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            data: dailyTracking.note!,
+                            onTapLink: markdownTapLinkCallback,
+                          ),
+                        ],
+                        if (index != dailyTrackings.length - 1) ...[
+                          SizedBox(height: 10),
+                          Divider(color: context.colors.text),
+                        ],
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+          )
+          .values
+          .toList();
 
       return Padding(
         padding:
@@ -160,166 +335,50 @@ class ListDailyTrackingsModalState extends State<ListDailyTrackingsModal> {
                   .copyWith(color: challengeColor),
             ),
             SizedBox(height: 10),
-            ...dailyTrackings.asMap().map(
-              (index, dailyTracking) {
-                final habit = habitState.habits[dailyTracking.habitId]!;
-                final unit = habitState.units[dailyTracking.unitId]!;
-                final weightUnit =
-                    habitState.units[dailyTracking.weightUnitId]!;
+            if (widget.challenge.creator == profileState.profile.id) ...[
+              ReorderableListView(
+                shrinkWrap: true,
+                onReorder: (oldIndex, newIndex) {
+                  setState(() {
+                    if (newIndex > oldIndex) {
+                      newIndex -= 1;
+                    }
 
-                final shouldDisplaySportSpecificInputsResult =
-                    shouldDisplaySportSpecificInputs(
-                  habit,
-                  habitState.habitCategories,
-                );
+                    final movedItem = dailyTrackings.removeAt(oldIndex);
+                    dailyTrackings.insert(newIndex, movedItem);
 
-                List<HabitDailyTracking> habitDailyTrackingsOnThatDay =
-                    widget.challengeParticipation != null
-                        ? habitState.habitDailyTrackings
-                            .where((hdt) =>
-                                hdt.datetime.isSameDate(widget.datetime) &&
-                                hdt.habitId == dailyTracking.habitId)
-                            .toList()
-                        : [];
+                    // Define the affected range
+                    final start = min(oldIndex, newIndex);
+                    final end = max(oldIndex, newIndex);
 
-                final dailyObjectivesDone = checkIfDailyObjectiveWasDone(
-                  dailyTracking,
-                  habitDailyTrackingsOnThatDay,
-                  habitState.units,
-                );
-
-                return MapEntry(
-                  index,
-                  GestureDetector(
-                    onTap: () {
-                      if (widget.challenge.creator == profileState.profile.id) {
-                        _openDailyTrackingUpdateModal(
-                          challengeDailyTracking: dailyTracking,
-                        );
+                    for (int i = start; i <= end; i++) {
+                      final cdt = dailyTrackings[i];
+                      if (cdt.orderInDay != i) {
+                        context.read<ChallengeBloc>().add(
+                              UpdateChallengeDailyTrackingEvent(
+                                challengeId: cdt.challengeId,
+                                habitId: cdt.habitId,
+                                dayOfProgram: cdt.dayOfProgram,
+                                challengeDailyTrackingId: cdt.id,
+                                quantityOfSet: cdt.quantityOfSet,
+                                quantityPerSet: cdt.quantityPerSet,
+                                unitId: cdt.unitId,
+                                weight: cdt.weight,
+                                weightUnitId: cdt.weightUnitId,
+                                note: cdt.note,
+                                daysToRepeatOn: {},
+                                orderInDay: i,
+                              ),
+                            );
                       }
-                    },
-                    child: Padding(
-                      padding: EdgeInsets.all(10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  if (dailyObjectivesDone) ...[
-                                    Icon(
-                                      Icons.check,
-                                      size: 13,
-                                      color: context.colors.success,
-                                    ),
-                                    SizedBox(width: 10),
-                                  ],
-                                  Text(
-                                    getRightTranslationFromJson(
-                                        habit.name, userLocale),
-                                    style: context.typographies.body.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              if (!dailyObjectivesDone &&
-                                  widget.datetime.compareTo(today) <= 0) ...[
-                                ElevatedButton(
-                                  onPressed: () =>
-                                      _validateDailyObjective(dailyTracking),
-                                  style: ElevatedButton.styleFrom(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 12, vertical: 6),
-                                      backgroundColor: context.colors.success,
-                                      foregroundColor: Colors.white,
-                                      textStyle: context.typographies.bodySmall,
-                                      side: BorderSide(
-                                        color: context.colors.background,
-                                        width: 1.0,
-                                      )),
-                                  child:
-                                      Text(AppLocalizations.of(context)!.done),
-                                ),
-                              ],
-                            ],
-                          ),
-                          SizedBox(height: 10),
-                          Row(
-                            children: [
-                              if (dailyTracking.quantityOfSet > 1) ...[
-                                Text(
-                                  AppLocalizations.of(context)!
-                                      .quantityPerSetWithQuantity(
-                                          formatQuantity(
-                                              dailyTracking.quantityPerSet)),
-                                  style: context.typographies.body,
-                                ),
-                              ] else ...[
-                                Text(
-                                  AppLocalizations.of(context)!
-                                      .quantityWithQuantity(formatQuantity(
-                                          dailyTracking.quantityPerSet)),
-                                  style: context.typographies.body,
-                                ),
-                              ],
-                              if (unit.shortName['en'] != '')
-                                Text(
-                                  " ${getRightTranslationForUnitFromJson(unit.longName, dailyTracking.quantityPerSet.toInt(), userLocale)}",
-                                  style: context.typographies.body,
-                                ),
-                            ],
-                          ),
-                          if (shouldDisplaySportSpecificInputsResult) ...[
-                            if (dailyTracking.quantityOfSet > 1) ...[
-                              Text(
-                                AppLocalizations.of(context)!
-                                    .quantityOfSetWithQuantity(
-                                        dailyTracking.quantityOfSet),
-                                style: context.typographies.body,
-                              ),
-                            ],
-                            if (weightUnit.shortName['en'] != '' &&
-                                dailyTracking.weight > 0) ...[
-                              Text(
-                                AppLocalizations.of(context)!
-                                    .weightWithQuantity(
-                                        dailyTracking.weight,
-                                        getRightTranslationForUnitFromJson(
-                                            weightUnit.longName,
-                                            dailyTracking.weight,
-                                            userLocale)),
-                                style: context.typographies.body,
-                              ),
-                            ],
-                          ],
-                          if (dailyTracking.note != null &&
-                              dailyTracking.note!.isNotEmpty) ...[
-                            Text(
-                              AppLocalizations.of(context)!.noteWithNote,
-                              style: context.typographies.body,
-                            ),
-                            Markdown(
-                              selectable: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              shrinkWrap: true,
-                              data: dailyTracking.note!,
-                              onTapLink: markdownTapLinkCallback,
-                            ),
-                          ],
-                          if (index != dailyTrackings.length - 1) ...[
-                            SizedBox(height: 10),
-                            Divider(color: context.colors.text),
-                          ],
-                        ],
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ).values,
+                    }
+                  });
+                },
+                children: reorderableElements,
+              )
+            ] else ...[
+              ...reorderableElements
+            ],
           ],
         ),
       );

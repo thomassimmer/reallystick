@@ -110,6 +110,7 @@ class ChallengeDailyTrackingRepositoryImpl
     required String weightUnitId,
     required String? note,
     required Set<int> daysToRepeatOn,
+    required int orderInDay,
   }) async {
     try {
       final challengeDailyTrackingDataModels =
@@ -125,6 +126,7 @@ class ChallengeDailyTrackingRepositoryImpl
           weightUnitId: weightUnitId,
           note: note,
           daysToRepeatOn: daysToRepeatOn,
+          orderInDay: orderInDay,
         ),
       );
 
@@ -183,6 +185,7 @@ class ChallengeDailyTrackingRepositoryImpl
     required String weightUnitId,
     required String? note,
     required Set<int> daysToRepeatOn,
+    required int orderInDay,
   }) async {
     try {
       final challengeDailyTrackingDataModels =
@@ -198,6 +201,7 @@ class ChallengeDailyTrackingRepositoryImpl
           weightUnitId: weightUnitId,
           note: note,
           daysToRepeatOn: daysToRepeatOn,
+          orderInDay: orderInDay,
         ),
       );
 

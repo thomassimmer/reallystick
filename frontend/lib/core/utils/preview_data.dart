@@ -635,6 +635,7 @@ ChallengesLoaded getChallengeStateForPreview(BuildContext context) {
           weight: 0,
           weightUnitId: '1',
           note: pronunciationInstructions[locale],
+          orderInDay: 0,
         );
       }),
       '2': List.generate(90, (index) {
@@ -649,6 +650,7 @@ ChallengesLoaded getChallengeStateForPreview(BuildContext context) {
           weight: 0,
           weightUnitId: '1',
           note: pronunciationInstructions[locale],
+          orderInDay: 0,
         );
       }),
       '3': List.generate(180, (index) {
@@ -663,6 +665,7 @@ ChallengesLoaded getChallengeStateForPreview(BuildContext context) {
           weight: 0,
           weightUnitId: '1',
           note: null,
+          orderInDay: 0,
         );
       }),
     },

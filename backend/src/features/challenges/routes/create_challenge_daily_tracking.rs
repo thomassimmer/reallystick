@@ -115,6 +115,7 @@ pub async fn create_challenge_daily_tracking(
         weight: body.weight,
         weight_unit_id: body.weight_unit_id,
         note: body.note.to_owned(),
+        order_in_day: body.order_in_day,
     });
 
     for day_of_program_to_repeat_on in body.days_to_repeat_on.clone() {
@@ -130,6 +131,7 @@ pub async fn create_challenge_daily_tracking(
             weight: body.weight,
             weight_unit_id: body.weight_unit_id,
             note: body.note.to_owned(),
+            order_in_day: body.order_in_day,
         });
     }
 

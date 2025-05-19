@@ -51,6 +51,7 @@ pub async fn user_creates_a_challenge_daily_tracking(
             weight_unit_id: unit_id,
             days_to_repeat_on: HashSet::from([3]),
             note: None,
+            order_in_day: 0,
         })
         .to_request();
     let response = test::call_service(&app, req).await;
@@ -90,6 +91,7 @@ pub async fn user_updates_a_challenge_daily_tracking(
             weight_unit_id: unit_id,
             note: None,
             days_to_repeat_on: HashSet::from([5]),
+            order_in_day: 0,
         })
         .to_request();
     let response = test::call_service(&app, req).await;

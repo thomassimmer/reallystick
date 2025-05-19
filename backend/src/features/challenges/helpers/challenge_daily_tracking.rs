@@ -82,8 +82,9 @@ where
             weight = $5,
             weight_unit_id = $6,
             note = $7,
-            habit_id = $8
-        WHERE id = $9
+            habit_id = $8,
+            order_in_day = $9
+        WHERE id = $10
         "#,
         challenge_daily_tracking.day_of_program,
         challenge_daily_tracking.quantity_per_set,
@@ -93,6 +94,7 @@ where
         challenge_daily_tracking.weight_unit_id,
         challenge_daily_tracking.note,
         challenge_daily_tracking.habit_id,
+        challenge_daily_tracking.order_in_day,
         challenge_daily_tracking.id
     )
     .execute(executor)
@@ -121,6 +123,7 @@ where
     let mut weights = Vec::with_capacity(challenge_daily_trackings.len());
     let mut weight_unit_ids = Vec::with_capacity(challenge_daily_trackings.len());
     let mut notes = Vec::with_capacity(challenge_daily_trackings.len());
+    let mut orders_in_day = Vec::with_capacity(challenge_daily_trackings.len());
 
     for tracking in challenge_daily_trackings {
         ids.push(tracking.id);
@@ -134,6 +137,7 @@ where
         weights.push(tracking.weight as f64);
         weight_unit_ids.push(tracking.weight_unit_id);
         notes.push(tracking.note.clone());
+        orders_in_day.push(tracking.order_in_day);
     }
 
     sqlx::query!(
@@ -149,7 +153,8 @@ where
             unit_id,
             weight,
             weight_unit_id,
-            note
+            note,
+            order_in_day
         )
         SELECT * FROM UNNEST(
             $1::UUID[],
@@ -162,7 +167,8 @@ where
             $8::UUID[],
             $9::FLOAT8[],
             $10::UUID[],
-            $11::TEXT[]
+            $11::TEXT[],
+            $12::INT[]
         )
         "#,
         &ids,
@@ -175,7 +181,8 @@ where
         &unit_ids,
         &weights,
         &weight_unit_ids,
-        &notes as &[Option<String>]
+        &notes as &[Option<String>],
+        &orders_in_day,
     )
     .execute(executor)
     .await?;

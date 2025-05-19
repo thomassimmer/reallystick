@@ -11,6 +11,7 @@ pub struct ChallengeDailyTracking {
     pub challenge_id: Uuid,
     pub day_of_program: i32,
     pub created_at: DateTime<Utc>,
+    pub order_in_day: i32,
 
     pub quantity_per_set: f64,
     pub quantity_of_set: i32,
@@ -27,6 +28,7 @@ pub struct ChallengeDailyTrackingData {
     pub habit_id: Uuid,
     pub challenge_id: Uuid,
     pub day_of_program: i32,
+    pub order_in_day: i32,
 
     pub quantity_per_set: f64,
     pub quantity_of_set: i32,
@@ -50,6 +52,7 @@ impl ChallengeDailyTracking {
             weight: self.weight,
             weight_unit_id: self.weight_unit_id,
             note: self.note.clone(),
+            order_in_day: self.order_in_day,
         }
     }
 }
