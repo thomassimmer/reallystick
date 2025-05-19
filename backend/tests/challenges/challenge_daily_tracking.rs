@@ -97,12 +97,16 @@ pub async fn user_updates_a_challenge_daily_tracking(
     assert_eq!(200, response.status().as_u16());
 
     let body = test::read_body(response).await;
-    let response: ChallengeDailyTrackingResponse = serde_json::from_slice(&body).unwrap();
+    let response: ChallengeDailyTrackingsResponse = serde_json::from_slice(&body).unwrap();
 
     assert_eq!(response.code, "CHALLENGE_DAILY_TRACKING_UPDATED");
-    assert!(response.challenge_daily_tracking.is_some());
+    assert_eq!(response.challenge_daily_trackings.len(), 2);
     assert_eq!(
-        response.challenge_daily_tracking.unwrap().quantity_of_set,
+        response
+            .challenge_daily_trackings
+            .first()
+            .unwrap()
+            .quantity_of_set,
         2
     );
 }

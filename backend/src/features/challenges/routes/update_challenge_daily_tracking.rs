@@ -14,7 +14,7 @@ use crate::{
                 requests::challenge_daily_tracking::{
                     ChallengeDailyTrackingUpdateRequest, UpdateChallengeDailyTrackingParams,
                 },
-                responses::challenge_daily_tracking::ChallengeDailyTrackingResponse,
+                responses::challenge_daily_tracking::ChallengeDailyTrackingsResponse,
             },
         },
         habits::helpers::{habit::get_habit_by_id, unit::get_unit_by_id},
@@ -134,12 +134,16 @@ pub async fn update_challenge_daily_tracking(
     challenge_daily_tracking.weight_unit_id = body.weight_unit_id;
     challenge_daily_tracking.note = body.note.to_owned();
 
-    let update_challenge_daily_tracking_result =
-        challenge_daily_tracking::update_challenge_daily_tracking(
-            &mut *transaction,
-            &challenge_daily_tracking,
-        )
-        .await;
+    if let Err(e) = challenge_daily_tracking::update_challenge_daily_tracking(
+        &mut *transaction,
+        &challenge_daily_tracking,
+    )
+    .await
+    {
+        error!("Error: {}", e);
+        return HttpResponse::InternalServerError()
+            .json(AppError::ChallengeDailyTrackingUpdate.to_response());
+    }
 
     let mut challenge_daily_trackings = Vec::<ChallengeDailyTracking>::new();
 
@@ -159,23 +163,30 @@ pub async fn update_challenge_daily_tracking(
         });
     }
 
+    if let Err(e) = challenge_daily_tracking::create_challenge_daily_trackings(
+        &mut *transaction,
+        &challenge_daily_trackings,
+    )
+    .await
+    {
+        error!("Error: {}", e);
+        return HttpResponse::InternalServerError()
+            .json(AppError::ChallengeDailyTrackingCreation.to_response());
+    }
+
+    challenge_daily_trackings.push(challenge_daily_tracking);
+
     if let Err(e) = transaction.commit().await {
         error!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::DatabaseTransaction.to_response());
     }
 
-    match update_challenge_daily_tracking_result {
-        Ok(_) => HttpResponse::Ok().json(ChallengeDailyTrackingResponse {
-            code: "CHALLENGE_DAILY_TRACKING_UPDATED".to_string(),
-            challenge_daily_tracking: Some(
-                challenge_daily_tracking.to_challenge_daily_tracking_data(),
-            ),
-        }),
-        Err(e) => {
-            error!("Error: {}", e);
-            HttpResponse::InternalServerError()
-                .json(AppError::ChallengeDailyTrackingUpdate.to_response())
-        }
-    }
+    HttpResponse::Ok().json(ChallengeDailyTrackingsResponse {
+        code: "CHALLENGE_DAILY_TRACKING_UPDATED".to_string(),
+        challenge_daily_trackings: challenge_daily_trackings
+            .iter()
+            .map(|cdt| cdt.to_challenge_daily_tracking_data())
+            .collect(),
+    })
 }

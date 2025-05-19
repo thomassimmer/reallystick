@@ -26,7 +26,7 @@ abstract class ChallengeDailyTrackingRepository {
     required String? note,
     required Set<int> daysToRepeatOn,
   });
-  Future<Either<DomainError, ChallengeDailyTracking>>
+  Future<Either<DomainError, List<ChallengeDailyTracking>>>
       updateChallengeDailyTracking({
     required String challengeDailyTrackingId,
     required String habitId,

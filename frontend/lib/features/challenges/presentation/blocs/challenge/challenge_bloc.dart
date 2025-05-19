@@ -406,13 +406,17 @@ class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
           );
         }
       },
-      (challengeDailyTracking) {
+      (challengeDailyTrackings) {
         final newChallengeDailyTrackingsForThisChallenge = currentState
             .challengeDailyTrackings[event.challengeId]!
-            .where((hdt) => hdt.id != challengeDailyTracking.id)
+            .where((hdt) => hdt.id != event.challengeDailyTrackingId)
             .toList();
-        newChallengeDailyTrackingsForThisChallenge.add(challengeDailyTracking);
+
+        newChallengeDailyTrackingsForThisChallenge
+            .addAll(challengeDailyTrackings);
+
         final newChallengeDailyTrackings = currentState.challengeDailyTrackings;
+
         newChallengeDailyTrackings[event.challengeId] =
             newChallengeDailyTrackingsForThisChallenge;
 

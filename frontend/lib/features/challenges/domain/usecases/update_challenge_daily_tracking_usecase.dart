@@ -8,7 +8,7 @@ class UpdateChallengeDailyTrackingUsecase {
 
   UpdateChallengeDailyTrackingUsecase(this.challengeDailyTrackingRepository);
 
-  Future<Either<DomainError, ChallengeDailyTracking>> call({
+  Future<Either<DomainError, List<ChallengeDailyTracking>>> call({
     required String challengeDailyTrackingId,
     required String habitId,
     required int dayOfProgram,
