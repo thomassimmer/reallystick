@@ -604,60 +604,62 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
                         borderRadius: BorderRadius.circular(16.0),
                       ),
                       child: Padding(
-                          padding: const EdgeInsets.all(15.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text(
-                                challenge.icon,
-                                style: TextStyle(
-                                  fontSize: 25,
-                                ),
+                        padding: const EdgeInsets.all(15.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              challenge.icon,
+                              style: TextStyle(
+                                fontSize: 25,
                               ),
-                              SizedBox(height: 8),
-                              if (challengeStatistics != null) ...[
-                                Text(
-                                  challenge.startDate == null
-                                      ? AppLocalizations.of(context)!.createdBy(
-                                          challengeStatistics.creatorUsername,
-                                        )
-                                      : AppLocalizations.of(context)!
-                                          .createdByStartsOn(
-                                          challengeStatistics.creatorUsername,
-                                          DateFormat.yMMMd(
-                                                  userLocale.toString())
-                                              .format(challenge.startDate!),
-                                        ),
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                ),
-                                SizedBox(height: 16),
-                              ],
-                              if (challengeParticipation != null) ...[
-                                Text(
-                                  AppLocalizations.of(context)!.joinedOn(
-                                    DateFormat.yMMMd(userLocale).format(
-                                      challengeParticipation.startDate,
-                                    ),
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                ),
-                                SizedBox(height: 16),
-                              ],
-                              Markdown(
-                                selectable: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                shrinkWrap: true,
-                                padding: EdgeInsets.all(0),
-                                data: AppLocalizations.of(context)!
-                                    .descriptionWithTwoPoints(description),
-                                onTapLink: markdownTapLinkCallback,
-                                styleSheet: MarkdownStyleSheet(
-                                    textAlign: WrapAlignment.center),
-                              )
+                            ),
+                            SizedBox(height: 8),
+                            Text(name),
+                            SizedBox(height: 8),
+                            Markdown(
+                              selectable: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              padding: EdgeInsets.all(0),
+                              data: AppLocalizations.of(context)!
+                                  .descriptionWithTwoPoints(description),
+                              onTapLink: markdownTapLinkCallback,
+                              styleSheet: MarkdownStyleSheet(
+                                  textAlign: WrapAlignment.center),
+                            ),
+                            if (challengeStatistics != null) ...[
+                              SizedBox(height: 16),
+                              Text(
+                                challenge.startDate == null
+                                    ? AppLocalizations.of(context)!.createdBy(
+                                        challengeStatistics.creatorUsername,
+                                      )
+                                    : AppLocalizations.of(context)!
+                                        .createdByStartsOn(
+                                        challengeStatistics.creatorUsername,
+                                        DateFormat.yMMMd(userLocale.toString())
+                                            .format(challenge.startDate!),
+                                      ),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 2,
+                              ),
                             ],
-                          )),
+                            if (challengeParticipation != null) ...[
+                              SizedBox(height: 16),
+                              Text(
+                                AppLocalizations.of(context)!.joinedOn(
+                                  DateFormat.yMMMd(userLocale).format(
+                                    challengeParticipation.startDate,
+                                  ),
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 2,
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
                     ),
                     SizedBox(height: 30),
                     ListOfConcernedHabits(

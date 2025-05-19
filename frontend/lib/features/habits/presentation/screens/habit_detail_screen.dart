@@ -331,6 +331,8 @@ class HabitDetailsScreenState extends State<HabitDetailsScreen> {
                         ),
                       ),
                       SizedBox(height: 8),
+                      Text(name),
+                      SizedBox(height: 8),
                       Markdown(
                         selectable: true,
                         physics: const NeverScrollableScrollPhysics(),
