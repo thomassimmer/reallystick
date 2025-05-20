@@ -338,6 +338,7 @@ class ListDailyTrackingsModalState extends State<ListDailyTrackingsModal> {
             if (widget.challenge.creator == profileState.profile.id) ...[
               ReorderableListView(
                 shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
                 onReorder: (oldIndex, newIndex) {
                   setState(() {
                     if (newIndex > oldIndex) {
