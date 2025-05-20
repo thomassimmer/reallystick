@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:get_it/get_it.dart';
+import 'package:reallystick/core/constants/locales.dart';
 import 'package:reallystick/core/messages/message.dart';
 import 'package:reallystick/core/utils/recovery_code_generator.dart';
 import 'package:reallystick/features/auth/data/storage/private_message_key_storage.dart';
@@ -195,8 +197,17 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState>
 
   Future<void> _logout(
       ProfileLogoutEvent event, Emitter<ProfileState> emit) async {
+    String localeString = Platform.localeName;
+    List<String> parts = localeString.split(RegExp('[-_]'));
+    String locale = parts[0];
+
+    // Set english if the code is not recognized
+    if (!locales.map((l) => l['code']).contains(locale)) {
+      locale = 'en';
+    }
+
     emit(
-      ProfileUnauthenticated(),
+      ProfileUnauthenticated(locale: locale),
     );
   }
 
