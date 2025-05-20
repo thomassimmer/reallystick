@@ -276,14 +276,16 @@ class DailyTrackingCarouselWithStartDateWidgetState
                   ),
                 ),
                 Spacer(),
-                InkWell(
-                  onTap: _showAddDailyTrackingBottomSheet,
-                  child: Icon(
-                    Icons.add_outlined,
-                    size: 25,
-                    color: widget.challengeColor.withValues(alpha: 0.8),
-                  ),
-                )
+                if (widget.challenge.creator == profileState.profile.id) ...[
+                  InkWell(
+                    onTap: _showAddDailyTrackingBottomSheet,
+                    child: Icon(
+                      Icons.add_outlined,
+                      size: 25,
+                      color: widget.challengeColor.withValues(alpha: 0.8),
+                    ),
+                  )
+                ],
               ],
             ),
             SizedBox(height: 10),
