@@ -56,6 +56,10 @@ class PrivateDiscussionScreenState extends State<PrivateDiscussionScreen> {
   void initState() {
     super.initState();
 
+    _contentController.addListener(() {
+      setState(() {});
+    });
+
     final privateMessageState = context.read<PrivateMessageBloc>().state;
 
     if (privateMessageState.discussionId != widget.discussionId) {
