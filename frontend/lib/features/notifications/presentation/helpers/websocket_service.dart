@@ -60,16 +60,26 @@ class WebSocketService {
         },
         onError: (error) async {
           logger.i("WebSocket stream error: $error");
-          if (_webSocketSubscription != null) {
-            await _webSocketSubscription!.cancel();
+          try {
+            if (_webSocketSubscription != null) {
+              await _webSocketSubscription!.cancel();
+            }
+          } catch (e, stack) {
+            logger.e('Cancel threw: $e');
+            logger.e(stack);
           }
           _webSocketSubscription = null;
           _handleReconnect();
         },
         onDone: () async {
           logger.i("WebSocket connection closed by server.");
-          if (_webSocketSubscription != null) {
-            await _webSocketSubscription!.cancel();
+          try {
+            if (_webSocketSubscription != null) {
+              await _webSocketSubscription!.cancel();
+            }
+          } catch (e, stack) {
+            logger.e('Cancel threw: $e');
+            logger.e(stack);
           }
           _webSocketSubscription = null;
           _handleReconnect();

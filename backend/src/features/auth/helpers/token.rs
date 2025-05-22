@@ -115,7 +115,7 @@ pub async fn save_tokens<'a, E>(
     refresh_claim_expires_at: DateTime<Utc>,
     parsed_device_info: ParsedDeviceInfo,
     executor: E,
-) -> Result<PgQueryResult, Error>
+) -> Result<UserToken, Error>
 where
     E: Executor<'a, Database = Postgres>,
 {
@@ -149,7 +149,9 @@ where
         new_token.model
     )
     .execute(executor)
-    .await
+    .await?;
+
+    Ok(new_token)
 }
 
 pub fn retrieve_claims_for_token(req: HttpRequest, secret: String) -> Result<Claims, AuthError> {

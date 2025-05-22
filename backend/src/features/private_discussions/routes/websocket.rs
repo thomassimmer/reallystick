@@ -81,8 +81,8 @@ async fn broadcast_ws(
         .await;
 
     info!(
-        "{} just opened a websocket : {}",
-        request_claims.username, session_uuid
+        "{} just opened a websocket : {} using the token : {}",
+        request_claims.username, session_uuid, token.id,
     );
 
     // spawn websocket handler (and don't await it) so that the response is returned immediately

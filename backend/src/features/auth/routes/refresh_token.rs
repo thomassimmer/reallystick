@@ -1,6 +1,11 @@
 use crate::{
     core::{
-        constants::errors::AppError, helpers::mock_now::now, structs::responses::GenericResponse,
+        constants::errors::AppError,
+        helpers::mock_now::now,
+        structs::{
+            redis_messages::{UserTokenRemovedEvent, UserTokenUpdatedEvent},
+            responses::GenericResponse,
+        },
     },
     features::{
         auth::{
@@ -18,6 +23,8 @@ use crate::{
 };
 use actix_web::{post, web, HttpRequest, HttpResponse, Responder};
 use jsonwebtoken::{decode, DecodingKey, Validation};
+use redis::{AsyncCommands, Client};
+use serde_json::json;
 use sqlx::PgPool;
 use tracing::error;
 use uuid::Uuid;
@@ -29,6 +36,7 @@ pub async fn refresh_token(
     pool: web::Data<PgPool>,
     secret: web::Data<String>,
     cached_tokens: web::Data<TokenCache>,
+    redis_client: web::Data<Client>,
 ) -> impl Responder {
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
@@ -92,6 +100,27 @@ pub async fn refresh_token(
             .json(AppError::DatabaseTransaction.to_response());
     }
 
+    match redis_client.get_multiplexed_async_connection().await {
+        Ok(mut con) => {
+            let result: Result<(), redis::RedisError> = con
+                .publish(
+                    "user_token_removed",
+                    json!(UserTokenRemovedEvent {
+                        token_id: claims.jti,
+                        user_id: claims.user_id,
+                    })
+                    .to_string(),
+                )
+                .await;
+            if let Err(e) = result {
+                error!("Error: {}", e);
+            }
+        }
+        Err(e) => {
+            error!("Error: {}", e);
+        }
+    };
+
     cached_tokens.remove_key(claims.jti).await;
 
     let user = match get_user_by_id(&mut *transaction, claims.user_id).await {
@@ -126,7 +155,7 @@ pub async fn refresh_token(
     );
     let parsed_device_info = get_user_agent(req).await;
 
-    if let Err(e) = save_tokens(
+    let new_token = match save_tokens(
         claims.user_id,
         new_jti,
         refresh_token_expires_at,
@@ -135,10 +164,13 @@ pub async fn refresh_token(
     )
     .await
     {
-        error!("Error: {}", e);
-        return HttpResponse::InternalServerError()
-            .json(AppError::DatabaseTransaction.to_response());
-    }
+        Ok(new_token) => new_token,
+        Err(e) => {
+            error!("Error: {}", e);
+            return HttpResponse::InternalServerError()
+                .json(AppError::DatabaseTransaction.to_response());
+        }
+    };
 
     cached_tokens.update_or_insert_key(new_jti, now()).await;
 
@@ -146,6 +178,27 @@ pub async fn refresh_token(
         error!("Error: {}", e);
         return HttpResponse::InternalServerError()
             .json(AppError::DatabaseTransaction.to_response());
+    }
+
+    match redis_client.get_multiplexed_async_connection().await {
+        Ok(mut con) => {
+            let result: Result<(), redis::RedisError> = con
+                .publish(
+                    "user_token_updated",
+                    json!(UserTokenUpdatedEvent {
+                        token: new_token,
+                        user_id: claims.user_id,
+                    })
+                    .to_string(),
+                )
+                .await;
+            if let Err(e) = result {
+                error!("Error: {}", e);
+            }
+        }
+        Err(e) => {
+            error!("Error: {}", e);
+        }
     }
 
     HttpResponse::Ok().json(RefreshTokenResponse {

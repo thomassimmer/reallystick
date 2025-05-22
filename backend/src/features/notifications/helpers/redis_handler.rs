@@ -161,9 +161,10 @@ pub async fn handle_notification(
                 {
                     Some(mut sessions) => {
                         info!(
-                            "{} has {} active sockets.",
+                            "{} has {} active sockets for the token {}.",
                             user_data.user.username,
-                            sessions.len()
+                            sessions.len(),
+                            token_id
                         );
 
                         for (session_uuid, session) in sessions.iter_mut() {
@@ -188,6 +189,11 @@ pub async fn handle_notification(
                         }
                     }
                     None => {
+                        info!(
+                            "{} has no active sockets for the token {}.",
+                            user_data.user.username, token_id
+                        );
+
                         let can_send_a_push_notification = match msg_type {
                             "challenge_joined" => {
                                 user_data.user.notifications_enabled

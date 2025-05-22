@@ -1,7 +1,7 @@
 use crate::{
     core::{
         constants::errors::AppError,
-        structs::{redis_messages::UserTokenRemovedEvent, responses::GenericResponse},
+        structs::{redis_messages::UserTokenUpdatedEvent, responses::GenericResponse},
     },
     features::{
         auth::{
@@ -78,8 +78,8 @@ pub async fn set_fcm_token(
             let result: Result<(), redis::RedisError> = con
                 .publish(
                     "user_token_updated",
-                    json!(UserTokenRemovedEvent {
-                        token_id: token.id,
+                    json!(UserTokenUpdatedEvent {
+                        token: token,
                         user_id: request_claims.user_id,
                     })
                     .to_string(),
