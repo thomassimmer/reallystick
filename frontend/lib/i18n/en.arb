@@ -259,7 +259,7 @@
   "challengeName": "Challenge Name",
   "challengeNameWrongSizeError": "Challenge name must not be empty and less than 100 characters.",
   "challengeNotFoundError": "This challenge does not exist.",
-  "challengeParticipationCreated": "You successfully joined this habit.",
+  "challengeParticipationCreated": "You successfully joined this challenge.",
   "challengeParticipationDeleted": "Your participation to this challenge was successfully removed.",
   "challengeParticipationNotFoundError": "You don't seem to be participating to this challenge.",
   "challengeParticipationStartDate": "Challenge joined on:",

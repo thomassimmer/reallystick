@@ -6,8 +6,8 @@ import 'package:reallystick/core/presentation/widgets/custom_text_field.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/core/utils/time.dart';
 import 'package:reallystick/features/challenges/domain/entities/challenge_participation.dart';
-import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.dart';
-import 'package:reallystick/features/habits/presentation/blocs/habit/habit_events.dart';
+import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_bloc.dart';
+import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_events.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
 import 'package:reallystick/i18n/app_localizations.dart';
@@ -47,15 +47,17 @@ class SetReminderModalState extends State<SetReminderModal> {
   }
 
   void saveReminderSettings() {
-    final event = UpdateHabitParticipationEvent(
-      habitParticipationId: widget.challengeParticipation.id,
+    final event = UpdateChallengeParticipationEvent(
+      challengeParticipationId: widget.challengeParticipation.id,
+      startDate: widget.challengeParticipation.startDate,
+      finished: widget.challengeParticipation.finished,
       color: widget.challengeParticipation.color,
       notificationsReminderEnabled: notificationsReminderEnabled,
       reminderTime: formatTime(reminderTime),
       reminderBody: reminderBody,
     );
 
-    context.read<HabitBloc>().add(event);
+    context.read<ChallengeBloc>().add(event);
     Navigator.of(context).pop();
   }
 

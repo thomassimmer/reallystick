@@ -354,7 +354,7 @@ abstract class AppLocalizations {
   /// No description provided for @challengeParticipationCreated.
   ///
   /// In en, this message translates to:
-  /// **'You successfully joined this habit.'**
+  /// **'You successfully joined this challenge.'**
   String get challengeParticipationCreated;
 
   /// No description provided for @challengeParticipationDeleted.

@@ -134,7 +134,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get challengeNotFoundError => 'This challenge does not exist.';
 
   @override
-  String get challengeParticipationCreated => 'You successfully joined this habit.';
+  String get challengeParticipationCreated => 'You successfully joined this challenge.';
 
   @override
   String get challengeParticipationDeleted => 'Your participation to this challenge was successfully removed.';
