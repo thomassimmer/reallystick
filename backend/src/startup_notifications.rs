@@ -28,12 +28,12 @@ use actix_web::{web, App, Error, HttpServer};
 
 use redis::Client;
 use sqlx::postgres::PgPoolOptions;
-use sqlx::{PgPool, Pool, Postgres};
+use sqlx::{Error as SqlxError, PgPool, Pool, Postgres};
 use tokio::task;
 use tokio::time::interval;
 
-pub fn run(listener: TcpListener, configuration: Settings) -> Result<Server, std::io::Error> {
-    let connection_pool = get_connection_pool(&configuration.database);
+pub async fn run(listener: TcpListener, configuration: Settings) -> Result<Server, std::io::Error> {
+    let connection_pool = get_connection_pool(&configuration.database).await.unwrap();
     let secret = configuration.application.secret;
 
     let token_cache = TokenCache::default();
@@ -159,7 +159,7 @@ impl Application {
         );
         let listener = TcpListener::bind(address)?;
         let port = listener.local_addr().unwrap().port();
-        let server = run(listener, configuration).unwrap();
+        let server = run(listener, configuration).await.unwrap();
 
         Ok(Self { port, server })
     }
@@ -173,6 +173,10 @@ impl Application {
     }
 }
 
-pub fn get_connection_pool(configuration: &DatabaseSettings) -> PgPool {
-    PgPoolOptions::new().connect_lazy_with(configuration.with_db())
+pub async fn get_connection_pool(configuration: &DatabaseSettings) -> Result<PgPool, SqlxError> {
+    PgPoolOptions::new()
+        .max_connections(50)
+        .acquire_timeout(Duration::from_secs(5))
+        .connect_with(configuration.with_db())
+        .await
 }

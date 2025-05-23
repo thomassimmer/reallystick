@@ -25,7 +25,7 @@ async fn main() {
     let args = Args::parse();
     let action = args.action;
     let configuration = get_configuration().expect("Failed to read configuration.");
-    let pool = get_connection_pool(&configuration.database);
+    let pool = get_connection_pool(&configuration.database).await.unwrap();
     let redis_client = Client::open("redis://redis:6379").unwrap();
 
     match action.as_str() {

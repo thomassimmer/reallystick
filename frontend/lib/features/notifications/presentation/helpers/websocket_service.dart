@@ -43,11 +43,12 @@ class WebSocketService {
       return;
     }
 
-    try {
-      final baseUrl = dotenv.env['WS_BASE_URL']?.replaceAll('http', 'ws') ?? "";
-      final uri = Uri.parse("$baseUrl/api/ws?access_token=$token");
+    final baseUrl = dotenv.env['WS_BASE_URL']?.replaceAll('http', 'ws') ?? "";
+    final uri = Uri.parse("$baseUrl/api/ws?access_token=$token");
 
-      _channel = WebSocketChannel.connect(uri);
+    _channel = WebSocketChannel.connect(uri);
+
+    _channel?.ready.then((_) {
       _isConnected = true;
       _connectionController.add(true);
       logger.i("WebSocket connected");
@@ -60,42 +61,26 @@ class WebSocketService {
         },
         onError: (error) async {
           logger.i("WebSocket stream error: $error");
-          try {
-            if (_webSocketSubscription != null) {
-              await _webSocketSubscription!.cancel();
-            }
-          } catch (e, stack) {
-            logger.e('Cancel threw: $e');
-            logger.e(stack);
-          }
-          _webSocketSubscription = null;
 
-          try {
-            _handleReconnect();
-          } catch (e, stack) {
-            logger.e('Reconnect threw: $e');
-            logger.e(stack);
-          }
+          _webSocketSubscription = null;
+          _handleReconnect();
         },
         onDone: () async {
           logger.i("WebSocket connection closed by server.");
-          try {
-            if (_webSocketSubscription != null) {
-              await _webSocketSubscription!.cancel();
-            }
-          } catch (e, stack) {
-            logger.e('Cancel threw: $e');
-            logger.e(stack);
+
+          if (_webSocketSubscription != null) {
+            await _webSocketSubscription!.cancel();
           }
+
           _webSocketSubscription = null;
           _handleReconnect();
         },
         cancelOnError: true,
       );
-    } catch (e) {
-      logger.i("WebSocket connection error: $e");
+    }).onError((error, stackTrace) {
+      logger.i("WebSocket connection error: $error");
       _handleReconnect();
-    }
+    });
   }
 
   /// Handle WebSocket Reconnection
