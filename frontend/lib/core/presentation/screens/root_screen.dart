@@ -8,6 +8,8 @@ import 'package:reallystick/core/presentation/widgets/icon_with_warning.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_bloc.dart';
 import 'package:reallystick/features/auth/presentation/blocs/auth/auth_states.dart';
+import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_bloc.dart';
+import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_states.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.dart';
 import 'package:reallystick/features/habits/presentation/blocs/habit/habit_states.dart';
 import 'package:reallystick/features/notifications/presentation/blocs/notifications/notifications_bloc.dart';
@@ -97,6 +99,9 @@ class RootScreenState extends State<RootScreen> {
           GlobalSnackBar.show(context: context, message: state.message);
         }),
         BlocListener<HabitBloc, HabitState>(listener: (context, state) {
+          GlobalSnackBar.show(context: context, message: state.message);
+        }),
+        BlocListener<ChallengeBloc, ChallengeState>(listener: (context, state) {
           GlobalSnackBar.show(context: context, message: state.message);
         }),
         BlocListener<PublicMessageBloc, PublicMessageState>(
