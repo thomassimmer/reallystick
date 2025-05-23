@@ -474,6 +474,7 @@ class PrivateDiscussionScreenState extends State<PrivateDiscussionScreen> {
                                     }
                                   },
                                   child: PrivateMessageWidget(
+                                    key: ValueKey(message.id),
                                     discussionId: widget.discussionId,
                                     message: message,
                                     color: AppColorExtension.fromString(

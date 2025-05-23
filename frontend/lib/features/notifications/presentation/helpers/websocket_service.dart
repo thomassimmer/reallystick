@@ -69,7 +69,13 @@ class WebSocketService {
             logger.e(stack);
           }
           _webSocketSubscription = null;
-          _handleReconnect();
+
+          try {
+            _handleReconnect();
+          } catch (e, stack) {
+            logger.e('Reconnect threw: $e');
+            logger.e(stack);
+          }
         },
         onDone: () async {
           logger.i("WebSocket connection closed by server.");

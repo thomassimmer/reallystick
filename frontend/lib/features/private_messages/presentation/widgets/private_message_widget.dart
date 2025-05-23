@@ -23,6 +23,7 @@ class PrivateMessageWidget extends StatefulWidget {
   final bool previewMode;
 
   const PrivateMessageWidget({
+    super.key,
     required this.discussionId,
     required this.message,
     required this.color,
