@@ -253,6 +253,7 @@ HabitsLoaded getHabitsLoadedForPreview(BuildContext context) {
           unitId: '2',
           weight: 0,
           weightUnitId: '1',
+          challengeDailyTracking: null,
         );
       }),
       ...List.generate(2, (index) {
@@ -271,6 +272,7 @@ HabitsLoaded getHabitsLoadedForPreview(BuildContext context) {
           unitId: '2',
           weight: 0,
           weightUnitId: '1',
+          challengeDailyTracking: null,
         );
       }),
       ...List.generate(14, (index) {
@@ -288,6 +290,7 @@ HabitsLoaded getHabitsLoadedForPreview(BuildContext context) {
           unitId: '2',
           weight: 0,
           weightUnitId: '1',
+          challengeDailyTracking: null,
         );
       }),
       ...List.generate(14, (index) {
@@ -305,6 +308,7 @@ HabitsLoaded getHabitsLoadedForPreview(BuildContext context) {
           unitId: '2',
           weight: 0,
           weightUnitId: '1',
+          challengeDailyTracking: null,
         );
       })
     ],

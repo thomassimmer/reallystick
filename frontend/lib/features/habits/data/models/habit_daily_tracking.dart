@@ -11,6 +11,7 @@ class HabitDailyTrackingDataModel extends Equatable {
   final String unitId;
   final int weight;
   final String weightUnitId;
+  final String? challengeDailyTracking;
 
   const HabitDailyTrackingDataModel({
     required this.id,
@@ -22,6 +23,7 @@ class HabitDailyTrackingDataModel extends Equatable {
     required this.unitId,
     required this.weight,
     required this.weightUnitId,
+    required this.challengeDailyTracking,
   });
 
   factory HabitDailyTrackingDataModel.fromJson(Map<String, dynamic> json) {
@@ -35,6 +37,7 @@ class HabitDailyTrackingDataModel extends Equatable {
       unitId: json['unit_id'] as String,
       weight: json['weight'] as int,
       weightUnitId: json['weight_unit_id'] as String,
+      challengeDailyTracking: json['challenge_daily_tracking'] as String?,
     );
   }
 
@@ -48,6 +51,7 @@ class HabitDailyTrackingDataModel extends Equatable {
         unitId: unitId,
         weight: weight,
         weightUnitId: weightUnitId,
+        challengeDailyTracking: challengeDailyTracking,
       );
 
   @override

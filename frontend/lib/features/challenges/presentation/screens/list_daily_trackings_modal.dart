@@ -98,6 +98,7 @@ class ListDailyTrackingsModalState extends State<ListDailyTrackingsModal> {
       unitId: tracking.unitId,
       weight: tracking.weight,
       weightUnitId: tracking.weightUnitId,
+      challengeDailyTracking: tracking.id,
     );
 
     context.read<HabitBloc>().add(event);
@@ -150,6 +151,19 @@ class ListDailyTrackingsModalState extends State<ListDailyTrackingsModal> {
 
       final today = DateTime.now();
 
+      List<HabitDailyTracking> habitDailyTrackingsOnThatDay =
+          widget.challengeParticipation != null
+              ? habitState.habitDailyTrackings
+                  .where((hdt) => hdt.datetime.isSameDate(widget.datetime))
+                  .toList()
+              : [];
+
+      final challengeTrackingAchieved = matchHabitTrackingsToChallengeTrackings(
+        dailyTrackings,
+        habitDailyTrackingsOnThatDay,
+        habitState.units,
+      );
+
       final reorderableElements = dailyTrackings
           .asMap()
           .map(
@@ -164,20 +178,8 @@ class ListDailyTrackingsModalState extends State<ListDailyTrackingsModal> {
                 habitState.habitCategories,
               );
 
-              List<HabitDailyTracking> habitDailyTrackingsOnThatDay =
-                  widget.challengeParticipation != null
-                      ? habitState.habitDailyTrackings
-                          .where((hdt) =>
-                              hdt.datetime.isSameDate(widget.datetime) &&
-                              hdt.habitId == dailyTracking.habitId)
-                          .toList()
-                      : [];
-
-              final dailyObjectivesDone = checkIfDailyObjectiveWasDone(
-                dailyTracking,
-                habitDailyTrackingsOnThatDay,
-                habitState.units,
-              );
+              final dailyObjectivesDone =
+                  challengeTrackingAchieved[dailyTracking.id] ?? false;
 
               return MapEntry(
                 index,

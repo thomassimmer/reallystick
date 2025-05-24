@@ -95,9 +95,10 @@ where
             quantity_of_set,
             unit_id,
             weight,
-            weight_unit_id
+            weight_unit_id,
+            challenge_daily_tracking
         )
-        VALUES ( $1, $2, $3, $4, $5, $6, $7, $8, $9, $10 )
+        VALUES ( $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11 )
         "#,
         habit_daily_tracking.id,
         habit_daily_tracking.user_id,
@@ -108,7 +109,8 @@ where
         habit_daily_tracking.quantity_of_set,
         habit_daily_tracking.unit_id,
         habit_daily_tracking.weight,
-        habit_daily_tracking.weight_unit_id
+        habit_daily_tracking.weight_unit_id,
+        habit_daily_tracking.challenge_daily_tracking
     )
     .execute(executor)
     .await

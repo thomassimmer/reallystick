@@ -314,30 +314,31 @@ class DailyTrackingCarouselWithoutStartDateWidgetState
                                 final challengeDailyTrackinsOnThisDate =
                                     challengeDailyTrackingsPerDay[datetime]!;
 
+                                List<HabitDailyTracking>
+                                    habitDailyTrackingsOnThatDay =
+                                    widget.challengeParticipation != null
+                                        ? habitState.habitDailyTrackings
+                                            .where((hdt) => hdt.datetime
+                                                .isSameDate(datetime))
+                                            .toList()
+                                        : [];
+
+                                final challengeTrackingAchieved =
+                                    matchHabitTrackingsToChallengeTrackings(
+                                  challengeDailyTrackinsOnThisDate,
+                                  habitDailyTrackingsOnThatDay,
+                                  habitState.units,
+                                );
+
                                 if (challengeDailyTrackinsOnThisDate.isEmpty) {
                                   dailyObjectivesDone = true;
                                 }
 
                                 for (final cdt
                                     in challengeDailyTrackinsOnThisDate) {
-                                  final challengeDailyTrackingDate = startDate
-                                      .add(Duration(days: cdt.dayOfProgram));
-
-                                  List<HabitDailyTracking>
-                                      habitDailyTrackingsOnThatDay = habitState
-                                          .habitDailyTrackings
-                                          .where((hdt) =>
-                                              hdt.datetime.isSameDate(
-                                                  challengeDailyTrackingDate) &&
-                                              hdt.habitId == cdt.habitId)
-                                          .toList();
-
                                   dailyObjectivesDone =
-                                      checkIfDailyObjectiveWasDone(
-                                    cdt,
-                                    habitDailyTrackingsOnThatDay,
-                                    habitState.units,
-                                  );
+                                      challengeTrackingAchieved[cdt.id] ??
+                                          false;
 
                                   if (!dailyObjectivesDone) {
                                     break;

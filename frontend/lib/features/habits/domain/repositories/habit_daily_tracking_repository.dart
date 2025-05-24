@@ -16,6 +16,7 @@ abstract class HabitDailyTrackingRepository {
     required String unitId,
     required int weight,
     required String weightUnitId,
+    required String? challengeDailyTracking,
   });
   Future<Either<DomainError, HabitDailyTracking>> updateHabitDailyTracking({
     required String habitDailyTrackingId,

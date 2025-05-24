@@ -27,12 +27,15 @@ import 'package:reallystick/features/challenges/domain/usecases/update_challenge
 import 'package:reallystick/features/challenges/domain/usecases/update_challenge_usecase.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_events.dart';
 import 'package:reallystick/features/challenges/presentation/blocs/challenge/challenge_states.dart';
+import 'package:reallystick/features/habits/presentation/blocs/habit/habit_bloc.dart';
+import 'package:reallystick/features/habits/presentation/blocs/habit/habit_events.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_bloc.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
 
 class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
   final AuthBloc authBloc = GetIt.instance<AuthBloc>();
   final ProfileBloc profileBloc = GetIt.instance<ProfileBloc>();
+  final HabitBloc habitBloc = GetIt.instance<HabitBloc>();
   late StreamSubscription profileBlocSubscription;
 
   final GetChallengeParticipationsUsecase getChallengeParticipationsUsecase =
@@ -470,6 +473,10 @@ class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
         final newChallengeDailyTrackings = currentState.challengeDailyTrackings;
         newChallengeDailyTrackings[event.challengeId] =
             newChallengeDailyTrackingsForThisChallenge;
+
+        // To reset habit daily trackings that may have been referencing this
+        // challenge daily tracking.
+        habitBloc.add(HabitInitializeEvent());
 
         emit(
           ChallengesLoaded(

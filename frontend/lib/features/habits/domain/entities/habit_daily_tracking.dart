@@ -10,6 +10,7 @@ class HabitDailyTracking extends Equatable {
   final String unitId;
   final int weight;
   final String weightUnitId;
+  final String? challengeDailyTracking;
 
   HabitDailyTracking({
     required this.id,
@@ -21,10 +22,11 @@ class HabitDailyTracking extends Equatable {
     required this.unitId,
     required this.weight,
     required this.weightUnitId,
+    required this.challengeDailyTracking,
   });
 
   @override
-  List<Object> get props => [
+  List<Object?> get props => [
         id,
         userId,
         habitId,
@@ -34,6 +36,7 @@ class HabitDailyTracking extends Equatable {
         unitId,
         weight,
         weightUnitId,
+        challengeDailyTracking,
       ];
 
   HabitDailyTracking copyWith({
@@ -46,6 +49,7 @@ class HabitDailyTracking extends Equatable {
     String? unitId,
     int? weight,
     String? weightUnitId,
+    String? challengeDailyTracking,
   }) {
     return HabitDailyTracking(
       id: id ?? this.id,
@@ -57,6 +61,8 @@ class HabitDailyTracking extends Equatable {
       unitId: unitId ?? this.unitId,
       weight: weight ?? this.weight,
       weightUnitId: weightUnitId ?? this.weightUnitId,
+      challengeDailyTracking:
+          challengeDailyTracking ?? this.challengeDailyTracking,
     );
   }
 }

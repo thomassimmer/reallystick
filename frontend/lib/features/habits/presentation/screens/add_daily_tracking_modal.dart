@@ -126,6 +126,7 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
             unitId: _selectedUnitId!,
             weight: _weight,
             weightUnitId: _selectedWeightUnitId!,
+            challengeDailyTracking: null,
           );
           if (mounted) {
             context.read<HabitBloc>().add(newHabitDailyTrackingEvent);

@@ -16,6 +16,7 @@ class CreateHabitDailyTrackingUsecase {
     required String unitId,
     required int weight,
     required String weightUnitId,
+    required String? challengeDailyTracking,
   }) async {
     return await habitDailyTrackingRepository.createHabitDailyTracking(
       habitId: habitId,
@@ -25,6 +26,7 @@ class CreateHabitDailyTrackingUsecase {
       unitId: unitId,
       weight: weight,
       weightUnitId: weightUnitId,
+      challengeDailyTracking: challengeDailyTracking,
     );
   }
 }

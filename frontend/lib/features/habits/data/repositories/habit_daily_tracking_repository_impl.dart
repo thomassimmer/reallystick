@@ -67,6 +67,7 @@ class HabitDailyTrackingRepositoryImpl implements HabitDailyTrackingRepository {
     required String unitId,
     required int weight,
     required String weightUnitId,
+    required String? challengeDailyTracking,
   }) async {
     try {
       final habitDailyTrackingDataModel = await remoteDataSource
@@ -78,6 +79,7 @@ class HabitDailyTrackingRepositoryImpl implements HabitDailyTrackingRepository {
         unitId: unitId,
         weight: weight,
         weightUnitId: weightUnitId,
+        challengeDailyTracking: challengeDailyTracking,
       ));
 
       return Right(habitDailyTrackingDataModel.toDomain());

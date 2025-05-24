@@ -45,6 +45,7 @@ pub async fn user_creates_a_habit_daily_tracking(
             unit_id,
             weight: 0,
             weight_unit_id: unit_id,
+            challenge_daily_tracking: None,
         })
         .to_request();
     let response = test::call_service(&app, req).await;

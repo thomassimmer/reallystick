@@ -415,6 +415,7 @@ class HabitBloc extends Bloc<HabitEvent, HabitState> {
       unitId: event.unitId,
       weight: event.weight,
       weightUnitId: event.weightUnitId,
+      challengeDailyTracking: event.challengeDailyTracking,
     );
 
     resultCreateHabitDailyTrackingUsecase.fold(

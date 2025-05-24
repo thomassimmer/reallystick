@@ -32,4 +32,5 @@ pub struct HabitDailyTrackingCreateRequest {
     pub unit_id: Uuid,
     pub weight: i32,
     pub weight_unit_id: Uuid,
+    pub challenge_daily_tracking: Option<Uuid>,
 }

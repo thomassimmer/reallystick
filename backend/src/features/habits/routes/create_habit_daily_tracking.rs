@@ -84,6 +84,7 @@ pub async fn create_habit_daily_tracking(
         unit_id: body.unit_id,
         weight: body.weight,
         weight_unit_id: body.weight_unit_id,
+        challenge_daily_tracking: body.challenge_daily_tracking,
     };
 
     let create_habit_daily_tracking_result =

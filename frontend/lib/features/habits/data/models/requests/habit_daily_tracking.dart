@@ -35,6 +35,7 @@ class HabitDailyTrackingCreateRequestModel {
   final String unitId;
   final int weight;
   final String weightUnitId;
+  final String? challengeDailyTracking;
 
   const HabitDailyTrackingCreateRequestModel({
     required this.habitId,
@@ -44,6 +45,7 @@ class HabitDailyTrackingCreateRequestModel {
     required this.unitId,
     required this.weight,
     required this.weightUnitId,
+    required this.challengeDailyTracking,
   });
 
   Map<String, dynamic> toJson() {
@@ -55,6 +57,7 @@ class HabitDailyTrackingCreateRequestModel {
       'unit_id': unitId,
       'weight': weight,
       'weight_unit_id': weightUnitId,
+      'challenge_daily_tracking': challengeDailyTracking,
     };
   }
 }

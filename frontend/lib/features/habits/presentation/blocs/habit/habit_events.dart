@@ -103,6 +103,7 @@ class CreateHabitDailyTrackingEvent extends HabitEvent {
   final String unitId;
   final int weight;
   final String weightUnitId;
+  final String? challengeDailyTracking;
 
   const CreateHabitDailyTrackingEvent({
     required this.habitId,
@@ -112,6 +113,7 @@ class CreateHabitDailyTrackingEvent extends HabitEvent {
     required this.unitId,
     required this.weight,
     required this.weightUnitId,
+    required this.challengeDailyTracking,
   });
 
   @override
@@ -121,6 +123,7 @@ class CreateHabitDailyTrackingEvent extends HabitEvent {
         quantityOfSet,
         quantityPerSet,
         unitId,
+        challengeDailyTracking,
       ];
 }
 

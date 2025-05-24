@@ -655,6 +655,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
             unit_id: units.get("no_unit").unwrap().id,
             weight: 0,
             weight_unit_id: units.get("no_unit").unwrap().id,
+            challenge_daily_tracking: None,
         },
         HabitDailyTracking {
             id: Uuid::new_v4(),
@@ -667,6 +668,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
             unit_id: units.get("no_unit").unwrap().id,
             weight: 0,
             weight_unit_id: units.get("no_unit").unwrap().id,
+            challenge_daily_tracking: None,
         },
         HabitDailyTracking {
             id: Uuid::new_v4(),
@@ -679,6 +681,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
             unit_id: units.get("hour").unwrap().id,
             weight: 0,
             weight_unit_id: units.get("no_unit").unwrap().id,
+            challenge_daily_tracking: None,
         },
         HabitDailyTracking {
             id: Uuid::new_v4(),
@@ -691,6 +694,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
             unit_id: units.get("minute").unwrap().id,
             weight: 0,
             weight_unit_id: units.get("no_unit").unwrap().id,
+            challenge_daily_tracking: None,
         },
         HabitDailyTracking {
             id: Uuid::new_v4(),
@@ -703,6 +707,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
             unit_id: units.get("hour").unwrap().id,
             weight: 0,
             weight_unit_id: units.get("no_unit").unwrap().id,
+            challenge_daily_tracking: None,
         },
         HabitDailyTracking {
             id: Uuid::new_v4(),
@@ -715,6 +720,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
             unit_id: units.get("kilogram").unwrap().id,
             weight: 0,
             weight_unit_id: units.get("no_unit").unwrap().id,
+            challenge_daily_tracking: None,
         },
         HabitDailyTracking {
             id: Uuid::new_v4(),
@@ -727,6 +733,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
             unit_id: units.get("kilogram").unwrap().id,
             weight: 0,
             weight_unit_id: units.get("no_unit").unwrap().id,
+            challenge_daily_tracking: None,
         },
         HabitDailyTracking {
             id: Uuid::new_v4(),
@@ -739,6 +746,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
             unit_id: units.get("no_unit").unwrap().id,
             weight: 0,
             weight_unit_id: units.get("no_unit").unwrap().id,
+            challenge_daily_tracking: None,
         },
         HabitDailyTracking {
             id: Uuid::new_v4(),
@@ -751,6 +759,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
             unit_id: units.get("no_unit").unwrap().id,
             weight: 0,
             weight_unit_id: units.get("no_unit").unwrap().id,
+            challenge_daily_tracking: None,
         },
         HabitDailyTracking {
             id: Uuid::new_v4(),
@@ -763,6 +772,7 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
             unit_id: units.get("no_unit").unwrap().id,
             weight: 0,
             weight_unit_id: units.get("no_unit").unwrap().id,
+            challenge_daily_tracking: None,
         },
     ];
 

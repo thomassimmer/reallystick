@@ -15,6 +15,8 @@ pub struct HabitDailyTracking {
     pub unit_id: Uuid,
     pub weight: i32,
     pub weight_unit_id: Uuid,
+
+    pub challenge_daily_tracking: Option<Uuid>,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -29,6 +31,8 @@ pub struct HabitDailyTrackingData {
     pub unit_id: Uuid,
     pub weight: i32,
     pub weight_unit_id: Uuid,
+
+    pub challenge_daily_tracking: Option<Uuid>,
 }
 
 impl HabitDailyTracking {
@@ -43,6 +47,7 @@ impl HabitDailyTracking {
             unit_id: self.unit_id,
             weight: self.weight,
             weight_unit_id: self.weight_unit_id,
+            challenge_daily_tracking: self.challenge_daily_tracking,
         }
     }
 }
