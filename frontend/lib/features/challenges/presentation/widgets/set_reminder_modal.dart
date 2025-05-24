@@ -31,8 +31,8 @@ class SetReminderModalState extends State<SetReminderModal> {
   String? reminderBody;
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  void initState() {
+    super.initState();
 
     setState(() {
       notificationsReminderEnabled =
