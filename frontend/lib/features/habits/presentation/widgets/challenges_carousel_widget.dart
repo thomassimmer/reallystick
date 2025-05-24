@@ -108,7 +108,7 @@ class ChallengesCarouselWidget extends StatelessWidget {
                               gradient: LinearGradient(
                                 colors: [
                                   habitColor.withAlpha(100),
-                                  habitColor.withBlue(100).withAlpha(100)
+                                  context.colors.background.withAlpha(150),
                                 ],
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,

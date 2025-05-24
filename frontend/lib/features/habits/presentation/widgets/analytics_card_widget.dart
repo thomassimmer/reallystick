@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/habits/domain/entities/analytics_card_info.dart';
 import 'package:reallystick/i18n/app_localizations.dart';
 
@@ -63,11 +64,7 @@ class _AnalyticsCardWidgetState extends State<AnalyticsCardWidget> {
         gradient: LinearGradient(
           colors: [
             widget.color.withAlpha(100),
-            widget.color
-                .withBlue(150)
-                .withRed(150)
-                .withGreen(150)
-                .withAlpha(100)
+            context.colors.background.withAlpha(150)
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,

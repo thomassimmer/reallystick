@@ -386,9 +386,18 @@ class PrivateDiscussionScreenState extends State<PrivateDiscussionScreen> {
                       children: [
                         Container(
                           decoration: BoxDecoration(
-                              border: Border.all(color: Colors.yellow),
-                              borderRadius: BorderRadius.circular(16),
-                              color: Colors.yellow.withValues(alpha: 0.1)),
+                            border:
+                                Border.all(color: Colors.yellow, width: 0.5),
+                            borderRadius: BorderRadius.circular(16),
+                            gradient: LinearGradient(
+                              colors: [
+                                Colors.yellow.withValues(alpha: 0.1),
+                                Colors.black.withValues(alpha: 0.1),
+                              ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                          ),
                           child: Padding(
                             padding: EdgeInsets.all(16),
                             child: Text(

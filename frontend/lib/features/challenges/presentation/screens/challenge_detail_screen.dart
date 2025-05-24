@@ -591,11 +591,7 @@ class ChallengeDetailsScreenState extends State<ChallengeDetailsScreen> {
                         gradient: LinearGradient(
                           colors: [
                             challengeColor.withAlpha(100),
-                            challengeColor
-                                .withBlue(150)
-                                .withRed(150)
-                                .withGreen(150)
-                                .withAlpha(100)
+                            context.colors.background.withAlpha(150)
                           ],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
