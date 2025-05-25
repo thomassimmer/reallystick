@@ -7,6 +7,7 @@ use crate::features::profile::helpers::profile::get_user_by_id;
 
 use actix_web::{post, web, HttpRequest, HttpResponse, Responder};
 
+use redis::Client;
 use sqlx::PgPool;
 use totp_rs::{Algorithm, Secret, TOTP};
 use tracing::error;
@@ -17,6 +18,7 @@ async fn validate(
     body: web::Json<ValidateOtpRequest>,
     pool: web::Data<PgPool>,
     secret: web::Data<String>,
+    redis_client: web::Data<Client>,
 ) -> impl Responder {
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
@@ -76,11 +78,10 @@ async fn validate(
 
     let (access_token, refresh_token) = match generate_tokens(
         secret.as_bytes(),
-        user.id,
-        user.is_admin,
-        user.username,
+        user.clone(),
         parsed_device_info,
         &mut *transaction,
+        redis_client,
     )
     .await
     {

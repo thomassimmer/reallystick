@@ -14,7 +14,7 @@ use crate::features::auth::structs::models::TokenCache;
 use crate::features::notifications::helpers::redis_handler::handle_redis_messages;
 use crate::features::notifications::helpers::reminders::send_reminder_notifications;
 use crate::features::oauth_fcm::token_manager::create_shared_token_manager;
-use crate::features::private_discussions::routes::websocket::broadcast_ws;
+use crate::features::notifications::routes::websocket::broadcast_ws;
 use crate::features::private_discussions::structs::models::channels_data::ChannelsData;
 use crate::features::private_discussions::structs::models::users_data::UsersData;
 

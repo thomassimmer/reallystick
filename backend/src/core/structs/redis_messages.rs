@@ -24,7 +24,7 @@ pub struct UserRemovedEvent {
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct UserTokenUpdatedEvent {
-    pub user_id: Uuid,
+    pub user: User,
     pub token: UserToken,
 }
 

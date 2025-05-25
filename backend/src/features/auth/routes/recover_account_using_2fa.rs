@@ -16,6 +16,7 @@ use crate::{
 };
 use actix_web::{post, web, HttpRequest, HttpResponse, Responder};
 use argon2::{Argon2, PasswordHash, PasswordVerifier};
+use redis::Client;
 use sqlx::PgPool;
 use totp_rs::{Algorithm, Secret, TOTP};
 use tracing::error;
@@ -26,6 +27,7 @@ pub async fn recover_account_using_2fa(
     body: web::Json<RecoverAccountUsing2FARequest>,
     pool: web::Data<PgPool>,
     secret: web::Data<String>,
+    redis_client: web::Data<Client>,
 ) -> impl Responder {
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
@@ -137,11 +139,10 @@ pub async fn recover_account_using_2fa(
 
     let (access_token, refresh_token) = match generate_tokens(
         secret.as_bytes(),
-        user.id,
-        user.is_admin,
-        user.username.clone(),
+        user.clone(),
         parsed_device_info,
         &mut *transaction,
+        redis_client,
     )
     .await
     {

@@ -1,12 +1,17 @@
+use actix_web::web::Data;
 use actix_web::HttpRequest;
 use chrono::{DateTime, Utc};
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
+use redis::{AsyncCommands, Client};
+use serde_json::json;
 use sha2::{Digest, Sha256};
 use sqlx::postgres::PgQueryResult;
 use sqlx::{Error, Executor, Postgres};
+use tracing::error;
 use uuid::Uuid;
 
-use crate::features::profile::structs::models::ParsedDeviceInfo;
+use crate::core::structs::redis_messages::UserTokenUpdatedEvent;
+use crate::features::profile::structs::models::{ParsedDeviceInfo, User};
 use crate::{
     core::helpers::mock_now::now,
     features::auth::structs::models::{Claims, UserToken},
@@ -22,24 +27,33 @@ pub fn hash_token(token: &str) -> String {
 
 pub async fn generate_tokens<'a, E>(
     secret_key: &[u8],
-    user_id: Uuid,
-    is_admin: bool,
-    username: String,
+    user: User,
     parsed_device_info: ParsedDeviceInfo,
     executor: E,
+    redis_client: Data<Client>,
 ) -> Result<(String, String), Error>
 where
     E: Executor<'a, Database = Postgres>,
 {
     let jti = Uuid::new_v4();
 
-    let (access_token, _) =
-        generate_access_token(secret_key, jti, user_id, is_admin, username.clone());
-    let (refresh_token, refresh_token_expires_at) =
-        generate_refresh_token(secret_key, jti, user_id, is_admin, username);
+    let (access_token, _) = generate_access_token(
+        secret_key,
+        jti,
+        user.id,
+        user.is_admin,
+        user.username.clone(),
+    );
+    let (refresh_token, refresh_token_expires_at) = generate_refresh_token(
+        secret_key,
+        jti,
+        user.id,
+        user.is_admin,
+        user.username.clone(),
+    );
 
-    save_tokens(
-        user_id,
+    let new_token = save_tokens(
+        user.id,
         jti,
         refresh_token_expires_at,
         parsed_device_info,
@@ -47,6 +61,27 @@ where
     )
     .await
     .unwrap();
+
+    match redis_client.get_multiplexed_async_connection().await {
+        Ok(mut con) => {
+            let result: Result<(), redis::RedisError> = con
+                .publish(
+                    "user_token_updated",
+                    json!(UserTokenUpdatedEvent {
+                        token: new_token,
+                        user: user,
+                    })
+                    .to_string(),
+                )
+                .await;
+            if let Err(e) = result {
+                error!("Error: {}", e);
+            }
+        }
+        Err(e) => {
+            error!("Error: {}", e);
+        }
+    }
 
     Ok((access_token, refresh_token))
 }

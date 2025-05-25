@@ -8,6 +8,7 @@ use actix_web::{
 use argon2::{password_hash::SaltString, Argon2, PasswordHasher};
 use fluent::FluentArgs;
 use rand::rngs::OsRng;
+use redis::Client;
 use sqlx::PgPool;
 use tracing::error;
 use uuid::Uuid;
@@ -54,6 +55,7 @@ pub async fn register_user(
     pool: Data<PgPool>,
     translator: Data<Arc<Translator>>,
     secret: Data<String>,
+    redis_client: Data<Client>,
 ) -> impl Responder {
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
@@ -162,11 +164,10 @@ pub async fn register_user(
 
     let (access_token, refresh_token) = match generate_tokens(
         secret.as_bytes(),
-        new_user.id,
-        new_user.is_admin,
-        new_user.username.clone(),
+        new_user.clone(),
         parsed_device_info,
         &mut *transaction,
+        redis_client,
     )
     .await
     {

@@ -36,13 +36,17 @@ impl UsersData {
         }
     }
 
-    pub async fn update_user_token(&self, user_id: Uuid, token: UserToken) {
+    pub async fn update_user_token(&self, user: User, token: UserToken) {
+        let user_id = user.id;
         let user_with_user_tokens = match self.data.read().await.get(&user_id).cloned() {
             Some(mut user_with_user_tokens) => {
                 user_with_user_tokens.tokens.insert(token.id, token.clone());
                 user_with_user_tokens
             }
-            None => return,
+            None => UserWithUserTokens {
+                user,
+                tokens: HashMap::from([(token.id, token)]),
+            },
         };
 
         self.data

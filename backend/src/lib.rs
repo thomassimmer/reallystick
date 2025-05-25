@@ -286,7 +286,6 @@ pub mod features {
             pub mod mark_message_as_seen;
             pub mod update_private_discussion_participation;
             pub mod update_private_message;
-            pub mod websocket;
         }
     }
 
@@ -302,6 +301,7 @@ pub mod features {
             pub mod delete_notification;
             pub mod get_notifications;
             pub mod mark_notification_as_seen;
+            pub mod websocket;
         }
 
         pub mod structs {

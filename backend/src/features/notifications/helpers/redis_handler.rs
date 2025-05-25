@@ -98,7 +98,7 @@ pub async fn handle_user_token_update(users_data: &UsersData, payload: String) {
     match serde_json::from_str::<UserTokenUpdatedEvent>(&payload) {
         Ok(event) => {
             users_data
-                .update_user_token(event.user_id, event.token)
+                .update_user_token(event.user, event.token)
                 .await;
         }
         _ => return,

@@ -10,6 +10,7 @@ use crate::{
 };
 use actix_web::web::{Data, Json};
 use actix_web::{post, HttpRequest, HttpResponse, Responder};
+use redis::Client;
 use sqlx::PgPool;
 use tracing::error;
 
@@ -19,6 +20,7 @@ pub async fn log_user_in(
     body: Json<UserLoginRequest>,
     pool: Data<PgPool>,
     secret: Data<String>,
+    redis_client: Data<Client>,
 ) -> impl Responder {
     let mut transaction = match pool.begin().await {
         Ok(t) => t,
@@ -90,11 +92,10 @@ pub async fn log_user_in(
 
     let (access_token, refresh_token) = match generate_tokens(
         secret.as_bytes(),
-        user.id,
-        user.is_admin,
-        user.username,
+        user.clone(),
         parsed_device_info,
         &mut *transaction,
+        redis_client,
     )
     .await
     {

@@ -151,7 +151,7 @@ pub async fn refresh_token(
         new_jti,
         claims.user_id,
         claims.is_admin,
-        user.username,
+        user.username.clone(),
     );
     let parsed_device_info = get_user_agent(req).await;
 
@@ -187,7 +187,7 @@ pub async fn refresh_token(
                     "user_token_updated",
                     json!(UserTokenUpdatedEvent {
                         token: new_token,
-                        user_id: claims.user_id,
+                        user: user,
                     })
                     .to_string(),
                 )

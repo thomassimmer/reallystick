@@ -8,7 +8,7 @@ use crate::{
             helpers::token::{get_user_token, update_token},
             structs::models::Claims,
         },
-        profile::structs::requests::SetFcmTokenRequest,
+        profile::{helpers::profile::get_user_by_id, structs::requests::SetFcmTokenRequest},
     },
 };
 use actix_web::{
@@ -34,6 +34,20 @@ pub async fn set_fcm_token(
             error!("Error: {}", e);
             return HttpResponse::InternalServerError()
                 .json(AppError::DatabaseConnection.to_response());
+        }
+    };
+
+    let user = match get_user_by_id(&mut *transaction, request_claims.user_id).await {
+        Ok(r) => match r {
+            Some(u) => u,
+            None => {
+                return HttpResponse::Unauthorized().json(AppError::UserNotFound.to_response());
+            }
+        },
+        Err(e) => {
+            error!("Error: {}", e);
+            return HttpResponse::InternalServerError()
+                .json(AppError::DatabaseTransaction.to_response());
         }
     };
 
@@ -80,7 +94,7 @@ pub async fn set_fcm_token(
                     "user_token_updated",
                     json!(UserTokenUpdatedEvent {
                         token: token,
-                        user_id: request_claims.user_id,
+                        user: user,
                     })
                     .to_string(),
                 )
