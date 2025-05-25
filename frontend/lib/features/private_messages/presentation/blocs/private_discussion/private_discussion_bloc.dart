@@ -181,7 +181,8 @@ class PrivateDiscussionBloc
               "Failed to find private key. Can't decrypt this message";
 
           if (discussion.lastMessage!.creatorEncryptedSessionKey ==
-              'NOT_ENCRYPTED') {
+                  'NOT_ENCRYPTED' ||
+              discussion.lastMessage!.content.isEmpty) {
             clearContent = discussion.lastMessage!.content;
           } else if (privateKey != null) {
             final aesKey =
