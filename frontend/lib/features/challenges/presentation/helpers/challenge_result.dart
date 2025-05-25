@@ -8,6 +8,8 @@ bool _habitTrackingMeetsChallengeTracking(
   ChallengeDailyTracking c,
   Map<String, Unit> units,
 ) {
+  if (h.habitId != c.habitId) return false;
+
   final expectedWeight = normalizeUnit(
     c.weight.toDouble(),
     c.weightUnitId,
@@ -125,6 +127,8 @@ Map<String, bool> matchHabitTrackingsToChallengeTrackings(
           return false; // skip others
         }
 
+        if (h.habitId != challengeDailyTracking.habitId) return false;
+
         final quantity = normalizeUnit(
           h.quantityOfSet * h.quantityPerSet,
           h.unitId,
@@ -160,6 +164,7 @@ Map<String, bool> matchHabitTrackingsToChallengeTrackings(
     for (final h in habitDailyTrackings) {
       if (h.challengeDailyTracking != null) continue;
       if (usedHabitDailyTrackingIds.contains(h.id)) continue;
+      if (h.habitId != challengeDailyTracking.habitId) continue;
 
       final weight = normalizeUnit(
         h.weight.toDouble(),
