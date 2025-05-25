@@ -110,9 +110,8 @@ class _RepeatOnOtherDaysSelectorWithoutStartDateState
                       children: week.map(
                         (date) {
                           final isSelected = daysToRepeatOn.any(
-                            (d) => today
-                                .add(Duration(days: d))
-                                .isSameDate(date),
+                            (d) =>
+                                today.add(Duration(days: d)).isSameDate(date),
                           );
                           final numberOfActivitiesOnThatDay =
                               challengeDailyTrackingsPerDay[date]!.length;
@@ -146,9 +145,11 @@ class _RepeatOnOtherDaysSelectorWithoutStartDateState
                                     decoration: BoxDecoration(
                                       color: isSelected
                                           ? widget.challengeColor
-                                          : Colors.grey[200],
+                                          : context.colors.background,
                                       border: Border.all(
-                                          width: 0.5, color: Colors.black),
+                                        width: 0.5,
+                                        color: context.colors.text,
+                                      ),
                                       borderRadius: BorderRadius.circular(4),
                                     ),
                                     alignment: Alignment.center,

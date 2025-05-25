@@ -183,10 +183,11 @@ class _RepeatOnOtherDaysSelectorWithStartDateState
                                               ? context.colors.background
                                               : Colors.transparent),
                                       border: Border.all(
-                                          width: 0.5,
-                                          color: isWithinRange
-                                              ? Colors.black
-                                              : Colors.transparent),
+                                        width: 0.5,
+                                        color: isWithinRange
+                                            ? context.colors.text
+                                            : Colors.transparent,
+                                      ),
                                       borderRadius: BorderRadius.circular(4),
                                     ),
                                     alignment: Alignment.center,
