@@ -121,7 +121,7 @@ class ListDailyTrackingsModalState extends State<ListDailyTrackingsModal> {
         profileState is ProfileAuthenticated) {
       final userLocale = profileState.profile.locale;
 
-      List<ChallengeDailyTracking> dailyTrackings = challengeState
+      List<ChallengeDailyTracking> challengeDailyTrackings = challengeState
           .challengeDailyTrackings[widget.challenge.id]!
           .where((tracking) {
         if (widget.challenge.startDate != null) {
@@ -141,8 +141,6 @@ class ListDailyTrackingsModalState extends State<ListDailyTrackingsModal> {
             .isSameDate(widget.datetime);
       }).toList();
 
-      dailyTrackings.sort((a, b) => a.orderInDay - b.orderInDay);
-
       final challengeColor = AppColorExtension.fromString(
         widget.challengeParticipation != null
             ? widget.challengeParticipation!.color
@@ -159,12 +157,14 @@ class ListDailyTrackingsModalState extends State<ListDailyTrackingsModal> {
               : [];
 
       final challengeTrackingAchieved = matchHabitTrackingsToChallengeTrackings(
-        dailyTrackings,
+        challengeDailyTrackings,
         habitDailyTrackingsOnThatDay,
         habitState.units,
       );
 
-      final reorderableElements = dailyTrackings
+      challengeDailyTrackings.sort((a, b) => a.orderInDay - b.orderInDay);
+
+      final reorderableElements = challengeDailyTrackings
           .asMap()
           .map(
             (index, dailyTracking) {
@@ -310,7 +310,7 @@ class ListDailyTrackingsModalState extends State<ListDailyTrackingsModal> {
                             onTapLink: markdownTapLinkCallback,
                           ),
                         ],
-                        if (index != dailyTrackings.length - 1) ...[
+                        if (index != challengeDailyTrackings.length - 1) ...[
                           SizedBox(height: 10),
                           Divider(color: context.colors.text),
                         ],
@@ -331,7 +331,7 @@ class ListDailyTrackingsModalState extends State<ListDailyTrackingsModal> {
           children: [
             Text(
               AppLocalizations.of(context)!
-                  .allActivitiesOnThisDay(dailyTrackings.length),
+                  .allActivitiesOnThisDay(challengeDailyTrackings.length),
               textAlign: TextAlign.center,
               style: context.typographies.headingSmall
                   .copyWith(color: challengeColor),
@@ -347,15 +347,16 @@ class ListDailyTrackingsModalState extends State<ListDailyTrackingsModal> {
                       newIndex -= 1;
                     }
 
-                    final movedItem = dailyTrackings.removeAt(oldIndex);
-                    dailyTrackings.insert(newIndex, movedItem);
+                    final movedItem =
+                        challengeDailyTrackings.removeAt(oldIndex);
+                    challengeDailyTrackings.insert(newIndex, movedItem);
 
                     // Define the affected range
                     final start = min(oldIndex, newIndex);
                     final end = max(oldIndex, newIndex);
 
                     for (int i = start; i <= end; i++) {
-                      final cdt = dailyTrackings[i];
+                      final cdt = challengeDailyTrackings[i];
                       if (cdt.orderInDay != i) {
                         context.read<ChallengeBloc>().add(
                               UpdateChallengeDailyTrackingEvent(
