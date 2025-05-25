@@ -94,6 +94,62 @@ class PrivateDiscussionScreenState extends State<PrivateDiscussionScreen> {
         }
       }
     });
+
+    final userState = context.read<UserBloc>().state;
+    final profileState = context.read<ProfileBloc>().state;
+    final privateDiscussionState = context.read<PrivateDiscussionBloc>().state;
+
+    if (userState is UsersLoaded && profileState is ProfileAuthenticated) {
+      final existingDiscussion =
+          privateDiscussionState.discussions[widget.discussionId];
+
+      if (existingDiscussion == null) {
+        return;
+      }
+
+      final recipient = userState.users[existingDiscussion.recipientId];
+
+      if (recipient == null) {
+        BlocProvider.of<UserBloc>(context).add(
+          GetUserPublicDataEvent(
+            userIds: [existingDiscussion.recipientId],
+            username: null,
+          ),
+        );
+        return; // Prevent further execution.
+      }
+
+      final recipientPublicKey = recipient.publicKey;
+      final creatorPublicKey = profileState.profile.publicKey;
+
+      if (recipientPublicKey == null) {
+        Future.microtask(
+          () {
+            if (mounted) {
+              GlobalSnackBar.show(
+                context: context,
+                message: ErrorMessage("recipientMissingPublicKey"),
+              );
+              context.pop();
+            }
+          },
+        );
+      }
+
+      if (creatorPublicKey == null) {
+        Future.microtask(
+          () {
+            if (mounted) {
+              GlobalSnackBar.show(
+                context: context,
+                message: ErrorMessage("creatorMissingPublicKey"),
+              );
+              context.pop();
+            }
+          },
+        );
+      }
+    }
   }
 
   Future<void> _pullOlderMessages(PrivateMessage? oldestMessage) async {
@@ -238,63 +294,6 @@ class PrivateDiscussionScreenState extends State<PrivateDiscussionScreen> {
     context
         .read<PrivateDiscussionBloc>()
         .add(updateDiscussionParticipationEvent);
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    final userState = context.watch<UserBloc>().state;
-    final profileState = context.watch<ProfileBloc>().state;
-    final privateDiscussionState = context.watch<PrivateDiscussionBloc>().state;
-
-    if (userState is UsersLoaded && profileState is ProfileAuthenticated) {
-      final existingDiscussion =
-          privateDiscussionState.discussions[widget.discussionId];
-
-      if (existingDiscussion == null) {
-        return;
-      }
-
-      final recipient = userState.users[existingDiscussion.recipientId];
-
-      if (recipient == null) {
-        BlocProvider.of<UserBloc>(context).add(
-          GetUserPublicDataEvent(
-            userIds: [existingDiscussion.recipientId],
-            username: null,
-          ),
-        );
-        return; // Prevent further execution.
-      }
-
-      final recipientPublicKey = recipient.publicKey;
-      final creatorPublicKey = profileState.profile.publicKey;
-
-      if (recipientPublicKey == null) {
-        Future.microtask(
-          () {
-            GlobalSnackBar.show(
-              context: context,
-              message: ErrorMessage("recipientMissingPublicKey"),
-            );
-            context.pop();
-          },
-        );
-      }
-
-      if (creatorPublicKey == null) {
-        Future.microtask(
-          () {
-            GlobalSnackBar.show(
-              context: context,
-              message: ErrorMessage("creatorMissingPublicKey"),
-            );
-            context.pop();
-          },
-        );
-      }
-    }
   }
 
   @override

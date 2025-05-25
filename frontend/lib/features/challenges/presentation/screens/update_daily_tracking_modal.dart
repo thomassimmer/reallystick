@@ -47,10 +47,10 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
   Set<int> _selectedDaysToRepeat = {};
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  void initState() {
+    super.initState();
 
-    final habitState = context.watch<HabitBloc>().state;
+    final habitState = context.read<HabitBloc>().state;
 
     if (habitState is HabitsLoaded) {
       final weightUnits = getWeightUnits(habitState.units);
@@ -326,6 +326,10 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
                 Expanded(
                   child: CustomTextButton(
                     onPressed: () async {
+                      final challengeDailyTrackingUpdateFormBloc =
+                          BlocProvider.of<ChallengeDailyTrackingUpdateFormBloc>(
+                              context);
+
                       final pickedDate = await showDatePicker(
                         context: context,
                         initialDate: challenge.startDate!
@@ -333,6 +337,7 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
                         firstDate: DateTime(2000),
                         lastDate: DateTime(2100),
                       );
+
                       if (pickedDate != null) {
                         setState(() {
                           _selectedDayOfProgram = DateTime(
@@ -344,11 +349,11 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
                           ).difference(challenge.startDate!).inDays;
                         });
                       }
-                      BlocProvider.of<ChallengeDailyTrackingUpdateFormBloc>(
-                              context)
-                          .add(
+
+                      challengeDailyTrackingUpdateFormBloc.add(
                         ChallengeDailyTrackingUpdateFormDayOfProgramChangedEvent(
-                            _selectedDayOfProgram),
+                          _selectedDayOfProgram,
+                        ),
                       );
                     },
                     labelText: AppLocalizations.of(context)!.date,

@@ -279,12 +279,18 @@ class CreateChallengeScreenState extends State<CreateChallengeScreen> {
                                 Expanded(
                                   child: CustomTextButton(
                                     onPressed: () async {
+                                      final challengeCreationFormBloc =
+                                          BlocProvider.of<
+                                                  ChallengeCreationFormBloc>(
+                                              context);
+
                                       final pickedDate = await showDatePicker(
                                         context: context,
                                         initialDate: _startDateTime,
                                         firstDate: DateTime(2000),
                                         lastDate: DateTime(2100),
                                       );
+
                                       if (pickedDate != null) {
                                         setState(() {
                                           _startDateTime = DateTime(
@@ -295,12 +301,12 @@ class CreateChallengeScreenState extends State<CreateChallengeScreen> {
                                               _startDateTime.minute);
                                         });
                                       }
-                                      BlocProvider.of<
-                                                  ChallengeCreationFormBloc>(
-                                              context)
-                                          .add(
-                                              ChallengeCreationFormStartDateChangedEvent(
-                                                  _startDateTime));
+
+                                      challengeCreationFormBloc.add(
+                                        ChallengeCreationFormStartDateChangedEvent(
+                                          _startDateTime,
+                                        ),
+                                      );
                                     },
                                     labelText:
                                         AppLocalizations.of(context)!.date,
@@ -315,11 +321,16 @@ class CreateChallengeScreenState extends State<CreateChallengeScreen> {
                                 Expanded(
                                   child: CustomTextButton(
                                     onPressed: () async {
+                                      final challengeCreationFormBloc =
+                                          BlocProvider.of<
+                                                  ChallengeCreationFormBloc>(
+                                              context);
                                       final pickedTime = await showTimePicker(
                                         context: context,
                                         initialTime: TimeOfDay.fromDateTime(
                                             _startDateTime),
                                       );
+
                                       if (pickedTime != null) {
                                         setState(() {
                                           _startDateTime = DateTime(
@@ -330,12 +341,11 @@ class CreateChallengeScreenState extends State<CreateChallengeScreen> {
                                             pickedTime.minute,
                                           );
                                         });
-                                        BlocProvider.of<
-                                                    ChallengeCreationFormBloc>(
-                                                context)
-                                            .add(
+
+                                        challengeCreationFormBloc.add(
                                           ChallengeCreationFormStartDateChangedEvent(
-                                              _startDateTime),
+                                            _startDateTime,
+                                          ),
                                         );
                                       }
                                     },

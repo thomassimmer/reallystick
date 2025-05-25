@@ -46,13 +46,13 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
   String? _note;
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  void initState() {
+    super.initState();
 
     if (_selectedWeightUnitId == null) {
       // Only initialize if it's not already set
-      final habitState = context.watch<HabitBloc>().state;
-      final challengeState = context.watch<ChallengeBloc>().state;
+      final habitState = context.read<HabitBloc>().state;
+      final challengeState = context.read<ChallengeBloc>().state;
 
       if (habitState is HabitsLoaded && challengeState is ChallengesLoaded) {
         setState(() {
@@ -407,6 +407,10 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
                 Expanded(
                   child: CustomTextButton(
                     onPressed: () async {
+                      final challengeDailyTrackingCreationFormBloc =
+                          BlocProvider.of<
+                              ChallengeDailyTrackingCreationFormBloc>(context);
+
                       final pickedDate = await showDatePicker(
                         context: context,
                         initialDate: challenge.startDate!
@@ -414,6 +418,7 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
                         firstDate: DateTime(2000),
                         lastDate: DateTime(2100),
                       );
+
                       if (pickedDate != null) {
                         setState(() {
                           _selectedDayOfProgram = DateTime(
@@ -426,11 +431,11 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
                               1;
                         });
                       }
-                      BlocProvider.of<ChallengeDailyTrackingCreationFormBloc>(
-                              context)
-                          .add(
+
+                      challengeDailyTrackingCreationFormBloc.add(
                         ChallengeDailyTrackingCreationFormDayOfProgramChangedEvent(
-                            _selectedDayOfProgram),
+                          _selectedDayOfProgram,
+                        ),
                       );
                     },
                     labelText: AppLocalizations.of(context)!.date,

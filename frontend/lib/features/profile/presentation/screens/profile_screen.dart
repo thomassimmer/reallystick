@@ -174,6 +174,7 @@ class ProfileScreen extends StatelessWidget {
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () async {
+                  final profileBloc = BlocProvider.of<ProfileBloc>(context);
                   final shouldDelete = await showModalBottomSheet<bool>(
                     context: context,
                     isDismissible: true,
@@ -247,8 +248,7 @@ class ProfileScreen extends StatelessWidget {
                   );
 
                   if (shouldDelete == true) {
-                    BlocProvider.of<ProfileBloc>(context)
-                        .add(DeleteAccountEvent());
+                    profileBloc.add(DeleteAccountEvent());
                   }
                 },
                 style: ElevatedButton.styleFrom(

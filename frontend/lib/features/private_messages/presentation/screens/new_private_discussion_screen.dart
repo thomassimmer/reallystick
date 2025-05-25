@@ -41,59 +41,10 @@ class NewPrivateDiscussionScreenState
     _contentController.addListener(() {
       setState(() {});
     });
-  }
 
-  @override
-  void dispose() {
-    _contentController.dispose();
-
-    super.dispose();
-  }
-
-  void _sendMessage() {
     final userState = context.read<UserBloc>().state;
     final profileState = context.read<ProfileBloc>().state;
-
-    if (userState is UsersLoaded && profileState is ProfileAuthenticated) {
-      final recipient = userState.users[widget.recipientId]!;
-      final recipientPublicKey = recipient.publicKey!;
-      final creatorPublicKey = profileState.profile.publicKey!;
-
-      final privateMessageCreationFormBloc =
-          context.read<PrivateMessageCreationFormBloc>();
-
-      privateMessageCreationFormBloc.add(
-        PrivateMessageCreationFormContentChangedEvent(_contentController.text),
-      );
-
-      Future.delayed(const Duration(milliseconds: 50), () {
-        if (privateMessageCreationFormBloc.state.isValid) {
-          final newDiscussionEvent = AddNewDiscussionEvent(
-            recipient: widget.recipientId,
-            content: _contentController.text,
-            creatorPublicKey: creatorPublicKey,
-            recipientPublicKey: recipientPublicKey,
-          );
-
-          if (mounted) {
-            context.read<PrivateDiscussionBloc>().add(newDiscussionEvent);
-          }
-
-          setState(() {
-            _contentController.text = '';
-          });
-        }
-      });
-    }
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    final userState = context.watch<UserBloc>().state;
-    final profileState = context.watch<ProfileBloc>().state;
-    final privateDiscussionState = context.watch<PrivateDiscussionBloc>().state;
+    final privateDiscussionState = context.read<PrivateDiscussionBloc>().state;
 
     if (userState is UsersLoaded && profileState is ProfileAuthenticated) {
       final recipient = userState.users[widget.recipientId];
@@ -156,6 +107,50 @@ class NewPrivateDiscussionScreenState
           },
         );
       }
+    }
+  }
+
+  @override
+  void dispose() {
+    _contentController.dispose();
+
+    super.dispose();
+  }
+
+  void _sendMessage() {
+    final userState = context.read<UserBloc>().state;
+    final profileState = context.read<ProfileBloc>().state;
+
+    if (userState is UsersLoaded && profileState is ProfileAuthenticated) {
+      final recipient = userState.users[widget.recipientId]!;
+      final recipientPublicKey = recipient.publicKey!;
+      final creatorPublicKey = profileState.profile.publicKey!;
+
+      final privateMessageCreationFormBloc =
+          context.read<PrivateMessageCreationFormBloc>();
+
+      privateMessageCreationFormBloc.add(
+        PrivateMessageCreationFormContentChangedEvent(_contentController.text),
+      );
+
+      Future.delayed(const Duration(milliseconds: 50), () {
+        if (privateMessageCreationFormBloc.state.isValid) {
+          final newDiscussionEvent = AddNewDiscussionEvent(
+            recipient: widget.recipientId,
+            content: _contentController.text,
+            creatorPublicKey: creatorPublicKey,
+            recipientPublicKey: recipientPublicKey,
+          );
+
+          if (mounted) {
+            context.read<PrivateDiscussionBloc>().add(newDiscussionEvent);
+          }
+
+          setState(() {
+            _contentController.text = '';
+          });
+        }
+      });
     }
   }
 

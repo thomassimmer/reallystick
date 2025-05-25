@@ -39,13 +39,13 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
   String? _selectedWeightUnitId;
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  void initState() {
+    super.initState();
 
     if (_selectedHabitId == null) {
       // Only initialize if it's not already set
 
-      final habitState = context.watch<HabitBloc>().state;
+      final habitState = context.read<HabitBloc>().state;
 
       if (habitState is HabitsLoaded) {
         final habit = habitState.habits[widget.habitId];
@@ -353,12 +353,17 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
               Expanded(
                 child: CustomTextButton(
                   onPressed: () async {
+                    final habitDailyTrackingCreationFormBloc =
+                        BlocProvider.of<HabitDailyTrackingCreationFormBloc>(
+                            context);
+
                     final pickedDate = await showDatePicker(
                       context: context,
                       initialDate: _selectedDateTime,
                       firstDate: DateTime(2000),
                       lastDate: DateTime(2100),
                     );
+
                     if (pickedDate != null) {
                       setState(() {
                         _selectedDateTime = DateTime(
@@ -370,9 +375,12 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
                         );
                       });
                     }
-                    BlocProvider.of<HabitDailyTrackingCreationFormBloc>(context)
-                        .add(HabitDailyTrackingCreationFormDateTimeChangedEvent(
-                            _selectedDateTime));
+
+                    habitDailyTrackingCreationFormBloc.add(
+                      HabitDailyTrackingCreationFormDateTimeChangedEvent(
+                        _selectedDateTime,
+                      ),
+                    );
                   },
                   labelText: AppLocalizations.of(context)!.date,
                   text: DateFormat.yMMMd(userLocale).format(_selectedDateTime),
@@ -385,10 +393,15 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
               Expanded(
                 child: CustomTextButton(
                   onPressed: () async {
+                    final habitDailyTrackingCreationFormBloc =
+                        BlocProvider.of<HabitDailyTrackingCreationFormBloc>(
+                            context);
+
                     final pickedTime = await showTimePicker(
                       context: context,
                       initialTime: TimeOfDay.fromDateTime(_selectedDateTime),
                     );
+
                     if (pickedTime != null) {
                       setState(() {
                         _selectedDateTime = DateTime(
@@ -399,11 +412,12 @@ class AddDailyTrackingModalState extends State<AddDailyTrackingModal> {
                           pickedTime.minute,
                         );
                       });
-                      BlocProvider.of<HabitDailyTrackingCreationFormBloc>(
-                              context)
-                          .add(
-                              HabitDailyTrackingCreationFormDateTimeChangedEvent(
-                                  _selectedDateTime));
+
+                      habitDailyTrackingCreationFormBloc.add(
+                        HabitDailyTrackingCreationFormDateTimeChangedEvent(
+                          _selectedDateTime,
+                        ),
+                      );
                     }
                   },
                   labelText: AppLocalizations.of(context)!.time,

@@ -39,10 +39,10 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
   String? _selectedWeightUnitId;
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  void initState() {
+    super.initState();
 
-    final habitState = context.watch<HabitBloc>().state;
+    final habitState = context.read<HabitBloc>().state;
 
     if (habitState is HabitsLoaded) {
       final weightUnits = getWeightUnits(habitState.units);
@@ -241,6 +241,10 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
               Expanded(
                 child: CustomTextButton(
                   onPressed: () async {
+                    final habitDailyTrackingUpdateFormBloc =
+                        BlocProvider.of<HabitDailyTrackingUpdateFormBloc>(
+                            context);
+
                     final pickedDate = await showDatePicker(
                       context: context,
                       initialDate: _selectedDateTime,
@@ -260,8 +264,8 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
                         },
                       );
                     }
-                    BlocProvider.of<HabitDailyTrackingUpdateFormBloc>(context)
-                        .add(
+
+                    habitDailyTrackingUpdateFormBloc.add(
                       HabitDailyTrackingUpdateFormDateTimeChangedEvent(
                         _selectedDateTime,
                       ),
@@ -278,10 +282,15 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
               Expanded(
                 child: CustomTextButton(
                   onPressed: () async {
+                    final habitDailyTrackingUpdateFormBloc =
+                        BlocProvider.of<HabitDailyTrackingUpdateFormBloc>(
+                            context);
+
                     final pickedTime = await showTimePicker(
                       context: context,
                       initialTime: TimeOfDay.fromDateTime(_selectedDateTime),
                     );
+
                     if (pickedTime != null) {
                       setState(() {
                         _selectedDateTime = DateTime(
@@ -292,9 +301,12 @@ class UpdateDailyTrackingModalState extends State<UpdateDailyTrackingModal> {
                           pickedTime.minute,
                         );
                       });
-                      BlocProvider.of<HabitDailyTrackingUpdateFormBloc>(context)
-                          .add(HabitDailyTrackingUpdateFormDateTimeChangedEvent(
-                              _selectedDateTime));
+
+                      habitDailyTrackingUpdateFormBloc.add(
+                        HabitDailyTrackingUpdateFormDateTimeChangedEvent(
+                          _selectedDateTime,
+                        ),
+                      );
                     }
                   },
                   labelText: AppLocalizations.of(context)!.time,

@@ -180,7 +180,7 @@ class _RepeatOnOtherDaysSelectorWithStartDateState
                                       color: isSelected
                                           ? widget.challengeColor
                                           : (isWithinRange
-                                              ? Colors.grey[200]
+                                              ? context.colors.background
                                               : Colors.transparent),
                                       border: Border.all(
                                           width: 0.5,

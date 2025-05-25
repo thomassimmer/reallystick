@@ -47,14 +47,11 @@ class UpdateChallengeScreenState extends State<UpdateChallengeScreen> {
     if (profileState is ProfileAuthenticated) {
       final userLocale = profileState.profile.locale;
 
-      _nameControllerForChallenge = {userLocale: ''};
-      _descriptionControllerForChallenge = {userLocale: ''};
+      setState(() {
+        _nameControllerForChallenge = {userLocale: ''};
+        _descriptionControllerForChallenge = {userLocale: ''};
+      });
     }
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
 
     final challengeState = context.watch<ChallengeBloc>().state;
 
@@ -326,12 +323,16 @@ class UpdateChallengeScreenState extends State<UpdateChallengeScreen> {
                                 Expanded(
                                   child: CustomTextButton(
                                     onPressed: () async {
+                                      final challengeUpdateFormBloc =
+                                          BlocProvider.of<
+                                              ChallengeUpdateFormBloc>(context);
                                       final pickedDate = await showDatePicker(
                                         context: context,
                                         initialDate: _startDateTime,
                                         firstDate: DateTime(2000),
                                         lastDate: DateTime(2100),
                                       );
+
                                       if (pickedDate != null) {
                                         setState(() {
                                           _startDateTime = DateTime(
@@ -342,11 +343,12 @@ class UpdateChallengeScreenState extends State<UpdateChallengeScreen> {
                                               _startDateTime.minute);
                                         });
                                       }
-                                      BlocProvider.of<ChallengeUpdateFormBloc>(
-                                              context)
-                                          .add(
-                                              ChallengeUpdateFormStartDateChangedEvent(
-                                                  _startDateTime));
+
+                                      challengeUpdateFormBloc.add(
+                                        ChallengeUpdateFormStartDateChangedEvent(
+                                          _startDateTime,
+                                        ),
+                                      );
                                     },
                                     labelText:
                                         AppLocalizations.of(context)!.date,
@@ -361,11 +363,16 @@ class UpdateChallengeScreenState extends State<UpdateChallengeScreen> {
                                 Expanded(
                                   child: CustomTextButton(
                                     onPressed: () async {
+                                      final challengeUpdateFormBloc =
+                                          BlocProvider.of<
+                                              ChallengeUpdateFormBloc>(context);
+
                                       final pickedTime = await showTimePicker(
                                         context: context,
                                         initialTime: TimeOfDay.fromDateTime(
                                             _startDateTime),
                                       );
+
                                       if (pickedTime != null) {
                                         setState(() {
                                           _startDateTime = DateTime(
@@ -376,12 +383,11 @@ class UpdateChallengeScreenState extends State<UpdateChallengeScreen> {
                                             pickedTime.minute,
                                           );
                                         });
-                                        BlocProvider.of<
-                                                    ChallengeUpdateFormBloc>(
-                                                context)
-                                            .add(
+
+                                        challengeUpdateFormBloc.add(
                                           ChallengeUpdateFormStartDateChangedEvent(
-                                              _startDateTime),
+                                            _startDateTime,
+                                          ),
                                         );
                                       }
                                     },

@@ -30,8 +30,9 @@ class ChangeParticipationStartDateModalState
   DateTime _startDate = DateTime.now();
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  void initState() {
+    super.initState();
+
     _startDate = widget.challengeParticipation.startDate;
   }
 

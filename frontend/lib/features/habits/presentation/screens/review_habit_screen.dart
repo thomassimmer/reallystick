@@ -58,10 +58,26 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
     if (profileState is ProfileAuthenticated) {
       final userLocale = profileState.profile.locale;
 
-      _nameControllerForCurrentHabit = {userLocale: ''};
-      _descriptionControllerForCurrentHabit = {userLocale: ''};
-      _nameControllerForHabitToMergeWith = {userLocale: ''};
-      _descriptionControllerForHabitToMergeWith = {userLocale: ''};
+      setState(() {
+        _nameControllerForCurrentHabit = {userLocale: ''};
+        _descriptionControllerForCurrentHabit = {userLocale: ''};
+        _nameControllerForHabitToMergeWith = {userLocale: ''};
+        _descriptionControllerForHabitToMergeWith = {userLocale: ''};
+      });
+    }
+
+    final habitState = context.read<HabitBloc>().state;
+
+    if (habitState is HabitsLoaded) {
+      final habit = habitState.habits[widget.habitId]!;
+
+      setState(() {
+        _nameControllerForCurrentHabit = habit.name;
+        _descriptionControllerForCurrentHabit = habit.description;
+        _selectedCategoryIdForCurrentHabit = habit.categoryId;
+        _selectedUnitIdsForCurrentHabit = habit.unitIds;
+        _iconForCurrentHabit = habit.icon;
+      });
     }
   }
 
@@ -176,25 +192,6 @@ class ReviewHabitScreenState extends State<ReviewHabitScreen> {
         }
       },
     );
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    final habitState = context.watch<HabitBloc>().state;
-
-    if (habitState is HabitsLoaded) {
-      final habit = habitState.habits[widget.habitId]!;
-
-      setState(() {
-        _nameControllerForCurrentHabit = habit.name;
-        _descriptionControllerForCurrentHabit = habit.description;
-        _selectedCategoryIdForCurrentHabit = habit.categoryId;
-        _selectedUnitIdsForCurrentHabit = habit.unitIds;
-        _iconForCurrentHabit = habit.icon;
-      });
-    }
   }
 
   void changeSelectedHabit(
