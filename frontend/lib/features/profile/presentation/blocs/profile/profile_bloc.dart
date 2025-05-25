@@ -33,6 +33,7 @@ import 'package:reallystick/features/profile/domain/usecases/set_password_use_ca
 import 'package:reallystick/features/profile/domain/usecases/update_password_use_case.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_events.dart';
 import 'package:reallystick/features/profile/presentation/blocs/profile/profile_states.dart';
+import 'package:universal_io/io.dart';
 
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState>
     with WidgetsBindingObserver {
