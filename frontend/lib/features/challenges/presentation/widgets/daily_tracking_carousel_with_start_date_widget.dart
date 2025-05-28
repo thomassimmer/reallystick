@@ -268,11 +268,15 @@ class DailyTrackingCarouselWithStartDateWidgetState
                   color: widget.challengeColor,
                 ),
                 SizedBox(width: 10),
-                Text(
-                  AppLocalizations.of(context)!.challengeDailyTracking,
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: widget.challengeColor,
+                Expanded(
+                  child: Text(
+                    AppLocalizations.of(context)!.challengeDailyTracking,
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: widget.challengeColor,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                    softWrap: false,
                   ),
                 ),
                 Spacer(),

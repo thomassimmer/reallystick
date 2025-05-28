@@ -68,14 +68,17 @@ class ChallengesCarouselWidget extends StatelessWidget {
                 color: habitColor,
               ),
               SizedBox(width: 10),
-              Text(
-                AppLocalizations.of(context)!.relatedChallenges,
-                style: TextStyle(
-                  fontSize: 20,
-                  color: habitColor,
+              Expanded(
+                child: Text(
+                  AppLocalizations.of(context)!.relatedChallenges,
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: habitColor,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                  softWrap: false,
                 ),
               ),
-              Spacer(),
               Tooltip(
                 triggerMode: TooltipTriggerMode.tap,
                 message: AppLocalizations.of(context)!.challengesInfoTooltip,

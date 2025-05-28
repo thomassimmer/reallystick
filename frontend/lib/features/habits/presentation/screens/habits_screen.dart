@@ -274,6 +274,8 @@ class HabitsScreenState extends State<HabitsScreen> {
                                           fontSize: 20,
                                           fontWeight: FontWeight.w500,
                                         ),
+                                        overflow: TextOverflow.ellipsis,
+                                        softWrap: false,
                                       ),
                                     ),
                                     Icon(

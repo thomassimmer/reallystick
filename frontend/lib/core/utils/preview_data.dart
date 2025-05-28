@@ -236,6 +236,38 @@ HabitsLoaded getHabitsLoadedForPreview(BuildContext context) {
         icon: "💦",
         unitIds: HashSet.from(['1']),
       ),
+      '4': Habit(
+        id: '4',
+        name: {
+          "de": "Laufen",
+          "en": "Running",
+          "es": "Correr",
+          "fr": "Course",
+          "it": "Corsa",
+          "pt": "Corrida",
+          "ru": "Бег"
+        },
+        categoryId: '3',
+        reviewed: true,
+        description: {
+          "de":
+              "Verfolge deine Laufaktivitäten, um deine Ausdauer zu steigern und fit zu bleiben.",
+          "en":
+              "Track your running activities to boost endurance and stay fit.",
+          "es":
+              "Controla tus actividades de carrera para aumentar tu resistencia y mantenerte en forma.",
+          "fr":
+              "Suivez vos activités de course pour améliorer votre endurance et rester en forme.",
+          "it":
+              "Tieni traccia delle tue attività di corsa per aumentare la resistenza e mantenerti in forma.",
+          "pt":
+              "Acompanhe suas atividades de corrida para aumentar a resistência e manter a forma.",
+          "ru":
+              "Отслеживайте свои пробежки, чтобы повысить выносливость и поддерживать форму."
+        },
+        icon: "🏃‍♂️",
+        unitIds: HashSet.from(['1']),
+      ),
     },
     habitDailyTrackings: [
       ...List.generate(14, (index) {
@@ -660,7 +692,7 @@ ChallengesLoaded getChallengeStateForPreview(BuildContext context) {
       '3': List.generate(180, (index) {
         return ChallengeDailyTracking(
           id: index.toString(),
-          habitId: '1',
+          habitId: '4',
           challengeId: '3',
           dayOfProgram: index,
           quantityPerSet: 0,
