@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:32513509893:android:d2bcb173b58e4fc489ea6c",
+        "mobilesdk_app_id": "1:32513509893:android:f8ad1d5e9bb36cca89ea6c",
         "android_client_info": {
-          "package_name": "com.example.reallystick"
+          "package_name": "com.reallystick"
         }
       },
       "oauth_client": [],
