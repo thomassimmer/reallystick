@@ -48,3 +48,6 @@ target/
 
 # Postgres
 postgres_data/
+
+# Prod
+README.prod.md
