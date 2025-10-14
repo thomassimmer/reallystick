@@ -40,7 +40,7 @@ pub async fn run(listener: TcpListener, configuration: Settings) -> Result<Serve
     let channels_data = ChannelsData::default();
     let users_data = UsersData::default();
     let shared_token_manager =
-        create_shared_token_manager(File::open("notifications/reallystick-firebase-adminsdk.json")?)
+        create_shared_token_manager(File::open("/app/notifications/reallystick-firebase-adminsdk.json")?)
             .expect("Could not find credentials.json");
 
     let redis_client = Client::open("redis://redis:6379").unwrap();
