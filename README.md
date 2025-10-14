@@ -4,6 +4,10 @@
 
 ReallyStick is an open-source, privacy-first app designed to help you build and track habits, create and join challenges, and connect with a community of like-minded individuals. Whether you want to quit smoking, learn a new language, or train for a marathon, ReallyStick provides the tools to stay motivated and accountable—with the added power of social support and end-to-end encrypted messaging.
 
+<p align="center">
+<img src="frontend/assets/images/reallystick_logo.svg" alt="logo" width="200"/>
+</p>
+
 ---
 
 ## 🌟 Why ReallyStick?
