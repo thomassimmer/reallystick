@@ -28,11 +28,23 @@ ReallyStick is an open-source, privacy-first app designed to help you build and 
 
 ### Setup
 
-1. **Start the database container:**
+1. **Create environment files:**
+
+   ```bash
+   cp backend/.env.template backend/.env
+   cp backend/.env.template backend/.env.docker
+
+   # Important: Replace localhost by db inside backend/.env.docker for DATABASE_URL, so your rust containers can communicate with the db container.
+
+   cp db/.env.template db/.env
+   cp frontend/.env.template frontend/.env
+   ```
+
+2. **Start the database container:**
    ```bash
    docker-compose up -d db
    ```
-2. **Start the other containers:**
+3. **Start the other containers:**
    ```bash
    docker-compose up -d
    ```
