@@ -2,8 +2,6 @@ services:
   db:
     container_name: db
     image: postgres:16
-    build:
-      context: ./db
     env_file:
       - ./db/.env
     volumes:
@@ -21,7 +19,7 @@ services:
       - APP_DATABASE__HOST=db
     env_file:
       - ./backend/.env.docker
-    command: "./api/entrypoint.prod.sh"
+    command: "/app/api/entrypoint.prod.sh"
     ports:
       - "8000:8000"
     volumes:
@@ -41,7 +39,7 @@ services:
       - APP_APPLICATION__PORT=8001
     env_file:
       - ./backend/.env.docker
-    command: "./notifications/entrypoint.prod.sh"
+    command: "/app/notifications/entrypoint.prod.sh"
     ports:
       - "8001:8001"
     volumes:
