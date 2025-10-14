@@ -1,0 +1,12 @@
+# Use the official Rust image as the base image
+FROM rust:1.90
+
+RUN useradd -m rustuser
+
+USER rustuser
+
+# Set the working directory inside the container
+WORKDIR /app/notifications
+
+# Now copy the source code
+COPY --chown=rustuser:rustuser . .

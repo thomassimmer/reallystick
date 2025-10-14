@@ -1,58 +1,53 @@
 services:
   db:
     container_name: db
-    image: reallystick_db
+    image: postgres:16
     build:
       context: ./db
-      dockerfile: Dockerfile
     env_file:
       - ./db/.env
     volumes:
       - ./postgres_data:/var/lib/postgresql/data
     ports:
       - 5432:5432
-    expose:
-      - "5432"
-    command: -p 5432
-    networks:
-      - app-network
 
-  backend:
-    container_name: backend
-    image: reallystick_backend
+  api:
+    container_name: api
+    image: reallystick_api
     build:
-      context: ./backend
+      context: ./backend/api
       dockerfile: Dockerfile.prod
+    environment:
+      - APP_DATABASE__HOST=db
     env_file:
       - ./backend/.env.docker
-    command: "./entrypoint.prod.sh"
+    command: "./api/entrypoint.prod.sh"
     ports:
       - "8000:8000"
     volumes:
       - ./backend:/app
-    networks:
-      - app-network
     depends_on:
       - db
       - redis
 
   notifications:
     container_name: notifications
-    image: reallystick_backend
+    image: reallystick_notifications
     build:
-      context: ./backend
+      context: ./backend/notifications
       dockerfile: Dockerfile.prod
+    environment:
+      - APP_DATABASE__HOST=db
+      - APP_APPLICATION__PORT=8001
     env_file:
-      - ./backend/.env.notifications.docker
-    command: "./entrypoint.notifications.prod.sh"
+      - ./backend/.env.docker
+    command: "./notifications/entrypoint.prod.sh"
     ports:
       - "8001:8001"
     volumes:
       - ./backend:/app
-    networks:
-      - app-network
     depends_on:
-      - backend
+      - api
       - db
       - redis
 
@@ -60,17 +55,9 @@ services:
     image: redis:7
     container_name: redis
     restart: always
-    ports:
-      - "6379:6379"
     volumes:
       - redis_data:/data
-    networks:
-      - app-network
 
 volumes:
   postgres_data:
   redis_data:
-
-networks:
-  app-network:
-    driver: bridge

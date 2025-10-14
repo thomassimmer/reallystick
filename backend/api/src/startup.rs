@@ -1,0 +1,461 @@
+// Inspired by : https://github.com/actix/actix-web/issues/1147
+
+use std::net::TcpListener;
+use std::sync::Arc;
+use std::time::Duration;
+
+use crate::configuration::{DatabaseSettings, Settings};
+use crate::core::helpers::translation::Translator;
+use crate::core::middlewares::token_validator::TokenValidator;
+use crate::core::routes::health_check::health_check;
+use crate::core::routes::version::version_check;
+use crate::features::auth::routes::disable_otp::disable;
+use crate::features::auth::routes::generate_otp::generate;
+use crate::features::auth::routes::log_user_in::log_user_in;
+use crate::features::auth::routes::log_user_out::log_user_out;
+use crate::features::auth::routes::recover_account_using_2fa::recover_account_using_2fa;
+use crate::features::auth::routes::recover_account_using_password::recover_account_using_password;
+use crate::features::auth::routes::recover_account_without_2fa_enabled::recover_account_without_2fa_enabled;
+use crate::features::auth::routes::save_keys::save_keys;
+use crate::features::auth::routes::save_recovery_code::save_recovery_code;
+use crate::features::auth::routes::validate_otp::validate;
+use crate::features::auth::routes::verify_otp::verify;
+
+use crate::features::auth::routes::refresh_token::refresh_token;
+use crate::features::auth::routes::signup::register_user;
+use crate::features::auth::structs::models::TokenCache;
+use crate::features::challenges::routes::create_challenge::create_challenge;
+use crate::features::challenges::routes::create_challenge_daily_tracking::create_challenge_daily_tracking;
+use crate::features::challenges::routes::create_challenge_participation::create_challenge_participation;
+use crate::features::challenges::routes::delete_challenge::delete_challenge;
+use crate::features::challenges::routes::delete_challenge_daily_tracking::delete_challenge_daily_tracking;
+use crate::features::challenges::routes::delete_challenge_participation::delete_challenge_participation;
+use crate::features::challenges::routes::duplicate_challenge::duplicate_challenge;
+use crate::features::challenges::routes::get_challenge::get_challenge;
+use crate::features::challenges::routes::get_challenge_daily_trackings::get_challenge_daily_trackings;
+use crate::features::challenges::routes::get_challenge_participations::get_challenge_participations;
+use crate::features::challenges::routes::get_challenge_statistics::get_challenge_statistics;
+use crate::features::challenges::routes::get_challenges::get_challenges;
+use crate::features::challenges::routes::get_challenges_daily_trackings::get_challenges_daily_trackings;
+use crate::features::challenges::routes::update_challenge::update_challenge;
+use crate::features::challenges::routes::update_challenge_daily_tracking::update_challenge_daily_tracking;
+use crate::features::challenges::routes::update_challenge_participation::update_challenge_participation;
+use crate::features::challenges::structs::models::challenge_statistics::ChallengeStatisticsCache;
+use crate::features::habits::routes::create_habit::create_habit;
+use crate::features::habits::routes::create_habit_category::create_habit_category;
+use crate::features::habits::routes::create_habit_daily_tracking::create_habit_daily_tracking;
+use crate::features::habits::routes::create_habit_participation::create_habit_participation;
+use crate::features::habits::routes::create_unit::create_unit;
+use crate::features::habits::routes::delete_habit::delete_habit;
+use crate::features::habits::routes::delete_habit_category::delete_habit_category;
+use crate::features::habits::routes::delete_habit_daily_tracking::delete_habit_daily_tracking;
+use crate::features::habits::routes::delete_habit_participation::delete_habit_participation;
+use crate::features::habits::routes::get_habit::get_habit;
+use crate::features::habits::routes::get_habit_categories::get_habit_categories;
+use crate::features::habits::routes::get_habit_daily_trackings::get_habit_daily_trackings;
+use crate::features::habits::routes::get_habit_participations::get_habit_participations;
+use crate::features::habits::routes::get_habit_statistics::get_habit_statistics;
+use crate::features::habits::routes::get_habits::get_habits;
+use crate::features::habits::routes::get_units::get_units;
+use crate::features::habits::routes::merge_habits::merge_habits;
+use crate::features::habits::routes::update_habit::update_habit;
+use crate::features::habits::routes::update_habit_category::update_habit_category;
+use crate::features::habits::routes::update_habit_daily_tracking::update_habit_daily_tracking;
+use crate::features::habits::routes::update_habit_participation::update_habit_participation;
+use crate::features::habits::routes::update_unit::update_unit;
+use crate::features::habits::structs::models::habit_statistics::HabitStatisticsCache;
+use crate::features::notifications::routes::delete_all_notifications::delete_all_notifications;
+use crate::features::notifications::routes::delete_notification::delete_notification;
+use crate::features::notifications::routes::get_notifications::get_notifications;
+use crate::features::notifications::routes::mark_notification_as_seen::mark_notification_as_seen;
+use crate::features::private_discussions::routes::create_private_discussion::create_private_discussion;
+use crate::features::private_discussions::routes::create_private_message::create_private_message;
+use crate::features::private_discussions::routes::delete_private_message::delete_private_message;
+use crate::features::private_discussions::routes::get_private_discussion_messages::get_private_discussion_messages;
+use crate::features::private_discussions::routes::get_private_discussions::get_private_discussions;
+use crate::features::private_discussions::routes::mark_message_as_seen::mark_message_as_seen;
+use crate::features::private_discussions::routes::update_private_discussion_participation::update_private_discussion_participation;
+use crate::features::private_discussions::routes::update_private_message::update_private_message;
+use crate::features::profile::helpers::redis_handler::handle_redis_messages;
+use crate::features::profile::routes::delete_account::delete_account;
+use crate::features::profile::routes::delete_device::delete_device;
+use crate::features::profile::routes::get_devices::get_devices;
+use crate::features::profile::routes::get_profile_information::get_profile_information;
+use crate::features::profile::routes::get_user_data_by_username::get_user_data_by_username;
+use crate::features::profile::routes::get_users_data_by_id::get_users_data_by_id;
+use crate::features::profile::routes::is_otp_enabled::is_otp_enabled;
+use crate::features::profile::routes::post_profile_information::post_profile_information;
+use crate::features::profile::routes::set_fcm_token::set_fcm_token;
+use crate::features::profile::routes::set_password::set_password;
+use crate::features::profile::routes::update_password::update_password;
+use crate::features::profile::structs::models::UserPublicDataCache;
+use crate::features::public_discussions::routes::create_public_message::create_public_message;
+use crate::features::public_discussions::routes::create_public_message_like::create_public_message_like;
+use crate::features::public_discussions::routes::create_public_message_report::create_public_message_report;
+use crate::features::public_discussions::routes::delete_public_message::delete_public_message;
+use crate::features::public_discussions::routes::delete_public_message_like::delete_public_message_like;
+use crate::features::public_discussions::routes::delete_public_message_report::delete_public_message_report;
+use crate::features::public_discussions::routes::get_message::get_message;
+use crate::features::public_discussions::routes::get_message_parents::get_message_parents;
+use crate::features::public_discussions::routes::get_message_reports::get_message_reports;
+use crate::features::public_discussions::routes::get_public_messages::get_public_messages;
+use crate::features::public_discussions::routes::get_replies::get_replies;
+use crate::features::public_discussions::routes::get_user_liked_messages::get_user_liked_messages;
+use crate::features::public_discussions::routes::get_user_message_reports::get_user_message_reports;
+use crate::features::public_discussions::routes::get_user_written_messages::get_user_written_messages;
+use crate::features::public_discussions::routes::update_public_message::update_public_message;
+use actix_cors::Cors;
+use actix_http::header::HeaderName;
+use actix_web::body::MessageBody;
+use actix_web::dev::{Server, ServiceFactory, ServiceRequest, ServiceResponse};
+use actix_web::http::header;
+use actix_web::middleware::Logger;
+use actix_web::{web, App, Error, HttpServer};
+
+use redis::Client;
+use sqlx::postgres::PgPoolOptions;
+use sqlx::{PgPool, Pool, Postgres, Error as SqlxError};
+use tokio::task;
+
+pub async fn run(listener: TcpListener, configuration: Settings) -> Result<Server, std::io::Error> {
+    let connection_pool = get_connection_pool(&configuration.database).await.unwrap();
+    let secret = configuration.application.secret;
+    let habit_statistics_cache = HabitStatisticsCache::default();
+    let challenge_statistics_cache = ChallengeStatisticsCache::default();
+    let token_cache = TokenCache::default();
+    let user_public_data_cache = UserPublicDataCache::default();
+    let redis_client = redis::Client::open("redis://redis:6379").unwrap();
+
+    let redis_client_for_redis_handler = redis_client.clone();
+    let user_public_data_cache_for_redis_handler = user_public_data_cache.clone();
+
+    task::spawn(async move {
+        handle_redis_messages(
+            redis_client_for_redis_handler,
+            user_public_data_cache_for_redis_handler,
+        )
+        .await;
+    });
+
+    let server = HttpServer::new(move || {
+        let translator = Arc::new(Translator::new());
+
+        create_app(
+            connection_pool.clone(),
+            secret.clone(),
+            habit_statistics_cache.clone(),
+            challenge_statistics_cache.clone(),
+            token_cache.clone(),
+            user_public_data_cache.clone(),
+            redis_client.clone(),
+            translator,
+        )
+    })
+    .listen(listener)?
+    .run();
+
+    Ok(server)
+}
+
+pub fn create_app(
+    connection_pool: Pool<Postgres>,
+    secret: String,
+    habit_statistics_cache: HabitStatisticsCache,
+    challenge_statistics_cache: ChallengeStatisticsCache,
+    token_cache: TokenCache,
+    user_public_data_cache: UserPublicDataCache,
+    redis_client: Client,
+    translator: Arc<Translator>,
+) -> App<
+    impl ServiceFactory<
+        ServiceRequest,
+        Config = (),
+        Response = ServiceResponse<impl MessageBody>,
+        Error = Error,
+        InitError = (),
+    >,
+> {
+    let cors = Cors::default()
+        .allowed_origin_fn(|origin, _req_head| origin.as_bytes().starts_with(b"http://localhost:"))
+        .allowed_origin("https://reallystick.com")
+        .allowed_methods(vec!["GET", "POST", "PUT", "DELETE", "OPTIONS"])
+        .allowed_headers(vec![
+            header::CONTENT_TYPE,
+            header::AUTHORIZATION,
+            header::ACCEPT,
+            HeaderName::from_static("x-user-agent"),
+        ])
+        .supports_credentials();
+
+    App::new()
+        .service(
+            web::scope("/api")
+                .service(health_check)
+                .service(version_check)
+                .service(
+                    web::scope("/auth")
+                        .service(register_user)
+                        .service(log_user_in)
+                        .service(recover_account_without_2fa_enabled)
+                        .service(recover_account_using_password)
+                        .service(recover_account_using_2fa)
+                        .service(refresh_token)
+                        .service(
+                            web::scope("/logout")
+                                .wrap(TokenValidator {})
+                                .service(log_user_out),
+                        )
+                        .service(
+                            web::scope("/otp")
+                                // Scope without middleware applied to routes that don't need it
+                                .service(validate)
+                                // Nested scope with middleware for protected routes
+                                .service(
+                                    web::scope("")
+                                        .wrap(TokenValidator {})
+                                        .service(generate)
+                                        .service(verify)
+                                        .service(disable),
+                                ),
+                        )
+                        .service(
+                            web::scope("")
+                                .wrap(TokenValidator {})
+                                .service(save_keys)
+                                .service(save_recovery_code),
+                        ),
+                )
+                .service(
+                    web::scope("/users").service(is_otp_enabled).service(
+                        web::scope("")
+                            .wrap(TokenValidator {})
+                            .service(get_profile_information)
+                            .service(get_users_data_by_id)
+                            .service(get_user_data_by_username)
+                            .service(post_profile_information)
+                            .service(set_password)
+                            .service(delete_account)
+                            .service(update_password),
+                    ),
+                )
+                .service(
+                    web::scope("/devices")
+                        .wrap(TokenValidator {})
+                        .service(get_devices)
+                        .service(delete_device),
+                )
+                .service(
+                    web::scope("/habits").service(
+                        web::scope("")
+                            .wrap(TokenValidator {})
+                            .service(get_habit)
+                            .service(get_habits)
+                            .service(update_habit)
+                            .service(create_habit)
+                            .service(delete_habit)
+                            .service(merge_habits),
+                    ),
+                )
+                .service(
+                    web::scope("/habit-statistics").service(
+                        web::scope("")
+                            .wrap(TokenValidator {})
+                            .service(get_habit_statistics),
+                    ),
+                )
+                .service(
+                    web::scope("/habit-categories").service(
+                        web::scope("")
+                            .wrap(TokenValidator {})
+                            .service(get_habit_categories)
+                            .service(update_habit_category)
+                            .service(create_habit_category)
+                            .service(delete_habit_category),
+                    ),
+                )
+                .service(
+                    web::scope("/habit-daily-trackings").service(
+                        web::scope("")
+                            .wrap(TokenValidator {})
+                            .service(get_habit_daily_trackings)
+                            .service(update_habit_daily_tracking)
+                            .service(create_habit_daily_tracking)
+                            .service(delete_habit_daily_tracking),
+                    ),
+                )
+                .service(
+                    web::scope("/habit-participations").service(
+                        web::scope("")
+                            .wrap(TokenValidator {})
+                            .service(get_habit_participations)
+                            .service(update_habit_participation)
+                            .service(create_habit_participation)
+                            .service(delete_habit_participation),
+                    ),
+                )
+                .service(
+                    web::scope("/units").service(
+                        web::scope("")
+                            .wrap(TokenValidator {})
+                            .service(get_units)
+                            .service(update_unit)
+                            .service(create_unit),
+                    ),
+                )
+                .service(
+                    web::scope("/challenges").service(
+                        web::scope("")
+                            .wrap(TokenValidator {})
+                            .service(get_challenges)
+                            .service(get_challenge)
+                            .service(update_challenge)
+                            .service(create_challenge)
+                            .service(duplicate_challenge)
+                            .service(delete_challenge),
+                    ),
+                )
+                .service(
+                    web::scope("/challenge-statistics").service(
+                        web::scope("")
+                            .wrap(TokenValidator {})
+                            .service(get_challenge_statistics),
+                    ),
+                )
+                .service(
+                    web::scope("/challenge-daily-trackings").service(
+                        web::scope("")
+                            .wrap(TokenValidator {})
+                            .service(get_challenge_daily_trackings)
+                            .service(get_challenges_daily_trackings)
+                            .service(update_challenge_daily_tracking)
+                            .service(create_challenge_daily_tracking)
+                            .service(delete_challenge_daily_tracking),
+                    ),
+                )
+                .service(
+                    web::scope("/challenge-participations").service(
+                        web::scope("")
+                            .wrap(TokenValidator {})
+                            .service(get_challenge_participations)
+                            .service(update_challenge_participation)
+                            .service(create_challenge_participation)
+                            .service(delete_challenge_participation),
+                    ),
+                )
+                .service(
+                    web::scope("/public-messages").service(
+                        web::scope("")
+                            .wrap(TokenValidator {})
+                            .service(create_public_message)
+                            .service(delete_public_message)
+                            .service(get_message_parents)
+                            .service(get_public_messages)
+                            .service(get_replies)
+                            .service(get_message)
+                            .service(get_user_liked_messages)
+                            .service(get_user_written_messages)
+                            .service(update_public_message),
+                    ),
+                )
+                .service(
+                    web::scope("/public-message-likes").service(
+                        web::scope("")
+                            .wrap(TokenValidator {})
+                            .service(create_public_message_like)
+                            .service(delete_public_message_like),
+                    ),
+                )
+                .service(
+                    web::scope("/public-message-reports").service(
+                        web::scope("")
+                            .wrap(TokenValidator {})
+                            .service(create_public_message_report)
+                            .service(delete_public_message_report)
+                            .service(get_message_reports)
+                            .service(get_user_message_reports),
+                    ),
+                )
+                .service(
+                    web::scope("/private-messages").service(
+                        web::scope("")
+                            .wrap(TokenValidator {})
+                            .service(create_private_message)
+                            .service(delete_private_message)
+                            .service(update_private_message)
+                            .service(mark_message_as_seen)
+                            .service(get_private_discussion_messages),
+                    ),
+                )
+                .service(
+                    web::scope("/private-discussion-participations").service(
+                        web::scope("")
+                            .wrap(TokenValidator {})
+                            .service(update_private_discussion_participation),
+                    ),
+                )
+                .service(
+                    web::scope("/private-discussions").service(
+                        web::scope("")
+                            .wrap(TokenValidator {})
+                            .service(create_private_discussion)
+                            .service(get_private_discussions),
+                    ),
+                )
+                .service(
+                    web::scope("/notifications").service(
+                        web::scope("")
+                            .wrap(TokenValidator {})
+                            .service(get_notifications)
+                            .service(delete_notification)
+                            .service(delete_all_notifications)
+                            .service(mark_notification_as_seen)
+                            .service(set_fcm_token),
+                    ),
+                ),
+        )
+        .wrap(cors)
+        .wrap(Logger::default())
+        .app_data(web::Data::new(connection_pool))
+        .app_data(web::Data::new(secret))
+        .app_data(web::Data::new(habit_statistics_cache))
+        .app_data(web::Data::new(challenge_statistics_cache))
+        .app_data(web::Data::new(token_cache))
+        .app_data(web::Data::new(user_public_data_cache))
+        .app_data(web::Data::new(redis_client))
+        .app_data(web::Data::new(translator))
+}
+
+pub struct Application {
+    port: u16,
+    server: Server,
+}
+
+impl Application {
+    pub async fn build(configuration: Settings) -> Result<Self, std::io::Error> {
+        let address = format!(
+            "{}:{}",
+            configuration.application.host, configuration.application.port
+        );
+        let listener = TcpListener::bind(address)?;
+        let port = listener.local_addr().unwrap().port();
+        let server = run(listener, configuration).await.unwrap();
+
+        Ok(Self { port, server })
+    }
+
+    pub fn port(&self) -> u16 {
+        self.port
+    }
+
+    pub async fn run_until_stopped(self) -> Result<(), std::io::Error> {
+        self.server.await
+    }
+}
+
+pub async fn get_connection_pool(configuration: &DatabaseSettings) -> Result<PgPool, SqlxError> {
+    PgPoolOptions::new()
+        .max_connections(50)
+        .acquire_timeout(Duration::from_secs(5))
+        .connect_with(configuration.with_db())
+        .await
+}

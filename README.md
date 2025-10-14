@@ -32,9 +32,9 @@ ReallyStick is an open-source, privacy-first app designed to help you build and 
    ```bash
    docker-compose up -d db
    ```
-2. **Start the backend:**
+2. **Start the other containers:**
    ```bash
-   docker-compose up -d backend
+   docker-compose up -d
    ```
 
 ### Backend Commands
@@ -132,6 +132,67 @@ vacuum;
    - To run in debug mode:
      ```bash
      flutter run --flavor dev
+     ```
+
+---
+
+## Firebase Setup for Notifications
+
+To enable notifications (WebSocket/Push), you need **two Firebase configuration files**:
+
+1. A **Firebase service account JSON file** (for backend authentication with FCM).
+2. A **`google-services.json`** file (for Android apps).
+
+---
+
+### **1. Firebase Service Account (Backend)**
+
+This file is required for backend authentication with Firebase Cloud Messaging (FCM).
+
+#### **Steps to Generate Your Own File:**
+
+1. **Create a Firebase Project**:
+
+   - Go to the [Firebase Console](https://console.firebase.google.com/).
+   - Click **"Add Project"** and follow the instructions.
+
+2. **Enable Firebase Cloud Messaging (FCM)**:
+
+   - In your project, go to **Project Settings > Cloud Messaging**.
+   - Ensure FCM is enabled.
+
+3. **Generate a Service Account Key**:
+
+   - Go to **Project Settings > Service Accounts**.
+   - Click **"Generate New Private Key"** (this downloads a `.json` file).
+   - Rename the file to:
+     ```
+     reallystick-firebase-adminsdk.json
+     ```
+
+4. **Place the File**:
+   - Copy the `.json` file to the **root of the `backend/notifications/` directory**.
+
+---
+
+### **2. `google-services.json` (Android)**
+
+This file is required for Firebase integration in Android apps.
+
+#### **Steps to Generate and Place the File:**
+
+1. **Register Your Android App in Firebase**:
+
+   - In the [Firebase Console](https://console.firebase.google.com/), go to your project.
+   - Click **"Add App"** and select **Android**.
+   - Enter the package name `com.reallystick`.
+   - Follow the instructions to register your app.
+
+2. **Download `google-services.json`**:
+   - After registering, Firebase will prompt you to download `google-services.json`.
+   - Save this file in:
+     ```
+     frontend/android/app/google-services.json
      ```
 
 ---

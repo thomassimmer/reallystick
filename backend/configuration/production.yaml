@@ -1,5 +1,0 @@
-application:
-  host: "reallystick.com"
-database:
-  host: "db"
-  require_ssl: true

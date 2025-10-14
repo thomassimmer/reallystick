@@ -1,0 +1,5 @@
+BEGIN;
+
+ALTER TABLE users ADD COLUMN has_seen_questions BOOLEAN;
+
+COMMIT;

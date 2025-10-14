@@ -51,3 +51,7 @@ postgres_data/
 
 # Prod
 README.prod.md
+frontend/android/app/google-services.json
+.env
+.env.docker
+backend/notifications/reallystick-firebase-adminsdk.json

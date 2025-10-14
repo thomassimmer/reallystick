@@ -1,0 +1,6 @@
+BEGIN;
+
+ALTER TABLE users DROP COLUMN has_seen_questions;
+ALTER TABLE users ADD COLUMN has_seen_questions BOOLEAN NOT NULL DEFAULT FALSE;
+
+COMMIT;
