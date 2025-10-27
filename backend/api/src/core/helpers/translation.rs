@@ -14,7 +14,7 @@ impl Translator {
         let mut bundles: HashMap<String, FluentBundle<FluentResource>> = HashMap::new();
 
         for lang in &["en", "fr", "ru", "es", "pt", "it", "de"] {
-            let path = format!("locales/{}.ftl", lang);
+            let path = format!("../locales/{}.ftl", lang);
             if let Ok(content) = fs::read_to_string(&path) {
                 if let Ok(resource) = FluentResource::try_new(content) {
                     let lang_id: LanguageIdentifier = lang.parse().expect("Invalid language ID");

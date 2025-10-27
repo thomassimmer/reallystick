@@ -54,5 +54,6 @@ README.prod.md
 frontend/android/app/google-services.json
 .env
 .env.docker
+.env.prod
 backend/notifications/reallystick-firebase-adminsdk.json
 config_nginx
