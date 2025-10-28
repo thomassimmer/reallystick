@@ -419,12 +419,14 @@ class PrivateDiscussionScreenState extends State<PrivateDiscussionScreen> {
 
                             return Column(
                               children: [
-                                if (index > 0 &&
-                                    messages[index - 1]
-                                            .createdAt
-                                            .day
-                                            .compareTo(message.createdAt.day) <
-                                        0) ...[
+                                if (index == 0 ||
+                                    (index > 0 &&
+                                        messages[index - 1]
+                                                .createdAt
+                                                .day
+                                                .compareTo(
+                                                    message.createdAt.day) <
+                                            0)) ...[
                                   Text(
                                     DateFormat.yMEd(userLocale)
                                         .format(message.createdAt),

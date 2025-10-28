@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:reallystick/core/constants/dates.dart';
 import 'package:reallystick/core/ui/extensions.dart';
 import 'package:reallystick/features/private_messages/domain/entities/private_discussion.dart';
 import 'package:reallystick/features/private_messages/presentation/widgets/status_widget.dart';
@@ -72,14 +73,32 @@ class DiscussionWidget extends StatelessWidget {
                         children: [
                           if (discussion.lastMessage != null)
                             Text(
-                              discussion.lastMessage!.updateAt == null
-                                  ? DateFormat.Hm()
-                                      .format(discussion.lastMessage!.createdAt)
-                                  : AppLocalizations.of(context)!.editedAt(
-                                      DateFormat.yMEd(userLocale)
+                              () {
+                                final message = discussion.lastMessage!;
+                                final displayDate =
+                                    message.updateAt ?? message.createdAt;
+                                final isToday =
+                                    displayDate.isSameDate(DateTime.now());
+
+                                if (message.updateAt == null) {
+                                  return isToday
+                                      ? DateFormat.Hm()
+                                          .format(message.createdAt)
+                                      : DateFormat.yMEd(userLocale)
                                           .add_Hm()
-                                          .format(discussion
-                                              .lastMessage!.updateAt!)),
+                                          .format(message.createdAt);
+                                } else {
+                                  if (isToday) {
+                                    return AppLocalizations.of(context)!
+                                        .editedAt(DateFormat.Hm()
+                                            .format(message.updateAt!));
+                                  } else {
+                                    return DateFormat.yMEd(userLocale)
+                                        .add_Hm()
+                                        .format(message.updateAt!);
+                                  }
+                                }
+                              }(),
                               style: TextStyle(
                                 color: context.colors.hint,
                                 fontSize: 12,
