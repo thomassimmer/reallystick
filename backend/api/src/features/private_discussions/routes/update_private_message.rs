@@ -123,7 +123,7 @@ pub async fn update_private_message(
                 error!("Error: {}", e);
             }
 
-            if let Some(recipient) = recipients.iter().next() {
+            if let Some(recipient) = recipients.first() {
                 let result: Result<(), redis::RedisError> = con
                     .publish(
                         "private_message_updated",

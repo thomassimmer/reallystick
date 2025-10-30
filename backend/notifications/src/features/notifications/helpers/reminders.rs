@@ -121,18 +121,18 @@ pub async fn send_reminder_notification_to_user(
     for (_, token) in user_data.tokens {
         let can_send_a_push_notification = user_data.user.notifications_enabled;
 
-        if can_send_a_push_notification {
-            if token.is_mobile == Some(true) && token.browser.is_none() {
-                if let Some(fcm_token) = token.fcm_token {
-                    send_push_notification(
-                        token_manager,
-                        fcm_token,
-                        title.clone(),
-                        body.clone(),
-                        Some(url.clone()),
-                    )
-                    .await;
-                }
+        if can_send_a_push_notification
+            && token.is_mobile == Some(true) && token.browser.is_none()
+        {
+            if let Some(fcm_token) = token.fcm_token {
+                send_push_notification(
+                    token_manager,
+                    fcm_token,
+                    title.clone(),
+                    body.clone(),
+                    Some(url.clone()),
+                )
+                .await;
             }
         }
     }

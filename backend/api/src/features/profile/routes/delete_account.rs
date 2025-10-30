@@ -77,7 +77,7 @@ pub async fn delete_account(
         }
     }
 
-    return HttpResponse::Ok().json(DeleteAccountResponse {
+    HttpResponse::Ok().json(DeleteAccountResponse {
         code: "ACCOUNT_DELETED".to_string(),
-    });
+    })
 }

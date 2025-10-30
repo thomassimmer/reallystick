@@ -100,7 +100,7 @@ impl TokenManager {
     /// needed by users.
     #[instrument(level = "debug", skip(self))]
     pub fn is_token_expired(&self) -> bool {
-        self.expires_at.map_or(true, |expires_at| {
+        self.expires_at.is_none_or(|expires_at| {
             let expired = expires_at <= Instant::now();
             debug!("Token expired: {}", expired);
             expired

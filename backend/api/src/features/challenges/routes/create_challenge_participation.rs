@@ -113,10 +113,10 @@ pub async fn create_challenge_participation(
     if request_claims.user_id != challenge.creator {
         if let (Some(joiner), Some(creator)) = (
             user_public_data_cache
-                .get_value_for_key_or_insert_it(&request_claims.user_id, &mut *transaction)
+                .get_value_for_key_or_insert_it(&request_claims.user_id, &mut transaction)
                 .await,
             user_public_data_cache
-                .get_value_for_key_or_insert_it(&challenge.creator, &mut *transaction)
+                .get_value_for_key_or_insert_it(&challenge.creator, &mut transaction)
                 .await,
         ) {
             let mut args = FluentArgs::new();

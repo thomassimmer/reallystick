@@ -88,7 +88,7 @@ pub async fn user_deletes_all_notifications(
     access_token: &str,
 ) {
     let req = test::TestRequest::delete()
-        .uri(&format!("/api/notifications/",))
+        .uri("/api/notifications/")
         .insert_header((header::AUTHORIZATION, format!("Bearer {}", access_token)))
         .to_request();
     let response = test::call_service(&app, req).await;
@@ -118,7 +118,7 @@ pub async fn user_can_mark_a_notification_as_seen() {
     assert_eq!(notifications.len(), 1);
 
     let notification = notifications.first().unwrap();
-    assert_eq!(notification.seen, false);
+    assert!(!notification.seen);
 
     user_marks_a_notification_as_seen(&app, &access_token, notification.id).await;
 
@@ -126,7 +126,7 @@ pub async fn user_can_mark_a_notification_as_seen() {
     assert_eq!(notifications.len(), 1);
 
     let notification = notifications.first().unwrap();
-    assert_eq!(notification.seen, true);
+    assert!(notification.seen);
 }
 
 #[tokio::test]

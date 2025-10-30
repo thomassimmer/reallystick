@@ -24,7 +24,7 @@ pub async fn user_creates_a_habit_category(
         .uri("/api/habit-categories/")
         .insert_header((header::AUTHORIZATION, format!("Bearer {}", access_token)))
         .insert_header(ContentType::json())
-        .set_json(&serde_json::json!({
+        .set_json(serde_json::json!({
             "name": HashMap::from([("en", "Learning languages")]),
             "icon": "english_icon".to_string(),
         }))
@@ -51,7 +51,7 @@ pub async fn user_updates_a_habit_category(
         .uri(&format!("/api/habit-categories/{}", habit_category_id))
         .insert_header((header::AUTHORIZATION, format!("Bearer {}", access_token)))
         .insert_header(ContentType::json())
-        .set_json(&serde_json::json!({
+        .set_json(serde_json::json!({
             "name": HashMap::from([("en", "Learning languages"), ("fr", "Apprendre une langue")]),
             "icon": "english_icon".to_string(),
         }))

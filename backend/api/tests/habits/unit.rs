@@ -24,7 +24,7 @@ pub async fn user_creates_a_unit(
         .uri("/api/units/")
         .insert_header((header::AUTHORIZATION, format!("Bearer {}", access_token)))
         .insert_header(ContentType::json())
-        .set_json(&serde_json::json!({
+        .set_json(serde_json::json!({
             "short_name": HashMap::from([("en", "h")]),
             "long_name": HashMap::from([("en", "hour")]),
         }))
@@ -51,7 +51,7 @@ pub async fn user_updates_a_unit(
         .uri(&format!("/api/units/{}", unit_id))
         .insert_header((header::AUTHORIZATION, format!("Bearer {}", access_token)))
         .insert_header(ContentType::json())
-        .set_json(&serde_json::json!({
+        .set_json(serde_json::json!({
             "short_name": HashMap::from([("en", "h"), ("fr", "h")]),
             "long_name": HashMap::from([("en", "hour"), ("fr", "heure")]),
         }))

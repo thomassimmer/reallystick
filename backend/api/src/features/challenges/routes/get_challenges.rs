@@ -1,26 +1,14 @@
 use crate::{
     core::constants::errors::AppError,
-    features::{
-        auth::structs::models::Claims,
-        challenges::{helpers::challenge, structs::responses::challenge::ChallengesResponse},
-    },
+    features::challenges::{helpers::challenge, structs::responses::challenge::ChallengesResponse},
 };
-use actix_web::{
-    get,
-    web::{Data, ReqData},
-    HttpResponse, Responder,
-};
+use actix_web::{get, web::Data, HttpResponse, Responder};
 use sqlx::PgPool;
 use tracing::error;
 
 #[get("/")]
-pub async fn get_challenges(pool: Data<PgPool>, request_claims: ReqData<Claims>) -> impl Responder {
-    let get_challenges_result = if request_claims.is_admin {
-        challenge::get_challenges(&**pool).await
-    } else {
-        challenge::get_challenges(&**pool).await
-        // challenge::get_created_and_joined_challenges(&**pool, request_claims.user_id).await
-    };
+pub async fn get_challenges(pool: Data<PgPool>) -> impl Responder {
+    let get_challenges_result = challenge::get_challenges(&**pool).await;
 
     match get_challenges_result {
         Ok(challenges) => HttpResponse::Ok().json(ChallengesResponse {

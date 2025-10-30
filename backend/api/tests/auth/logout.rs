@@ -60,7 +60,7 @@ async fn user_cannot_use_access_token_or_refresh_token_after_logout() {
     let req = test::TestRequest::post()
         .uri("/api/auth/refresh-token")
         .insert_header(ContentType::json())
-        .set_json(&serde_json::json!({
+        .set_json(serde_json::json!({
             "refresh_token": refresh_token,
         }))
         .to_request();

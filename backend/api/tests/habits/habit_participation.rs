@@ -32,7 +32,7 @@ pub async fn user_creates_a_habit_participation(
         .uri("/api/habit-participations/")
         .insert_header((header::AUTHORIZATION, format!("Bearer {}", access_token)))
         .insert_header(ContentType::json())
-        .set_json(&serde_json::json!({
+        .set_json(serde_json::json!({
             "habit_id": habit_id,
             "color": "blue",
             "to_gain": true,
@@ -84,7 +84,7 @@ pub async fn user_updates_a_habit_participation(
         response.habit_participation.clone().unwrap().color,
         "yellow"
     );
-    assert_eq!(response.habit_participation.unwrap().to_gain, false);
+    assert!(!response.habit_participation.unwrap().to_gain);
 }
 
 pub async fn user_deletes_a_habit_participation(

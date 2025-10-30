@@ -114,17 +114,13 @@ pub async fn get_private_discussions(
             .iter()
             .map(|d| {
                 let participation = discussion_participations
-                    .iter()
-                    .filter(|p| p.discussion_id == d.id)
-                    .next();
+                    .iter().find(|p| p.discussion_id == d.id);
 
                 let last_message = messages
                     .clone()
-                    .into_iter()
-                    .filter(|m| m.discussion_id == d.id)
-                    .next();
+                    .into_iter().find(|m| m.discussion_id == d.id);
 
-                let recipient = recipients.iter().filter(|p| p.discussion_id == d.id).next();
+                let recipient = recipients.iter().find(|p| p.discussion_id == d.id);
                 let unseen_message_for_this_discussion = unseen_messages
                     .iter()
                     .filter(|p| p.0 == d.id)
@@ -132,11 +128,10 @@ pub async fn get_private_discussions(
                     .next();
 
                 d.to_private_discussion_data(
-                    participation.and_then(|p| Some(p.color.clone())),
-                    participation.and_then(|p| Some(p.has_blocked)),
-                    last_message.and_then(|m| Some(m.to_private_message_data())),
-                    recipient
-                        .and_then(|r| Some(r.user_id))
+                    participation.map(|p| p.color.clone()),
+                    participation.map(|p| p.has_blocked),
+                    last_message.map(|m| m.to_private_message_data()),
+                    recipient.map(|r| r.user_id)
                         .or(Some(request_claims.user_id)), // If there is no recipient, it must be a discussion with itself
                     unseen_message_for_this_discussion.unwrap_or_default(),
                 )

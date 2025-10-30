@@ -129,16 +129,16 @@ pub async fn create_private_message(
                 error!("Error: {}", e);
             }
 
-            if let Some(recipient_participation) = recipients.iter().next() {
+            if let Some(recipient_participation) = recipients.first() {
                 if let (Some(recipient), Some(creator)) = (
                     user_public_data_cache
                         .get_value_for_key_or_insert_it(
                             &recipient_participation.user_id,
-                            &mut *transaction,
+                            &mut transaction,
                         )
                         .await,
                     user_public_data_cache
-                        .get_value_for_key_or_insert_it(&request_claims.user_id, &mut *transaction)
+                        .get_value_for_key_or_insert_it(&request_claims.user_id, &mut transaction)
                         .await,
                 ) {
                     let mut args = FluentArgs::new();

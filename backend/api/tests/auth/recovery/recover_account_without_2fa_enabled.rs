@@ -20,7 +20,7 @@ pub async fn user_recovers_account_without_2fa_enabled(
     let req = test::TestRequest::post()
         .uri("/api/auth/recover")
         .insert_header(ContentType::json())
-        .set_json(&serde_json::json!({
+        .set_json(serde_json::json!({
             "username": "testusername",
             "recovery_code": recovery_code,
         }))
@@ -58,7 +58,7 @@ async fn user_cannot_recover_account_without_2fa_enabled_with_wrong_code() {
     let req = test::TestRequest::post()
         .uri("/api/auth/recover")
         .insert_header(ContentType::json())
-        .set_json(&serde_json::json!({
+        .set_json(serde_json::json!({
             "username": "testusername",
             "recovery_code": "wrong_recovery_code",
         }))
@@ -85,7 +85,7 @@ async fn user_cannot_recover_account_without_2fa_enabled_with_wrong_username() {
     let req = test::TestRequest::post()
         .uri("/api/auth/recover")
         .insert_header(ContentType::json())
-        .set_json(&serde_json::json!({
+        .set_json(serde_json::json!({
             "username": "wrong_username",
             "recovery_code": recovery_code,
         }))
@@ -116,7 +116,7 @@ async fn user_cannot_recover_account_without_2fa_enabled_using_code_twice() {
     let req = test::TestRequest::post()
         .uri("/api/auth/recover")
         .insert_header(ContentType::json())
-        .set_json(&serde_json::json!({
+        .set_json(serde_json::json!({
             "username": "testusername",
             "recovery_code": recovery_code,
         }))
@@ -147,7 +147,7 @@ async fn user_cannot_login_with_old_password_after_recovery() {
     let req = test::TestRequest::post()
         .uri("/api/auth/login")
         .insert_header(ContentType::json())
-        .set_json(&serde_json::json!({
+        .set_json(serde_json::json!({
         "username": "testusername",
         "password": "password1_",
         }))

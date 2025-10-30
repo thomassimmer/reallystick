@@ -157,6 +157,19 @@ pub async fn run(listener: TcpListener, configuration: Settings) -> Result<Serve
     Ok(server)
 }
 
+#[derive(Clone)]
+struct AppConfig {
+    connection_pool: Pool<Postgres>,
+    secret: String,
+    habit_statistics_cache: HabitStatisticsCache,
+    challenge_statistics_cache: ChallengeStatisticsCache,
+    token_cache: TokenCache,
+    user_public_data_cache: UserPublicDataCache,
+    redis_client: Client,
+    translator: Arc<Translator>,
+}
+
+#[allow(clippy::too_many_arguments)]
 pub fn create_app(
     connection_pool: Pool<Postgres>,
     secret: String,
@@ -166,6 +179,31 @@ pub fn create_app(
     user_public_data_cache: UserPublicDataCache,
     redis_client: Client,
     translator: Arc<Translator>,
+) -> App<
+    impl ServiceFactory<
+        ServiceRequest,
+        Config = (),
+        Response = ServiceResponse<impl MessageBody>,
+        Error = Error,
+        InitError = (),
+    >,
+> {
+    let config = AppConfig {
+        connection_pool,
+        secret,
+        habit_statistics_cache,
+        challenge_statistics_cache,
+        token_cache,
+        user_public_data_cache,
+        redis_client,
+        translator,
+    };
+
+    _create_app_internal(config)
+}
+
+fn _create_app_internal(
+    config: AppConfig,
 ) -> App<
     impl ServiceFactory<
         ServiceRequest,
@@ -415,14 +453,14 @@ pub fn create_app(
         )
         .wrap(cors)
         .wrap(Logger::default())
-        .app_data(web::Data::new(connection_pool))
-        .app_data(web::Data::new(secret))
-        .app_data(web::Data::new(habit_statistics_cache))
-        .app_data(web::Data::new(challenge_statistics_cache))
-        .app_data(web::Data::new(token_cache))
-        .app_data(web::Data::new(user_public_data_cache))
-        .app_data(web::Data::new(redis_client))
-        .app_data(web::Data::new(translator))
+        .app_data(web::Data::new(config.connection_pool))
+        .app_data(web::Data::new(config.secret))
+        .app_data(web::Data::new(config.habit_statistics_cache))
+        .app_data(web::Data::new(config.challenge_statistics_cache))
+        .app_data(web::Data::new(config.token_cache))
+        .app_data(web::Data::new(config.user_public_data_cache))
+        .app_data(web::Data::new(config.redis_client))
+        .app_data(web::Data::new(config.translator))
 }
 
 pub struct Application {

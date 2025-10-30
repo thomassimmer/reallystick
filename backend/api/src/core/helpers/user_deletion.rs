@@ -31,7 +31,7 @@ pub async fn remove_users_marked_as_deleted(
     let users = get_not_deleted_but_marked_as_deleted_users(pool).await?;
 
     for user in users.clone() {
-        delete_user_data(&pool, user, &redis_client).await?;
+        delete_user_data(pool, user, redis_client).await?;
     }
 
     info!("Successfully deleted {} users.", users.len());

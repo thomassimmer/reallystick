@@ -32,7 +32,7 @@ pub async fn user_creates_a_challenge_participation(
         .uri("/api/challenge-participations/")
         .insert_header((header::AUTHORIZATION, format!("Bearer {}", access_token)))
         .insert_header(ContentType::json())
-        .set_json(&serde_json::json!({
+        .set_json(serde_json::json!({
             "challenge_id": challenge_id,
             "color": "blue",
             "start_date": Utc::now(),

@@ -93,8 +93,8 @@ pub async fn set_fcm_token(
                 .publish(
                     "user_token_updated",
                     json!(UserTokenUpdatedEvent {
-                        token: token,
-                        user: user,
+                        token,
+                        user,
                     })
                     .to_string(),
                 )
@@ -108,8 +108,8 @@ pub async fn set_fcm_token(
         }
     }
 
-    return HttpResponse::Ok().json(GenericResponse {
+    HttpResponse::Ok().json(GenericResponse {
         code: "FCM_TOKEN_UPDATED".to_string(),
         message: "Your fcm token was saved".to_string(),
-    });
+    })
 }

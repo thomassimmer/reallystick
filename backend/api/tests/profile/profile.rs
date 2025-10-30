@@ -85,7 +85,7 @@ pub async fn delete_user_marked_as_deleted(
     redis_client: &Client,
 ) {
     assert!(
-        remove_users_marked_as_deleted(&connection_pool, &redis_client)
+        remove_users_marked_as_deleted(connection_pool, redis_client)
             .await
             .is_ok()
     );
@@ -193,7 +193,7 @@ pub async fn user_can_delete_account() {
     let req = test::TestRequest::post()
         .uri("/api/auth/login")
         .insert_header(ContentType::json())
-        .set_json(&serde_json::json!({
+        .set_json(serde_json::json!({
         "username": "testusername",
         "password": "password1_",
         }))
@@ -216,7 +216,7 @@ pub async fn is_otp_enabled_for_user_that_activated_it() {
     let req = test::TestRequest::post()
         .uri("/api/users/is-otp-enabled")
         .insert_header(ContentType::json())
-        .set_json(&serde_json::json!({
+        .set_json(serde_json::json!({
             "username": "testusername",
         }))
         .to_request();
@@ -228,7 +228,7 @@ pub async fn is_otp_enabled_for_user_that_activated_it() {
     let response: IsOtpEnabledResponse = serde_json::from_slice(&body).unwrap();
 
     assert_eq!(response.code, "OTP_STATUS");
-    assert_eq!(response.otp_enabled, false);
+    assert!(!response.otp_enabled);
 
     // User only generates OTP
     user_generates_otp(&app, &access_token).await;
@@ -236,7 +236,7 @@ pub async fn is_otp_enabled_for_user_that_activated_it() {
     let req = test::TestRequest::post()
         .uri("/api/users/is-otp-enabled")
         .insert_header(ContentType::json())
-        .set_json(&serde_json::json!({
+        .set_json(serde_json::json!({
             "username": "testusername",
         }))
         .to_request();
@@ -248,7 +248,7 @@ pub async fn is_otp_enabled_for_user_that_activated_it() {
     let response: IsOtpEnabledResponse = serde_json::from_slice(&body).unwrap();
 
     assert_eq!(response.code, "OTP_STATUS");
-    assert_eq!(response.otp_enabled, false);
+    assert!(!response.otp_enabled);
 
     // User generates and validates OTP
     let otp_base32 = user_generates_otp(&app, &access_token).await;
@@ -257,7 +257,7 @@ pub async fn is_otp_enabled_for_user_that_activated_it() {
     let req = test::TestRequest::post()
         .uri("/api/users/is-otp-enabled")
         .insert_header(ContentType::json())
-        .set_json(&serde_json::json!({
+        .set_json(serde_json::json!({
             "username": "testusername",
         }))
         .to_request();
@@ -269,5 +269,5 @@ pub async fn is_otp_enabled_for_user_that_activated_it() {
     let response: IsOtpEnabledResponse = serde_json::from_slice(&body).unwrap();
 
     assert_eq!(response.code, "OTP_STATUS");
-    assert_eq!(response.otp_enabled, true);
+    assert!(response.otp_enabled);
 }

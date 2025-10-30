@@ -125,7 +125,7 @@ where
         Err(e) => return Err(e),
     };
 
-    return Ok(discussions);
+    Ok(discussions)
 }
 
 pub async fn delete_message_by_id<'a, E>(

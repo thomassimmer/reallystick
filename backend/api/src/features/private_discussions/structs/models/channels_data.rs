@@ -47,7 +47,7 @@ impl ChannelsData {
             .get_mut(&UserIdWithUserTokenId { user_id, token_id })
         {
             existing_sessions.remove(&session_uuid);
-            existing_sessions.len() == 0
+            existing_sessions.is_empty()
         } else {
             false
         };

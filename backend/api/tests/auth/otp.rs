@@ -55,7 +55,7 @@ pub async fn user_verifies_otp(
         .uri("/api/auth/otp/verify")
         .insert_header(ContentType::json())
         .insert_header((header::AUTHORIZATION, format!("Bearer {}", access_token)))
-        .set_json(&serde_json::json!({"code": code}))
+        .set_json(serde_json::json!({"code": code}))
         .to_request();
     let response = test::call_service(&app, req).await;
 
@@ -65,7 +65,7 @@ pub async fn user_verifies_otp(
     let response: VerifyOtpResponse = serde_json::from_slice(&body).unwrap();
 
     assert_eq!(response.code, "OTP_VERIFIED");
-    assert_eq!(response.otp_verified, true);
+    assert!(response.otp_verified);
 }
 
 #[tokio::test]
@@ -89,7 +89,7 @@ async fn registered_user_can_validate_otp() {
     let req = test::TestRequest::post()
         .uri("/api/auth/login")
         .insert_header(ContentType::json())
-        .set_json(&serde_json::json!({
+        .set_json(serde_json::json!({
         "username": "testusername",
         "password": "password1_",
         }))
@@ -119,7 +119,7 @@ async fn registered_user_can_validate_otp() {
         .uri("/api/auth/otp/validate")
         .insert_header(ContentType::json())
         .insert_header((header::AUTHORIZATION, format!("Bearer {}", access_token)))
-        .set_json(&serde_json::json!({"code": code, "user_id": response.user_id}))
+        .set_json(serde_json::json!({"code": code, "user_id": response.user_id}))
         .to_request();
     let response = test::call_service(&app, req).await;
 
@@ -153,7 +153,7 @@ async fn registered_user_can_disable_otp() {
     let response: DisableOtpResponse = serde_json::from_slice(&body).unwrap();
 
     assert_eq!(response.code, "OTP_DISABLED");
-    assert_eq!(response.two_fa_enabled, false);
+    assert!(!response.two_fa_enabled);
 }
 
 #[tokio::test]
@@ -183,7 +183,7 @@ async fn user_cannot_validate_otp_for_a_wrong_user() {
         .uri("/api/auth/otp/validate")
         .insert_header(ContentType::json())
         .insert_header((header::AUTHORIZATION, format!("Bearer {}", access_token)))
-        .set_json(&serde_json::json!({"code": "000000", "user_id": Uuid::new_v4()}))
+        .set_json(serde_json::json!({"code": "000000", "user_id": Uuid::new_v4()}))
         .to_request();
     let response = test::call_service(&app, req).await;
 

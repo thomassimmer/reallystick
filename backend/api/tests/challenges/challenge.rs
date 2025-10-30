@@ -47,7 +47,7 @@ pub async fn user_creates_a_challenge(
         .uri("/api/challenges/")
         .insert_header((header::AUTHORIZATION, format!("Bearer {}", access_token)))
         .insert_header(ContentType::json())
-        .set_json(&serde_json::json!({
+        .set_json(serde_json::json!({
             "name": HashMap::from([("en", "English")]),
             "description": HashMap::from([(
                 "en",
@@ -101,7 +101,7 @@ pub async fn user_updates_a_challenge(
         .uri(&format!("/api/challenges/{}", challenge_id))
         .insert_header((header::AUTHORIZATION, format!("Bearer {}", access_token)))
         .insert_header(ContentType::json())
-        .set_json(&serde_json::json!({
+        .set_json(serde_json::json!({
             "name": HashMap::from([("en", "English"), ("fr", "Anglais")]),
             "description": HashMap::from([(
                 "en",
@@ -290,7 +290,7 @@ pub async fn normal_user_cannot_update_a_challenge() {
         .uri(&format!("/api/challenges/{}", challenge_id))
         .insert_header((header::AUTHORIZATION, format!("Bearer {}", access_token)))
         .insert_header(ContentType::json())
-        .set_json(&serde_json::json!({
+        .set_json(serde_json::json!({
             "name": HashMap::from([("en", "English"), ("fr", "Anglais")]),
             "description": HashMap::from([(
                 "en",

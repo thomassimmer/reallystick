@@ -12,6 +12,7 @@ pub mod auth {
     pub mod token;
 }
 
+#[allow(clippy::module_inception)]
 pub mod profile {
     pub mod devices;
     pub mod profile;
@@ -50,6 +51,7 @@ pub mod private_discussions {
     pub mod private_message;
 }
 
+#[allow(clippy::module_inception)]
 pub mod notifications {
     pub mod notifications;
 }

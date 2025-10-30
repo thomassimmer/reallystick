@@ -65,9 +65,7 @@ pub async fn mark_message_as_seen(
     .await
     {
         Ok(r) => r
-            .into_iter()
-            .filter(|p| p.user_id != private_message.creator)
-            .next(),
+            .into_iter().find(|p| p.user_id != private_message.creator),
         Err(e) => {
             error!("Error: {}", e);
             return HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response());

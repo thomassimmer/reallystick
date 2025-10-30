@@ -23,7 +23,7 @@ pub async fn user_recovers_account_using_password(
     let req = test::TestRequest::post()
         .uri("/api/auth/recover-using-password")
         .insert_header(ContentType::json())
-        .set_json(&serde_json::json!({
+        .set_json(serde_json::json!({
             "username": "testusername",
             "password": password,
             "recovery_code": recovery_code,
@@ -64,7 +64,7 @@ async fn user_can_recover_account_using_password() {
     let req = test::TestRequest::post()
         .uri("/api/users/is-otp-enabled")
         .insert_header(ContentType::json())
-        .set_json(&serde_json::json!({
+        .set_json(serde_json::json!({
             "username": "testusername",
         }))
         .to_request();
@@ -75,7 +75,7 @@ async fn user_can_recover_account_using_password() {
     let body = test::read_body(response).await;
     let response: IsOtpEnabledResponse = serde_json::from_slice(&body).unwrap();
 
-    assert_eq!(response.otp_enabled, false);
+    assert!(!response.otp_enabled);
 }
 
 #[tokio::test]
@@ -90,7 +90,7 @@ async fn user_cannot_recover_using_password_without_2fa() {
     let req = test::TestRequest::post()
         .uri("/api/auth/recover-using-password")
         .insert_header(ContentType::json())
-        .set_json(&serde_json::json!({
+        .set_json(serde_json::json!({
             "username": "testusername",
             "recovery_code": "wrong_recovery_code",
             "password": "password1_".to_string(),
@@ -117,7 +117,7 @@ async fn user_cannot_recover_account_using_password_with_wrong_code() {
     let req = test::TestRequest::post()
         .uri("/api/auth/recover-using-password")
         .insert_header(ContentType::json())
-        .set_json(&serde_json::json!({
+        .set_json(serde_json::json!({
             "username": "testusername",
             "recovery_code": "wrong_recovery_code",
             "password": "password1_".to_string(),
@@ -152,7 +152,7 @@ async fn user_cannot_recover_account_using_password_with_wrong_username() {
     let req = test::TestRequest::post()
         .uri("/api/auth/recover-using-password")
         .insert_header(ContentType::json())
-        .set_json(&serde_json::json!({
+        .set_json(serde_json::json!({
             "username": "wrong_username",
             "recovery_code": recovery_code,
             "password": "password1_".to_string(),
@@ -187,7 +187,7 @@ async fn user_cannot_recover_account_using_password_with_wrong_password() {
     let req = test::TestRequest::post()
         .uri("/api/auth/recover-using-password")
         .insert_header(ContentType::json())
-        .set_json(&serde_json::json!({
+        .set_json(serde_json::json!({
             "username": "testusername",
             "recovery_code": recovery_code,
             "password": "wrong_password".to_string(),
@@ -231,7 +231,7 @@ async fn user_cannot_recover_account_using_password_using_code_twice() {
     let req = test::TestRequest::post()
         .uri("/api/auth/recover-using-password")
         .insert_header(ContentType::json())
-        .set_json(&serde_json::json!({
+        .set_json(serde_json::json!({
             "username": "testusername",
             "recovery_code": recovery_code,
             "password": "password1_".to_string(),

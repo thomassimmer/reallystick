@@ -18,7 +18,7 @@ pub async fn user_logs_in(
     let req = test::TestRequest::post()
         .uri("/api/auth/login")
         .insert_header(ContentType::json())
-        .set_json(&serde_json::json!({
+        .set_json(serde_json::json!({
         "username": username,
         "password": password,
         }))
@@ -50,7 +50,7 @@ async fn user_cannot_login_with_wrong_password() {
     let req = test::TestRequest::post()
         .uri("/api/auth/login")
         .insert_header(ContentType::json())
-        .set_json(&serde_json::json!({
+        .set_json(serde_json::json!({
         "username": "testusername",
         "password": "wrong_password",
         }))
@@ -73,7 +73,7 @@ async fn user_cannot_login_with_wrong_username() {
     let req = test::TestRequest::post()
         .uri("/api/auth/login")
         .insert_header(ContentType::json())
-        .set_json(&serde_json::json!({
+        .set_json(serde_json::json!({
         "username": "wrong_username",
         "password": "password1_",
         }))

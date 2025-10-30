@@ -70,7 +70,7 @@ pub async fn user_gets_user_message_reports(
     access_token: &str,
 ) -> (Vec<PublicMessageData>, Vec<PublicMessageReportData>) {
     let req = test::TestRequest::get()
-        .uri(&format!("/api/public-message-reports/me",))
+        .uri("/api/public-message-reports/me")
         .insert_header((header::AUTHORIZATION, format!("Bearer {}", access_token)))
         .to_request();
     let response = test::call_service(&app, req).await;
@@ -89,7 +89,7 @@ pub async fn user_gets_message_reports(
     access_token: &str,
 ) -> (Vec<PublicMessageData>, Vec<PublicMessageReportData>) {
     let req = test::TestRequest::get()
-        .uri(&format!("/api/public-message-reports/",))
+        .uri("/api/public-message-reports/")
         .insert_header((header::AUTHORIZATION, format!("Bearer {}", access_token)))
         .to_request();
     let response = test::call_service(&app, req).await;

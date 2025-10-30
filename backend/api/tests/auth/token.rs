@@ -22,7 +22,7 @@ pub async fn user_refreshes_token(
     let req = test::TestRequest::post()
         .uri("/api/auth/refresh-token")
         .insert_header(ContentType::json())
-        .set_json(&serde_json::json!({
+        .set_json(serde_json::json!({
             "refresh_token": refresh_token,
         }))
         .to_request();
@@ -57,7 +57,7 @@ async fn user_cannot_refresh_using_a_wrong_refresh_token() {
     let req = test::TestRequest::post()
         .uri("/api/auth/refresh-token")
         .insert_header(ContentType::json())
-        .set_json(&serde_json::json!({
+        .set_json(serde_json::json!({
             "refresh_token": "wrong token",
         }))
         .to_request();
@@ -130,7 +130,7 @@ async fn refresh_token_becomes_expired_after_7_days() {
     let req = test::TestRequest::post()
         .uri("/api/auth/refresh-token")
         .insert_header(ContentType::json())
-        .set_json(&serde_json::json!({
+        .set_json(serde_json::json!({
             "refresh_token": refresh_token,
         }))
         .to_request();

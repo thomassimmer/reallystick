@@ -114,7 +114,7 @@ pub async fn user_marks_a_private_message_as_seen(
 
     assert_eq!(response.code, "PRIVATE_MESSAGE_UPDATED");
     assert!(response.message.is_some());
-    assert_eq!(response.message.unwrap().seen, true);
+    assert!(response.message.unwrap().seen);
 }
 
 pub async fn user_deletes_a_private_message(
@@ -204,7 +204,7 @@ pub async fn user_can_create_a_private_message() {
 
     assert_eq!(private_messages.len(), 1);
     assert_eq!(private_messages[0].content, encrypted_content);
-    assert_eq!(private_messages[0].seen, false);
+    assert!(!private_messages[0].seen);
 
     let (access_token, _) = user_logs_in(&app, "thomas", "").await;
 
@@ -214,7 +214,7 @@ pub async fn user_can_create_a_private_message() {
         user_gets_private_messages_of_discussion(&app, &access_token, discussion_id).await;
 
     assert_eq!(private_messages.len(), 1);
-    assert_eq!(private_messages[0].seen, true);
+    assert!(private_messages[0].seen);
 }
 
 #[tokio::test]
@@ -255,7 +255,7 @@ pub async fn user_can_delete_a_private_message() {
         user_gets_private_messages_of_discussion(&app, &access_token, discussion_id).await;
 
     assert_eq!(private_messages.len(), 1);
-    assert_eq!(private_messages[0].deleted, false);
+    assert!(!private_messages[0].deleted);
 
     user_deletes_a_private_message(&app, &access_token, private_message_id).await;
 
@@ -263,5 +263,5 @@ pub async fn user_can_delete_a_private_message() {
         user_gets_private_messages_of_discussion(&app, &access_token, discussion_id).await;
 
     assert_eq!(private_messages.len(), 1);
-    assert_eq!(private_messages[0].deleted, true);
+    assert!(private_messages[0].deleted);
 }

@@ -30,7 +30,7 @@ pub async fn user_updates_password(
     private_key: &str,
 ) {
     let (private_key_encrypted, salt_used_to_derive_key_from_password) =
-        encrypt_private_key_with_password(&private_key, &new_password);
+        encrypt_private_key_with_password(private_key, new_password);
 
     let req = test::TestRequest::post()
         .uri("/api/users/update-password")

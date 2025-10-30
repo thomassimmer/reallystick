@@ -131,10 +131,10 @@ pub async fn duplicate_challenge(
     if request_claims.user_id != challenge_to_duplicate.creator {
         if let (Some(duplicator), Some(creator)) = (
             user_public_data_cache
-                .get_value_for_key_or_insert_it(&request_claims.user_id, &mut *transaction)
+                .get_value_for_key_or_insert_it(&request_claims.user_id, &mut transaction)
                 .await,
             user_public_data_cache
-                .get_value_for_key_or_insert_it(&challenge_to_duplicate.creator, &mut *transaction)
+                .get_value_for_key_or_insert_it(&challenge_to_duplicate.creator, &mut transaction)
                 .await,
         ) {
             let mut args = FluentArgs::new();

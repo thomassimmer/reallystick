@@ -49,42 +49,39 @@ pub async fn create_private_discussion(
     match get_private_discussion_by_users(&mut *transaction, body.recipient, request_claims.user_id)
         .await
     {
-        Ok(r) => match r {
-            Some(discussion) => {
-                match get_private_discussion_participation_by_user_and_discussion(
-                    &mut *transaction,
-                    request_claims.user_id,
-                    discussion.id,
-                )
-                .await
-                {
-                    Ok(r) => match r {
-                        Some(participation) => {
-                            return HttpResponse::Ok().json(PrivateDiscussionResponse {
-                                code: "PRIVATE_DISCUSSION_ALREADY_CREATED".to_string(),
-                                discussion: Some(discussion.to_private_discussion_data(
-                                    Some(participation.color),
-                                    Some(participation.has_blocked),
-                                    None,
-                                    Some(body.recipient),
-                                    0,
-                                )),
-                            })
-                        }
-                        None => {
-                            return HttpResponse::InternalServerError().json(
-                                AppError::PrivateDiscussionParticipationNotFound.to_response(),
-                            )
-                        }
-                    },
-                    Err(e) => {
-                        error!("Error: {}", e);
-                        return HttpResponse::InternalServerError()
-                            .json(AppError::DatabaseQuery.to_response());
+        Ok(r) => if let Some(discussion) = r {
+            match get_private_discussion_participation_by_user_and_discussion(
+                &mut *transaction,
+                request_claims.user_id,
+                discussion.id,
+            )
+            .await
+            {
+                Ok(r) => match r {
+                    Some(participation) => {
+                        return HttpResponse::Ok().json(PrivateDiscussionResponse {
+                            code: "PRIVATE_DISCUSSION_ALREADY_CREATED".to_string(),
+                            discussion: Some(discussion.to_private_discussion_data(
+                                Some(participation.color),
+                                Some(participation.has_blocked),
+                                None,
+                                Some(body.recipient),
+                                0,
+                            )),
+                        })
                     }
+                    None => {
+                        return HttpResponse::InternalServerError().json(
+                            AppError::PrivateDiscussionParticipationNotFound.to_response(),
+                        )
+                    }
+                },
+                Err(e) => {
+                    error!("Error: {}", e);
+                    return HttpResponse::InternalServerError()
+                        .json(AppError::DatabaseQuery.to_response());
                 }
             }
-            None => {}
         },
         Err(e) => {
             error!("Error: {}", e);

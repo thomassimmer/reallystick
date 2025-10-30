@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use redis::Client;
-use serde_json::{json, Value};
+use serde_json::json;
 use sqlx::{Pool, Postgres};
 use tokio::sync::Mutex;
 use tracing::{error, info};
@@ -78,40 +78,28 @@ pub async fn handle_redis_messages(
 }
 
 pub async fn handle_user_update(users_data: &UsersData, payload: String) {
-    match serde_json::from_str::<UserUpdatedEvent>(&payload) {
-        Ok(event) => {
-            users_data.update_user(event.user).await;
-        }
-        _ => return,
+    if let Ok(event) = serde_json::from_str::<UserUpdatedEvent>(&payload) {
+        users_data.update_user(event.user).await;
     }
 }
 
 pub async fn handle_user_deletion(users_data: &UsersData, payload: String) {
-    match serde_json::from_str::<UserRemovedEvent>(&payload) {
-        Ok(event) => {
-            users_data.remove_user(event.user_id).await;
-        }
-        _ => return,
+    if let Ok(event) = serde_json::from_str::<UserRemovedEvent>(&payload) {
+        users_data.remove_user(event.user_id).await;
     }
 }
 
 pub async fn handle_user_token_update(users_data: &UsersData, payload: String) {
-    match serde_json::from_str::<UserTokenUpdatedEvent>(&payload) {
-        Ok(event) => {
-            users_data.update_user_token(event.user, event.token).await;
-        }
-        _ => return,
+    if let Ok(event) = serde_json::from_str::<UserTokenUpdatedEvent>(&payload) {
+        users_data.update_user_token(event.user, event.token).await;
     }
 }
 
 pub async fn handle_user_token_deletion(users_data: &UsersData, payload: String) {
-    match serde_json::from_str::<UserTokenRemovedEvent>(&payload) {
-        Ok(event) => {
-            users_data
-                .remove_user_token(event.user_id, event.token_id)
-                .await;
-        }
-        _ => return,
+    if let Ok(event) = serde_json::from_str::<UserTokenRemovedEvent>(&payload) {
+        users_data
+            .remove_user_token(event.user_id, event.token_id)
+            .await;
     }
 }
 
@@ -132,7 +120,7 @@ pub async fn handle_notification(
                 Some(user_data) => user_data,
 
                 None => {
-                    let user = match get_user_by_id(&*connection_pool, event.recipient).await {
+                    let user = match get_user_by_id(connection_pool, event.recipient).await {
                         Ok(Some(u)) => u,
                         Err(e) => {
                             error!("Error: {}", e);
@@ -141,7 +129,7 @@ pub async fn handle_notification(
                         _ => return,
                     };
 
-                    let tokens = match get_user_tokens(event.recipient, &*connection_pool).await {
+                    let tokens = match get_user_tokens(event.recipient, connection_pool).await {
                         Ok(r) => r,
                         Err(e) => {
                             error!("Error: {}", e);
@@ -227,18 +215,18 @@ pub async fn handle_notification(
 
                         if let (Some(title), Some(body)) = (event.title.clone(), event.body.clone())
                         {
-                            if can_send_a_push_notification {
-                                if token.is_mobile == Some(true) && token.browser.is_none() {
-                                    if let Some(fcm_token) = token.fcm_token {
-                                        send_push_notification(
-                                            &token_manager,
-                                            fcm_token,
-                                            title,
-                                            body,
-                                            event.url.clone(),
-                                        )
-                                        .await;
-                                    }
+                            if can_send_a_push_notification
+                                && token.is_mobile == Some(true) && token.browser.is_none()
+                            {
+                                if let Some(fcm_token) = token.fcm_token {
+                                    send_push_notification(
+                                        &token_manager,
+                                        fcm_token,
+                                        title,
+                                        body,
+                                        event.url.clone(),
+                                    )
+                                    .await;
                                 }
                             }
                         }
@@ -261,12 +249,9 @@ pub async fn send_push_notification(
 ) {
     let notification = FcmNotification { title, body };
 
-    let payload = match url {
-        Some(url) => Some(json!({
-            "deeplink": url
-        })),
-        None => None::<Value>,
-    };
+    let payload = url.map(|url| json!({
+        "deeplink": url
+    }));
 
     if let Err(e) = send_fcm_message(
         &fcm_token,

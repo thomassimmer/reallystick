@@ -28,11 +28,8 @@ impl UsersData {
     }
 
     pub async fn update_user(&self, user: User) {
-        match self.data.write().await.get_mut(&user.id) {
-            Some(user_with_tokens) => {
-                user_with_tokens.user = user;
-            }
-            None => {}
+        if let Some(user_with_tokens) = self.data.write().await.get_mut(&user.id) {
+            user_with_tokens.user = user;
         }
     }
 

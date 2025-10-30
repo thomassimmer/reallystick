@@ -171,10 +171,10 @@ pub async fn create_public_message(
         if request_claims.user_id != message.creator {
             if let (Some(person_who_liked), Some(creator)) = (
                 user_public_data_cache
-                    .get_value_for_key_or_insert_it(&request_claims.user_id, &mut *transaction)
+                    .get_value_for_key_or_insert_it(&request_claims.user_id, &mut transaction)
                     .await,
                 user_public_data_cache
-                    .get_value_for_key_or_insert_it(&message.creator, &mut *transaction)
+                    .get_value_for_key_or_insert_it(&message.creator, &mut transaction)
                     .await,
             ) {
                 let mut args = FluentArgs::new();

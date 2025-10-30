@@ -185,7 +185,7 @@ pub async fn refresh_token(
                     "user_token_updated",
                     json!(UserTokenUpdatedEvent {
                         token: new_token,
-                        user: user,
+                        user,
                     })
                     .to_string(),
                 )

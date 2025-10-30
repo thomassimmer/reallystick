@@ -143,7 +143,7 @@ pub async fn user_gets_liked_messages(
     access_token: &str,
 ) -> Vec<PublicMessageData> {
     let req = test::TestRequest::get()
-        .uri(&format!("/api/public-messages/liked/",))
+        .uri("/api/public-messages/liked/")
         .insert_header((header::AUTHORIZATION, format!("Bearer {}", access_token)))
         .to_request();
     let response = test::call_service(&app, req).await;
@@ -162,7 +162,7 @@ pub async fn user_gets_written_messages(
     access_token: &str,
 ) -> Vec<PublicMessageData> {
     let req = test::TestRequest::get()
-        .uri(&format!("/api/public-messages/written/",))
+        .uri("/api/public-messages/written/")
         .insert_header((header::AUTHORIZATION, format!("Bearer {}", access_token)))
         .to_request();
     let response = test::call_service(&app, req).await;

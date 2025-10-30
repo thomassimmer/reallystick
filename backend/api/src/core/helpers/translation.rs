@@ -5,6 +5,7 @@ use std::collections::HashMap;
 use std::fs;
 use unic_langid::LanguageIdentifier;
 
+#[derive(Default)]
 pub struct Translator {
     bundles: HashMap<String, FluentBundle<FluentResource>>,
 }
