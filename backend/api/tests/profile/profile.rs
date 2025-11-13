@@ -6,7 +6,6 @@ use actix_web::{
     test::{self, init_service},
     Error,
 };
-use chrono::Utc;
 use api::{
     configuration::get_configuration,
     core::{
@@ -28,10 +27,10 @@ use api::{
     },
     startup::create_app,
 };
+use chrono::Utc;
 use redis::Client;
-use sqlx::{Pool, Postgres};
+use sqlx::{PgPool, Pool, Postgres};
 use std::{sync::Arc, time::Duration};
-use uuid::Uuid;
 
 use crate::{
     auth::{
@@ -91,9 +90,9 @@ pub async fn delete_user_marked_as_deleted(
     );
 }
 
-#[tokio::test]
-pub async fn user_can_update_profile() {
-    let app = spawn_app().await;
+#[sqlx::test]
+pub async fn user_can_update_profile(pool: PgPool) {
+    let app = spawn_app(pool).await;
     let (access_token, _) = user_signs_up(&app, None).await;
 
     user_has_access_to_protected_route(&app, &access_token).await;
@@ -138,16 +137,11 @@ pub async fn user_can_update_profile() {
     assert_eq!(response.user.theme, "light");
 }
 
-#[tokio::test]
-pub async fn user_can_delete_account() {
-    let configuration = {
-        let mut c = get_configuration().expect("Failed to read configuration.");
-        // Use a different database for each test case
-        c.database.database_name = Uuid::new_v4().to_string();
-        // Use a random OS port
-        c.application.port = 0;
-        c
-    };
+#[sqlx::test]
+pub async fn user_can_delete_account(pool: PgPool) {
+    configure_database(&pool).await;
+
+    let configuration = get_configuration().expect("Failed to read configuration.");
 
     let habit_statistics_cache = HabitStatisticsCache::default();
     let challenge_statistics_cache = ChallengeStatisticsCache::default();
@@ -156,11 +150,10 @@ pub async fn user_can_delete_account() {
     let redis_client = redis::Client::open("redis://redis:6379").unwrap();
     let translator = Arc::new(Translator::new());
 
-    let connection_pool = configure_database(&configuration.database).await;
     let secret = configuration.application.secret;
 
     let app = init_service(create_app(
-        connection_pool.clone(),
+        pool.clone(),
         secret.clone(),
         habit_statistics_cache,
         challenge_statistics_cache,
@@ -187,7 +180,7 @@ pub async fn user_can_delete_account() {
         (Utc::now() + Duration::from_secs(7 * 60 * 60 * 24)).fixed_offset(),
     ));
 
-    delete_user_marked_as_deleted(&connection_pool, &redis_client).await;
+    delete_user_marked_as_deleted(&pool, &redis_client).await;
 
     // User can no longer access its account
     let req = test::TestRequest::post()
@@ -208,9 +201,9 @@ pub async fn user_can_delete_account() {
     assert_eq!(response.code, "USER_HAS_BEEN_DELETED");
 }
 
-#[tokio::test]
-pub async fn is_otp_enabled_for_user_that_activated_it() {
-    let app = spawn_app().await;
+#[sqlx::test]
+pub async fn is_otp_enabled_for_user_that_activated_it(pool: PgPool) {
+    let app = spawn_app(pool).await;
     let (access_token, _) = user_signs_up(&app, None).await;
 
     let req = test::TestRequest::post()

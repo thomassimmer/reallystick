@@ -11,6 +11,7 @@ use api::features::public_discussions::structs::{
     requests::public_message_report::PublicMessageReportCreateRequest,
     responses::public_message_report::{PublicMessageReportResponse, PublicMessageReportsResponse},
 };
+use sqlx::PgPool;
 use uuid::Uuid;
 
 use crate::{
@@ -103,9 +104,9 @@ pub async fn user_gets_message_reports(
     (response.messages, response.message_reports)
 }
 
-#[tokio::test]
-pub async fn user_can_report_a_public_message() {
-    let app = spawn_app().await;
+#[sqlx::test]
+pub async fn user_can_report_a_public_message(pool: PgPool) {
+    let app = spawn_app(pool).await;
     let (access_token, _) = user_logs_in(&app, "thomas", "").await;
     let challenge_id = user_creates_a_challenge(&app, &access_token).await;
 

@@ -10,6 +10,7 @@ use api::features::profile::structs::{
     requests::{GetUserPublicDataByIdRequest, GetUserPublicDataByUsernameRequest},
     responses::{UserPublicResponse, UsersResponse},
 };
+use sqlx::PgPool;
 use uuid::Uuid;
 
 use crate::{auth::signup::user_signs_up, helpers::spawn_app};
@@ -60,9 +61,9 @@ pub async fn user_gets_other_user_data_by_username(
     response.user
 }
 
-#[tokio::test]
-pub async fn user_can_get_other_users_public_data() {
-    let app = spawn_app().await;
+#[sqlx::test]
+pub async fn user_can_get_other_users_public_data(pool: PgPool) {
+    let app = spawn_app(pool).await;
     let (access_token, _) = user_signs_up(&app, None).await;
 
     let user_id = user_has_access_to_protected_route(&app, &access_token)

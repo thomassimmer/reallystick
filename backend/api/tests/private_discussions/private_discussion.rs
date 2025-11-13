@@ -11,6 +11,7 @@ use api::features::private_discussions::structs::{
     requests::private_discussion::PrivateDiscussionCreateRequest,
     responses::private_discussion::{PrivateDiscussionResponse, PrivateDiscussionsResponse},
 };
+use sqlx::PgPool;
 use uuid::Uuid;
 
 use crate::{
@@ -64,9 +65,9 @@ pub async fn user_gets_private_discussions(
     response.discussions
 }
 
-#[tokio::test]
-pub async fn user_can_create_private_discussion() {
-    let app = spawn_app().await;
+#[sqlx::test]
+pub async fn user_can_create_private_discussion(pool: PgPool) {
+    let app = spawn_app(pool).await;
     let (access_token, _) = user_logs_in(&app, "thomas", "").await;
     let thomas_id = user_has_access_to_protected_route(&app, &access_token)
         .await

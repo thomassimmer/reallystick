@@ -11,6 +11,7 @@ use api::features::{
     },
     private_discussions::structs::responses::private_message::PrivateMessageResponse,
 };
+use sqlx::PgPool;
 use uuid::Uuid;
 
 use crate::{
@@ -101,9 +102,9 @@ pub async fn user_deletes_all_notifications(
     assert_eq!(response.code, "NOTIFICATIONS_DELETED");
 }
 
-#[tokio::test]
-pub async fn user_can_mark_a_notification_as_seen() {
-    let app = spawn_app().await;
+#[sqlx::test]
+pub async fn user_can_mark_a_notification_as_seen(pool: PgPool) {
+    let app = spawn_app(pool).await;
     let (access_token, _) = user_logs_in(&app, "thomas", "").await;
     let challenge_id = user_creates_a_challenge(&app, &access_token).await;
 
@@ -129,9 +130,9 @@ pub async fn user_can_mark_a_notification_as_seen() {
     assert!(notification.seen);
 }
 
-#[tokio::test]
-pub async fn user_can_delete_a_notification() {
-    let app = spawn_app().await;
+#[sqlx::test]
+pub async fn user_can_delete_a_notification(pool: PgPool) {
+    let app = spawn_app(pool).await;
     let (access_token, _) = user_logs_in(&app, "thomas", "").await;
     let challenge_id = user_creates_a_challenge(&app, &access_token).await;
 
@@ -153,9 +154,9 @@ pub async fn user_can_delete_a_notification() {
     assert_eq!(notifications.len(), 0);
 }
 
-#[tokio::test]
-pub async fn user_can_delete_all_notifications() {
-    let app = spawn_app().await;
+#[sqlx::test]
+pub async fn user_can_delete_all_notifications(pool: PgPool) {
+    let app = spawn_app(pool).await;
     let (access_token, _) = user_logs_in(&app, "thomas", "").await;
     let challenge_id = user_creates_a_challenge(&app, &access_token).await;
 

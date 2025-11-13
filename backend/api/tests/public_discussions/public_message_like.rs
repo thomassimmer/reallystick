@@ -10,6 +10,7 @@ use api::features::public_discussions::structs::{
     requests::public_message_like::PublicMessageLikeCreateRequest,
     responses::public_message_like::PublicMessageLikeResponse,
 };
+use sqlx::PgPool;
 use uuid::Uuid;
 
 use crate::{
@@ -60,9 +61,9 @@ pub async fn user_deletes_a_public_message_like(
     assert_eq!(response.code, "PUBLIC_MESSAGE_LIKE_DELETED");
 }
 
-#[tokio::test]
-pub async fn user_can_like_a_public_message() {
-    let app = spawn_app().await;
+#[sqlx::test]
+pub async fn user_can_like_a_public_message(pool: PgPool) {
+    let app = spawn_app(pool).await;
     let (access_token, _) = user_logs_in(&app, "thomas", "").await;
     let challenge_id = user_creates_a_challenge(&app, &access_token).await;
 
@@ -88,9 +89,9 @@ pub async fn user_can_like_a_public_message() {
     assert_eq!(public_message_likes.len(), 1);
 }
 
-#[tokio::test]
-pub async fn user_can_delete_a_like_on_a_public_message() {
-    let app = spawn_app().await;
+#[sqlx::test]
+pub async fn user_can_delete_a_like_on_a_public_message(pool: PgPool) {
+    let app = spawn_app(pool).await;
     let (access_token, _) = user_logs_in(&app, "thomas", "").await;
     let challenge_id = user_creates_a_challenge(&app, &access_token).await;
 

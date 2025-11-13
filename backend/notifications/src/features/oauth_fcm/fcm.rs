@@ -157,7 +157,7 @@ fn create_payload<T: Serialize>(
 mod tests {
     use super::*;
 
-    #[tokio::test]
+    #[sqlx::test]
     async fn test_create_payload_with_notification_and_data() {
         let device_token = "test_device_token";
         let notification = Some(FcmNotification {
@@ -175,7 +175,7 @@ mod tests {
         assert_eq!(payload["message"]["data"]["key"], "value");
     }
 
-    #[tokio::test]
+    #[sqlx::test]
     async fn test_create_payload_with_only_notification() {
         let device_token = "test_device_token";
         let notification = Some(FcmNotification {
@@ -191,7 +191,7 @@ mod tests {
         assert!(payload["message"]["data"].is_null());
     }
 
-    #[tokio::test]
+    #[sqlx::test]
     async fn test_create_payload_with_only_data() {
         let device_token = "test_device_token";
         let notification: Option<FcmNotification> = None;
@@ -211,7 +211,7 @@ mod tests {
         key2: String,
     }
 
-    #[tokio::test]
+    #[sqlx::test]
     async fn test_create_payload_with_only_struct_data() {
         let device_token = "test_device_token";
         let notification: Option<FcmNotification> = None;
@@ -227,7 +227,7 @@ mod tests {
         assert_eq!(payload["message"]["data"]["key2"], "value2");
     }
 
-    #[tokio::test]
+    #[sqlx::test]
     async fn test_create_payload_with_no_notification_and_no_data() {
         let device_token = "test_device_token";
         let notification: Option<FcmNotification> = None;

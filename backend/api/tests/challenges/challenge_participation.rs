@@ -7,7 +7,6 @@ use actix_web::{
     http::header::ContentType,
     test, Error,
 };
-use chrono::{Datelike, Utc};
 use api::features::challenges::structs::{
     models::challenge_participation::ChallengeParticipationData,
     requests::challenge_participation::ChallengeParticipationUpdateRequest,
@@ -15,6 +14,8 @@ use api::features::challenges::structs::{
         ChallengeParticipationResponse, ChallengeParticipationsResponse,
     },
 };
+use chrono::{Datelike, Utc};
+use sqlx::PgPool;
 use uuid::Uuid;
 
 use crate::{
@@ -133,9 +134,9 @@ pub async fn user_gets_challenge_participations(
     response.challenge_participations
 }
 
-#[tokio::test]
-pub async fn user_can_create_a_challenge_participation() {
-    let app = spawn_app().await;
+#[sqlx::test]
+pub async fn user_can_create_a_challenge_participation(pool: PgPool) {
+    let app = spawn_app(pool).await;
     let (access_token, _) = user_logs_in(&app, "thomas", "").await;
     let challenge_id = user_creates_a_challenge(&app, &access_token).await;
 
@@ -150,9 +151,9 @@ pub async fn user_can_create_a_challenge_participation() {
     assert!(!challenge_participations.is_empty());
 }
 
-#[tokio::test]
-pub async fn user_can_update_a_challenge_participation() {
-    let app = spawn_app().await;
+#[sqlx::test]
+pub async fn user_can_update_a_challenge_participation(pool: PgPool) {
+    let app = spawn_app(pool).await;
     let (access_token, _) = user_logs_in(&app, "thomas", "").await;
     let challenge_id = user_creates_a_challenge(&app, &access_token).await;
 
@@ -164,9 +165,9 @@ pub async fn user_can_update_a_challenge_participation() {
     user_updates_a_challenge_participation(app, &access_token, challenge_participation_id).await;
 }
 
-#[tokio::test]
-pub async fn user_can_delete_a_challenge_participation() {
-    let app = spawn_app().await;
+#[sqlx::test]
+pub async fn user_can_delete_a_challenge_participation(pool: PgPool) {
+    let app = spawn_app(pool).await;
     let (access_token, _) = user_logs_in(&app, "thomas", "").await;
     let challenge_id = user_creates_a_challenge(&app, &access_token).await;
 

@@ -10,6 +10,7 @@ use api::features::private_discussions::structs::{
     requests::private_discussion_participation::PrivateDiscussionParticipationUpdateRequest,
     responses::private_discussion_participation::PrivateDiscussionParticipationResponse,
 };
+use sqlx::PgPool;
 use uuid::Uuid;
 
 use crate::{
@@ -50,9 +51,9 @@ pub async fn user_updates_a_private_discussion_participation(
     assert_eq!(response.code, "PRIVATE_DISCUSSION_PARTICIPATION_UPDATED");
 }
 
-#[tokio::test]
-pub async fn user_can_update_a_private_discussion_participation() {
-    let app = spawn_app().await;
+#[sqlx::test]
+pub async fn user_can_update_a_private_discussion_participation(pool: PgPool) {
+    let app = spawn_app(pool).await;
     let (access_token, _) = user_logs_in(&app, "thomas", "").await;
     let thomas_id = user_has_access_to_protected_route(&app, &access_token)
         .await

@@ -10,6 +10,7 @@ use api::features::auth::structs::{
     requests::SaveRecoveryCodeRequest, responses::SaveRecoveryCodeResponse,
 };
 use rand::{distributions::Alphanumeric, Rng};
+use sqlx::PgPool;
 
 use crate::auth::signup::user_signs_up;
 
@@ -61,9 +62,9 @@ pub async fn user_saves_recovery_code(
     assert_eq!(response.code, "NEW_RECOVERY_CODE_SAVED")
 }
 
-#[tokio::test]
-async fn user_can_save_recovery_code() {
-    let app = spawn_app().await;
+#[sqlx::test]
+async fn user_can_save_recovery_code(pool: PgPool) {
+    let app = spawn_app(pool).await;
     let (access_token, _) = user_signs_up(&app, None).await;
     let (private_key, _) = generate_key_pair();
     let recovery_code = generate_recovery_code();

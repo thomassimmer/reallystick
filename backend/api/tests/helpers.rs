@@ -8,7 +8,7 @@ use actix_web::{
     Error,
 };
 use api::{
-    configuration::{get_configuration, DatabaseSettings},
+    configuration::get_configuration,
     core::helpers::translation::Translator,
     features::profile::{helpers::profile::create_user, structs::models::User},
     startup::create_app,
@@ -25,11 +25,12 @@ use api::{
 use argon2::PasswordHasher;
 use argon2::{password_hash::SaltString, Argon2};
 use rand::rngs::OsRng;
-use sqlx::{migrate, Connection, Executor, PgConnection, PgPool, Pool, Postgres};
+use sqlx::{Executor, PgPool};
 use tracing::error;
 use uuid::Uuid;
 
 pub async fn spawn_app(
+    pool: PgPool,
 ) -> impl Service<Request, Response = ServiceResponse<impl MessageBody>, Error = Error> {
     // Randomise configuration to ensure test isolation
     let configuration = {
@@ -48,11 +49,11 @@ pub async fn spawn_app(
     let redis_client = redis::Client::open("redis://redis:6379").unwrap();
     let translator = Arc::new(Translator::new());
 
-    let connection_pool = configure_database(&configuration.database).await;
+    configure_database(&pool).await;
     let secret = configuration.application.secret;
 
     init_service(create_app(
-        connection_pool.clone(),
+        pool.clone(),
         secret.clone(),
         habit_statistics_cache,
         challenge_statistics_cache,
@@ -64,29 +65,7 @@ pub async fn spawn_app(
     .await
 }
 
-pub async fn configure_database(config: &DatabaseSettings) -> Pool<Postgres> {
-    // Create database
-    let mut connection = PgConnection::connect_with(&config.without_db())
-        .await
-        .expect("Failed to connect to Postgres");
-    connection
-        .execute(&*format!(r#"CREATE DATABASE "{}";"#, config.database_name))
-        .await
-        .expect("Failed to create database.");
-
-    // Migrate database
-    let connection_pool = PgPool::connect_with(config.with_db())
-        .await
-        .expect("Failed to connect to Postgres.");
-    migrate!("./migrations")
-        .run(&connection_pool)
-        .await
-        .expect("Failed to migrate the database");
-
-    let mut connection = PgConnection::connect_with(&config.with_db())
-        .await
-        .expect("Failed to connect to Postgres");
-
+pub async fn configure_database(pool: &PgPool) {
     // Create a user with empty username and password.
     let salt = SaltString::generate(&mut OsRng);
     let argon2 = Argon2::default();
@@ -173,22 +152,19 @@ pub async fn configure_database(config: &DatabaseSettings) -> Pool<Postgres> {
         notifications_user_joined_your_challenge_enabled: true,
     };
 
-    let result = create_user(&mut connection, thomas.clone()).await;
+    let result = create_user(pool, thomas.clone()).await;
 
     if let Err(e) = result {
         error!("{}", e);
     }
 
-    let result = create_user(&mut connection, reallystick.clone()).await;
+    let result = create_user(pool, reallystick.clone()).await;
 
     if let Err(e) = result {
         error!("{}", e);
     }
 
-    connection
-        .execute(r#"DELETE from units;"#)
+    pool.execute(r#"DELETE from units;"#)
         .await
         .expect("Failed to create database.");
-
-    connection_pool
 }

@@ -5,7 +5,6 @@ use actix_web::{
     http::header::ContentType,
     test, Error,
 };
-use chrono::Utc;
 use api::{
     core::helpers::mock_now::override_now,
     features::{
@@ -17,7 +16,9 @@ use api::{
         profile::structs::requests::UserUpdateRequest,
     },
 };
+use chrono::Utc;
 use serde_json::json;
+use sqlx::PgPool;
 use std::{
     collections::{HashMap, HashSet},
     time::Duration,
@@ -227,9 +228,9 @@ pub async fn user_create_two_habits_to_merge(
     (first_habit_id, second_habit_id)
 }
 
-#[tokio::test]
-pub async fn user_can_create_a_habit() {
-    let app = spawn_app().await;
+#[sqlx::test]
+pub async fn user_can_create_a_habit(pool: PgPool) {
+    let app = spawn_app(pool).await;
     let (access_token, _) = user_logs_in(&app, "thomas", "").await;
     let habit_category_id = user_creates_a_habit_category(&app, &access_token).await;
     let unit_id = user_creates_a_unit(&app, &access_token).await;
@@ -279,9 +280,9 @@ pub async fn user_can_create_a_habit() {
     assert_eq!(habits.len(), 1);
 }
 
-#[tokio::test]
-pub async fn admin_user_can_update_a_habit() {
-    let app = spawn_app().await;
+#[sqlx::test]
+pub async fn admin_user_can_update_a_habit(pool: PgPool) {
+    let app = spawn_app(pool).await;
     let (access_token, _) = user_logs_in(&app, "thomas", "").await;
     let habit_category_id = user_creates_a_habit_category(&app, &access_token).await;
     let unit_id = user_creates_a_unit(&app, &access_token).await;
@@ -303,9 +304,9 @@ pub async fn admin_user_can_update_a_habit() {
     .await;
 }
 
-#[tokio::test]
-pub async fn admin_user_can_delete_a_habit() {
-    let app = spawn_app().await;
+#[sqlx::test]
+pub async fn admin_user_can_delete_a_habit(pool: PgPool) {
+    let app = spawn_app(pool).await;
     let (access_token, _) = user_logs_in(&app, "thomas", "").await;
     let habit_category_id = user_creates_a_habit_category(&app, &access_token).await;
 
@@ -331,9 +332,9 @@ pub async fn admin_user_can_delete_a_habit() {
     assert!(habit_categories.is_empty());
 }
 
-#[tokio::test]
-pub async fn normal_user_can_not_merge_two_habits() {
-    let app = spawn_app().await;
+#[sqlx::test]
+pub async fn normal_user_can_not_merge_two_habits(pool: PgPool) {
+    let app = spawn_app(pool).await;
     let (access_token, _) = user_logs_in(&app, "thomas", "").await;
     let habit_category_id = user_creates_a_habit_category(&app, &access_token).await;
     let unit_id = user_creates_a_unit(&app, &access_token).await;
@@ -377,9 +378,9 @@ pub async fn normal_user_can_not_merge_two_habits() {
     assert_eq!(403, response.status().as_u16());
 }
 
-#[tokio::test]
-pub async fn admin_user_can_merge_two_habits() {
-    let app = spawn_app().await;
+#[sqlx::test]
+pub async fn admin_user_can_merge_two_habits(pool: PgPool) {
+    let app = spawn_app(pool).await;
     let (access_token, _) = user_logs_in(&app, "thomas", "").await;
     let habit_category_id = user_creates_a_habit_category(&app, &access_token).await;
     let unit_id = user_creates_a_unit(&app, &access_token).await;
@@ -461,9 +462,9 @@ pub async fn admin_user_can_merge_two_habits() {
     assert_eq!(habit_participations[0].habit_id, first_habit_id);
 }
 
-#[tokio::test]
-pub async fn user_can_get_habit_statistics() {
-    let app = spawn_app().await;
+#[sqlx::test]
+pub async fn user_can_get_habit_statistics(pool: PgPool) {
+    let app = spawn_app(pool).await;
     let (access_token, refresh_token) = user_logs_in(&app, "thomas", "").await;
     let habit_category_id = user_creates_a_habit_category(&app, &access_token).await;
     let unit_id = user_creates_a_unit(&app, &access_token).await;

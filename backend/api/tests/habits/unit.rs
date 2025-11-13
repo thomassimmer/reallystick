@@ -12,6 +12,7 @@ use api::features::habits::structs::{
     responses::unit::{UnitResponse, UnitsResponse},
 };
 use serde_json::json;
+use sqlx::PgPool;
 use uuid::Uuid;
 
 use crate::{auth::login::user_logs_in, helpers::spawn_app};
@@ -90,9 +91,9 @@ pub async fn user_gets_units(
     response.units
 }
 
-#[tokio::test]
-pub async fn admin_user_can_create_a_unit() {
-    let app = spawn_app().await;
+#[sqlx::test]
+pub async fn admin_user_can_create_a_unit(pool: PgPool) {
+    let app = spawn_app(pool).await;
     let (access_token, _) = user_logs_in(&app, "thomas", "").await;
 
     let units = user_gets_units(&app, &access_token).await;
@@ -104,9 +105,9 @@ pub async fn admin_user_can_create_a_unit() {
     assert!(!units.is_empty());
 }
 
-#[tokio::test]
-pub async fn admin_user_can_update_a_unit() {
-    let app = spawn_app().await;
+#[sqlx::test]
+pub async fn admin_user_can_update_a_unit(pool: PgPool) {
+    let app = spawn_app(pool).await;
     let (access_token, _) = user_logs_in(&app, "thomas", "").await;
 
     let unit_id = user_creates_a_unit(&app, &access_token).await;

@@ -12,6 +12,7 @@ use api::features::habits::structs::{
     responses::habit_category::{HabitCategoriesResponse, HabitCategoryResponse},
 };
 use serde_json::json;
+use sqlx::PgPool;
 use uuid::Uuid;
 
 use crate::{auth::login::user_logs_in, helpers::spawn_app};
@@ -114,9 +115,9 @@ pub async fn user_gets_habit_categories(
     response.habit_categories
 }
 
-#[tokio::test]
-pub async fn admin_user_can_create_a_habit_category() {
-    let app = spawn_app().await;
+#[sqlx::test]
+pub async fn admin_user_can_create_a_habit_category(pool: PgPool) {
+    let app = spawn_app(pool).await;
     let (access_token, _) = user_logs_in(&app, "thomas", "").await;
 
     let habit_categories = user_gets_habit_categories(&app, &access_token).await;
@@ -128,18 +129,18 @@ pub async fn admin_user_can_create_a_habit_category() {
     assert!(!habit_categories.is_empty());
 }
 
-#[tokio::test]
-pub async fn admin_user_can_update_a_habit_category() {
-    let app = spawn_app().await;
+#[sqlx::test]
+pub async fn admin_user_can_update_a_habit_category(pool: PgPool) {
+    let app = spawn_app(pool).await;
     let (access_token, _) = user_logs_in(&app, "thomas", "").await;
 
     let habit_category_id = user_creates_a_habit_category(&app, &access_token).await;
     user_updates_a_habit_category(app, &access_token, habit_category_id).await;
 }
 
-#[tokio::test]
-pub async fn admin_user_can_delete_a_habit_category() {
-    let app = spawn_app().await;
+#[sqlx::test]
+pub async fn admin_user_can_delete_a_habit_category(pool: PgPool) {
+    let app = spawn_app(pool).await;
     let (access_token, _) = user_logs_in(&app, "thomas", "").await;
 
     let habit_categories = user_gets_habit_categories(&app, &access_token).await;

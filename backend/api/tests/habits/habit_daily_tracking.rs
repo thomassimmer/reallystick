@@ -8,7 +8,6 @@ use actix_web::{
     test, Error,
 };
 
-use chrono::Utc;
 use api::features::habits::structs::{
     models::habit_daily_tracking::HabitDailyTrackingData,
     requests::habit_daily_tracking::{
@@ -16,6 +15,8 @@ use api::features::habits::structs::{
     },
     responses::habit_daily_tracking::{HabitDailyTrackingResponse, HabitDailyTrackingsResponse},
 };
+use chrono::Utc;
+use sqlx::PgPool;
 use uuid::Uuid;
 
 use crate::{
@@ -137,9 +138,9 @@ pub async fn user_gets_habit_daily_trackings(
     response.habit_daily_trackings
 }
 
-#[tokio::test]
-pub async fn user_can_create_a_habit_daily_tracking() {
-    let app = spawn_app().await;
+#[sqlx::test]
+pub async fn user_can_create_a_habit_daily_tracking(pool: PgPool) {
+    let app = spawn_app(pool).await;
     let (access_token, _) = user_logs_in(&app, "thomas", "").await;
     let habit_category_id = user_creates_a_habit_category(&app, &access_token).await;
     let unit_id = user_creates_a_unit(&app, &access_token).await;
@@ -162,9 +163,9 @@ pub async fn user_can_create_a_habit_daily_tracking() {
     assert!(!habit_daily_trackings.is_empty());
 }
 
-#[tokio::test]
-pub async fn user_can_update_a_habit_daily_tracking() {
-    let app = spawn_app().await;
+#[sqlx::test]
+pub async fn user_can_update_a_habit_daily_tracking(pool: PgPool) {
+    let app = spawn_app(pool).await;
     let (access_token, _) = user_logs_in(&app, "thomas", "").await;
     let habit_category_id = user_creates_a_habit_category(&app, &access_token).await;
     let unit_id = user_creates_a_unit(&app, &access_token).await;
@@ -183,9 +184,9 @@ pub async fn user_can_update_a_habit_daily_tracking() {
     user_updates_a_habit_daily_tracking(app, &access_token, habit_daily_tracking_id, unit_id).await;
 }
 
-#[tokio::test]
-pub async fn user_can_delete_a_habit_daily_tracking() {
-    let app = spawn_app().await;
+#[sqlx::test]
+pub async fn user_can_delete_a_habit_daily_tracking(pool: PgPool) {
+    let app = spawn_app(pool).await;
     let (access_token, _) = user_logs_in(&app, "thomas", "").await;
     let habit_category_id = user_creates_a_habit_category(&app, &access_token).await;
     let unit_id = user_creates_a_unit(&app, &access_token).await;

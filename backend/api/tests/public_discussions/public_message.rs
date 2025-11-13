@@ -13,6 +13,7 @@ use api::features::public_discussions::structs::{
     requests::public_message::{PublicMessageCreateRequest, PublicMessageUpdateRequest},
     responses::public_message::{PublicMessageResponse, PublicMessagesResponse},
 };
+use sqlx::PgPool;
 use uuid::Uuid;
 
 use crate::{
@@ -216,9 +217,9 @@ pub async fn user_gets_parents(
     response.messages
 }
 
-#[tokio::test]
-pub async fn user_can_create_a_public_message_on_a_habit() {
-    let app = spawn_app().await;
+#[sqlx::test]
+pub async fn user_can_create_a_public_message_on_a_habit(pool: PgPool) {
+    let app = spawn_app(pool).await;
     let (access_token, _) = user_logs_in(&app, "thomas", "").await;
     let habit_category_id = user_creates_a_habit_category(&app, &access_token).await;
     let unit_id = user_creates_a_unit(&app, &access_token).await;
@@ -252,9 +253,9 @@ pub async fn user_can_create_a_public_message_on_a_habit() {
     assert_eq!(public_messages.len(), 1);
 }
 
-#[tokio::test]
-pub async fn user_can_create_a_public_message_on_a_challenge() {
-    let app = spawn_app().await;
+#[sqlx::test]
+pub async fn user_can_create_a_public_message_on_a_challenge(pool: PgPool) {
+    let app = spawn_app(pool).await;
     let (access_token, _) = user_logs_in(&app, "thomas", "").await;
     let challenge_id = user_creates_a_challenge(&app, &access_token).await;
 
@@ -280,9 +281,9 @@ pub async fn user_can_create_a_public_message_on_a_challenge() {
     assert_eq!(public_messages.len(), 1);
 }
 
-#[tokio::test]
-pub async fn user_can_answer_a_public_message() {
-    let app = spawn_app().await;
+#[sqlx::test]
+pub async fn user_can_answer_a_public_message(pool: PgPool) {
+    let app = spawn_app(pool).await;
     let (access_token, _) = user_logs_in(&app, "thomas", "").await;
     let challenge_id = user_creates_a_challenge(&app, &access_token).await;
 
@@ -333,9 +334,9 @@ pub async fn user_can_answer_a_public_message() {
     assert_eq!(parents[0].id, public_message_1);
 }
 
-#[tokio::test]
-pub async fn creator_can_update_a_public_message() {
-    let app = spawn_app().await;
+#[sqlx::test]
+pub async fn creator_can_update_a_public_message(pool: PgPool) {
+    let app = spawn_app(pool).await;
     let (access_token, _) = user_logs_in(&app, "thomas", "").await;
     let challenge_id = user_creates_a_challenge(&app, &access_token).await;
 
@@ -364,9 +365,9 @@ pub async fn creator_can_update_a_public_message() {
         .await;
 }
 
-#[tokio::test]
-pub async fn creator_can_delete_a_public_message() {
-    let app = spawn_app().await;
+#[sqlx::test]
+pub async fn creator_can_delete_a_public_message(pool: PgPool) {
+    let app = spawn_app(pool).await;
     let (access_token, _) = user_logs_in(&app, "thomas", "").await;
     let challenge_id = user_creates_a_challenge(&app, &access_token).await;
 
@@ -398,9 +399,9 @@ pub async fn creator_can_delete_a_public_message() {
     assert_eq!(public_messages.len(), 0);
 }
 
-#[tokio::test]
-pub async fn admin_can_delete_a_public_message() {
-    let app = spawn_app().await;
+#[sqlx::test]
+pub async fn admin_can_delete_a_public_message(pool: PgPool) {
+    let app = spawn_app(pool).await;
     let (access_token, _) = user_logs_in(&app, "thomas", "").await;
     let challenge_id = user_creates_a_challenge(&app, &access_token).await;
 

@@ -12,6 +12,7 @@ use api::features::habits::structs::{
     requests::habit_participation::HabitParticipationUpdateRequest,
     responses::habit_participation::{HabitParticipationResponse, HabitParticipationsResponse},
 };
+use sqlx::PgPool;
 use uuid::Uuid;
 
 use crate::{
@@ -129,9 +130,9 @@ pub async fn user_gets_habit_participations(
     response.habit_participations
 }
 
-#[tokio::test]
-pub async fn user_can_create_a_habit_participation() {
-    let app = spawn_app().await;
+#[sqlx::test]
+pub async fn user_can_create_a_habit_participation(pool: PgPool) {
+    let app = spawn_app(pool).await;
     let (access_token, _) = user_logs_in(&app, "thomas", "").await;
     let habit_category_id = user_creates_a_habit_category(&app, &access_token).await;
     let unit_id = user_creates_a_unit(&app, &access_token).await;
@@ -154,9 +155,9 @@ pub async fn user_can_create_a_habit_participation() {
     assert!(!habit_participations.is_empty());
 }
 
-#[tokio::test]
-pub async fn user_can_update_a_habit_participation() {
-    let app = spawn_app().await;
+#[sqlx::test]
+pub async fn user_can_update_a_habit_participation(pool: PgPool) {
+    let app = spawn_app(pool).await;
     let (access_token, _) = user_logs_in(&app, "thomas", "").await;
     let habit_category_id = user_creates_a_habit_category(&app, &access_token).await;
     let unit_id = user_creates_a_unit(&app, &access_token).await;
@@ -175,9 +176,9 @@ pub async fn user_can_update_a_habit_participation() {
     user_updates_a_habit_participation(app, &access_token, habit_participation_id).await;
 }
 
-#[tokio::test]
-pub async fn user_can_delete_a_habit_participation() {
-    let app = spawn_app().await;
+#[sqlx::test]
+pub async fn user_can_delete_a_habit_participation(pool: PgPool) {
+    let app = spawn_app(pool).await;
     let (access_token, _) = user_logs_in(&app, "thomas", "").await;
     let habit_category_id = user_creates_a_habit_category(&app, &access_token).await;
     let unit_id = user_creates_a_unit(&app, &access_token).await;

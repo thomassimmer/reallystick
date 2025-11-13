@@ -9,6 +9,7 @@ use api::{
     core::structs::responses::GenericResponse,
     features::profile::structs::{requests::SetUserPasswordRequest, responses::UserResponse},
 };
+use sqlx::PgPool;
 
 use crate::{
     auth::{
@@ -52,9 +53,9 @@ pub async fn user_sets_password(
     assert_eq!(response.code, "PASSWORD_CHANGED");
 }
 
-#[tokio::test]
-pub async fn user_can_set_password_after_account_recovery() {
-    let app = spawn_app().await;
+#[sqlx::test]
+pub async fn user_can_set_password_after_account_recovery(pool: PgPool) {
+    let app = spawn_app(pool).await;
     let (access_token, _) = user_signs_up(&app, None).await;
     let (private_key, _) = generate_key_pair();
     let recovery_code = generate_recovery_code();
@@ -67,9 +68,9 @@ pub async fn user_can_set_password_after_account_recovery() {
     user_logs_in(&app, "testusername", "new_password1_").await;
 }
 
-#[tokio::test]
-pub async fn user_cannot_set_password_if_its_not_expired() {
-    let app = spawn_app().await;
+#[sqlx::test]
+pub async fn user_cannot_set_password_if_its_not_expired(pool: PgPool) {
+    let app = spawn_app(pool).await;
     let (access_token, _) = user_signs_up(&app, None).await;
 
     let (private_key, _) = generate_key_pair();

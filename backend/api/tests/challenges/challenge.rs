@@ -5,7 +5,6 @@ use actix_web::{
     http::header::ContentType,
     test, Error,
 };
-use chrono::Utc;
 use api::{
     core::{helpers::mock_now::override_now, structs::responses::GenericResponse},
     features::{
@@ -18,7 +17,9 @@ use api::{
         profile::structs::requests::UserUpdateRequest,
     },
 };
+use chrono::Utc;
 use serde_json::json;
+use sqlx::PgPool;
 use std::{
     collections::{HashMap, HashSet},
     time::Duration,
@@ -184,9 +185,9 @@ pub async fn user_gets_challenge_statistics(
     response.statistics
 }
 
-#[tokio::test]
-pub async fn user_can_create_a_challenge() {
-    let app = spawn_app().await;
+#[sqlx::test]
+pub async fn user_can_create_a_challenge(pool: PgPool) {
+    let app = spawn_app(pool).await;
 
     let (access_token, _) = user_signs_up(&app, None).await;
 
@@ -209,9 +210,9 @@ pub async fn user_can_create_a_challenge() {
     assert_eq!(challenges.len(), 1);
 }
 
-#[tokio::test]
-pub async fn user_can_duplicate_a_challenge() {
-    let app = spawn_app().await;
+#[sqlx::test]
+pub async fn user_can_duplicate_a_challenge(pool: PgPool) {
+    let app = spawn_app(pool).await;
 
     let (access_token, _) = user_logs_in(&app, "thomas", "").await;
 
@@ -278,9 +279,9 @@ pub async fn user_can_duplicate_a_challenge() {
     );
 }
 
-#[tokio::test]
-pub async fn normal_user_cannot_update_a_challenge() {
-    let app = spawn_app().await;
+#[sqlx::test]
+pub async fn normal_user_cannot_update_a_challenge(pool: PgPool) {
+    let app = spawn_app(pool).await;
     let (access_token, _) = user_signs_up(&app, None).await;
     let challenge_id = user_creates_a_challenge(&app, &access_token).await;
 
@@ -310,9 +311,9 @@ pub async fn normal_user_cannot_update_a_challenge() {
     assert_eq!(response.code, "INVALID_CHALLENGE_CREATOR");
 }
 
-#[tokio::test]
-pub async fn creator_can_update_a_challenge() {
-    let app = spawn_app().await;
+#[sqlx::test]
+pub async fn creator_can_update_a_challenge(pool: PgPool) {
+    let app = spawn_app(pool).await;
     let (access_token, _) = user_signs_up(&app, None).await;
 
     let challenge_id = user_creates_a_challenge(&app, &access_token).await;
@@ -320,9 +321,9 @@ pub async fn creator_can_update_a_challenge() {
     user_updates_a_challenge(app, &access_token, challenge_id).await;
 }
 
-#[tokio::test]
-pub async fn admin_user_can_update_a_challenge() {
-    let app = spawn_app().await;
+#[sqlx::test]
+pub async fn admin_user_can_update_a_challenge(pool: PgPool) {
+    let app = spawn_app(pool).await;
     let (access_token, _) = user_logs_in(&app, "thomas", "").await;
 
     let challenge_id = user_creates_a_challenge(&app, &access_token).await;
@@ -330,9 +331,9 @@ pub async fn admin_user_can_update_a_challenge() {
     user_updates_a_challenge(app, &access_token, challenge_id).await;
 }
 
-#[tokio::test]
-pub async fn normal_user_cannot_delete_a_challenge() {
-    let app = spawn_app().await;
+#[sqlx::test]
+pub async fn normal_user_cannot_delete_a_challenge(pool: PgPool) {
+    let app = spawn_app(pool).await;
     let (access_token, _) = user_signs_up(&app, None).await;
 
     let challenges = user_gets_challenges(&app, &access_token).await;
@@ -359,9 +360,9 @@ pub async fn normal_user_cannot_delete_a_challenge() {
     assert_eq!(response.code, "INVALID_CHALLENGE_CREATOR");
 }
 
-#[tokio::test]
-pub async fn creator_can_delete_a_challenge() {
-    let app = spawn_app().await;
+#[sqlx::test]
+pub async fn creator_can_delete_a_challenge(pool: PgPool) {
+    let app = spawn_app(pool).await;
     let (access_token, _) = user_signs_up(&app, None).await;
 
     let challenges = user_gets_challenges(&app, &access_token).await;
@@ -379,9 +380,9 @@ pub async fn creator_can_delete_a_challenge() {
     assert!(challenges[0].deleted);
 }
 
-#[tokio::test]
-pub async fn admin_user_can_delete_a_challenge() {
-    let app = spawn_app().await;
+#[sqlx::test]
+pub async fn admin_user_can_delete_a_challenge(pool: PgPool) {
+    let app = spawn_app(pool).await;
     let (access_token, _) = user_logs_in(&app, "thomas", "").await;
 
     let challenges = user_gets_challenges(&app, &access_token).await;
@@ -399,9 +400,9 @@ pub async fn admin_user_can_delete_a_challenge() {
     assert!(challenges[0].deleted);
 }
 
-#[tokio::test]
-pub async fn user_can_get_challenge_statistics() {
-    let app = spawn_app().await;
+#[sqlx::test]
+pub async fn user_can_get_challenge_statistics(pool: PgPool) {
+    let app = spawn_app(pool).await;
     let (access_token, refresh_token) = user_logs_in(&app, "thomas", "").await;
     let challenge_id = user_creates_a_challenge(&app, &access_token).await;
 

@@ -17,6 +17,7 @@ use api::features::challenges::structs::{
         ChallengeDailyTrackingResponse, ChallengeDailyTrackingsResponse,
     },
 };
+use sqlx::PgPool;
 use uuid::Uuid;
 
 use crate::{
@@ -156,9 +157,9 @@ pub async fn user_gets_challenge_daily_trackings(
     response.challenge_daily_trackings
 }
 
-#[tokio::test]
-pub async fn creator_can_create_a_challenge_daily_tracking() {
-    let app = spawn_app().await;
+#[sqlx::test]
+pub async fn creator_can_create_a_challenge_daily_tracking(pool: PgPool) {
+    let app = spawn_app(pool).await;
     let (access_token, _) = user_logs_in(&app, "thomas", "").await;
     let habit_category_id = user_creates_a_habit_category(&app, &access_token).await;
     let unit_id = user_creates_a_unit(&app, &access_token).await;
@@ -186,9 +187,9 @@ pub async fn creator_can_create_a_challenge_daily_tracking() {
     assert_eq!(challenge_daily_trackings.len(), 2);
 }
 
-#[tokio::test]
-pub async fn creator_can_update_a_challenge_daily_tracking() {
-    let app = spawn_app().await;
+#[sqlx::test]
+pub async fn creator_can_update_a_challenge_daily_tracking(pool: PgPool) {
+    let app = spawn_app(pool).await;
     let (access_token, _) = user_logs_in(&app, "thomas", "").await;
     let habit_category_id = user_creates_a_habit_category(&app, &access_token).await;
     let unit_id = user_creates_a_unit(&app, &access_token).await;
@@ -227,9 +228,9 @@ pub async fn creator_can_update_a_challenge_daily_tracking() {
     .await;
 }
 
-#[tokio::test]
-pub async fn creator_can_delete_a_challenge_daily_tracking() {
-    let app = spawn_app().await;
+#[sqlx::test]
+pub async fn creator_can_delete_a_challenge_daily_tracking(pool: PgPool) {
+    let app = spawn_app(pool).await;
     let (access_token, _) = user_logs_in(&app, "thomas", "").await;
     let habit_category_id = user_creates_a_habit_category(&app, &access_token).await;
     let unit_id = user_creates_a_unit(&app, &access_token).await;

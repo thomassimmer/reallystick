@@ -5,6 +5,7 @@ use actix_web::http::header::ContentType;
 use actix_web::{test, Error};
 use api::core::structs::responses::GenericResponse;
 use api::features::auth::structs::responses::UserLoginResponse;
+use sqlx::PgPool;
 
 use crate::auth::recovery_code::{
     generate_key_pair, generate_recovery_code, user_saves_recovery_code,
@@ -37,9 +38,9 @@ pub async fn user_recovers_account_without_2fa_enabled(
     (response.access_token, response.refresh_token)
 }
 
-#[tokio::test]
-async fn user_can_recover_account_without_2fa_enabled() {
-    let app = spawn_app().await;
+#[sqlx::test]
+async fn user_can_recover_account_without_2fa_enabled(pool: PgPool) {
+    let app = spawn_app(pool).await;
     let (access_token, _) = user_signs_up(&app, None).await;
     let (private_key, _) = generate_key_pair();
     let recovery_code = generate_recovery_code();
@@ -51,9 +52,9 @@ async fn user_can_recover_account_without_2fa_enabled() {
     user_has_access_to_protected_route(&app, &access_token).await;
 }
 
-#[tokio::test]
-async fn user_cannot_recover_account_without_2fa_enabled_with_wrong_code() {
-    let app = spawn_app().await;
+#[sqlx::test]
+async fn user_cannot_recover_account_without_2fa_enabled_with_wrong_code(pool: PgPool) {
+    let app = spawn_app(pool).await;
     user_signs_up(&app, None).await;
     let req = test::TestRequest::post()
         .uri("/api/auth/recover")
@@ -73,9 +74,9 @@ async fn user_cannot_recover_account_without_2fa_enabled_with_wrong_code() {
     assert_eq!(response.code, "INVALID_USERNAME_OR_RECOVERY_CODE");
 }
 
-#[tokio::test]
-async fn user_cannot_recover_account_without_2fa_enabled_with_wrong_username() {
-    let app = spawn_app().await;
+#[sqlx::test]
+async fn user_cannot_recover_account_without_2fa_enabled_with_wrong_username(pool: PgPool) {
+    let app = spawn_app(pool).await;
     let (access_token, _) = user_signs_up(&app, None).await;
     let (private_key, _) = generate_key_pair();
     let recovery_code = generate_recovery_code();
@@ -100,9 +101,9 @@ async fn user_cannot_recover_account_without_2fa_enabled_with_wrong_username() {
     assert_eq!(response.code, "INVALID_USERNAME_OR_RECOVERY_CODE");
 }
 
-#[tokio::test]
-async fn user_cannot_recover_account_without_2fa_enabled_using_code_twice() {
-    let app = spawn_app().await;
+#[sqlx::test]
+async fn user_cannot_recover_account_without_2fa_enabled_using_code_twice(pool: PgPool) {
+    let app = spawn_app(pool).await;
     let (access_token, _) = user_signs_up(&app, None).await;
 
     let (private_key, _) = generate_key_pair();
@@ -131,9 +132,9 @@ async fn user_cannot_recover_account_without_2fa_enabled_using_code_twice() {
     assert_eq!(response.code, "INVALID_USERNAME_OR_RECOVERY_CODE");
 }
 
-#[tokio::test]
-async fn user_cannot_login_with_old_password_after_recovery() {
-    let app = spawn_app().await;
+#[sqlx::test]
+async fn user_cannot_login_with_old_password_after_recovery(pool: PgPool) {
+    let app = spawn_app(pool).await;
     let (access_token, _) = user_signs_up(&app, None).await;
     let (private_key, _) = generate_key_pair();
     let recovery_code = generate_recovery_code();
