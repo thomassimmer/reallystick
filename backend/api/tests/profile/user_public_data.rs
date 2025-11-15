@@ -5,10 +5,12 @@ use actix_web::{
     http::header::ContentType,
     test, Error,
 };
-use api::features::profile::structs::{
-    models::UserPublicData,
-    requests::{GetUserPublicDataByIdRequest, GetUserPublicDataByUsernameRequest},
-    responses::{UserPublicResponse, UsersResponse},
+use api::features::profile::{
+    application::dto::{
+        requests::{GetUserPublicDataByIdRequest, GetUserPublicDataByUsernameRequest},
+        responses::{UserPublicResponse, UsersResponse},
+    },
+    domain::entities::UserPublicData,
 };
 use sqlx::PgPool;
 use uuid::Uuid;

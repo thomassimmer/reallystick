@@ -6,10 +6,16 @@ use actix_web::{
     test, Error,
 };
 
-use api::features::public_discussions::structs::{
-    models::{public_message::PublicMessageData, public_message_report::PublicMessageReportData},
-    requests::public_message_report::PublicMessageReportCreateRequest,
-    responses::public_message_report::{PublicMessageReportResponse, PublicMessageReportsResponse},
+use api::features::public_discussions::{
+    application::dto::{
+        requests::public_message_report::PublicMessageReportCreateRequest,
+        responses::public_message_report::{
+            PublicMessageReportResponse, PublicMessageReportsResponse,
+        },
+    },
+    domain::entities::{
+        public_message::PublicMessageData, public_message_report::PublicMessageReportData,
+    },
 };
 use sqlx::PgPool;
 use uuid::Uuid;

@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-use crate::features::{auth::structs::models::UserToken, profile::structs::models::User};
+use crate::features::{auth::domain::entities::UserToken, profile::domain::entities::User};
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct NotificationEvent {
@@ -9,7 +9,7 @@ pub struct NotificationEvent {
     pub recipient: Uuid,
     pub title: Option<String>,
     pub body: Option<String>,
-    pub url: Option<String>
+    pub url: Option<String>,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]

@@ -5,11 +5,11 @@ use actix_web::{
     test, Error,
 };
 use api::features::{
-    notifications::structs::{
-        models::NotificationData,
-        responses::{NotificationResponse, NotificationsResponse},
+    notifications::{
+        application::dto::responses::{NotificationResponse, NotificationsResponse},
+        domain::entities::NotificationData,
     },
-    private_discussions::structs::responses::private_message::PrivateMessageResponse,
+    private_discussions::application::dto::responses::private_message::PrivateMessageResponse,
 };
 use sqlx::PgPool;
 use uuid::Uuid;

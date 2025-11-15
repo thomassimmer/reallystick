@@ -12,11 +12,17 @@ use api::{
         UserUpdatedEvent,
     },
     features::{
-        auth::helpers::token::get_user_tokens,
-        private_discussions::structs::models::{
+        auth::{
+            domain::repositories::UserTokenRepository,
+            infrastructure::repositories::user_token_repository::UserTokenRepositoryImpl,
+        },
+        private_discussions::domain::entities::{
             channels_data::ChannelsData, users_data::UsersData,
         },
-        profile::helpers::profile::get_user_by_id,
+        profile::{
+            domain::repositories::UserRepository,
+            infrastructure::repositories::user_repository::UserRepositoryImpl,
+        },
     },
 };
 
@@ -120,7 +126,8 @@ pub async fn handle_notification(
                 Some(user_data) => user_data,
 
                 None => {
-                    let user = match get_user_by_id(connection_pool, event.recipient).await {
+                    let user_repo = UserRepositoryImpl::new(connection_pool.clone());
+                    let user = match user_repo.get_by_id(event.recipient).await {
                         Ok(Some(u)) => u,
                         Err(e) => {
                             error!("Error: {}", e);
@@ -129,7 +136,8 @@ pub async fn handle_notification(
                         _ => return,
                     };
 
-                    let tokens = match get_user_tokens(event.recipient, connection_pool).await {
+                    let token_repo = UserTokenRepositoryImpl::new(connection_pool.clone());
+                    let tokens = match token_repo.get_by_user_id(event.recipient).await {
                         Ok(r) => r,
                         Err(e) => {
                             error!("Error: {}", e);
@@ -216,7 +224,8 @@ pub async fn handle_notification(
                         if let (Some(title), Some(body)) = (event.title.clone(), event.body.clone())
                         {
                             if can_send_a_push_notification
-                                && token.is_mobile == Some(true) && token.browser.is_none()
+                                && token.is_mobile == Some(true)
+                                && token.browser.is_none()
                             {
                                 if let Some(fcm_token) = token.fcm_token {
                                     send_push_notification(
@@ -249,9 +258,11 @@ pub async fn send_push_notification(
 ) {
     let notification = FcmNotification { title, body };
 
-    let payload = url.map(|url| json!({
-        "deeplink": url
-    }));
+    let payload = url.map(|url| {
+        json!({
+            "deeplink": url
+        })
+    });
 
     if let Err(e) = send_fcm_message(
         &fcm_token,

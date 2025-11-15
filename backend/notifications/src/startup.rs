@@ -4,20 +4,11 @@ use std::fs::File;
 use std::net::TcpListener;
 use std::time::Duration;
 
-use api::configuration::{DatabaseSettings, Settings};
-use api::core::helpers::translation::Translator;
-use api::core::middlewares::token_validator::TokenValidator;
-use api::core::routes::health_check::health_check;
-use api::features::auth::structs::models::TokenCache;
-
-use crate::core::routes::statistics::statistics;
+use crate::core::presentation::routes::statistics::statistics;
 use crate::features::notifications::helpers::redis_handler::handle_redis_messages;
 use crate::features::notifications::helpers::reminders::send_reminder_notifications;
-use crate::features::notifications::routes::websocket::broadcast_ws;
+use crate::features::notifications::presentation::routes::websocket::broadcast_ws;
 use crate::features::oauth_fcm::token_manager::create_shared_token_manager;
-use api::features::private_discussions::structs::models::channels_data::ChannelsData;
-use api::features::private_discussions::structs::models::users_data::UsersData;
-
 use actix_cors::Cors;
 use actix_http::header::HeaderName;
 use actix_web::body::MessageBody;
@@ -25,6 +16,13 @@ use actix_web::dev::{Server, ServiceFactory, ServiceRequest, ServiceResponse};
 use actix_web::http::header;
 use actix_web::middleware::Logger;
 use actix_web::{web, App, Error, HttpServer};
+use api::configuration::{DatabaseSettings, Settings};
+use api::core::helpers::translation::Translator;
+use api::core::presentation::middlewares::token_validator::TokenValidator;
+use api::core::presentation::routes::health_check::health_check;
+use api::features::auth::structs::models::TokenCache;
+use api::features::private_discussions::domain::entities::channels_data::ChannelsData;
+use api::features::private_discussions::domain::entities::users_data::UsersData;
 
 use redis::Client;
 use sqlx::postgres::PgPoolOptions;
@@ -39,9 +37,10 @@ pub async fn run(listener: TcpListener, configuration: Settings) -> Result<Serve
     let token_cache = TokenCache::default();
     let channels_data = ChannelsData::default();
     let users_data = UsersData::default();
-    let shared_token_manager =
-        create_shared_token_manager(File::open("/app/notifications/reallystick-firebase-adminsdk.json")?)
-            .expect("Could not find credentials.json");
+    let shared_token_manager = create_shared_token_manager(File::open(
+        "/app/notifications/reallystick-firebase-adminsdk.json",
+    )?)
+    .expect("Could not find credentials.json");
 
     let redis_client = Client::open("redis://redis:6379").unwrap();
 

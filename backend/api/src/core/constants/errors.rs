@@ -1,13 +1,13 @@
 use crate::{
     core::structs::responses::GenericResponse,
     features::{
-        challenges::structs::models::{
+        challenges::domain::entities::{
             challenge::CHALLENGE_DESCRIPTION_MAX_LENGTH,
             challenge_daily_tracking::CHALLENGE_DAILY_TRACKING_NOTE_MAX_LENGTH,
         },
-        habits::structs::models::habit::HABIT_DESCRIPTION_MAX_LENGTH,
-        private_discussions::structs::models::private_message::PRIVATE_MESSAGE_CONTENT_MAX_LENGTH,
-        public_discussions::structs::models::{
+        habits::domain::entities::habit::HABIT_DESCRIPTION_MAX_LENGTH,
+        private_discussions::domain::entities::private_message::PRIVATE_MESSAGE_CONTENT_MAX_LENGTH,
+        public_discussions::domain::entities::{
             public_message::PUBLIC_MESSAGE_CONTENT_MAX_LENGTH,
             public_message_report::PUBLIC_MESSAGE_REPORT_CONTENT_MAX_LENGTH,
         },
@@ -89,6 +89,7 @@ pub enum AppError {
     PublicMessageDeletionNotDoneByCreator,
     PublicMessageLikeCreation,
     PublicMessageLikeDeletion,
+    PublicMessageLikeNotFound,
     PublicMessageReportCreation,
     PublicMessageReportDeletion,
     PublicMessageReportNotFound,
@@ -98,6 +99,7 @@ pub enum AppError {
     PublicMessageNeedsHabitOrChallenge,
     PublicMessageNotFound,
     PublicMessageUpdate,
+    PublicMessageUpdateNotDoneByCreator,
     RecoveryCodeCreation,
     RecoveryCodeDeletion,
     RecoveryCodeHashCreation,
@@ -429,6 +431,10 @@ impl AppError {
                 code: "PUBLIC_MESSAGE_LIKE_DELETION".to_string(),
                 message: "Failed to delete this like".to_string(),
             },
+            AppError::PublicMessageLikeNotFound => GenericResponse {
+                code: "PUBLIC_MESSAGE_LIKE_NOT_FOUND".to_string(),
+                message: "This like was not found".to_string(),
+            },
             AppError::PublicMessageReportCreation => GenericResponse {
                 code: "PUBLIC_MESSAGE_REPORT_CREATION".to_string(),
                 message: "Failed to create this report".to_string(),
@@ -468,6 +474,10 @@ impl AppError {
             AppError::PublicMessageUpdate => GenericResponse {
                 code: "PUBLIC_MESSAGE_UPDATE".to_string(),
                 message: "Failed to update this message".to_string(),
+            },
+            AppError::PublicMessageUpdateNotDoneByCreator => GenericResponse {
+                code: "PUBLIC_MESSAGE_UPDATE_NOT_DONE_BY_CREATOR".to_string(),
+                message: "This message can only be updated by its creator".to_string(),
             },
             AppError::RecoveryCodeDeletion => GenericResponse {
                 code: "RECOVERY_CODE_DELETION".to_string(),

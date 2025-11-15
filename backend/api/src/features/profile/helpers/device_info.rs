@@ -1,6 +1,6 @@
 use actix_web::HttpRequest;
 
-use crate::features::profile::structs::models::ParsedDeviceInfo;
+use crate::features::profile::domain::entities::ParsedDeviceInfo;
 
 pub async fn get_user_agent(req: HttpRequest) -> ParsedDeviceInfo {
     if let Some(user_agent) = req.headers().get("X-User-Agent") {

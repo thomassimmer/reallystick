@@ -2,7 +2,7 @@ use redis::Client;
 
 use crate::{
     core::structs::redis_messages::UserRemovedEvent,
-    features::profile::structs::models::UserPublicDataCache,
+    features::profile::domain::entities::UserPublicDataCache,
 };
 
 pub async fn handle_redis_messages(

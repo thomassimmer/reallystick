@@ -6,7 +6,7 @@ use actix_web::{
     test, Error,
 };
 
-use api::features::private_discussions::structs::{
+use api::features::private_discussions::application::dto::{
     requests::private_discussion_participation::PrivateDiscussionParticipationUpdateRequest,
     responses::private_discussion_participation::PrivateDiscussionParticipationResponse,
 };

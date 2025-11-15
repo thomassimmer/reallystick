@@ -8,11 +8,23 @@ use uuid::Uuid;
 use api::{
     core::helpers::{mock_now::now, translation::Translator},
     features::{
-        auth::helpers::token::get_user_tokens,
-        challenges::helpers::challenge_participation::get_challenge_participants_to_send_reminder_notification,
-        habits::helpers::habit_participation::get_habit_participants_to_send_reminder_notification,
-        private_discussions::structs::models::users_data::UsersData,
-        profile::helpers::profile::get_user_by_id,
+        auth::{
+            domain::repositories::UserTokenRepository,
+            infrastructure::repositories::user_token_repository::UserTokenRepositoryImpl,
+        },
+        challenges::{
+            domain::repositories::challenge_participation_repository::ChallengeParticipationRepository,
+            infrastructure::repositories::challenge_participation_repository::ChallengeParticipationRepositoryImpl,
+        },
+        habits::{
+            domain::repositories::habit_participation_repository::HabitParticipationRepository,
+            infrastructure::repositories::habit_participation_repository::HabitParticipationRepositoryImpl,
+        },
+        private_discussions::domain::entities::users_data::UsersData,
+        profile::{
+            domain::repositories::UserRepository,
+            infrastructure::repositories::user_repository::UserRepositoryImpl,
+        },
     },
 };
 
@@ -26,7 +38,11 @@ pub async fn send_reminder_notifications(
     token_manager: Arc<Mutex<TokenManager>>,
     translator: &Translator,
 ) {
-    match get_habit_participants_to_send_reminder_notification(&connection_pool).await {
+    let participation_repo = HabitParticipationRepositoryImpl::new(connection_pool.clone());
+    match participation_repo
+        .get_participants_to_send_reminder_notification()
+        .await
+    {
         Ok(users_concerned) => {
             debug!(
                 "Utc now: {} - Users to send a notification to remind a habit: {:?}",
@@ -53,7 +69,11 @@ pub async fn send_reminder_notifications(
             error!("Error: {}", e);
         }
     }
-    match get_challenge_participants_to_send_reminder_notification(&connection_pool).await {
+    let participation_repo = ChallengeParticipationRepositoryImpl::new(connection_pool.clone());
+    match participation_repo
+        .get_participants_to_send_reminder_notification()
+        .await
+    {
         Ok(users_concerned) => {
             debug!(
                 "Utc now: {} - Users to send a notification to remind a challenge: {:?}",
@@ -95,7 +115,8 @@ pub async fn send_reminder_notification_to_user(
         Some(user_data) => user_data,
 
         None => {
-            let user = match get_user_by_id(connection_pool, user_id).await {
+            let user_repo = UserRepositoryImpl::new(connection_pool.clone());
+            let user = match user_repo.get_by_id(user_id).await {
                 Ok(Some(u)) => u,
                 Err(e) => {
                     error!("Error: {}", e);
@@ -104,7 +125,8 @@ pub async fn send_reminder_notification_to_user(
                 _ => return,
             };
 
-            let tokens = match get_user_tokens(user_id, connection_pool).await {
+            let token_repo = UserTokenRepositoryImpl::new(connection_pool.clone());
+            let tokens = match token_repo.get_by_user_id(user_id).await {
                 Ok(r) => r,
                 Err(e) => {
                     error!("Error: {}", e);
@@ -121,8 +143,7 @@ pub async fn send_reminder_notification_to_user(
     for (_, token) in user_data.tokens {
         let can_send_a_push_notification = user_data.user.notifications_enabled;
 
-        if can_send_a_push_notification
-            && token.is_mobile == Some(true) && token.browser.is_none()
+        if can_send_a_push_notification && token.is_mobile == Some(true) && token.browser.is_none()
         {
             if let Some(fcm_token) = token.fcm_token {
                 send_push_notification(

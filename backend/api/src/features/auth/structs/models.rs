@@ -1,44 +1,11 @@
+// Legacy models - re-exported from domain for backward compatibility during migration
+pub use crate::features::auth::domain::entities::{Claims, RecoveryCode, UserToken};
+
 use std::{collections::HashMap, sync::Arc};
 
 use chrono::{DateTime, Utc};
-use serde::{Deserialize, Serialize};
-use sqlx::prelude::FromRow;
 use tokio::sync::RwLock;
 use uuid::Uuid;
-
-#[allow(non_snake_case)]
-#[derive(Debug, Deserialize, Serialize, Clone, FromRow)]
-pub struct RecoveryCode {
-    pub id: Uuid,
-    pub user_id: Uuid,
-    pub recovery_code: String,
-    pub private_key_encrypted: String, // the user's private key encrypted using the recovery code
-    pub salt_used_to_derive_key_from_recovery_code: String,
-}
-
-#[allow(non_snake_case)]
-#[derive(Debug, Deserialize, Serialize, Clone, FromRow, Default)]
-pub struct UserToken {
-    pub id: Uuid,
-    pub user_id: Uuid,
-    pub token_id: Uuid,
-    pub expires_at: chrono::DateTime<chrono::Utc>,
-    pub os: Option<String>,
-    pub is_mobile: Option<bool>,
-    pub browser: Option<String>,
-    pub app_version: Option<String>,
-    pub model: Option<String>,
-    pub fcm_token: Option<String>,
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct Claims {
-    pub exp: i64,
-    pub jti: Uuid,
-    pub user_id: Uuid,
-    pub username: String,
-    pub is_admin: bool,
-}
 
 #[derive(Default, Clone)]
 pub struct TokenCache {

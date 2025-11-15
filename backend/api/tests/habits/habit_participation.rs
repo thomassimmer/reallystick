@@ -7,10 +7,12 @@ use actix_web::{
     http::header::ContentType,
     test, Error,
 };
-use api::features::habits::structs::{
-    models::habit_participation::HabitParticipationData,
-    requests::habit_participation::HabitParticipationUpdateRequest,
-    responses::habit_participation::{HabitParticipationResponse, HabitParticipationsResponse},
+use api::features::habits::{
+    application::dto::{
+        requests::habit_participation::HabitParticipationUpdateRequest,
+        responses::habit_participation::{HabitParticipationResponse, HabitParticipationsResponse},
+    },
+    domain::entities::habit_participation::HabitParticipationData,
 };
 use sqlx::PgPool;
 use uuid::Uuid;

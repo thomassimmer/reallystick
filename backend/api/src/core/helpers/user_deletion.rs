@@ -6,21 +6,24 @@ use sqlx::PgPool;
 use tracing::{error, info};
 
 use crate::core::structs::redis_messages::UserRemovedEvent;
-use crate::features::challenges::helpers::challenge::{
-    get_created_challenges, mark_challenges_as_deleted_for_user,
+use crate::features::challenges::infrastructure::repositories::{
+    challenge_daily_tracking_repository::ChallengeDailyTrackingRepositoryImpl,
+    challenge_participation_repository::ChallengeParticipationRepositoryImpl,
+    challenge_repository::ChallengeRepositoryImpl,
 };
-use crate::features::challenges::helpers::challenge_daily_tracking::delete_all_daily_trackings_for_challenge;
-use crate::features::challenges::helpers::challenge_participation::delete_challenge_participations_for_user;
-use crate::features::habits::helpers::habit_daily_tracking::delete_habit_daily_tracking_for_user;
-use crate::features::habits::helpers::habit_participation::delete_habit_participations_for_user;
-use crate::features::private_discussions::helpers::private_message::delete_private_messages_for_user;
-use crate::features::profile::helpers::profile::{
-    get_not_deleted_but_marked_as_deleted_users, mark_user_as_deleted,
+use crate::features::habits::infrastructure::repositories::{
+    habit_daily_tracking_repository::HabitDailyTrackingRepositoryImpl,
+    habit_participation_repository::HabitParticipationRepositoryImpl,
 };
-use crate::features::profile::structs::models::User;
-use crate::features::public_discussions::helpers::public_message::mark_public_messages_as_deleted_for_user;
-use crate::features::public_discussions::helpers::public_message_like::delete_public_message_likes_for_user;
-use crate::features::public_discussions::helpers::public_message_report::delete_public_message_reports_for_user;
+use crate::features::private_discussions::infrastructure::repositories::private_message_repository::PrivateMessageRepositoryImpl;
+use crate::features::profile::domain::entities::User;
+use crate::features::profile::domain::repositories::UserRepository;
+use crate::features::profile::infrastructure::repositories::user_repository::UserRepositoryImpl;
+use crate::features::public_discussions::infrastructure::repositories::{
+    public_message_like_repository::PublicMessageLikeRepositoryImpl,
+    public_message_report_repository::PublicMessageReportRepositoryImpl,
+    public_message_repository::PublicMessageRepositoryImpl,
+};
 
 use super::mock_now::now;
 
@@ -28,7 +31,11 @@ pub async fn remove_users_marked_as_deleted(
     pool: &PgPool,
     redis_client: &Client,
 ) -> Result<(), sqlx::Error> {
-    let users = get_not_deleted_but_marked_as_deleted_users(pool).await?;
+    let user_repo = UserRepositoryImpl::new(pool.clone());
+    let users = user_repo
+        .get_not_deleted_but_marked_as_deleted()
+        .await
+        .map_err(|e| sqlx::Error::Configuration(Box::new(std::io::Error::other(e))))?;
 
     for user in users.clone() {
         delete_user_data(pool, user, redis_client).await?;
@@ -54,30 +61,42 @@ pub async fn delete_user_data(
                     Err(_) => panic!("Can't get a transaction."),
                 };
 
-                if let Err(e) =
-                    mark_public_messages_as_deleted_for_user(&mut *transaction, user.id).await
+                let public_message_repo = PublicMessageRepositoryImpl::new(pool.clone());
+                if let Err(e) = public_message_repo
+                    .mark_as_deleted_for_user_with_executor(user.id, &mut *transaction)
+                    .await
                 {
                     error!("Error: {}", e);
                     transaction.rollback().await?;
                     return Ok(());
                 }
 
-                if let Err(e) =
-                    delete_habit_daily_tracking_for_user(&mut *transaction, user.id).await
+                let habit_daily_tracking_repo = HabitDailyTrackingRepositoryImpl::new(pool.clone());
+                if let Err(e) = habit_daily_tracking_repo
+                    .delete_by_user_id_with_executor(user.id, &mut *transaction)
+                    .await
                 {
                     error!("Error: {}", e);
                     transaction.rollback().await?;
                     return Ok(());
                 }
 
-                match get_created_challenges(&mut *transaction, user.id).await {
+                let challenge_repo = ChallengeRepositoryImpl::new(pool.clone());
+                let daily_tracking_repo = ChallengeDailyTrackingRepositoryImpl::new(pool.clone());
+                let participation_repo = ChallengeParticipationRepositoryImpl::new(pool.clone());
+
+                match challenge_repo
+                    .get_created_with_executor(user.id, &mut *transaction)
+                    .await
+                {
                     Ok(challenges) => {
                         for challenge in challenges {
-                            if let Err(e) = delete_all_daily_trackings_for_challenge(
-                                &mut *transaction,
-                                challenge.id,
-                            )
-                            .await
+                            if let Err(e) = daily_tracking_repo
+                                .delete_by_challenge_id_with_executor(
+                                    challenge.id,
+                                    &mut *transaction,
+                                )
+                                .await
                             {
                                 error!("Error: {}", e);
                             }
@@ -88,52 +107,69 @@ pub async fn delete_user_data(
                     }
                 };
 
-                if let Err(e) =
-                    mark_challenges_as_deleted_for_user(&mut *transaction, user.id).await
+                if let Err(e) = challenge_repo
+                    .mark_as_deleted_for_user_with_executor(user.id, &mut *transaction)
+                    .await
                 {
                     error!("Error: {}", e);
                     transaction.rollback().await?;
                     return Ok(());
                 }
 
-                if let Err(e) =
-                    delete_challenge_participations_for_user(&mut *transaction, user.id).await
+                if let Err(e) = participation_repo
+                    .delete_by_user_id_with_executor(user.id, &mut *transaction)
+                    .await
                 {
                     error!("Error: {}", e);
                     transaction.rollback().await?;
                     return Ok(());
                 }
 
-                if let Err(e) =
-                    delete_habit_participations_for_user(&mut *transaction, user.id).await
+                let habit_participation_repo = HabitParticipationRepositoryImpl::new(pool.clone());
+                if let Err(e) = habit_participation_repo
+                    .delete_by_user_id_with_executor(user.id, &mut *transaction)
+                    .await
                 {
                     error!("Error: {}", e);
                     transaction.rollback().await?;
                     return Ok(());
                 }
 
-                if let Err(e) = delete_private_messages_for_user(&mut *transaction, user.id).await {
-                    error!("Error: {}", e);
-                    transaction.rollback().await?;
-                    return Ok(());
-                }
-
-                if let Err(e) = mark_user_as_deleted(&mut *transaction, user.id).await {
-                    error!("Error: {}", e);
-                    transaction.rollback().await?;
-                    return Ok(());
-                }
-
-                if let Err(e) =
-                    delete_public_message_likes_for_user(&mut *transaction, user.id).await
+                let private_message_repo = PrivateMessageRepositoryImpl::new(pool.clone());
+                if let Err(e) = private_message_repo
+                    .delete_by_user_id_with_executor(user.id, &mut *transaction)
+                    .await
                 {
                     error!("Error: {}", e);
                     transaction.rollback().await?;
                     return Ok(());
                 }
 
-                if let Err(e) =
-                    delete_public_message_reports_for_user(&mut *transaction, user.id).await
+                let user_repo = UserRepositoryImpl::new(pool.clone());
+                if let Err(e) = user_repo
+                    .mark_as_deleted_with_executor(user.id, &mut *transaction)
+                    .await
+                {
+                    error!("Error: {}", e);
+                    transaction.rollback().await?;
+                    return Ok(());
+                }
+
+                let public_message_like_repo = PublicMessageLikeRepositoryImpl::new(pool.clone());
+                if let Err(e) = public_message_like_repo
+                    .delete_by_user_id_with_executor(user.id, &mut *transaction)
+                    .await
+                {
+                    error!("Error: {}", e);
+                    transaction.rollback().await?;
+                    return Ok(());
+                }
+
+                let public_message_report_repo =
+                    PublicMessageReportRepositoryImpl::new(pool.clone());
+                if let Err(e) = public_message_report_repo
+                    .delete_by_user_id_with_executor(user.id, &mut *transaction)
+                    .await
                 {
                     error!("Error: {}", e);
                     transaction.rollback().await?;

@@ -8,14 +8,16 @@ use actix_web::{
     test, Error,
 };
 
-use api::features::challenges::structs::{
-    models::challenge_daily_tracking::ChallengeDailyTrackingData,
-    requests::challenge_daily_tracking::{
-        ChallengeDailyTrackingCreateRequest, ChallengeDailyTrackingUpdateRequest,
+use api::features::challenges::{
+    application::dto::{
+        requests::challenge_daily_tracking::{
+            ChallengeDailyTrackingCreateRequest, ChallengeDailyTrackingUpdateRequest,
+        },
+        responses::challenge_daily_tracking::{
+            ChallengeDailyTrackingResponse, ChallengeDailyTrackingsResponse,
+        },
     },
-    responses::challenge_daily_tracking::{
-        ChallengeDailyTrackingResponse, ChallengeDailyTrackingsResponse,
-    },
+    domain::entities::challenge_daily_tracking::ChallengeDailyTrackingData,
 };
 use sqlx::PgPool;
 use uuid::Uuid;

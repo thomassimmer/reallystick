@@ -8,12 +8,14 @@ use actix_web::{
 use api::{
     core::helpers::mock_now::override_now,
     features::{
-        habits::structs::{
-            models::{habit::HabitData, habit_statistics::HabitStatistics},
-            requests::habit::{HabitCreateRequest, HabitUpdateRequest},
-            responses::habit::{HabitResponse, HabitStatisticsResponse, HabitsResponse},
+        habits::{
+            application::dto::{
+                requests::habit::{HabitCreateRequest, HabitUpdateRequest},
+                responses::habit::{HabitResponse, HabitStatisticsResponse, HabitsResponse},
+            },
+            domain::entities::{habit::HabitData, habit_statistics::HabitStatistics},
         },
-        profile::structs::requests::UserUpdateRequest,
+        profile::application::dto::requests::UserUpdateRequest,
     },
 };
 use chrono::Utc;

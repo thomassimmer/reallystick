@@ -7,7 +7,9 @@ use actix_web::{
 };
 use api::{
     core::structs::responses::GenericResponse,
-    features::auth::structs::{requests::UserRegisterRequest, responses::UserSignupResponse},
+    features::auth::application::dto::{
+        requests::UserRegisterRequest, responses::UserSignupResponse,
+    },
 };
 use sqlx::PgPool;
 

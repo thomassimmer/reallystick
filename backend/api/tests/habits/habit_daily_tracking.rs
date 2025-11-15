@@ -8,12 +8,16 @@ use actix_web::{
     test, Error,
 };
 
-use api::features::habits::structs::{
-    models::habit_daily_tracking::HabitDailyTrackingData,
-    requests::habit_daily_tracking::{
-        HabitDailyTrackingCreateRequest, HabitDailyTrackingUpdateRequest,
+use api::features::habits::{
+    application::dto::{
+        requests::habit_daily_tracking::{
+            HabitDailyTrackingCreateRequest, HabitDailyTrackingUpdateRequest,
+        },
+        responses::habit_daily_tracking::{
+            HabitDailyTrackingResponse, HabitDailyTrackingsResponse,
+        },
     },
-    responses::habit_daily_tracking::{HabitDailyTrackingResponse, HabitDailyTrackingsResponse},
+    domain::entities::habit_daily_tracking::HabitDailyTrackingData,
 };
 use chrono::Utc;
 use sqlx::PgPool;

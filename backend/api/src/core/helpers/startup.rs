@@ -11,31 +11,28 @@ use tracing::{error, info};
 use uuid::Uuid;
 
 use crate::core::helpers::translation::Translator;
-use crate::features::auth::helpers::token::delete_expired_tokens;
-
-use crate::features::habits::helpers::habit::create_habit;
-use crate::features::habits::helpers::habit_category::create_habit_category;
-use crate::features::habits::helpers::habit_daily_tracking::create_habit_daily_tracking;
-use crate::features::habits::helpers::habit_participation::create_habit_participation;
-use crate::features::habits::helpers::unit::create_unit;
-use crate::features::habits::structs::models::habit_daily_tracking::HabitDailyTracking;
-use crate::features::habits::structs::models::habit_participation::HabitParticipation;
-use crate::features::habits::structs::models::unit::Unit;
-use crate::features::private_discussions::helpers::private_discussion::{
-    self, get_private_discussion_by_users,
+use crate::features::auth::infrastructure::repositories::user_token_repository::UserTokenRepositoryImpl;
+use crate::features::habits::domain::entities::habit::Habit;
+use crate::features::habits::domain::entities::habit_category::HabitCategory;
+use crate::features::habits::domain::entities::habit_daily_tracking::HabitDailyTracking;
+use crate::features::habits::domain::entities::habit_participation::HabitParticipation;
+use crate::features::habits::domain::entities::unit::Unit;
+use crate::features::habits::infrastructure::repositories::{
+    habit_category_repository::HabitCategoryRepositoryImpl,
+    habit_daily_tracking_repository::HabitDailyTrackingRepositoryImpl,
+    habit_participation_repository::HabitParticipationRepositoryImpl,
+    habit_repository::HabitRepositoryImpl, unit_repository::UnitRepositoryImpl,
 };
-use crate::features::private_discussions::helpers::private_discussion_participation::create_private_discussion_participation;
-use crate::features::private_discussions::helpers::private_message::{self};
-use crate::features::private_discussions::structs::models::private_discussion::PrivateDiscussion;
-use crate::features::private_discussions::structs::models::private_discussion_participation::PrivateDiscussionParticipation;
-use crate::features::private_discussions::structs::models::private_message::PrivateMessage;
-use crate::features::profile::helpers::profile::{
-    create_user, get_all_users, get_user_by_username,
+use crate::features::private_discussions::domain::entities::private_discussion::PrivateDiscussion;
+use crate::features::private_discussions::domain::entities::private_discussion_participation::PrivateDiscussionParticipation;
+use crate::features::private_discussions::domain::entities::private_message::PrivateMessage;
+use crate::features::private_discussions::infrastructure::repositories::{
+    private_discussion_participation_repository::PrivateDiscussionParticipationRepositoryImpl,
+    private_discussion_repository::PrivateDiscussionRepositoryImpl,
+    private_message_repository::PrivateMessageRepositoryImpl,
 };
-use crate::features::{
-    habits::structs::models::{habit::Habit, habit_category::HabitCategory},
-    profile::structs::models::User,
-};
+use crate::features::profile::domain::entities::User;
+use crate::features::profile::infrastructure::repositories::user_repository::UserRepositoryImpl;
 
 use super::mock_now::now;
 
@@ -297,12 +294,21 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
         ),
     ]);
 
+    let unit_repo = UnitRepositoryImpl::new(pool.clone());
     for unit in units.values().clone() {
-        create_unit(&mut *transaction, unit).await?;
+        unit_repo
+            .create_with_executor(unit, &mut *transaction)
+            .await
+            .map_err(|e| sqlx::Error::Configuration(Box::new(std::io::Error::other(e))))?;
     }
 
-    let _ = create_user(&mut *transaction, thomas.clone()).await;
-    let _ = create_user(&mut *transaction, reallystick.clone()).await;
+    let user_repo = UserRepositoryImpl::new(pool.clone());
+    let _ = user_repo
+        .create_with_executor(&thomas, &mut *transaction)
+        .await;
+    let _ = user_repo
+        .create_with_executor(&reallystick, &mut *transaction)
+        .await;
 
     let habit_categories = HashMap::from([
         (
@@ -358,7 +364,11 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
     ]);
 
     for habit_category in habit_categories.values().clone() {
-        create_habit_category(&mut *transaction, habit_category).await?;
+        let habit_category_repo = HabitCategoryRepositoryImpl::new(pool.clone());
+        habit_category_repo
+            .create_with_executor(habit_category, &mut *transaction)
+            .await
+            .map_err(|e| sqlx::Error::Configuration(Box::new(std::io::Error::other(e))))?;
     }
 
     let habits = HashMap::from([
@@ -589,7 +599,11 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
     ]);
 
     for habit in habits.values().clone() {
-        create_habit(&mut *transaction, habit).await?;
+        let habit_repo = HabitRepositoryImpl::new(pool.clone());
+        habit_repo
+            .create_with_executor(habit, &mut *transaction)
+            .await
+            .map_err(|e| sqlx::Error::Configuration(Box::new(std::io::Error::other(e))))?;
     }
 
     let habit_participations = [
@@ -640,7 +654,11 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
     ];
 
     for habit_participation in habit_participations {
-        create_habit_participation(&mut *transaction, &habit_participation).await?;
+        let habit_participation_repo = HabitParticipationRepositoryImpl::new(pool.clone());
+        habit_participation_repo
+            .create_with_executor(&habit_participation, &mut *transaction)
+            .await
+            .map_err(|e| sqlx::Error::Configuration(Box::new(std::io::Error::other(e))))?;
     }
 
     let habit_daily_trackings = [
@@ -777,7 +795,11 @@ pub async fn populate_database(pool: &PgPool) -> Result<(), sqlx::Error> {
     ];
 
     for habit_daily_tracking in habit_daily_trackings {
-        create_habit_daily_tracking(&mut *transaction, &habit_daily_tracking).await?;
+        let habit_daily_tracking_repo = HabitDailyTrackingRepositoryImpl::new(pool.clone());
+        habit_daily_tracking_repo
+            .create_with_executor(&habit_daily_tracking, &mut *transaction)
+            .await
+            .map_err(|e| sqlx::Error::Configuration(Box::new(std::io::Error::other(e))))?;
     }
 
     if let Err(e) = transaction.commit().await {
@@ -831,16 +853,23 @@ pub async fn create_missing_discussions_with_reallystick_user(
         Err(_) => panic!("Can't get a transaction."),
     };
 
-    let users = get_all_users(&mut *transaction).await?;
+    let user_repo = UserRepositoryImpl::new(pool.clone());
+    let users = user_repo.get_all_with_executor(&mut *transaction).await?;
 
-    let reallystick_user = get_user_by_username(&mut *transaction, "reallystick")
+    let reallystick_user = user_repo
+        .get_by_username_with_executor("reallystick", &mut *transaction)
         .await?
         .unwrap();
 
+    let private_discussion_repo = PrivateDiscussionRepositoryImpl::new(pool.clone());
+    let private_discussion_participation_repo =
+        PrivateDiscussionParticipationRepositoryImpl::new(pool.clone());
+
     for user in users {
-        let existing_discussion =
-            get_private_discussion_by_users(&mut *transaction, user.id, reallystick_user.id)
-                .await?;
+        let existing_discussion = private_discussion_repo
+            .get_by_users_with_executor(user.id, reallystick_user.id, &mut *transaction)
+            .await
+            .map_err(|e| sqlx::Error::Configuration(Box::new(std::io::Error::other(e))))?;
 
         if existing_discussion.is_some() {
             continue;
@@ -851,7 +880,12 @@ pub async fn create_missing_discussions_with_reallystick_user(
             created_at: now(),
         };
 
-        private_discussion::create_private_discussion(&mut *transaction, &discussion).await?;
+        private_discussion_repo
+            .create_with_executor(&discussion, &mut *transaction)
+            .await
+            .map_err(|e| {
+                sqlx::Error::Configuration(Box::new(std::io::Error::other(e.to_string())))
+            })?;
 
         let discussion_participation_for_user = PrivateDiscussionParticipation {
             id: Uuid::new_v4(),
@@ -871,17 +905,22 @@ pub async fn create_missing_discussions_with_reallystick_user(
             has_blocked: false,
         };
 
-        create_private_discussion_participation(
-            &mut *transaction,
-            &discussion_participation_for_user,
-        )
-        .await?;
+        private_discussion_participation_repo
+            .create_with_executor(&discussion_participation_for_user, &mut *transaction)
+            .await
+            .map_err(|e| {
+                sqlx::Error::Configuration(Box::new(std::io::Error::other(e.to_string())))
+            })?;
 
-        create_private_discussion_participation(
-            &mut *transaction,
-            &discussion_participation_for_reallystick_user,
-        )
-        .await?;
+        private_discussion_participation_repo
+            .create_with_executor(
+                &discussion_participation_for_reallystick_user,
+                &mut *transaction,
+            )
+            .await
+            .map_err(|e| {
+                sqlx::Error::Configuration(Box::new(std::io::Error::other(e.to_string())))
+            })?;
 
         let mut args = FluentArgs::new();
         args.set("username", user.username);
@@ -901,7 +940,13 @@ pub async fn create_missing_discussions_with_reallystick_user(
             seen: false,
         };
 
-        private_message::create_private_message(&mut *transaction, &private_message).await?;
+        let private_message_repo = PrivateMessageRepositoryImpl::new(pool.clone());
+        private_message_repo
+            .create_with_executor(&private_message, &mut *transaction)
+            .await
+            .map_err(|e| {
+                sqlx::Error::Configuration(Box::new(std::io::Error::other(e.to_string())))
+            })?;
     }
 
     transaction.commit().await?;
@@ -915,7 +960,10 @@ pub async fn remove_expired_user_tokens(pool: &PgPool) -> Result<(), sqlx::Error
         Err(_) => panic!("Can't get a transaction."),
     };
 
-    let result = delete_expired_tokens(&mut *transaction).await?;
+    let token_repo = UserTokenRepositoryImpl::new(pool.clone());
+    let result = token_repo
+        .delete_expired_with_executor(&mut *transaction)
+        .await?;
 
     info!("Deleted {} expired user tokens.", result.rows_affected());
 

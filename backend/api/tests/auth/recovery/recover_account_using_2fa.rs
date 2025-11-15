@@ -4,7 +4,7 @@ use actix_web::dev::{Service, ServiceResponse};
 use actix_web::http::header::ContentType;
 use actix_web::{test, Error};
 use api::core::structs::responses::GenericResponse;
-use api::features::auth::structs::responses::UserLoginResponse;
+use api::features::auth::application::dto::responses::UserLoginResponse;
 use sqlx::PgPool;
 use totp_rs::{Algorithm, Secret, TOTP};
 

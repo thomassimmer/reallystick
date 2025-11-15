@@ -1,11 +1,12 @@
-use clap::Parser;
 use api::configuration::get_configuration;
 use api::core::helpers::startup::{
-    create_missing_discussions_with_reallystick_user, populate_database,
-    remove_expired_user_tokens, reset_database,
+    create_missing_discussions_with_reallystick_user, populate_database, reset_database,
 };
 use api::core::helpers::user_deletion::remove_users_marked_as_deleted;
+use api::features::auth::domain::repositories::UserTokenRepository;
+use api::features::auth::infrastructure::repositories::user_token_repository::UserTokenRepositoryImpl;
 use api::startup::get_connection_pool;
+use clap::Parser;
 use redis::Client;
 use tracing::{error, info};
 use tracing_subscriber::{EnvFilter, FmtSubscriber};
@@ -61,8 +62,11 @@ async fn main() {
             }
         }
         "delete_expired_tokens" => {
-            if let Err(e) = remove_expired_user_tokens(&pool).await {
+            let token_repo = UserTokenRepositoryImpl::new(pool.clone());
+            if let Err(e) = token_repo.delete_expired().await {
                 error!("Failed to delete expired tokens: {}", e);
+            } else {
+                info!("Successfully deleted expired tokens.");
             }
         }
         _ => error!("Unknown action: {}", action),

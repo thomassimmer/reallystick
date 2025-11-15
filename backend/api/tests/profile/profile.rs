@@ -17,12 +17,14 @@ use api::{
     },
     features::{
         auth::structs::models::TokenCache,
-        challenges::structs::models::challenge_statistics::ChallengeStatisticsCache,
-        habits::structs::models::habit_statistics::HabitStatisticsCache,
-        profile::structs::{
-            models::{UserData, UserPublicDataCache},
-            requests::UserUpdateRequest,
-            responses::{DeleteAccountResponse, IsOtpEnabledResponse, UserResponse},
+        challenges::domain::entities::challenge_statistics::ChallengeStatisticsCache,
+        habits::domain::entities::habit_statistics::HabitStatisticsCache,
+        profile::{
+            application::dto::{
+                requests::UserUpdateRequest,
+                responses::{DeleteAccountResponse, IsOtpEnabledResponse, UserResponse},
+            },
+            domain::entities::{UserData, UserPublicDataCache},
         },
     },
     startup::create_app,

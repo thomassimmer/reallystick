@@ -4,8 +4,8 @@ use actix_web::dev::{Service, ServiceResponse};
 use actix_web::http::header::ContentType;
 use actix_web::{test, Error};
 use api::core::structs::responses::GenericResponse;
-use api::features::auth::structs::responses::UserLoginResponse;
-use api::features::profile::structs::responses::IsOtpEnabledResponse;
+use api::features::auth::application::dto::responses::UserLoginResponse;
+use api::features::profile::application::dto::responses::IsOtpEnabledResponse;
 use sqlx::PgPool;
 
 use crate::auth::otp::{user_generates_otp, user_verifies_otp};

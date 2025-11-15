@@ -8,10 +8,12 @@ use actix_web::{
     test, Error,
 };
 
-use api::features::public_discussions::structs::{
-    models::public_message::PublicMessageData,
-    requests::public_message::{PublicMessageCreateRequest, PublicMessageUpdateRequest},
-    responses::public_message::{PublicMessageResponse, PublicMessagesResponse},
+use api::features::public_discussions::{
+    application::dto::{
+        requests::public_message::{PublicMessageCreateRequest, PublicMessageUpdateRequest},
+        responses::public_message::{PublicMessageResponse, PublicMessagesResponse},
+    },
+    domain::entities::public_message::PublicMessageData,
 };
 use sqlx::PgPool;
 use uuid::Uuid;

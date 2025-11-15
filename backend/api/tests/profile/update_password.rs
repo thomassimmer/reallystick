@@ -5,7 +5,7 @@ use actix_web::{
     http::header::ContentType,
     test, Error,
 };
-use api::features::profile::structs::{
+use api::features::profile::application::dto::{
     requests::UpdateUserPasswordRequest, responses::UserResponse,
 };
 use sqlx::PgPool;

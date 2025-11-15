@@ -6,7 +6,7 @@ use actix_web::{
     http::header::ContentType,
     test, Error,
 };
-use api::features::auth::structs::{
+use api::features::auth::application::dto::{
     requests::SaveRecoveryCodeRequest, responses::SaveRecoveryCodeResponse,
 };
 use rand::{distributions::Alphanumeric, Rng};

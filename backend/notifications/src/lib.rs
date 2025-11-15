@@ -1,8 +1,10 @@
 pub mod startup;
 
 pub mod core {
-    pub mod routes {
-        pub mod statistics;
+    pub mod presentation {
+        pub mod routes {
+            pub mod statistics;
+        }
     }
 }
 
@@ -13,8 +15,10 @@ pub mod features {
             pub mod reminders;
         }
 
-        pub mod routes {
-            pub mod websocket;
+        pub mod presentation {
+            pub mod routes {
+                pub mod websocket;
+            }
         }
     }
 

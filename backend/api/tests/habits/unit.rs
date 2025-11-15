@@ -7,9 +7,9 @@ use actix_web::{
     http::header::ContentType,
     test, Error,
 };
-use api::features::habits::structs::{
-    models::unit::UnitData,
-    responses::unit::{UnitResponse, UnitsResponse},
+use api::features::habits::{
+    application::dto::responses::unit::{UnitResponse, UnitsResponse},
+    domain::entities::unit::UnitData,
 };
 use serde_json::json;
 use sqlx::PgPool;

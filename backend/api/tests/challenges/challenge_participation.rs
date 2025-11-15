@@ -7,12 +7,14 @@ use actix_web::{
     http::header::ContentType,
     test, Error,
 };
-use api::features::challenges::structs::{
-    models::challenge_participation::ChallengeParticipationData,
-    requests::challenge_participation::ChallengeParticipationUpdateRequest,
-    responses::challenge_participation::{
-        ChallengeParticipationResponse, ChallengeParticipationsResponse,
+use api::features::challenges::{
+    application::dto::{
+        requests::challenge_participation::ChallengeParticipationUpdateRequest,
+        responses::challenge_participation::{
+            ChallengeParticipationResponse, ChallengeParticipationsResponse,
+        },
     },
+    domain::entities::challenge_participation::ChallengeParticipationData,
 };
 use chrono::{Datelike, Utc};
 use sqlx::PgPool;

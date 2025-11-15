@@ -10,16 +10,19 @@ use actix_web::{
 use api::{
     configuration::get_configuration,
     core::helpers::translation::Translator,
-    features::profile::{helpers::profile::create_user, structs::models::User},
+    features::profile::{
+        domain::entities::User, domain::repositories::UserRepository,
+        infrastructure::repositories::user_repository::UserRepositoryImpl,
+    },
     startup::create_app,
 };
 use api::{
     core::helpers::mock_now::now,
     features::{
         auth::structs::models::TokenCache,
-        challenges::structs::models::challenge_statistics::ChallengeStatisticsCache,
-        habits::structs::models::habit_statistics::HabitStatisticsCache,
-        profile::structs::models::UserPublicDataCache,
+        challenges::domain::entities::challenge_statistics::ChallengeStatisticsCache,
+        habits::domain::entities::habit_statistics::HabitStatisticsCache,
+        profile::domain::entities::UserPublicDataCache,
     },
 };
 use argon2::PasswordHasher;
@@ -152,13 +155,14 @@ pub async fn configure_database(pool: &PgPool) {
         notifications_user_joined_your_challenge_enabled: true,
     };
 
-    let result = create_user(pool, thomas.clone()).await;
+    let user_repo = UserRepositoryImpl::new(pool.clone());
+    let result = user_repo.create(&thomas).await;
 
     if let Err(e) = result {
         error!("{}", e);
     }
 
-    let result = create_user(pool, reallystick.clone()).await;
+    let result = user_repo.create(&reallystick).await;
 
     if let Err(e) = result {
         error!("{}", e);

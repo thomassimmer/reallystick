@@ -8,13 +8,15 @@ use actix_web::{
 use api::{
     core::{helpers::mock_now::override_now, structs::responses::GenericResponse},
     features::{
-        challenges::structs::{
-            models::{challenge::ChallengeData, challenge_statistics::ChallengeStatistics},
-            responses::challenge::{
+        challenges::{
+            application::dto::responses::challenge::{
                 ChallengeResponse, ChallengeStatisticsResponse, ChallengesResponse,
             },
+            domain::entities::{
+                challenge::ChallengeData, challenge_statistics::ChallengeStatistics,
+            },
         },
-        profile::structs::requests::UserUpdateRequest,
+        profile::application::dto::requests::UserUpdateRequest,
     },
 };
 use chrono::Utc;

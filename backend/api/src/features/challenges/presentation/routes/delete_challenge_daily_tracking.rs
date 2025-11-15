@@ -1,0 +1,110 @@
+use crate::{
+    core::constants::errors::AppError,
+    features::{
+        auth::structs::models::Claims,
+        challenges::{
+            application::dto::{
+                requests::challenge_daily_tracking::GetChallengeDailyTrackingParams,
+                responses::challenge_daily_tracking::ChallengeDailyTrackingResponse,
+            },
+            infrastructure::repositories::{
+                challenge_daily_tracking_repository::ChallengeDailyTrackingRepositoryImpl,
+                challenge_repository::ChallengeRepositoryImpl,
+            },
+        },
+    },
+};
+use actix_web::{
+    delete,
+    web::{Data, Path, ReqData},
+    HttpResponse, Responder,
+};
+use sqlx::PgPool;
+use tracing::error;
+
+#[delete("/{challenge_daily_tracking_id}")]
+pub async fn delete_challenge_daily_tracking(
+    pool: Data<PgPool>,
+    params: Path<GetChallengeDailyTrackingParams>,
+    request_claims: ReqData<Claims>,
+) -> impl Responder {
+    let mut transaction = match pool.begin().await {
+        Ok(t) => t,
+        Err(e) => {
+            error!("Error: {}", e);
+            return HttpResponse::InternalServerError()
+                .json(AppError::DatabaseConnection.to_response());
+        }
+    };
+
+    let daily_tracking_repo = ChallengeDailyTrackingRepositoryImpl::new(pool.get_ref().clone());
+    let challenge_repo = ChallengeRepositoryImpl::new(pool.get_ref().clone());
+
+    let get_challenge_daily_tracking_result = daily_tracking_repo
+        .get_by_id_with_executor(params.challenge_daily_tracking_id, &mut *transaction)
+        .await;
+
+    let challenge_daily_tracking = match get_challenge_daily_tracking_result {
+        Ok(r) => match r {
+            Some(challenge_daily_tracking) => challenge_daily_tracking,
+            None => {
+                return HttpResponse::NotFound()
+                    .json(AppError::ChallengeDailyTrackingNotFound.to_response())
+            }
+        },
+        Err(e) => {
+            error!("Error: {}", e);
+            return HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response());
+        }
+    };
+
+    match challenge_repo
+        .get_by_id_with_executor(challenge_daily_tracking.challenge_id, &mut *transaction)
+        .await
+    {
+        Ok(r) => match r {
+            Some(challenge) => {
+                if !request_claims.is_admin && challenge.creator != request_claims.user_id {
+                    return HttpResponse::Forbidden()
+                        .json(AppError::InvalidChallengeCreator.to_response());
+                }
+            }
+            None => {
+                return HttpResponse::NotFound().json(AppError::ChallengeNotFound.to_response())
+            }
+        },
+        Err(e) => {
+            error!("Error: {}", e);
+            return HttpResponse::InternalServerError().json(AppError::DatabaseQuery.to_response());
+        }
+    };
+
+    let delete_challenge_result = daily_tracking_repo
+        .delete_with_executor(params.challenge_daily_tracking_id, &mut *transaction)
+        .await;
+
+    if let Err(e) = transaction.commit().await {
+        error!("Error: {}", e);
+        return HttpResponse::InternalServerError()
+            .json(AppError::DatabaseTransaction.to_response());
+    }
+
+    match delete_challenge_result {
+        Ok(result) => {
+            if result.rows_affected() > 0 {
+                HttpResponse::Ok().json(ChallengeDailyTrackingResponse {
+                    code: "CHALLENGE_DAILY_TRACKING_DELETED".to_string(),
+                    challenge_daily_tracking: None,
+                })
+            } else {
+                HttpResponse::NotFound()
+                    .json(AppError::ChallengeDailyTrackingNotFound.to_response())
+            }
+        }
+        Err(e) => {
+            error!("Error: {}", e);
+            HttpResponse::InternalServerError()
+                .json(AppError::ChallengeDailyTrackingDelete.to_response())
+        }
+    }
+}

@@ -5,10 +5,12 @@ use actix_web::{
     http::header::ContentType,
     test, Error,
 };
-use api::features::private_discussions::structs::{
-    models::private_message::PrivateMessageData,
-    requests::private_message::{PrivateMessageCreateRequest, PrivateMessageUpdateRequest},
-    responses::private_message::{PrivateMessageResponse, PrivateMessagesResponse},
+use api::features::private_discussions::{
+    application::dto::{
+        requests::private_message::{PrivateMessageCreateRequest, PrivateMessageUpdateRequest},
+        responses::private_message::{PrivateMessageResponse, PrivateMessagesResponse},
+    },
+    domain::entities::private_message::PrivateMessageData,
 };
 use sqlx::PgPool;
 use uuid::Uuid;

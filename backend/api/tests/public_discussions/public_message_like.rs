@@ -6,7 +6,7 @@ use actix_web::{
     test, Error,
 };
 
-use api::features::public_discussions::structs::{
+use api::features::public_discussions::application::dto::{
     requests::public_message_like::PublicMessageLikeCreateRequest,
     responses::public_message_like::PublicMessageLikeResponse,
 };

@@ -3,7 +3,7 @@ use actix_web::body::MessageBody;
 use actix_web::dev::{Service, ServiceResponse};
 use actix_web::http::header::{self};
 use actix_web::{test, Error};
-use api::features::profile::structs::responses::{
+use api::features::profile::application::dto::responses::{
     DeviceData, DeviceDeleteResponse, DevicesResponse,
 };
 use sqlx::PgPool;

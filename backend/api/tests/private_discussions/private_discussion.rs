@@ -6,10 +6,12 @@ use actix_web::{
     test, Error,
 };
 
-use api::features::private_discussions::structs::{
-    models::private_discussion::PrivateDiscussionData,
-    requests::private_discussion::PrivateDiscussionCreateRequest,
-    responses::private_discussion::{PrivateDiscussionResponse, PrivateDiscussionsResponse},
+use api::features::private_discussions::{
+    application::dto::{
+        requests::private_discussion::PrivateDiscussionCreateRequest,
+        responses::private_discussion::{PrivateDiscussionResponse, PrivateDiscussionsResponse},
+    },
+    domain::entities::private_discussion::PrivateDiscussionData,
 };
 use sqlx::PgPool;
 use uuid::Uuid;

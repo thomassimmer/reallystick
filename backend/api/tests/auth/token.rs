@@ -7,7 +7,7 @@ use actix_web::http::header::{self, ContentType};
 use actix_web::{test, Error};
 use api::core::helpers::mock_now::override_now;
 use api::core::structs::responses::GenericResponse;
-use api::features::auth::structs::responses::RefreshTokenResponse;
+use api::features::auth::application::dto::responses::RefreshTokenResponse;
 use chrono::Utc;
 use sqlx::PgPool;
 
