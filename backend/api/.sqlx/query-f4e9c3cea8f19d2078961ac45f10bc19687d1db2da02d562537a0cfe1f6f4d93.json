@@ -1,0 +1,21 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            INSERT INTO challenges (\n                id, name, description, start_date, icon, created_at, creator, deleted\n            )\n            VALUES ( $1, $2, $3, $4, $5, $6, $7, $8 )\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Text",
+        "Text",
+        "Timestamptz",
+        "Text",
+        "Timestamptz",
+        "Uuid",
+        "Bool"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "f4e9c3cea8f19d2078961ac45f10bc19687d1db2da02d562537a0cfe1f6f4d93"
+}

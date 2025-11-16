@@ -1,0 +1,20 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            UPDATE habits\n            SET \n                name = $1,\n                description = $2,\n                reviewed = $3,\n                icon = $4,\n                category_id = $5,\n                unit_ids = $6\n            WHERE id = $7\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Text",
+        "Bool",
+        "Text",
+        "Uuid",
+        "Text",
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "6b0c3e7638b72519fd055dc619bbaa334bf693f81927ac4fcbbcad860e36231d"
+}

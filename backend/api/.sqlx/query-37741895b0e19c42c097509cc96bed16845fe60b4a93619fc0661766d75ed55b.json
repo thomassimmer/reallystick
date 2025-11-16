@@ -1,0 +1,19 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            INSERT INTO private_discussion_participations (\n                id,\n                discussion_id,\n                user_id,\n                color,\n                created_at,\n                has_blocked\n            )\n            VALUES ( $1, $2, $3, $4, $5, $6)\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Uuid",
+        "Uuid",
+        "Text",
+        "Timestamptz",
+        "Bool"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "37741895b0e19c42c097509cc96bed16845fe60b4a93619fc0661766d75ed55b"
+}

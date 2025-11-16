@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            UPDATE users\n            SET\n                is_deleted = true,\n                age_category = null,\n                gender = null,\n                continent = null,\n                country = null,\n                region = null,\n                activity = null,\n                financial_situation = null,\n                lives_in_urban_area = null,\n                relationship_status = null,\n                level_of_education = null,\n                has_children = null\n            WHERE id = $1\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "f40ca8522087a2e27dbec2cb0b35030ad4d64788225882da8104cbe327fba8c4"
+}

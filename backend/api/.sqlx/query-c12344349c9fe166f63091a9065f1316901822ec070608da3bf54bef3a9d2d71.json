@@ -1,0 +1,32 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                SELECT habit_id, u.activity, count(*) as \"count!\"\n                FROM habit_participations hp\n                LEFT JOIN users u ON hp.user_id = u.id\n                WHERE u.activity IS NOT NULL\n                GROUP BY habit_id, u.activity\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "habit_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "activity",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 2,
+        "name": "count!",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      true,
+      null
+    ]
+  },
+  "hash": "c12344349c9fe166f63091a9065f1316901822ec070608da3bf54bef3a9d2d71"
+}

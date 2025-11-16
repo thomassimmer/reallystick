@@ -1,0 +1,22 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            INSERT INTO habit_participations (\n                id,\n                user_id,\n                habit_id,\n                color,\n                to_gain,\n                created_at,\n                notifications_reminder_enabled,\n                reminder_time,\n                reminder_body\n            )\n            VALUES ( $1, $2, $3, $4, $5, $6, $7, $8, $9 )\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Uuid",
+        "Uuid",
+        "Text",
+        "Bool",
+        "Timestamptz",
+        "Bool",
+        "Time",
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "00266e724ed7465d2342f5052f39158e4739f2f21c773e4c26a3fa287550f610"
+}

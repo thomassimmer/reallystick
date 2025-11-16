@@ -1,0 +1,32 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                SELECT challenge_id, u.has_children, count(*) as \"count!\"\n                FROM challenge_participations hp\n                LEFT JOIN users u ON hp.user_id = u.id\n                WHERE u.has_children IS NOT NULL\n                GROUP BY challenge_id, u.has_children\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "challenge_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "has_children",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 2,
+        "name": "count!",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      true,
+      null
+    ]
+  },
+  "hash": "dda853d193847f0e1b148f320cb9a211a503c60bb8bf2bcb52dd891c98b37b24"
+}

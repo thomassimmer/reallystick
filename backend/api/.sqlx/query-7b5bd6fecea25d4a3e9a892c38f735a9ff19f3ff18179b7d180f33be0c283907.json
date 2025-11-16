@@ -1,0 +1,19 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            UPDATE habit_participations\n            SET \n                color = $1,\n                to_gain = $2,\n                notifications_reminder_enabled = $3,\n                reminder_time = $4,\n                reminder_body = $5\n            WHERE id = $6\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Bool",
+        "Bool",
+        "Time",
+        "Text",
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "7b5bd6fecea25d4a3e9a892c38f735a9ff19f3ff18179b7d180f33be0c283907"
+}

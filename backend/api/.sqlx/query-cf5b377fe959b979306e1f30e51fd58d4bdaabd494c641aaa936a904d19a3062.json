@@ -1,0 +1,25 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            INSERT INTO challenge_daily_trackings (\n                id, habit_id, challenge_id, day_of_program, created_at,\n                quantity_per_set, quantity_of_set, unit_id, weight, weight_unit_id,\n                note, order_in_day\n            )\n            VALUES ( $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12 )\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Uuid",
+        "Uuid",
+        "Int4",
+        "Timestamptz",
+        "Float8",
+        "Int4",
+        "Uuid",
+        "Int4",
+        "Uuid",
+        "Text",
+        "Int4"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "cf5b377fe959b979306e1f30e51fd58d4bdaabd494c641aaa936a904d19a3062"
+}

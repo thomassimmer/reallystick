@@ -1,0 +1,29 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT pm.discussion_id, COUNT(*) AS unseen_count\n            FROM private_messages pm\n            WHERE \n                pm.discussion_id = ANY($1)\n                AND pm.creator != $2\n                AND pm.seen = false\n            GROUP BY pm.discussion_id\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "discussion_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "unseen_count",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "UuidArray",
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false,
+      null
+    ]
+  },
+  "hash": "44071d4b5d9e436e05c5178814d4d11b4ee8d709e7f9ae54e4858dd0c588d1b4"
+}

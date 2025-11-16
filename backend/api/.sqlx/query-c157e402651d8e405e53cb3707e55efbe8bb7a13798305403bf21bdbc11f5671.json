@@ -1,0 +1,32 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                SELECT challenge_id, u.level_of_education, count(*) as \"count!\"\n                FROM challenge_participations hp\n                LEFT JOIN users u ON hp.user_id = u.id\n                WHERE u.level_of_education IS NOT NULL\n                GROUP BY challenge_id, u.level_of_education\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "challenge_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "level_of_education",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 2,
+        "name": "count!",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      true,
+      null
+    ]
+  },
+  "hash": "c157e402651d8e405e53cb3707e55efbe8bb7a13798305403bf21bdbc11f5671"
+}

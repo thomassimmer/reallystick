@@ -1,0 +1,76 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT pm.*\n            FROM private_messages pm\n            WHERE pm.id IN (\n                SELECT DISTINCT ON (discussion_id) id\n                FROM private_messages\n                WHERE discussion_id = ANY($1)\n                ORDER BY discussion_id, created_at DESC\n            )\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "creator",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 2,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 3,
+        "name": "updated_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 4,
+        "name": "content",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 5,
+        "name": "deleted",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 6,
+        "name": "seen",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 7,
+        "name": "discussion_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 8,
+        "name": "creator_encrypted_session_key",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 9,
+        "name": "recipient_encrypted_session_key",
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "UuidArray"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "b20bed038862a40d2d071ceea86b7704481c7a23c3d2110cbe81ebc3eaa375f5"
+}

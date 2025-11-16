@@ -1,0 +1,32 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT cp.user_id, cp.challenge_id, cp.reminder_body\n            FROM challenge_participations cp\n            JOIN users u ON cp.user_id = u.id\n            WHERE\n                u.timezone IS NOT NULL \n                AND u.timezone <> ''\n                AND DATE_TRUNC('minute', NOW() AT TIME ZONE u.timezone)::TIME = DATE_TRUNC('minute', cp.reminder_time)\n                AND cp.notifications_reminder_enabled = true\n                AND cp.finished = false\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "user_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "challenge_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 2,
+        "name": "reminder_body",
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      false,
+      true
+    ]
+  },
+  "hash": "230961d380b09fd545f4a28b13b97f89d5a8aa71a1fd34c118088d1b53e1caf5"
+}

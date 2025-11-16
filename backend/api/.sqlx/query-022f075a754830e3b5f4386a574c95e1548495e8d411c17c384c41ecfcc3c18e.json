@@ -1,0 +1,32 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                SELECT challenge_id, u.region, count(*) as \"count!\"\n                FROM challenge_participations hp\n                LEFT JOIN users u ON hp.user_id = u.id\n                WHERE u.region IS NOT NULL\n                GROUP BY challenge_id, u.region\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "challenge_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "region",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 2,
+        "name": "count!",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      true,
+      null
+    ]
+  },
+  "hash": "022f075a754830e3b5f4386a574c95e1548495e8d411c17c384c41ecfcc3c18e"
+}

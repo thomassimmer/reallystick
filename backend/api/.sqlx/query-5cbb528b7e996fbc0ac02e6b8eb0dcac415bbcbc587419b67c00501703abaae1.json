@@ -1,0 +1,17 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            INSERT INTO habit_categories (id, name, created_at, icon)\n            VALUES ( $1, $2, $3, $4 )\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Text",
+        "Timestamptz",
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "5cbb528b7e996fbc0ac02e6b8eb0dcac415bbcbc587419b67c00501703abaae1"
+}

@@ -1,0 +1,16 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            UPDATE private_messages\n            SET seen = true\n            WHERE discussion_id = $1\n              AND creator != $2\n              AND created_at <= $3\n              AND seen = false\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Uuid",
+        "Timestamptz"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "8aa0b0e3db9dc984107df829ddb04495f74140417b91ec904d051a66fdd01c50"
+}

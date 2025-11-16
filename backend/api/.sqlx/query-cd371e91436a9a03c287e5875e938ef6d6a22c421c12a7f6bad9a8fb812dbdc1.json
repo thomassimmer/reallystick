@@ -1,0 +1,28 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                SELECT habit_id, count(*) as \"count!\"\n                FROM habit_participations\n                WHERE habit_id = ANY($1)\n                GROUP BY habit_id\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "habit_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "count!",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "UuidArray"
+      ]
+    },
+    "nullable": [
+      false,
+      null
+    ]
+  },
+  "hash": "cd371e91436a9a03c287e5875e938ef6d6a22c421c12a7f6bad9a8fb812dbdc1"
+}

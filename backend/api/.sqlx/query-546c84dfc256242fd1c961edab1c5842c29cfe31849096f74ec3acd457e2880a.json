@@ -1,0 +1,98 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT pm.*\n            FROM public_messages pm\n            JOIN public_message_reports pmr ON pm.id = pmr.message_id\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "habit_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 2,
+        "name": "challenge_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 3,
+        "name": "creator",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 4,
+        "name": "replies_to",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 5,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 6,
+        "name": "updated_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 7,
+        "name": "content",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 8,
+        "name": "like_count",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 9,
+        "name": "deleted_by_creator",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 10,
+        "name": "deleted_by_admin",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 11,
+        "name": "language_code",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 12,
+        "name": "reply_count",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 13,
+        "name": "thread_id",
+        "type_info": "Uuid"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      true,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false
+    ]
+  },
+  "hash": "546c84dfc256242fd1c961edab1c5842c29cfe31849096f74ec3acd457e2880a"
+}

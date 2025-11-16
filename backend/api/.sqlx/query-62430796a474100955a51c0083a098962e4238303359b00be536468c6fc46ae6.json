@@ -1,0 +1,16 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            UPDATE public_messages\n            SET\n                deleted_by_creator = $1,\n                content = $2\n            WHERE creator = $3\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Bool",
+        "Text",
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "62430796a474100955a51c0083a098962e4238303359b00be536468c6fc46ae6"
+}

@@ -1,0 +1,25 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            INSERT INTO challenge_daily_trackings (\n                id, habit_id, challenge_id, day_of_program, created_at,\n                quantity_per_set, quantity_of_set, unit_id, weight, weight_unit_id,\n                note, order_in_day\n            )\n            SELECT * FROM UNNEST(\n                $1::UUID[],\n                $2::UUID[],\n                $3::UUID[],\n                $4::INT[],\n                $5::TIMESTAMPTZ[],\n                $6::DOUBLE PRECISION[],\n                $7::INT[],\n                $8::UUID[],\n                $9::FLOAT8[],\n                $10::UUID[],\n                $11::TEXT[],\n                $12::INT[]\n            )\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "UuidArray",
+        "UuidArray",
+        "UuidArray",
+        "Int4Array",
+        "TimestamptzArray",
+        "Float8Array",
+        "Int4Array",
+        "UuidArray",
+        "Float8Array",
+        "UuidArray",
+        "TextArray",
+        "Int4Array"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "9894f0d77d9f3f37f61ec8a5a2d723ac0325284c54f001656adfd573fd652fca"
+}

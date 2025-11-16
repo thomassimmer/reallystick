@@ -1,12 +1,30 @@
-# Use the official Rust image as the base image
-FROM rust:1.90
+# syntax=docker/dockerfile:1.7
+ARG RUST_VERSION=1.90
 
+FROM rust:${RUST_VERSION} AS builder
+WORKDIR /build
+COPY notifications/Cargo.toml ./notifications/
+ENV SQLX_OFFLINE=true
+RUN --mount=type=cache,target=/usr/local/cargo/registry cargo fetch --manifest-path notifications/Cargo.toml || true
+# Copy the entire backend (provides ../api path dependency)
+COPY . .
+RUN --mount=type=cache,target=/usr/local/cargo/registry \
+    --mount=type=cache,target=/build/target \
+    cargo build --release --manifest-path notifications/Cargo.toml
+RUN install -D -m 0755 /build/target/release/notifications /usr/local/bin/notifications
+
+FROM debian:bookworm-slim AS runtime
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN useradd -m rustuser
 
-USER rustuser
-
-# Set the working directory inside the container
 WORKDIR /app/notifications
+# Copy notifications app directory (scripts/assets/config)
+COPY --chown=rustuser:rustuser notifications/ .
+# Copy shared configuration file to the expected location (/app/configuration.yaml)
+COPY configuration.yaml /app/configuration.yaml
+# Copy locales to shared path so ../locales resolves from both api and notifications
+COPY locales /app/locales
+# Copy compiled binary to a stable location
+COPY --from=builder /usr/local/bin/notifications /usr/local/bin/notifications
 
-# Now copy the source code
-COPY --chown=rustuser:rustuser . .
+USER rustuser

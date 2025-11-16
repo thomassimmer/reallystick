@@ -1,0 +1,19 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            UPDATE challenges\n            SET \n                name = $1,\n                description = $2,\n                start_date = $3,\n                icon = $4,\n                deleted = $5\n            WHERE id = $6\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Text",
+        "Timestamptz",
+        "Text",
+        "Bool",
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "31aaa8ff245cdd2a1da4294052ffa9afb5019bdfc385930549f42113a6809796"
+}

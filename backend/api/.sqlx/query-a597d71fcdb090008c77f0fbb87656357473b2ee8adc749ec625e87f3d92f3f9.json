@@ -1,0 +1,41 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            UPDATE users\n            SET \n                username = $1, locale = $2, theme = $3, age_category = $4,\n                gender = $5, continent = $6, country = $7, region = $8,\n                activity = $9, financial_situation = $10, lives_in_urban_area = $11,\n                relationship_status = $12, level_of_education = $13, has_children = $14,\n                has_seen_questions = $15, notifications_enabled = $16,\n                notifications_for_private_messages_enabled = $17,\n                notifications_for_public_message_liked_enabled = $18,\n                notifications_for_public_message_replies_enabled = $19,\n                notifications_user_joined_your_challenge_enabled = $20,\n                notifications_user_duplicated_your_challenge_enabled = $21,\n                timezone = $22, otp_verified = $23, otp_auth_url = $24,\n                otp_base32 = $25, password_is_expired = $26, password = $27\n            WHERE id = $28\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Varchar",
+        "Varchar",
+        "Varchar",
+        "Varchar",
+        "Varchar",
+        "Varchar",
+        "Varchar",
+        "Varchar",
+        "Varchar",
+        "Varchar",
+        "Bool",
+        "Varchar",
+        "Varchar",
+        "Bool",
+        "Bool",
+        "Bool",
+        "Bool",
+        "Bool",
+        "Bool",
+        "Bool",
+        "Bool",
+        "Text",
+        "Bool",
+        "Text",
+        "Varchar",
+        "Bool",
+        "Varchar",
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "a597d71fcdb090008c77f0fbb87656357473b2ee8adc749ec625e87f3d92f3f9"
+}

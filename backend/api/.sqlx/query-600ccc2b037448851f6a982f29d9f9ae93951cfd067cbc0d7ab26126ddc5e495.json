@@ -1,0 +1,18 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            INSERT INTO recovery_codes (id, user_id, recovery_code, private_key_encrypted, salt_used_to_derive_key_from_recovery_code)\n            VALUES ($1, $2, $3, $4, $5)\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Uuid",
+        "Text",
+        "Text",
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "600ccc2b037448851f6a982f29d9f9ae93951cfd067cbc0d7ab26126ddc5e495"
+}

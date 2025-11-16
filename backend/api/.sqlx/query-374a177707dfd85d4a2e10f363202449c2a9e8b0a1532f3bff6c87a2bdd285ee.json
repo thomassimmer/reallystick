@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            DELETE FROM public_message_reports\n            WHERE reporter = $1\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "374a177707dfd85d4a2e10f363202449c2a9e8b0a1532f3bff6c87a2bdd285ee"
+}

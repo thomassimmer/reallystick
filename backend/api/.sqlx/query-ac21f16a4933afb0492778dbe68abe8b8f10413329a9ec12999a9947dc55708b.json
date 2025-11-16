@@ -1,0 +1,17 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            UPDATE users\n            SET \n               public_key = $1,\n               private_key_encrypted = $2,\n               salt_used_to_derive_key_from_password = $3\n            WHERE id = $4\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Text",
+        "Text",
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "ac21f16a4933afb0492778dbe68abe8b8f10413329a9ec12999a9947dc55708b"
+}

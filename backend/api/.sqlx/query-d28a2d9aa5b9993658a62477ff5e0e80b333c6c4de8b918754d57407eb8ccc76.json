@@ -1,0 +1,20 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            UPDATE habit_daily_trackings\n            SET\n                datetime = $1,\n                quantity_per_set = $2,\n                quantity_of_set = $3,\n                unit_id = $4,\n                weight = $5,\n                weight_unit_id = $6\n            WHERE id = $7\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Timestamp",
+        "Float8",
+        "Int4",
+        "Uuid",
+        "Int4",
+        "Uuid",
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "d28a2d9aa5b9993658a62477ff5e0e80b333c6c4de8b918754d57407eb8ccc76"
+}

@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            UPDATE habit_daily_trackings\n            SET habit_id = $2\n            WHERE habit_id = $1\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "02b524401abd09451144342bdf5d10aa3c080d0951db52ce864910bbb39a4c47"
+}

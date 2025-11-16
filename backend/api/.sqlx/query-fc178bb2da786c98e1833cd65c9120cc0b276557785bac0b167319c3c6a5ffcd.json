@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            DELETE FROM challenge_daily_trackings\n            WHERE challenge_id = $1\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "fc178bb2da786c98e1833cd65c9120cc0b276557785bac0b167319c3c6a5ffcd"
+}

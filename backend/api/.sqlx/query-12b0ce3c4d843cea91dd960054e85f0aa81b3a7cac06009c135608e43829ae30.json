@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            INSERT INTO private_discussions (\n                id,\n                created_at\n            )\n            VALUES ($1, $2)\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Timestamptz"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "12b0ce3c4d843cea91dd960054e85f0aa81b3a7cac06009c135608e43829ae30"
+}

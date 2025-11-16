@@ -1,0 +1,16 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                    UPDATE habit_participations\n                    SET habit_id = $2\n                    WHERE habit_id = $1 AND user_id = $3\n                    ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Uuid",
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "6a2df49cbb538effa9b294cc965b1b23f9deba4eccda2a92aad8ea1767f32663"
+}

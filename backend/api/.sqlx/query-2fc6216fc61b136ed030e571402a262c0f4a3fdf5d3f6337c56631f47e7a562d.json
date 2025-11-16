@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            UPDATE private_messages\n            SET deleted = true, content = ''\n            WHERE id = $1\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "2fc6216fc61b136ed030e571402a262c0f4a3fdf5d3f6337c56631f47e7a562d"
+}

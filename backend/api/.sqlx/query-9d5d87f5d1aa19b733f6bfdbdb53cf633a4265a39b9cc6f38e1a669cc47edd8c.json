@@ -1,0 +1,20 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            UPDATE challenge_participations\n            SET\n                color = $1,\n                start_date = $2,\n                notifications_reminder_enabled = $3,\n                reminder_time = $4,\n                reminder_body = $5,\n                finished = $6\n            WHERE id = $7\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Timestamptz",
+        "Bool",
+        "Time",
+        "Text",
+        "Bool",
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "9d5d87f5d1aa19b733f6bfdbdb53cf633a4265a39b9cc6f38e1a669cc47edd8c"
+}

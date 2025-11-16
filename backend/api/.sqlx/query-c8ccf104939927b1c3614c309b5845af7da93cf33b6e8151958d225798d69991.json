@@ -1,0 +1,23 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            INSERT INTO challenge_participations (\n                id, user_id, challenge_id, color, start_date, created_at,\n                notifications_reminder_enabled, reminder_time, reminder_body, finished\n            )\n            VALUES ( $1, $2, $3, $4, $5, $6, $7, $8, $9, $10 )\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Uuid",
+        "Uuid",
+        "Text",
+        "Timestamptz",
+        "Timestamptz",
+        "Bool",
+        "Time",
+        "Text",
+        "Bool"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "c8ccf104939927b1c3614c309b5845af7da93cf33b6e8151958d225798d69991"
+}

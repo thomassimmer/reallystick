@@ -1,0 +1,29 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            WITH participants AS (\n                SELECT discussion_id\n                FROM private_discussion_participations\n                WHERE user_id IN ($1, $2)\n                GROUP BY discussion_id\n                HAVING COUNT(DISTINCT user_id) = 2\n            )\n            SELECT pd.*\n            FROM private_discussions pd\n            JOIN participants p ON pd.id = p.discussion_id\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false,
+      false
+    ]
+  },
+  "hash": "f516bb2d52e3baafd404b87289e26616eb6f39cdda1517ab13139512c4637751"
+}

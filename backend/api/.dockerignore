@@ -1,0 +1,9 @@
+target
+.git
+.gitignore
+**/*.swp
+**/*.log
+.env*
+Dockerfile*
+docker-compose*.yml
+

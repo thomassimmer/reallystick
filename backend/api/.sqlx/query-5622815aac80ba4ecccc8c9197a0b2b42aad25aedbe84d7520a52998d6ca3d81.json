@@ -1,0 +1,32 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                SELECT habit_id, challenge_id, count(*) as \"count!\"\n                FROM challenge_daily_trackings cdt\n                LEFT JOIN challenges c ON c.id = cdt.challenge_id\n                WHERE c.deleted IS NOT true\n                GROUP BY habit_id, challenge_id\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "habit_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "challenge_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 2,
+        "name": "count!",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      false,
+      null
+    ]
+  },
+  "hash": "5622815aac80ba4ecccc8c9197a0b2b42aad25aedbe84d7520a52998d6ca3d81"
+}

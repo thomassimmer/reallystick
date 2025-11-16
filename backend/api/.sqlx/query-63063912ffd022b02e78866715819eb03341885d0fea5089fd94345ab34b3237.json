@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            UPDATE challenges\n            SET deleted = true, name = '', description = ''\n            WHERE creator = $1\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "63063912ffd022b02e78866715819eb03341885d0fea5089fd94345ab34b3237"
+}

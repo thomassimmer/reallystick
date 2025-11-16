@@ -1,0 +1,17 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            INSERT INTO units (id, short_name, long_name, created_at)\n            VALUES ( $1, $2, $3, $4 )\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Text",
+        "Text",
+        "Timestamptz"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "c27a69297606eb5e9b1f534dc566e073f132a50cda88c0fd2784ae1425fbd08f"
+}

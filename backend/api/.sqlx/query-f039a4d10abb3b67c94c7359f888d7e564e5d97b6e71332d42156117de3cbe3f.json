@@ -1,0 +1,230 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT *\n            FROM users\n            WHERE deleted_at is null\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "username",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 2,
+        "name": "password",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 3,
+        "name": "otp_verified",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 4,
+        "name": "otp_base32",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 5,
+        "name": "otp_auth_url",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 6,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 7,
+        "name": "updated_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 8,
+        "name": "locale",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 9,
+        "name": "theme",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 10,
+        "name": "password_is_expired",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 11,
+        "name": "age_category",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 12,
+        "name": "gender",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 13,
+        "name": "continent",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 14,
+        "name": "country",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 15,
+        "name": "region",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 16,
+        "name": "activity",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 17,
+        "name": "financial_situation",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 18,
+        "name": "lives_in_urban_area",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 19,
+        "name": "relationship_status",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 20,
+        "name": "level_of_education",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 21,
+        "name": "has_children",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 22,
+        "name": "has_seen_questions",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 23,
+        "name": "is_admin",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 24,
+        "name": "private_key_encrypted",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 25,
+        "name": "public_key",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 26,
+        "name": "salt_used_to_derive_key_from_password",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 27,
+        "name": "notifications_enabled",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 28,
+        "name": "notifications_for_private_messages_enabled",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 29,
+        "name": "notifications_for_public_message_liked_enabled",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 30,
+        "name": "notifications_for_public_message_replies_enabled",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 31,
+        "name": "notifications_user_joined_your_challenge_enabled",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 32,
+        "name": "notifications_user_duplicated_your_challenge_enabled",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 33,
+        "name": "timezone",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 34,
+        "name": "deleted_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 35,
+        "name": "is_deleted",
+        "type_info": "Bool"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      true,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      false,
+      false,
+      true,
+      true,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false
+    ]
+  },
+  "hash": "f039a4d10abb3b67c94c7359f888d7e564e5d97b6e71332d42156117de3cbe3f"
+}

@@ -3,5 +3,5 @@
 # Start cron in the background
 cron
 
-# Start your application in the foreground
-exec cargo run --release --bin api
+# Start the compiled application binary in the foreground
+exec /usr/local/bin/api

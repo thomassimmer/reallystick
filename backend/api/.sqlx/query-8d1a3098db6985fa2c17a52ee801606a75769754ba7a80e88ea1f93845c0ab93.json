@@ -1,0 +1,23 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            INSERT INTO private_messages (\n                id,\n                discussion_id,\n                creator,\n                created_at,\n                updated_at,\n                content,\n                creator_encrypted_session_key,\n                recipient_encrypted_session_key,\n                deleted,\n                seen\n            )\n            VALUES ( $1, $2, $3, $4, $5, $6, $7, $8, $9, $10)\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Uuid",
+        "Uuid",
+        "Timestamptz",
+        "Timestamptz",
+        "Text",
+        "Text",
+        "Text",
+        "Bool",
+        "Bool"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "8d1a3098db6985fa2c17a52ee801606a75769754ba7a80e88ea1f93845c0ab93"
+}

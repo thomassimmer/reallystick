@@ -1,0 +1,23 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            UPDATE challenge_daily_trackings\n            SET\n                day_of_program = $1,\n                quantity_per_set = $2,\n                quantity_of_set = $3,\n                unit_id = $4,\n                weight = $5,\n                weight_unit_id = $6,\n                note = $7,\n                habit_id = $8,\n                order_in_day = $9\n            WHERE id = $10\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int4",
+        "Float8",
+        "Int4",
+        "Uuid",
+        "Int4",
+        "Uuid",
+        "Text",
+        "Uuid",
+        "Int4",
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "5123643a50c90ef1b42c5827f8de90bc5e8fdfbbd49be8365815088dba0a59cf"
+}

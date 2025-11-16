@@ -1,4 +1,4 @@
 #!/bin/sh
 
-# Start your application in the foreground
-exec cargo run --release --bin notifications
+# Start the compiled application in the foreground
+exec /usr/local/bin/notifications

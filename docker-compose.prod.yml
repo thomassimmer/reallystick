@@ -6,15 +6,14 @@ services:
       - ./db/.env
     volumes:
       - ./postgres_data:/var/lib/postgresql/data
-    ports:
-      - 5432:5432
+    restart: unless-stopped
 
   api:
     container_name: api
     image: reallystick_api
     build:
-      context: ./backend/api
-      dockerfile: Dockerfile.prod
+      context: ./backend
+      dockerfile: api/Dockerfile.prod
     environment:
       - APP_DATABASE__HOST=db
     env_file:
@@ -22,18 +21,22 @@ services:
     command: "/app/api/entrypoint.prod.sh"
     ports:
       - "8000:8000"
-    volumes:
-      - ./backend:/app
     depends_on:
       - db
       - redis
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
   notifications:
     container_name: notifications
     image: reallystick_notifications
     build:
-      context: ./backend/notifications
-      dockerfile: Dockerfile.prod
+      context: ./backend
+      dockerfile: notifications/Dockerfile.prod
     environment:
       - APP_DATABASE__HOST=db
       - APP_APPLICATION__PORT=8001
@@ -42,19 +45,27 @@ services:
     command: "/app/notifications/entrypoint.prod.sh"
     ports:
       - "8001:8001"
-    volumes:
-      - ./backend:/app
     depends_on:
-      - api
       - db
       - redis
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
   redis:
     image: redis:7
     container_name: redis
-    restart: always
     volumes:
       - redis_data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
 
 volumes:
   postgres_data:

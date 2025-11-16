@@ -1,22 +1,39 @@
-# Use the official Rust image as the base image
-FROM rust:1.90
+# syntax=docker/dockerfile:1.7
+ARG RUST_VERSION=1.90
 
+FROM rust:${RUST_VERSION} AS builder
+WORKDIR /build
+# Copy manifests first (workspace-aware)
+COPY api/Cargo.toml ./api/
+ENV SQLX_OFFLINE=true
+RUN --mount=type=cache,target=/usr/local/cargo/registry cargo fetch --manifest-path api/Cargo.toml || true
+# Copy the entire backend (to include workspace and .sqlx)
+COPY . .
+# Build release binary for the api crate
+RUN --mount=type=cache,target=/usr/local/cargo/registry \
+    --mount=type=cache,target=/build/target \
+    cargo build --release --manifest-path api/Cargo.toml --bin api
+RUN install -D -m 0755 /build/target/release/api /usr/local/bin/api
+
+FROM debian:bookworm-slim AS runtime
+RUN apt-get update && apt-get install -y --no-install-recommends cron ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN useradd -m rustuser
 
-RUN apt-get update && apt-get install -y cron
-
-# Add crontab file
-COPY crontab.prod.txt /etc/cron.d/reallystick-cron
+# Cron setup (preserve existing behavior)
+COPY api/crontab.prod.txt /etc/cron.d/reallystick-cron
 RUN chmod 0644 /etc/cron.d/reallystick-cron
 RUN crontab -u rustuser /etc/cron.d/reallystick-cron
-RUN touch /var/log/cron.log
-RUN chown rustuser:rustuser /var/log/cron.log
+RUN touch /var/log/cron.log && chown rustuser:rustuser /var/log/cron.log
 RUN chmod u+s /usr/sbin/cron
 
-USER rustuser
-
-# Set the working directory inside the container
 WORKDIR /app/api
+# Copy only the api app directory (scripts/assets/config)
+COPY --chown=rustuser:rustuser api/ .
+# Copy shared configuration file to the expected location (/app/configuration.yaml)
+COPY configuration.yaml /app/configuration.yaml
+# Copy locales to shared path so ../locales resolves from both api and notifications
+COPY locales /app/locales
+# Copy compiled binary to a stable location
+COPY --from=builder /usr/local/bin/api /usr/local/bin/api
 
-# Now copy the source code
-COPY --chown=rustuser:rustuser . .
+USER rustuser
