@@ -16,12 +16,16 @@ ReallyStick is an open-source, privacy-first app designed to help you build and 
 - **Custom Challenges**: Design your own challenges or join those created by others.
 - **Community Threads**: Discuss habits and challenges in public threads.
 - **Private Messaging**: Communicate securely with end-to-end encryption.
-- **Cross-Platform**: Available on the web at [reallystick.com](https://reallystick.com/), and ready for use on Android and iOS, but not yet deployed on stores.
+- **Cross-Platform**: Deployable on the web, Android and iOS.
 - **Open Source**: Transparent, community-driven development.
+
+## Demo video
+
+[![Watch the demo](https://img.youtube.com/vi/rdI9vPbch5U/maxresdefault.jpg)](https://youtu.be/rdI9vPbch5U)
 
 ---
 
-## 🛠 Installation & Development
+## Installation & Development
 
 ### Prerequisites
 
@@ -90,7 +94,7 @@ vacuum;
 
 ---
 
-## 📱 Running the App
+## Running the App
 
 ### Web (Chrome)
 
@@ -111,19 +115,16 @@ vacuum;
 **Prerequisite:** Follow the instructions in the [Run locally on an external device](#run-locally-on-an-external-device) section first.
 
 1. **Enable Developer Options and USB Debugging:**
-
    - Go to **Developer Options**.
    - Select **USB Configuration**.
    - Change the setting from **"File Transfer"** (default) to **"Charging"**.
    - When prompted, confirm that you want to **always allow USB debugging** from this device.
 
 2. **Install Android Studio:**
-
    - Download and install [Android Studio](https://developer.android.com/studio) from the official website.
    - Create a **dummy project** to complete the initial setup.
 
 3. **Install the Android SDK Command-Line Tools:**
-
    - Open **Android Studio**.
    - Navigate to:
      **Settings** → **SDK Manager** → **Languages & Frameworks** → **Android SDK** → **SDK Tools**.
@@ -168,17 +169,14 @@ This file is required for backend authentication with Firebase Cloud Messaging (
 #### **Steps to Generate Your Own File:**
 
 1. **Create a Firebase Project**:
-
    - Go to the [Firebase Console](https://console.firebase.google.com/).
    - Click **"Add Project"** and follow the instructions.
 
 2. **Enable Firebase Cloud Messaging (FCM)**:
-
    - In your project, go to **Project Settings > Cloud Messaging**.
    - Ensure FCM is enabled.
 
 3. **Generate a Service Account Key**:
-
    - Go to **Project Settings > Service Accounts**.
    - Click **"Generate New Private Key"** (this downloads a `.json` file).
    - Rename the file to:
@@ -198,7 +196,6 @@ This file is required for Firebase integration in Android apps.
 #### **Steps to Generate and Place the File:**
 
 1. **Register Your Android App in Firebase**:
-
    - In the [Firebase Console](https://console.firebase.google.com/), go to your project.
    - Click **"Add App"** and select **Android**.
    - Enter the package name `com.reallystick`.
@@ -213,19 +210,19 @@ This file is required for Firebase integration in Android apps.
 
 ---
 
-## 🌍 Data Sources
+## Data Sources
 
 - Countries: [REST Countries API](https://restcountries.com/v3.1/all?fields=name,flags,region)
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 ReallyStick is open to contributions! Whether you're a developer, designer, or tester, your help is welcome. Check out our [contribution guidelines](CONTRIBUTING.md) to get started.
 
 ---
 
-## 📜 License
+## License
 
 ReallyStick is licensed under the [MIT License](LICENSE).
 
